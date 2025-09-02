@@ -78,7 +78,7 @@ const WondrrComingSoon = () => {
           {/* Status Badge */}
           <div className="inline-flex items-center px-4 py-2 bg-gray-900 border border-gray-700 rounded-full text-sm text-gray-300 mb-8 animate-pulse">
             <div className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-ping"></div>
-            We're building something amazing
+            We&apos;re building something amazing
           </div>
 
           {/* Main Heading */}
@@ -92,7 +92,7 @@ const WondrrComingSoon = () => {
 
           {/* Subtitle */}
           <p className="text-lg md:text-xl text-gray-400 mb-12 max-w-2xl leading-relaxed">
-            We're crafting an experience that will redefine how you think about digital innovation. 
+            We&apos;re crafting an experience that will redefine how you think about digital innovation. 
             Join the waitlist to be among the first to witness the revolution.
           </p>
 
