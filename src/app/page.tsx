@@ -1,9 +1,10 @@
-import WondrrComingSoon from "@/components/something";
+import Landing from "./(landing)/page";
+
 
 export default function Home() {
   return (
     <div>
-      <WondrrComingSoon/>
+      <Landing/>
     </div>
   );
 }
