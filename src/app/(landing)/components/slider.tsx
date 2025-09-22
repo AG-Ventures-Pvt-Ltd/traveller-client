@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import Image from "next/image";
 import { Square } from "lucide-react";
 
@@ -41,12 +41,12 @@ export default function Carousel() {
         setCurrentSlide((prev) => (prev + 1) % totalSlides);
     };
 
-    const startAutoSlide = () => {
+    const startAutoSlide = useCallback(() => {
         stopAutoSlide();
         autoSlideRef.current = setTimeout(() => {
             nextSlide();
         }, 4000);
-    };
+    },[]);
 
     const stopAutoSlide = () => {
         if (autoSlideRef.current !== null) {
@@ -58,7 +58,7 @@ export default function Carousel() {
     useEffect(() => {
         startAutoSlide();
         return () => stopAutoSlide();
-    }, [currentSlide]);
+    }, [currentSlide,startAutoSlide]);
 
     return (
         <div className="max-h-[80%]">

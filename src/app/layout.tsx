@@ -3,7 +3,8 @@
 import "./globals.css";
 import React from 'react';
 import { Providers } from "./providers";
-import { SessionProvider } from 'next-auth/react';
+// import { SessionProvider } from 'next-auth/react';
+import { ToastContainer } from 'react-toastify';
 
 
 interface RootLayoutProps {
@@ -24,11 +25,12 @@ export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en">
       <body>
-          <SessionProvider>
+        {/* <SessionProvider> */}
         <Providers>
-            {children}
+          {children}
+          <ToastContainer position="top-right" />
         </Providers>
-          </SessionProvider>
+        {/* </SessionProvider> */}
       </body>
     </html>
   );
