@@ -1,16 +1,16 @@
 "use client";
-import { useMutation, UseMutationOptions } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { baseAPI } from "./baseApi";
 import { logError } from "@/common/utils/logError";
 import { notify } from "@/common/utils/notify";
 
 type MutationPayload = Record<string, unknown>;
 
-const usePostData = ({url,...rest} : {url : string} & Omit<
-    UseMutationOptions<unknown, Error, MutationPayload>,
-    "mutationFn"
-  >) => {
-  return useMutation({
+const usePostData = <T = unknown>(
+  { url,
+    ...rest
+  } : { url : string }) => {
+  return useMutation<T, Error, MutationPayload>({
     mutationFn: async (payload: Record<string, unknown>) => {
       const res = await baseAPI.post(url, payload);
       return res.data;

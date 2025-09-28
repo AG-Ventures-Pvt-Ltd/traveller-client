@@ -1,3 +1,5 @@
 export default function Layout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
+  return <div className="m-16 p-16 ">
+        {children}
+        </div>;
 }
