@@ -1,4 +1,4 @@
-import Landing from "./(landing)/page";
+import Landing from "./(client)/(landing)/page";
 
 
 export default function Home() {

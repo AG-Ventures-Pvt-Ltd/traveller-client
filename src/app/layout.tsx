@@ -3,9 +3,14 @@
 import "./globals.css";
 import React from 'react';
 import { Providers } from "./providers";
-// import { SessionProvider } from 'next-auth/react';
 import { ToastContainer } from 'react-toastify';
+import { DM_Sans } from 'next/font/google';
 
+const dmSans = DM_Sans({ 
+  subsets: ['latin'],
+  variable: '--font-dm',
+  display: 'swap',
+});
 
 interface RootLayoutProps {
   children: React.ReactNode;
@@ -24,13 +29,11 @@ export default function RootLayout({ children }: RootLayoutProps) {
 
   return (
     <html lang="en">
-      <body>
-        {/* <SessionProvider> */}
+      <body className={dmSans.variable}>
         <Providers>
           {children}
           <ToastContainer position="top-right" />
         </Providers>
-        {/* </SessionProvider> */}
       </body>
     </html>
   );
