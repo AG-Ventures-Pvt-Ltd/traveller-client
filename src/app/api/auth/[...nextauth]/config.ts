@@ -1,7 +1,7 @@
 import { NextAuthOptions } from "next-auth";
-import { credentialsProvider } from "../config/credentials";
-import { googleProvider, facebookProvider } from "../config/providers";
-import { authCallbacks } from "../config/callbacks";
+import { credentialsProvider } from "./config/credentials";
+import { googleProvider, facebookProvider } from "./config/providers";
+import { authCallbacks } from "./config/callbacks";
 
 
 export const authOptions: NextAuthOptions = {

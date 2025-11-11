@@ -27,6 +27,7 @@
     "react-dom": "^19.2.0",
     "react-final-form": "^7.0.0",
     "react-toastify": "^11.0.5",
+    "tailwind-merge": "^3.4.0",
     "zustand": "^5.0.8"
   },
   "devDependencies": {

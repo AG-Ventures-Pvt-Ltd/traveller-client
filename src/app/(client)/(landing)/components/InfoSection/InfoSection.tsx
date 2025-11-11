@@ -25,6 +25,7 @@ const InfoSection = () => {
                                 alt='Destination 1'
                                 fill
                                 className='object-cover'
+                                quality={100}
                             />
                         </div>
                         <div className='w-[50%] h-[250px] relative rounded-lg overflow-hidden'>
@@ -33,6 +34,7 @@ const InfoSection = () => {
                                 alt='Destination 2'
                                 fill
                                 className='object-cover'
+                                quality={100}
                             />
                         </div>
                     </div>
@@ -45,6 +47,7 @@ const InfoSection = () => {
                                 alt='Experience 1'
                                 fill
                                 className='object-cover'
+                                quality={100}
                             />
                         </div>
                         <div className='flex-1 h-[250px] w-[40%] relative rounded-lg overflow-hidden'>
@@ -53,6 +56,7 @@ const InfoSection = () => {
                                 alt='Experience 2'
                                 fill
                                 className='object-cover'
+                                quality={100}
                             />
                         </div>
                     </div>

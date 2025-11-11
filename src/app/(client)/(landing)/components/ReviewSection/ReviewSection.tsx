@@ -97,6 +97,7 @@ const ReviewSection = () => {
                                                 alt='Review'
                                                 fill
                                                 className='object-cover rounded-lg z-20'
+                                                quality={100}
                                             />
                                         </div>
                                         <div className='w-[60%] p-3 flex flex-col justify-end relative'>

@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { ArrowLeft, ArrowRight } from 'lucide-react'
 import TripCard from './TripCard'
 import Button from '@/common/components/atoms/Button'
 
@@ -14,6 +14,7 @@ interface Trip {
     location: string
     price: number
     reviewCount?: number
+    days?: number
 }
 
 const MOCK_TRIPS: Trip[] = [
@@ -24,16 +25,18 @@ const MOCK_TRIPS: Trip[] = [
         rating: 4.5,
         location: 'Manali, Himachal Pradesh',
         price: 6000,
-        reviewCount: 23
+        reviewCount: 23,
+        days : 1
     },
     {
         id: 2,
         image: 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=800&h=600&fit=crop',
-        title: 'Coorg Coffee Plantation Tour',
+        title: 'Coorg Coffee Plantation Tour Lets',
         rating: 4.8,
         location: 'Coorg, Karnataka',
         price: 8500,
-        reviewCount: 45
+        reviewCount: 45,
+        days : 4
     },
     {
         id: 3,
@@ -42,7 +45,8 @@ const MOCK_TRIPS: Trip[] = [
         rating: 4.6,
         location: 'Goa',
         price: 7200,
-        reviewCount: 67
+        reviewCount: 67,
+        days : 5
     },
     {
         id: 4,
@@ -51,7 +55,8 @@ const MOCK_TRIPS: Trip[] = [
         rating: 4.9,
         location: 'Alleppey, Kerala',
         price: 9500,
-        reviewCount: 89
+        reviewCount: 89,
+        days : 4
     },
     {
         id: 5,
@@ -60,7 +65,8 @@ const MOCK_TRIPS: Trip[] = [
         rating: 4.7,
         location: 'Jaipur, Rajasthan',
         price: 11000,
-        reviewCount: 34
+        reviewCount: 34,
+        days : 4
     },
     {
         id: 6,
@@ -69,7 +75,8 @@ const MOCK_TRIPS: Trip[] = [
         rating: 4.4,
         location: 'Shimla, Himachal Pradesh',
         price: 6500,
-        reviewCount: 56
+        reviewCount: 56,
+        days : 3
     },
     {
         id: 7,
@@ -78,7 +85,8 @@ const MOCK_TRIPS: Trip[] = [
         rating: 4.6,
         location: 'Mysore, Karnataka',
         price: 5800,
-        reviewCount: 41
+        reviewCount: 41,
+        days : 5
     },
     {
         id: 8,
@@ -87,7 +95,8 @@ const MOCK_TRIPS: Trip[] = [
         rating: 4.8,
         location: 'Darjeeling, West Bengal',
         price: 8900,
-        reviewCount: 72
+        reviewCount: 72,
+        days : 3
     }
 ]
 
@@ -148,23 +157,23 @@ const TripSlider = () => {
                 </div>
             </div>
             <div className='mx-auto px-4'>
-                <div className='relative px-14'>
+                <div className='relative px-8'>
                     <button
                         onClick={handlePrev}
                         disabled={currentIndex === 0}
-                        className='absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white rounded-full p-3 shadow-lg hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-all'
+                        className='absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white rounded-full p-1 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-all border-1 cursor-pointer'
                         aria-label='Previous'
                     >
-                        <ChevronLeft className='w-6 h-6 text-gray-800' />
+                        <ArrowLeft className='w-4 h-4 text-gray-800' />
                     </button>
 
                     <button
                         onClick={handleNext}
                         disabled={currentIndex >= maxIndex}
-                        className='absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white rounded-full p-3 shadow-lg hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-all'
+                        className='absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white rounded-full p-1 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-all border-1 cursor-pointer'
                         aria-label='Next'
                     >
-                        <ChevronRight className='w-6 h-6 text-gray-800' />
+                        <ArrowRight className='w-4 h-4 text-gray-800' />
                     </button>
                     <div 
                         ref={sliderRef}
