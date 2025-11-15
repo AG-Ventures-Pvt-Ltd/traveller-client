@@ -15,6 +15,7 @@ import { ReviewsTab } from "./reviews-tab";
 import { SupportTicketsTab } from "./support-tickets-tab";
 import { PeopleProfilesTab } from "./people-profiles-tab";
 import { EditProfileDialog } from "./edit-profile-dialog";
+import { signOut } from "next-auth/react";
 // import { toast } from "sonner";
 
 export function ProfilePage() {
@@ -38,6 +39,7 @@ export function ProfilePage() {
   };
 
   const handleLogout = () => {
+    signOut({ callbackUrl: '/' });
     // toast.success("Logged out successfully");
   };
 
@@ -60,7 +62,7 @@ export function ProfilePage() {
             <Button 
               variant="outline" 
               onClick={handleLogout} 
-              className="gap-2 bg-white/10 backdrop-blur-sm text-white border-white/30 hover:bg-white/20"
+              className="gap-2 bg-white/10 backdrop-blur-sm text-white border-white/30 hover:bg-white/20 pointer-events-auto relative z-20"
             >
               <LogOut className="w-4 h-4" />
               <span className="hidden sm:inline">Logout</span>

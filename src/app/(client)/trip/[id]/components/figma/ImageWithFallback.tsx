@@ -13,24 +13,31 @@ export function ImageWithFallback(props: React.ComponentProps<typeof Image>) {
 
   const { src, alt, style, className, width, height, fill, ...rest } = props
 
-  return didError ? (
-    <div
-      className={`inline-block bg-gray-100 text-center align-middle ${className ?? ''}`}
-      style={style}
-    >
-      <div className="flex items-center justify-center w-full h-full">
-        <Image 
-          src={ERROR_IMG_SRC} 
-          alt="Error loading image" 
-          className={className} 
-          style={style} 
-          {...(fill ? { fill } : { width: width || 88, height: height || 88 })}
-          {...rest} 
-          data-original-url={src} 
-        />
+  // Check if src is empty or invalid
+  const isSrcValid = src && typeof src === 'string' && src.trim() !== ''
+
+  if (didError || !isSrcValid) {
+    return (
+      <div
+        className={`inline-block bg-gray-100 text-center align-middle ${className ?? ''}`}
+        style={style}
+      >
+        <div className="flex items-center justify-center w-full h-full">
+          <Image 
+            src={ERROR_IMG_SRC} 
+            alt="Error loading image" 
+            className={className} 
+            style={style} 
+            {...(fill ? { fill } : { width: width || 88, height: height || 88 })}
+            {...rest} 
+            data-original-url={src} 
+          />
+        </div>
       </div>
-    </div>
-  ) : (
+    )
+  }
+
+  return (
     <Image 
       src={src} 
       alt={alt} 

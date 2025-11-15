@@ -7,7 +7,7 @@ import Button from '../../../../../../common/components/atoms/Button';
 
 
 const CheckoutForm = ({ onQuickFill, onAddPax, initialGuests = 1, selectedDate }) => {
-  const [formData, setFormData] = useState({
+  const initialFormData = {
     fullName: '',
     email: '',
     phone: '',
@@ -15,109 +15,118 @@ const CheckoutForm = ({ onQuickFill, onAddPax, initialGuests = 1, selectedDate }
     city: '',
     state: '',
     postalCode: ''
-  });
+  };
 
-  const [agreedToTerms, setAgreedToTerms] = useState(false);
+  const [guests, setGuests] = useState(Array.from({ length: initialGuests }, () => ({ ...initialFormData })));
+  const [expanded, setExpanded] = useState(Array(initialGuests).fill(true));
 
-  const handleInputChange = (field) => (e) => {
-    setFormData({ ...formData, [field]: e.target.value });
+  const updateGuest = (index, field, value) => {
+    setGuests(prev => prev.map((g, i) => i === index ? { ...g, [field]: value } : g));
+  };
+
+  const addAnotherPax = () => {
+    setGuests([...guests, { ...initialFormData }]);
+    setExpanded([...expanded, true]);
+  };
+
+  const deleteGuest = (index) => {
+    if (guests.length > 1) {
+      setGuests(prev => prev.filter((_, i) => i !== index));
+      setExpanded(prev => prev.filter((_, i) => i !== index));
+    }
   };
 
   return (
     <div className="flex-1 bg-white border-r border-[#DBDDE3] overflow-y-auto">
-      <div className="p-4 md:p-8 lg:p-16">
+      <div className="p-4 md:p-8 lg:px-16 lg:py-8">
         <h2 className="text-black text-2xl md:text-[32px] font-semibold font-dm-sans mb-6">
           Checkout
         </h2>
 
-        <div className="flex justify-end mb-4">
-          <Button 
-            onClick={onQuickFill}
-            className="bg-[#008EF4] hover:bg-[#0066cc]"
-          >
-            Quick Fill
-          </Button>
-        </div>
-
         <h3 className="text-black text-lg md:text-xl font-semibold font-dm-sans mb-6">
-          Fill in Details of yourself
+          Fill in Details
         </h3>
 
-        <div className="space-y-6">
-          <FormInput
-            label="Full name"
-            placeholder="Enter full name"
-            required
-            value={formData.fullName}
-            onChange={handleInputChange('fullName')}
-          />
-
-          <FormInput
-            label="Email address"
-            type="email"
-            placeholder="Enter email address"
-            required
-            value={formData.email}
-            onChange={handleInputChange('email')}
-          />
-
-          <FormInput
-            label="Phone number"
-            type="tel"
-            placeholder="Enter phone number"
-            required
-            prefix="+91"
-            value={formData.phone}
-            onChange={handleInputChange('phone')}
-          />
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <FormInput
-              label="City"
-              placeholder="Enter city"
-              value={formData.city}
-              onChange={handleInputChange('city')}
-            />
-            <FormInput
-              label="State"
-              placeholder="Enter state"
-              value={formData.state}
-              onChange={handleInputChange('state')}
-            />
-            <FormInput
-              label="Postal Code"
-              placeholder="Enter ZIP code"
-              value={formData.postalCode}
-              onChange={handleInputChange('postalCode')}
-            />
-          </div>
-
-          <Button 
-            onClick={onAddPax}
-            className="w-full h-[54px] bg-[#008EF4] hover:bg-[#0066cc]"
-          >
-            + Add Another Pax
-          </Button>
-
-          <div className="flex items-center gap-2">
-            <div
-              className="w-6 h-6 cursor-pointer"
-              onClick={() => setAgreedToTerms(!agreedToTerms)}
+        {guests.map((guest, index) => (
+          <div key={index} className="border border-[#DBDDE3] rounded-lg mb-4">
+            <div 
+              className="flex justify-between items-center p-4 cursor-pointer bg-gray-50 rounded-t-lg"
+              onClick={() => setExpanded(prev => prev.map((e, i) => i === index ? !e : e))}
             >
-              <div className={`w-5 h-5 border-[1.25px] border-[#008EF4] rounded-[5px] flex items-center justify-center ${
-                agreedToTerms ? 'bg-[rgba(0,142,244,0.08)]' : 'bg-white'
-              }`}>
-                {agreedToTerms && (
-                  <svg className="w-[15px] h-[15px]" viewBox="0 0 15 15" fill="none">
-                    <path d="M2.5 7.5l4 4 6-8" stroke="#008EF4" strokeWidth="2.08" />
-                  </svg>
+              <h4 className="text-black text-lg font-semibold font-dm-sans">
+                Person {index + 1}
+              </h4>
+              <div className="flex items-center gap-2">
+                {guests.length > 1 && (
+                  <span 
+                    onClick={(e) => { e.stopPropagation(); deleteGuest(index); }}
+                    className="text-red-500 cursor-pointer text-xl hover:text-red-700"
+                  >
+                    ×
+                  </span>
                 )}
+                <span className="text-primary text-xl">{expanded[index] ? '−' : '+'}</span>
               </div>
             </div>
-            <span className="text-black text-sm font-dm-sans">
-              I have read and agree to the Terms and Conditions.
-            </span>
+            {expanded[index] && (
+              <div className="p-4 space-y-6">
+                <FormInput
+                  label="Full name"
+                  placeholder="Enter full name"
+                  required
+                  value={guest.fullName}
+                  onChange={(e) => updateGuest(index, 'fullName', e.target.value)}
+                />
+
+                <FormInput
+                  label="Email address"
+                  type="email"
+                  placeholder="Enter email address"
+                  required
+                  value={guest.email}
+                  onChange={(e) => updateGuest(index, 'email', e.target.value)}
+                />
+
+                <FormInput
+                  label="Phone number"
+                  type="tel"
+                  placeholder="Enter phone number"
+                  required
+                  prefix="+91"
+                  value={guest.phone}
+                  onChange={(e) => updateGuest(index, 'phone', e.target.value)}
+                />
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <FormInput
+                    label="City"
+                    placeholder="Enter city"
+                    value={guest.city}
+                    onChange={(e) => updateGuest(index, 'city', e.target.value)}
+                  />
+                  <FormInput
+                    label="State"
+                    placeholder="Enter state"
+                    value={guest.state}
+                    onChange={(e) => updateGuest(index, 'state', e.target.value)}
+                  />
+                  <FormInput
+                    label="Postal Code"
+                    placeholder="Enter ZIP code"
+                    value={guest.postalCode}
+                    onChange={(e) => updateGuest(index, 'postalCode', e.target.value)}
+                  />
+                </div>
+              </div>
+            )}
           </div>
-        </div>
+        ))}
+
+        <Button 
+          onClick={addAnotherPax}
+          className="w-full h-[54px]"
+        >
+          + Add Another Pax
+        </Button>
       </div>
     </div>
   );

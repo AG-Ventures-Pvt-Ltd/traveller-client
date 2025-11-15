@@ -17,6 +17,13 @@ interface Trip {
     days?: number
 }
 
+interface TripSliderProps {
+    title?: string
+    description?: string
+    destinations?: string[]
+    trips?: Trip[]
+}
+
 const MOCK_TRIPS: Trip[] = [
     {
         id: 1,
@@ -100,7 +107,7 @@ const MOCK_TRIPS: Trip[] = [
     }
 ]
 
-const TripSlider = () => {
+const TripSlider = ({ title, description, destinations, trips }: TripSliderProps) => {
     const [currentIndex, setCurrentIndex] = useState(0)
     const [isDragging, setIsDragging] = useState(false)
     const [startX, setStartX] = useState(0)
@@ -145,17 +152,20 @@ const TripSlider = () => {
 
     return (
         <div className='w-full py-8 relative'>
-            <div className='text-center mb-8'>
-                <h1 className='text-6xl font-bold mb-4'>Making Your Travel Dreams a Reality</h1>
-                <p className='text-[#828282] font-light'>
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo nostrum suscipit maiores natus, dolores, perferendis ullam rerum tempore inventore molestiae
-                </p>
-                <div className='flex justify-center gap-4 mt-6 flex-wrap px-4'>
-                    {['Manali', 'Kullu', 'Coorg', 'Mysuru', 'Coimbatore', 'Delhi', 'Mumbai']
-                        .map((i) => <Button className='!bg-[#0808080D] !text-black !rounded-3xl !px-4 !py-2 !flex !gap-1 !items-center' variant={'text'} key={i}>{i}</Button>
-                    )}
+            
+                <div className='text-center mb-8'>
+                   {title && <h1 className='text-6xl font-bold mb-4'>{title}</h1>}
+                   {description && 
+                   <p className='text-[#828282] font-light'>
+                        {description}
+                    </p>}
+                    <div className='flex justify-center gap-4 mt-6 flex-wrap px-4'>
+                        {destinations && destinations
+                            .map((i) => <Button className='!bg-[#0808080D] !text-black !rounded-3xl !px-4 !py-2 !flex !gap-1 !items-center' variant={'text'} key={i}>{i}</Button>
+                        )}
+                    </div>
                 </div>
-            </div>
+        
             <div className='mx-auto px-4'>
                 <div className='relative px-8'>
                     <button
@@ -190,7 +200,7 @@ const TripSlider = () => {
                                 pointerEvents: isDragging ? 'none' : 'auto'
                             }}
                         >
-                            {MOCK_TRIPS.map((trip) => (
+                            {trips && trips.map((trip) => (
                                 <div
                                     key={trip.id}
                                     className='flex-shrink-0'

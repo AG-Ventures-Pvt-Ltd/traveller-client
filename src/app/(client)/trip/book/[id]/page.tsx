@@ -8,37 +8,20 @@ import OrderSummary from './components/OrderSummary';
 
 const Page = () => {
   const searchParams = useSearchParams();
-  
+
   const { id } = useParams();
+
   const selectedDate = searchParams.get('date');
   const guestsParam = searchParams.get('guests');
   const initialGuests = guestsParam ? parseInt(guestsParam) : 1;
 
-  // console.log('Selected Date:', selectedDate,guestsParam,initialGuests,id );  
-  
   const pageData = {
     logo: 'Wondrr',
-    currentStep: 1,
-    tripData: {
-      title: 'Explore Manali like never before - Manali Group Trip',
-      details: {
-        poc: 'Rajesh S.',
-        travelPartner: 'Sri Sri Travels',
-        numberOfPax: initialGuests.toString()
-      }
-    },
-    initialPricing: {
-      subtotal: 45.00,
-      platformCharges: 5.00,
-      tax: 10.00,
-      discount: 0,
-      total: 40.00
-    }
+    currentStep: 1
   };
 
   const [guests, setGuests] = useState(initialGuests);
-
-  const pricing = pageData.initialPricing;
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
 
   const handleQuickFill = () => {
     // Implement quick fill logic
@@ -60,21 +43,21 @@ const Page = () => {
   return (
     <div className="flex flex-col w-full h-screen bg-[#F9F9FB]">
       <Header logo={pageData.logo} currentStep={pageData.currentStep} />
-      
       <div className="flex flex-1 overflow-hidden">
-        <CheckoutForm 
+        <CheckoutForm
           onQuickFill={handleQuickFill}
           onAddPax={handleAddPax}
           initialGuests={guests}
           selectedDate={selectedDate}
         />
-        
-        <OrderSummary 
-          tripData={pageData.tripData}
-          pricing={pricing}
+        <OrderSummary
+          tripId={id}
+          selectedDate={selectedDate}
+          guests={guests}
           onApplyDiscount={handleApplyDiscount}
           onSaveAndNext={handleSaveAndNext}
-          guests={guests}
+          agreedToTerms={agreedToTerms}
+          onAgreeToTerms={setAgreedToTerms}
         />
       </div>
     </div>

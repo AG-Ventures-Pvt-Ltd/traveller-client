@@ -15,6 +15,17 @@ interface TripItineraryProps {
 }
 
 export function TripItinerary({ itinerary }: TripItineraryProps) {
+  if (!itinerary || !Array.isArray(itinerary) || itinerary.length === 0) {
+    return (
+      <div className="space-y-4 my-8">
+        <h2 className="font-bold text-2xl">Day-wise Itinerary</h2>
+        <div className="text-gray-500 text-center py-8">
+          Itinerary details are not available yet.
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-4 my-8">
       <h2 className="font-bold text-2xl">Day-wise Itinerary</h2>

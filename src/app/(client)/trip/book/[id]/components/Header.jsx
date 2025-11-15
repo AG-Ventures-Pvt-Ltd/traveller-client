@@ -18,7 +18,7 @@ const Header = ({ logo, currentStep }) => {
           <React.Fragment key={step.number}>
             <div className="flex items-center gap-2 md:gap-[10px]">
               <div className={`w-8 h-8 px-2 py-1 rounded-full flex flex-col justify-center items-center ${
-                step.number <= currentStep ? 'bg-[#008EF4]' : 'bg-gray-300'
+                step.number <= currentStep ? 'bg-primary' : 'bg-gray-300'
               }`}>
                 <span className="text-white text-sm font-semibold font-dm-sans">
                   {step.number}

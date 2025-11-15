@@ -2,14 +2,14 @@ import { NextResponse, NextRequest } from 'next/server'
 import { getToken } from 'next-auth/jwt'
 
 const protectedRoutes = [
-  '/trip',
+  '/trip/book',
   // '/trips',
   // '/profile',
   // '/bookings',
   // '/settings',
 ];
 
-const authRoutes = ['/auth'];
+const authRoutes = ['/authsss'];
 
 export default async function proxy (request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -43,7 +43,7 @@ export default async function proxy (request: NextRequest) {
 
 export const config = {
   matcher: [
-    '/trip/:path*', 
+    '/trip/book/:path*', 
     '/auth',
     // '/trips/:path*', 
     // '/profile/:path*', 

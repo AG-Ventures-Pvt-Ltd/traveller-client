@@ -24,6 +24,20 @@ interface TripReviewsProps {
 }
 
 export function TripReviews({ reviews, averageRating, totalReviews, ratingBreakdown }: TripReviewsProps) {
+  if (!reviews || !Array.isArray(reviews) || reviews.length === 0) {
+    return (
+      <div className="space-y-6 my-8">
+        <div className="flex items-center gap-2">
+          <Star className="h-8 w-8 fill-yellow-400 text-yellow-400" />
+          <h2 className="font-bold text-2xl">{averageRating} · {totalReviews} Reviews</h2>
+        </div>
+        <div className="text-gray-500 text-center py-8">
+          Reviews are not available yet.
+        </div>
+      </div>
+    );
+  }
+
   const StarRating = ({ rating }: { rating: number }) => (
     <div className="flex gap-1">
       {[1, 2, 3, 4, 5].map((star) => (

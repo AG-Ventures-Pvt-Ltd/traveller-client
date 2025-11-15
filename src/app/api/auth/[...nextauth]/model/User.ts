@@ -121,4 +121,4 @@ userSchema.methods.generateRefreshToken = function (this: IUser): string {
 };
 
 export const User =
-  mongoose.models.User || mongoose.model<IUser>('User', userSchema);
+  mongoose.models.User || mongoose.model<IUser>('user', userSchema);

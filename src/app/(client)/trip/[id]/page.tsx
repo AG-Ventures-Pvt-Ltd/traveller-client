@@ -11,256 +11,152 @@ import { Divider, Chip, Breadcrumbs, Link, Card, CardContent, Typography } from 
 import { Star, MapPin, Clock, Users, AlertCircle } from "lucide-react";
 import Footer from "../../(landing)/components/Footer/Footer";
 import TripSlider from "../../(landing)/components/TripSlider/TripSlider";
-// import { useParams } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation';
+import { useTripBasicDetails, useTripDetailedDetails } from '../api';
+import { useState, useEffect, useMemo } from 'react';
+import Logo from "@/common/components/atoms/Logo/Logo";
+import { generateSlug } from '../utils';
+import { ratingBreakdown } from '../constants';
+import Loader from "@/common/ui/Loader/Loader";
 
 
 
+export default function TripDetail() {
 
-export default function App() {
+  const params = useParams();
+  const slugParam = params.id;
+  const slug = Array.isArray(slugParam) ? slugParam[0] : slugParam;
+  const router = useRouter();
+  const id = slug ? (slug.split('-').pop() || slug) : '';
+  const [loadDetailed, setLoadDetailed] = useState(false);
+
+  const { data: basicData, isLoading: isBasicLoading } = useTripBasicDetails(id as string);
+  const { data: detailedData } = useTripDetailedDetails(id as string, loadDetailed);
+
+  useEffect(() => {
+    if (basicData && !loadDetailed) {
+      setLoadDetailed(true);
+    }
+  }, [basicData, loadDetailed]);
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const tripData = useMemo(() => basicData ? { ...basicData, ...(detailedData || {}) } as any : null, [basicData, detailedData]);
+
+  useEffect(() => {
+    if (tripData && tripData.title && slug) {
+      const generatedSlug = generateSlug(tripData.title, id);
+      if (slug !== generatedSlug) {
+        router.replace(`/trip/${generatedSlug}`);
+      }
+    }
+  }, [tripData, slug, router, id]);
 
 
-  // const { id }  = useParams();
+  if (isBasicLoading || !tripData) return <Loader/>;
 
-
-
-  const tripData = {
-    title: "Ultimate 7-Day Bali Adventure & Cultural Experience",
-    location: "Bali, Indonesia",
-    duration: "7 days",
-    maxGuests: 12,
-    rating: 4.8,
-    totalReviews: 156,
-    images: [
-      "https://images.unsplash.com/photo-1558117338-aa433feb1c62?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0cm9waWNhbCUyMGJlYWNoJTIwcmVzb3J0fGVufDF8fHx8MTc2Mjc0MzM5M3ww&ixlib=rb-4.1.0&q=80&w=1080",
-      "https://images.unsplash.com/photo-1603741614953-4187ed84cc50?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtb3VudGFpbiUyMGhpa2luZyUyMGFkdmVudHVyZXxlbnwxfHx8fDE3NjI3NzM0Mjl8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "https://images.unsplash.com/photo-1576682953661-a056a5073019?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzdW5zZXQlMjB0cmF2ZWwlMjBkZXN0aW5hdGlvbnxlbnwxfHx8fDE3NjI3ODU3MDZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "https://images.unsplash.com/photo-1743699537171-750edd44bd87?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhZHZlbnR1cmUlMjB0cmF2ZWwlMjBsYW5kc2NhcGV8ZW58MXx8fHwxNzYyNzg1NzA3fDA&ixlib=rb-4.1.0&q=80&w=1080",
-    ],
-    description: "Embark on an unforgettable journey through the heart of Bali, where ancient temples meet pristine beaches and lush rice terraces. This carefully curated 7-day adventure combines cultural immersion with thrilling outdoor activities, authentic culinary experiences, and moments of pure relaxation. From sunrise treks up Mount Batur to sunset yoga sessions overlooking the Indian Ocean, every day brings new discoveries and memories to last a lifetime.",
-    meetingPoint: "Ngurah Rai International Airport (DPS), Bali - Main Terminal Arrival Hall",
-    endPoint: "Ngurah Rai International Airport (DPS), Bali - Main Terminal Departure Hall",
-    availableDates: [
-      { date: new Date(2025, 11, 15), price: 1299, seatsAvailable: 2, totalSeats: 12 },
-      { date: new Date(2025, 11, 22), price: 1399, seatsAvailable: 4, totalSeats: 12 },
-      { date: new Date(2026, 0, 5), price: 1499, seatsAvailable: 8, totalSeats: 12 },
-      { date: new Date(2026, 0, 19), price: 1299, seatsAvailable: 10, totalSeats: 12 },
-      { date: new Date(2026, 1, 2), price: 1399, seatsAvailable: 7, totalSeats: 12 },
-    ],
-    inclusions: [
-      "6 nights accommodation in premium hotels and villas",
-      "Daily breakfast and 4 traditional Balinese dinners",
-      "All transportation during the tour (private AC vehicle)",
-      "Professional English-speaking tour guide",
-      "Entrance fees to all temples and attractions",
-      "Mount Batur sunrise trekking with breakfast",
-      "Traditional Balinese cooking class",
-      "Daily yoga and meditation sessions",
-      "White water rafting adventure",
-      "Airport pickup and drop-off",
-    ],
-    exclusions: [
-      "International flights to/from Bali",
-      "Travel insurance (highly recommended)",
-      "Lunch meals (unless specified)",
-      "Personal expenses and shopping",
-      "Tips for guides and drivers (optional)",
-      "Visa fees (if applicable)",
-      "Additional activities not mentioned in itinerary",
-      "Alcoholic beverages",
-    ],
-    itinerary: [
-      {
-        day: 1,
-        title: "Arrival & Ubud Welcome",
-        description: "Arrive in Bali and transfer to your luxury accommodation in Ubud. Settle in and enjoy a welcome dinner featuring authentic Balinese cuisine.",
-        duration: "Evening arrival",
-        activities: [
-          "Airport pickup and transfer to Ubud (1.5 hours)",
-          "Check-in at luxury resort",
-          "Welcome orientation and dinner",
-        ],
-        meals: ["Dinner"],
-      },
-      {
-        day: 2,
-        title: "Sacred Temples & Rice Terraces",
-        description: "Explore the cultural heart of Bali with visits to ancient temples and the famous Tegalalang Rice Terraces.",
-        duration: "Full day (8:00 AM - 6:00 PM)",
-        activities: [
-          "Visit Tirta Empul Holy Water Temple",
-          "Explore Tegalalang Rice Terraces",
-          "Coffee plantation tour and tasting",
-          "Sunset at Tanah Lot Temple",
-        ],
-        meals: ["Breakfast", "Dinner"],
-      },
-      {
-        day: 3,
-        title: "Mount Batur Sunrise Trek",
-        description: "Wake up early for an unforgettable sunrise trek to the summit of Mount Batur volcano, followed by relaxation at hot springs.",
-        duration: "2:00 AM - 2:00 PM",
-        activities: [
-          "Early morning pickup (2:00 AM)",
-          "Guided trek to Mount Batur summit",
-          "Breakfast cooked by volcanic steam",
-          "Relaxation at natural hot springs",
-        ],
-        meals: ["Breakfast"],
-      },
-      {
-        day: 4,
-        title: "Beach Day & Water Sports",
-        description: "Head to the stunning beaches of Nusa Dua for a day of water activities and coastal relaxation.",
-        duration: "Full day (9:00 AM - 5:00 PM)",
-        activities: [
-          "White water rafting on Ayung River",
-          "Beach time at Nusa Dua",
-          "Optional water sports (snorkeling, jet ski)",
-          "Sunset beach dinner",
-        ],
-        meals: ["Breakfast", "Dinner"],
-      },
-      {
-        day: 5,
-        title: "Balinese Cooking & Culture",
-        description: "Immerse yourself in Balinese culture with a traditional cooking class and village visit.",
-        duration: "Full day (9:00 AM - 4:00 PM)",
-        activities: [
-          "Traditional market visit",
-          "Balinese cooking class",
-          "Lunch with your own creations",
-          "Village cultural tour",
-          "Traditional dance performance",
-        ],
-        meals: ["Breakfast", "Lunch", "Dinner"],
-      },
-      {
-        day: 6,
-        title: "North Bali Discovery",
-        description: "Journey to North Bali to discover waterfalls, Buddhist temples, and stunning mountain scenery.",
-        duration: "Full day (8:00 AM - 6:00 PM)",
-        activities: [
-          "Visit Gitgit Waterfall",
-          "Explore Ulun Danu Beratan Temple",
-          "Jatiluwih UNESCO Rice Terraces",
-          "Scenic mountain drive",
-        ],
-        meals: ["Breakfast"],
-      },
-      {
-        day: 7,
-        title: "Departure Day",
-        description: "Enjoy a final yoga session and leisurely breakfast before your transfer to the airport.",
-        duration: "Based on flight schedule",
-        activities: [
-          "Morning yoga and meditation session",
-          "Free time for last-minute shopping",
-          "Airport transfer",
-        ],
-        meals: ["Breakfast"],
-      },
-    ],
-    cancellationPolicy: "Free cancellation up to 14 days before the trip start date. Cancellations made 7-14 days before start date will receive 50% refund. Cancellations made within 7 days of start date are non-refundable. We recommend purchasing travel insurance to protect against unforeseen circumstances.",
-    faqs: [
-      {
-        question: "What fitness level is required for this trip?",
-        answer: "This trip requires a moderate fitness level. The Mount Batur trek involves about 2 hours of uphill hiking, and there are several days with extended walking. However, most activities can be adjusted to accommodate different fitness levels.",
-      },
-      {
-        question: "What should I pack for this trip?",
-        answer: "Pack comfortable walking shoes, hiking boots, light breathable clothing, swimwear, sunscreen, insect repellent, a light rain jacket, and modest clothing for temple visits (covered shoulders and knees). We'll provide a detailed packing list upon booking.",
-      },
-      {
-        question: "Is this trip suitable for solo travelers?",
-        answer: "Absolutely! Many of our travelers are solo adventurers. You'll be part of a small group (max 12 people), making it easy to make friends and share experiences. Single room supplements are available.",
-      },
-      {
-        question: "What is the accommodation like?",
-        answer: "You'll stay in carefully selected 4-star hotels and boutique villas with modern amenities, swimming pools, and stunning views. All rooms include air conditioning, private bathrooms, and Wi-Fi.",
-      },
-      {
-        question: "Do I need a visa for Indonesia?",
-        answer: "Citizens of many countries can obtain a visa on arrival at Bali airport for $35 USD (valid for 30 days). Please check your country's specific requirements before traveling.",
-      },
-      {
-        question: "What if I have dietary restrictions?",
-        answer: "We can accommodate most dietary requirements including vegetarian, vegan, gluten-free, and allergies. Please inform us of any restrictions at the time of booking.",
-      },
-    ],
-    host: {
-      name: "Sarah Anderson",
-      avatar: "https://images.unsplash.com/photo-1595956935400-eced8114c8ea?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0cmF2ZWwlMjBob3N0JTIwcG9ydHJhaXR8ZW58MXx8fHwxNzYyNzg1NzA2fDA&ixlib=rb-4.1.0&q=80&w=1080",
-      joinedDate: "March 2018",
-      responseRate: 98,
-      responseTime: "Within 1 hour",
-      verified: true,
-      rating: 4.9,
-      totalReviews: 324,
-      description: "Passionate travel enthusiast with 15+ years of experience exploring Southeast Asia. I've been organizing tours in Bali for over 7 years and love sharing the magic of this island with travelers from around the world. My goal is to create authentic, immersive experiences that go beyond typical tourist attractions.",
+   const MOCK_TRIPS = [
+    {
+        id: 1,
+        image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop',
+        title: 'Manali Adventure Trek',
+        rating: 4.5,
+        location: 'Manali, Himachal Pradesh',
+        price: 6000,
+        reviewCount: 23,
+        days : 1
     },
-    reviews: [
-      {
-        id: "1",
-        author: "Michael Chen",
-        avatar: "",
-        rating: 5,
-        date: "October 2024",
-        comment: "This trip exceeded all my expectations! Sarah was an incredible guide who truly knows Bali inside and out. The mix of adventure, culture, and relaxation was perfect. The sunrise trek to Mount Batur was the highlight - absolutely breathtaking. Highly recommend!",
-      },
-      {
-        id: "2",
-        author: "Emma Rodriguez",
-        avatar: "",
-        rating: 5,
-        date: "September 2024",
-        comment: "Amazing experience from start to finish. The accommodations were beautiful, the food was delicious, and our group became like family. The cooking class was so much fun, and I loved learning about Balinese culture. Worth every penny!",
-      },
-      {
-        id: "3",
-        author: "David Thompson",
-        avatar: "",
-        rating: 4,
-        date: "August 2024",
-        comment: "Great trip overall! Well organized with a good balance of activities. The temples were stunning and the rice terraces were like something from a postcard. Only minor issue was some of the drives were quite long, but that's just the nature of Bali's geography.",
-      },
-      {
-        id: "4",
-        author: "Lisa Patel",
-        avatar: "",
-        rating: 5,
-        date: "July 2024",
-        comment: "Solo traveler here and this was perfect! Made amazing friends and felt safe the entire time. Sarah's knowledge of local culture and hidden gems made this trip truly special. The yoga sessions each morning set the perfect tone for the day.",
-      },
-    ]
-  };
-
-  const ratingBreakdown = {
-    5: 132,
-    4: 18,
-    3: 4,
-    2: 1,
-    1: 1,
-  };
+    {
+        id: 2,
+        image: 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=800&h=600&fit=crop',
+        title: 'Coorg Coffee Plantation Tour Lets',
+        rating: 4.8,
+        location: 'Coorg, Karnataka',
+        price: 8500,
+        reviewCount: 45,
+        days : 4
+    },
+    {
+        id: 3,
+        image: 'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=800&h=600&fit=crop',
+        title: 'Goa Beach Paradise',
+        rating: 4.6,
+        location: 'Goa',
+        price: 7200,
+        reviewCount: 67,
+        days : 5
+    },
+    {
+        id: 4,
+        image: 'https://images.unsplash.com/photo-1618083707368-b3823daa2726?w=800&h=600&fit=crop',
+        title: 'Kerala Backwaters',
+        rating: 4.9,
+        location: 'Alleppey, Kerala',
+        price: 9500,
+        reviewCount: 89,
+        days : 4
+    },
+    {
+        id: 5,
+        image: 'https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=800&h=600&fit=crop',
+        title: 'Rajasthan Heritage Tour',
+        rating: 4.7,
+        location: 'Jaipur, Rajasthan',
+        price: 11000,
+        reviewCount: 34,
+        days : 4
+    },
+    {
+        id: 6,
+        image: 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?w=800&h=600&fit=crop',
+        title: 'Shimla Hill Station',
+        rating: 4.4,
+        location: 'Shimla, Himachal Pradesh',
+        price: 6500,
+        reviewCount: 56,
+        days : 3
+    },
+    {
+        id: 7,
+        image: 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=800&h=600&fit=crop',
+        title: 'Mysore Palace Experience',
+        rating: 4.6,
+        location: 'Mysore, Karnataka',
+        price: 5800,
+        reviewCount: 41,
+        days : 5
+    },
+    {
+        id: 8,
+        image: 'https://images.unsplash.com/photo-1570168007204-dfb528c6958f?w=800&h=600&fit=crop',
+        title: 'Darjeeling Tea Gardens',
+        rating: 4.8,
+        location: 'Darjeeling, West Bengal',
+        price: 8900,
+        reviewCount: 72,
+        days : 3
+    }
+]
 
   return (
     <div className="min-h-screen bg-white">
-      <div className="mx-20 py-6">
-        <Breadcrumbs aria-label="breadcrumb" sx={{ mb: 3 }}>
+      <div className="flex flex-col mx-20 py-6">
+        <Logo className="mb-2" />
+        <Breadcrumbs aria-label="breadcrumb" sx={{ mb: 1 }} separator=">">
           <Link underline="hover" color="inherit" href="/">
             Home
           </Link>
           <Link underline="hover" color="inherit" href="/destinations">
             Destinations
           </Link>
-          <Link underline="hover" color="inherit" href="/destinations/bali">
-            Bali
+          <Link underline="hover" color="inherit" href={`/trips/?destination=${typeof tripData.location === 'object' ? tripData.location.city.toLowerCase() : ''}`}>
+            {typeof tripData.location === 'object' ? tripData.location.city : ''}
           </Link>
           <Typography color="text.primary">Trip Details</Typography>
         </Breadcrumbs>
 
         <div className="grid lg:grid-cols-4 gap-6">
           <div className="lg:col-span-3 space-y-8">
-            <TripImageGallery images={tripData.images} />
+            <TripImageGallery images={tripData.images || []} />
 
             <div>
               <div className="flex items-start justify-between mb-4">
@@ -279,7 +175,7 @@ export default function App() {
                     </div>
                     <div className="flex items-center gap-1">
                       <MapPin className="h-5 w-5" />
-                      <span>{tripData.location}</span>
+                      <span>{typeof tripData.location === 'object' ? tripData.location.address : tripData.location}</span>
                     </div>
                     <div className="flex items-center gap-1">
                       <Clock className="h-5 w-5" />
@@ -327,9 +223,7 @@ export default function App() {
             />
 
             <Divider />
-
             <TripItinerary itinerary={tripData.itinerary} />
-
             <Divider />
 
             <div className="space-y-4 my-8">
@@ -364,21 +258,27 @@ export default function App() {
 
             <div className="space-y-4 mt-8">
               <h2 className="font-bold text-2xl">Meet Your Host</h2>
-              <HostCard {...tripData.host} />
+              {tripData.host ? (
+                <HostCard {...tripData.host} />
+              ) : (
+                <div className="text-gray-500 text-center py-8">
+                  Host information is not available yet.
+                </div>
+              )}
             </div>
           </div>
 
           <div className="lg:col-span-1">
             <TripBookingCard
               availableDates={tripData.availableDates}
-              basePrice={1299}
+              basePrice={tripData.basePrice}
             />
           </div>
         </div>
 
         <Divider sx={{ my: 6 }} />
 
-        <TripSlider />
+        <TripSlider title="Similar Travel Options Just for You" trips={MOCK_TRIPS}/>
       </div>
 
       <Footer />

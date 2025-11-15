@@ -11,6 +11,17 @@ interface TripFAQProps {
 }
 
 export function TripFAQ({ faqs }: TripFAQProps) {
+  if (!faqs || !Array.isArray(faqs) || faqs.length === 0) {
+    return (
+      <div className="space-y-4 my-8">
+        <h2 className="font-bold text-2xl">Frequently Asked Questions</h2>
+        <div className="text-gray-500 text-center py-8">
+          FAQ details are not available yet.
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-4 my-8">
       <h2 className="font-bold text-2xl">Frequently Asked Questions</h2>

@@ -6,7 +6,7 @@ import { useRouter, useParams } from "next/navigation";
 import { Calendar } from "@/common/ui/calendar";
 
 interface AvailableDate {
-  date: Date;
+  date: Date | string;
   price: number;
   seatsAvailable: number;
   totalSeats: number;
@@ -18,18 +18,28 @@ interface TripBookingCardProps {
 }
 
 export function TripBookingCard({ availableDates, basePrice }: TripBookingCardProps) {
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(availableDates[0]?.date);
+  const validAvailableDates = Array.isArray(availableDates) ? availableDates.map(d => ({
+    ...d,
+    date: d.date instanceof Date ? d.date : new Date(d.date)
+  })) : [];
+  const validBasePrice = typeof basePrice === 'number' ? basePrice : 0;
+
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(validAvailableDates[0]?.date);
   const [guests, setGuests] = useState(1);
   const [calendarOpen, setCalendarOpen] = useState(false);
+  const [currentMonth, setCurrentMonth] = useState(() => {
+    const firstDate = validAvailableDates[0]?.date;
+    return firstDate ? new Date(firstDate.getFullYear(), firstDate.getMonth(), 1) : new Date();
+  });
   const router = useRouter();
   const params = useParams();
   const tripId = params.id as string;
 
-  const selectedDateInfo = availableDates.find(
+  const selectedDateInfo = validAvailableDates.find(
     (d) => d.date.toDateString() === selectedDate?.toDateString()
   );
 
-  const totalPrice = (selectedDateInfo?.price || basePrice) * guests;
+  const totalPrice = (selectedDateInfo?.price || validBasePrice) * guests;
   const bookedSeats = selectedDateInfo ? selectedDateInfo.totalSeats - selectedDateInfo.seatsAvailable : 0;
   const bookedPercentage = selectedDateInfo ? (bookedSeats / selectedDateInfo.totalSeats) * 100 : 0;
 
@@ -37,32 +47,25 @@ export function TripBookingCard({ availableDates, basePrice }: TripBookingCardPr
 
   return (
     <Card sx={{ p: 3, position: 'sticky', top: 16, borderColor: '#e4e4e4', borderRadius: '8px', border: '1px solid #ececec', maxWidth: '300px' }}
-                elevation={0}
-      >
+      elevation={0}
+    >
       <div className="space-y-4">
         <div className="flex items-baseline gap-2">
-          <span className="text-4xl text-primary">₹{selectedDateInfo?.price || basePrice}</span>
+          <span className="text-4xl ">₹{selectedDateInfo?.price || validBasePrice}</span>
           <span className="text-gray-500">/ person</span>
         </div>
 
-        {selectedDateInfo && isAlmostFull && (
-          <Chip 
-            label={`Only ${selectedDateInfo.seatsAvailable} Seats Left - Book Now!`}
-            color="error"
-            sx={{ width: '100%', justifyContent: 'center', py: 1, borderRadius: '8px' }}
-          />
-        )}
 
         <div className="space-y-3">
           <div>
             <label className="block mb-2">Choose Your Adventure Date</label>
-            <Button 
-              variant="outlined" 
+            <Button
+              variant="outlined"
               onClick={() => setCalendarOpen(true)}
-              sx={{ 
-                width: '100%', 
-                justifyContent: 'flex-start', 
-                height: 48, 
+              sx={{
+                width: '100%',
+                justifyContent: 'flex-start',
+                height: 48,
                 border: 2,
                 borderColor: '#e5e5e5',
                 color: 'black',
@@ -73,11 +76,11 @@ export function TripBookingCard({ availableDates, basePrice }: TripBookingCardPr
                 },
               }}
             >
-              <CalendarIcon className="mr-2 h-5 w-5" style={{ color: '#008EF4' }} />
+              <CalendarIcon className="mr-2 h-5 w-5 text-primary" />
               {selectedDate ? format(selectedDate, "PPP") : "Select your date"}
             </Button>
-            <Dialog 
-              open={calendarOpen} 
+            <Dialog
+              open={calendarOpen}
               onClose={() => setCalendarOpen(false)}
               maxWidth="md"
               fullWidth
@@ -90,9 +93,26 @@ export function TripBookingCard({ availableDates, basePrice }: TripBookingCardPr
                   <X className="h-4 w-4" />
                 </IconButton>
                 <DialogTitle>Select Your Perfect Date</DialogTitle>
+                <div className="flex w-full justify-between items-center px-6 mb-4">
+                  <button
+                    onClick={() => setCurrentMonth(addMonths(currentMonth, -2))}
+                    className="p-2 hover:bg-gray-100 rounded-md cursor-pointer"
+                  >
+                    ← Prev
+                  </button>
+                  <span className="font-medium">
+                    {format(currentMonth, 'MMMM yyyy')} - {format(addMonths(currentMonth, 1), 'MMMM yyyy')}
+                  </span>
+                  <button
+                    onClick={() => setCurrentMonth(addMonths(currentMonth, 2))}
+                    className="p-2 hover:bg-gray-100 rounded-md cursor-pointer"
+                  >
+                    Next →
+                  </button>
+                </div>
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
-                    <p className="text-sm mb-2">Current Month</p>
+
                     <Calendar
                       mode="single"
                       selected={selectedDate}
@@ -100,24 +120,18 @@ export function TripBookingCard({ availableDates, basePrice }: TripBookingCardPr
                         setSelectedDate(date);
                         setCalendarOpen(false);
                       }}
+                      month={currentMonth}
+                      disableNavigation={true}
                       disabled={(date: Date) =>
-                        !availableDates.some((d) => d.date.toDateString() === date.toDateString())
+                        !validAvailableDates.some((d) => d.date.toDateString() === date.toDateString())
                       }
                       modifiers={{
                         available: (date: Date) =>
-                          availableDates.some((d) => d.date.toDateString() === date.toDateString()),
-                      }}
-                      modifiersStyles={{
-                        available: {
-                          backgroundColor: '#008EF4',
-                          color: 'white',
-                          fontWeight: 'bold',
-                        },
+                          validAvailableDates.some((d) => d.date.toDateString() === date.toDateString()),
                       }}
                     />
                   </div>
                   <div>
-                    <p className="text-sm mb-2">Next Month</p>
                     <Calendar
                       mode="single"
                       selected={selectedDate}
@@ -125,29 +139,25 @@ export function TripBookingCard({ availableDates, basePrice }: TripBookingCardPr
                         setSelectedDate(date);
                         setCalendarOpen(false);
                       }}
-                      month={addMonths(new Date(), 1)}
+                      month={addMonths(currentMonth, 1)}
+                      disableNavigation={true}
                       disabled={(date: Date) =>
-                        !availableDates.some((d) => d.date.toDateString() === date.toDateString())
+                        !validAvailableDates.some((d) => d.date.toDateString() === date.toDateString())
                       }
                       modifiers={{
                         available: (date: Date) =>
-                          availableDates.some((d) => d.date.toDateString() === date.toDateString()),
-                      }}
-                      modifiersStyles={{
-                        available: {
-                          backgroundColor: '#008EF4',
-                          color: 'white',
-                          fontWeight: 'bold',
-                        },
+                          validAvailableDates.some((d) => d.date.toDateString() === date.toDateString()),
                       }}
                     />
                   </div>
                 </div>
                 <Box sx={{ bgcolor: 'info.lighter', p: 2, borderRadius: 2, mt: 2 }}>
-                  <p className="text-sm text-gray-700">
-                    <span className="inline-block w-4 h-4 bg-primary rounded mr-2"></span>
-                    Blue dates are available for booking
-                  </p>
+                  <div className="flex items-center gap-2">
+                    <div className="w-6 h-6 rounded-md bg-primary"></div>
+                    <span>
+                      Blue dates are available for booking
+                    </span>
+                  </div>
                 </Box>
               </DialogContent>
             </Dialog>
@@ -158,11 +168,11 @@ export function TripBookingCard({ availableDates, basePrice }: TripBookingCardPr
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">Availability</span>
-                  <span className="text-primary">{selectedDateInfo.seatsAvailable} / {selectedDateInfo.totalSeats} seats left</span>
+                  <span className={`${isAlmostFull ? 'text-red-500' : 'text-primary'}`}>{selectedDateInfo.seatsAvailable} / {selectedDateInfo.totalSeats} seats left</span>
                 </div>
-                <LinearProgress 
-                  variant="determinate" 
-                  value={bookedPercentage} 
+                <LinearProgress
+                  variant="determinate"
+                  value={bookedPercentage}
                   sx={{ height: 8, borderRadius: 1 }}
                 />
                 <p className="text-xs text-gray-500">
@@ -176,8 +186,8 @@ export function TripBookingCard({ availableDates, basePrice }: TripBookingCardPr
             <label className="block mb-2">Number of Travelers</label>
             <div className="flex items-center gap-3">
               <IconButton
-                sx={{ 
-                  height: 48, 
+                sx={{
+                  height: 48,
                   width: 48,
                   border: '1px solid',
                   borderColor: 'divider',
@@ -191,8 +201,8 @@ export function TripBookingCard({ availableDates, basePrice }: TripBookingCardPr
                 <span className="text-xl">{guests}</span>
               </div>
               <IconButton
-                sx={{ 
-                  height: 48, 
+                sx={{
+                  height: 48,
                   width: 48,
                   border: '1px solid',
                   borderColor: 'divider',
@@ -213,16 +223,16 @@ export function TripBookingCard({ availableDates, basePrice }: TripBookingCardPr
         <div className="border-t pt-4 space-y-3">
           <div className="flex justify-end">
             <span className="text-gray-600">
-              ₹{selectedDateInfo?.price || basePrice} × {guests} {guests > 1 ? "travelers" : "traveler"}
+              ₹{selectedDateInfo?.price || validBasePrice} × {guests} {guests > 1 ? "travelers" : "traveler"}
             </span>
           </div>
           <div className="flex justify-between border-t pt-3">
             <span>Total Price</span>
-            <span className="text-2xl text-primary">₹{totalPrice}</span>
+            <span className="text-2xl ">₹{totalPrice}</span>
           </div>
         </div>
 
-        <Button 
+        <Button
           variant="contained"
           sx={{ width: '100%', height: 56, fontSize: '1.125rem', textTransform: 'none' }}
           onClick={() => {
@@ -232,6 +242,7 @@ export function TripBookingCard({ availableDates, basePrice }: TripBookingCardPr
             });
             router.push(`/trip/book/${tripId}?${queryParams.toString()}`);
           }}
+          disabled={!selectedDate}
         >
           Grab Your Seat Now
         </Button>

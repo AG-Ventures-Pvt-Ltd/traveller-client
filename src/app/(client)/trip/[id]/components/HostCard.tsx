@@ -1,5 +1,5 @@
-import { Avatar, Card, CardContent, Button, Chip, Typography, Divider } from "@mui/material";
-import { Star, CheckCircle, MessageCircle } from "lucide-react";
+import { Avatar, Card, CardContent, Chip, Typography, Divider } from "@mui/material";
+import { Star, CheckCircle } from "lucide-react";
 
 interface HostCardProps {
   name: string;
@@ -61,14 +61,6 @@ export function HostCard({
                 <span>{rating} ({totalReviews} reviews)</span>
               </div>
             </div>
-            <Button 
-              variant="contained" 
-              size="small" 
-              startIcon={<MessageCircle className="h-4 w-4" />}
-              sx={{ textTransform: 'none' }}
-            >
-              Message Host
-            </Button>
           </div>
 
           <div className="space-y-2">

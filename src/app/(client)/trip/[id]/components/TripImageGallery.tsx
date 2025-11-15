@@ -12,12 +12,23 @@ export function TripImageGallery({ images }: TripImageGalleryProps) {
   const [openDialog, setOpenDialog] = useState(false);
   const [dialogImageIndex, setDialogImageIndex] = useState(0);
 
+  // Filter out empty strings
+  const validImages = images.filter(img => img && img.trim() !== '');
+
+  if (validImages.length === 0) {
+    return (
+      <div className="w-full h-64 bg-gray-200 rounded-lg flex items-center justify-center">
+        <span className="text-gray-500">No images available</span>
+      </div>
+    );
+  }
+
   const nextDialogImage = () => {
-    setDialogImageIndex((prev) => (prev + 1) % images.length);
+    setDialogImageIndex((prev) => (prev + 1) % validImages.length);
   };
 
   const prevDialogImage = () => {
-    setDialogImageIndex((prev) => (prev - 1 + images.length) % images.length);
+    setDialogImageIndex((prev) => (prev - 1 + validImages.length) % validImages.length);
   };
 
   const handleOpenDialog = (index: number = 0) => {
@@ -29,14 +40,14 @@ export function TripImageGallery({ images }: TripImageGalleryProps) {
     setOpenDialog(false);
   };
 
-  const remainingImages = images.length - 3;
+  const remainingImages = validImages.length - 3;
 
   return (
     <>
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-2 mb-8">
         <div className="lg:col-span-3 relative cursor-pointer" onClick={() => handleOpenDialog(0)} style={{ height: '500px' }}>
           <ImageWithFallback
-            src={images[0]}
+            src={validImages[0]}
             alt="Main trip image"
             fill
             className="object-cover rounded-lg"
@@ -46,7 +57,7 @@ export function TripImageGallery({ images }: TripImageGalleryProps) {
         <div className="hidden lg:grid grid-rows-2 gap-2">
           <div className="relative cursor-pointer" onClick={() => handleOpenDialog(1)} style={{ height: '246px', width: '240px' }}>
             <ImageWithFallback
-              src={images[1]}
+              src={validImages[1]}
               alt="Trip image 2"
               fill
               className="object-cover rounded-lg"
@@ -54,7 +65,7 @@ export function TripImageGallery({ images }: TripImageGalleryProps) {
           </div>
           <div className="relative cursor-pointer" onClick={() => handleOpenDialog(2)} style={{ height: '246px', width: '240px' }}>
             <ImageWithFallback
-              src={images[2]}
+              src={validImages[2]}
               alt="Trip image 3"
               fill
               className="object-cover rounded-lg"
@@ -151,7 +162,7 @@ export function TripImageGallery({ images }: TripImageGalleryProps) {
             </IconButton>
             <Box sx={{ position: 'relative', width: '100%', height: '80vh' }}>
               <Image
-                src={images[dialogImageIndex]}
+                src={validImages[dialogImageIndex]}
                 alt={`Trip image ${dialogImageIndex + 1}`}
                 fill
                 style={{
@@ -191,7 +202,7 @@ export function TripImageGallery({ images }: TripImageGalleryProps) {
                 fontSize: '0.875rem',
               }}
             >
-              {dialogImageIndex + 1} / {images.length}
+              {dialogImageIndex + 1} / {validImages.length}
             </Box>
           </Box>
           <Box
@@ -219,7 +230,7 @@ export function TripImageGallery({ images }: TripImageGalleryProps) {
               },
             }}
           >
-            {images.map((image, index) => (
+            {validImages.map((image, index) => (
               <Box
                 key={index}
                 onClick={() => setDialogImageIndex(index)}

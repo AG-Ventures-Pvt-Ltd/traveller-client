@@ -6,12 +6,12 @@ export interface IUserDetails extends Document {
   birthDate?: Date;
   bio?: string;
   address?: string;
-  mobileNumber: string;
+  mobileNumber: number;
   countryCode: string;
   joinedTrips: Types.ObjectId[];
-  socialMedias?: { 
-    platform: string; 
-    url: string 
+  socialMedias?: {
+    platform: string;
+    url: string
   }[];
   provider?: {
     type: string;
@@ -42,7 +42,7 @@ const userDetailsSchema = new Schema<IUserDetails>(
       type: String
     },
     mobileNumber: {
-      type: String,
+      type: Number,
     },
     countryCode: {
       type: String,
@@ -50,22 +50,10 @@ const userDetailsSchema = new Schema<IUserDetails>(
       default: '+91'
     },
     joinedTrips: [
-        {
-            type: Schema.Types.ObjectId,
-            ref: 'Trip',
-        }
-    ],
-    socialMedias: [
       {
-        platform: {
-          type: String,
-          required: true,
-        },
-        url: {
-          type: String,
-          required: true,
-        },
-      },
+        type: Schema.Types.ObjectId,
+        ref: 'Trip',
+      }
     ],
     provider: {
       type: {
@@ -84,4 +72,4 @@ const userDetailsSchema = new Schema<IUserDetails>(
 );
 
 export const UserDetails =
-  mongoose.models.UserDetails || mongoose.model<IUserDetails>('UserDetails', userDetailsSchema);
+  mongoose.models.UserDetails || mongoose.model<IUserDetails>('userprofile', userDetailsSchema);

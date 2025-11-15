@@ -3,7 +3,7 @@ import React from 'react';
 const SecureCheckout = () => {
   return (
     <div className="flex items-center gap-3">
-      <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="#008EF4" strokeWidth="1.5">
+      <svg className="w-6 h-6 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
         <rect x="4" y="3" width="16" height="18" rx="2" />
       </svg>
       <div>
