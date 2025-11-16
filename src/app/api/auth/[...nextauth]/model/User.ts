@@ -92,33 +92,5 @@ userSchema.methods.isPasswordCorrect = async function (
   return bcrypt.compare(candidatePassword, this.password);
 };
 
-userSchema.methods.generateAccessToken = function (this: IUser): string {
-  const secret = process.env.ACCESS_TOKEN_SECRET! ;
-  const expiresIn = process.env.ACCESS_TOKEN_EXPIRY! ;
-  
-  return jwt.sign(
-    {
-      _id: this._id.toString(),
-      email: this.email,
-      fullName: this.fullName,
-    },
-    secret,
-    { expiresIn } as jwt.SignOptions
-  );
-};
-
-userSchema.methods.generateRefreshToken = function (this: IUser): string {
-  const secret = process.env.REFRESH_TOKEN_SECRET! ;
-  const expiresIn = process.env.REFRESH_TOKEN_EXPIRY! ;
-  
-  return jwt.sign(
-    {
-      _id: this._id.toString(),
-    },
-    secret,
-    { expiresIn } as jwt.SignOptions
-  );
-};
-
 export const User =
-  mongoose.models.User || mongoose.model<IUser>('user', userSchema);
+  mongoose.models.user || mongoose.model<IUser>('user', userSchema);

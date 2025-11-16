@@ -1,66 +1,42 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/common/ui/card";
 import { Badge } from "@/common/ui/badge";
 import { Button } from "@/common/ui/button";
 import { MapPin, Calendar, Users, Star, Plane } from "lucide-react";
 import { AddReviewDialog } from "./add-review-dialog";
 import Image from "next/image";
+import { useGetData } from "@/services/useGetData";
+import { formatDate } from "@/common/utils/dateUtils";
 // import { toast } from "sonner";
 
 interface Booking {
   id: string;
-  destination: string;
-  location: string;
-  dates: string;
-  guests: number;
-  status: "completed" | "upcoming" | "cancelled";
+  title: string;
+  address: string;
+  date: Date;
+  totalSeats: number;
+  status: "completed" | "active" | "cancelled";
   price: number;
   image: string;
   hasReview: boolean;
+  slug: boolean;
 }
 
 export function BookingsTab() {
+  const { data: userData, isLoading } = useGetData<Booking[]>(`api/client/v1/user/me/trips`);
+  const [bookings, setBookings] = useState<Booking[]>([]);
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
   const [isReviewDialogOpen, setIsReviewDialogOpen] = useState(false);
-  
-  const [bookings, setBookings] = useState<Booking[]>([
-    {
-      id: "1",
-      destination: "Santorini Sunset Villa",
-      location: "Santorini, Greece",
-      dates: "Aug 15 - 22, 2024",
-      guests: 2,
-      status: "completed",
-      price: 2450,
-      image: "https://images.unsplash.com/photo-1613395877344-13d4a8e0d49e?w=800",
-      hasReview: false,
-    },
-    {
-      id: "2",
-      destination: "Tokyo Modern Apartment",
-      location: "Shibuya, Tokyo",
-      dates: "Dec 10 - 17, 2024",
-      guests: 1,
-      status: "upcoming",
-      price: 1890,
-      image: "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=800",
-      hasReview: false,
-    },
-    {
-      id: "3",
-      destination: "Bali Beach Resort",
-      location: "Ubud, Bali",
-      dates: "May 5 - 12, 2024",
-      guests: 4,
-      status: "completed",
-      price: 3200,
-      image: "https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=800",
-      hasReview: true,
-    },
-  ]);
+
+
+  useEffect(() => {
+    if (userData) {
+      setBookings(userData);
+    }
+  }, [userData]);
 
   const handleAddReview = (bookingId: string, rating: number, review: string) => {
-    setBookings(bookings.map(b => 
+    setBookings(bookings.map(b =>
       b.id === bookingId ? { ...b, hasReview: true } : b
     ));
     // toast.success("Review added successfully");
@@ -78,6 +54,10 @@ export function BookingsTab() {
         return "bg-gray-100 text-gray-700 border-gray-200";
     }
   };
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <>
@@ -101,13 +81,12 @@ export function BookingsTab() {
                 className="group relative overflow-hidden rounded-2xl border border-gray-200 hover:border-[#008EF4]/50 transition-all hover:shadow-xl bg-white"
               >
                 <div className="flex flex-col sm:flex-row gap-4 p-4">
-                  <div className="relative sm:w-48 h-48 sm:h-auto flex-shrink-0 overflow-hidden rounded-xl">
+                  <div className="relative sm:w-48 h-32 flex-shrink-0 overflow-hidden rounded-xl">
                     <Image
                       src={booking.image}
-                      alt={booking.destination}
-                      width={192}
-                      height={192}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                      alt={booking.address}
+                      fill
+                      className="object-cover object-center group-hover:scale-110 transition-transform duration-300"
                     />
                     <div className="absolute top-3 right-3">
                       <Badge className={`${getStatusColor(booking.status)} shadow-lg`} variant="outline">
@@ -115,33 +94,32 @@ export function BookingsTab() {
                       </Badge>
                     </div>
                   </div>
-                  
                   <div className="flex-1 flex flex-col justify-between">
                     <div>
                       <h3 className="text-gray-900 mb-3 group-hover:text-[#008EF4] transition-colors">
-                        {booking.destination}
+                        {booking.title}
                       </h3>
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-gray-600">
                         <span className="flex items-center gap-2">
                           <MapPin className="w-4 h-4 text-[#008EF4]" />
-                          {booking.location}
+                          {booking.address}
                         </span>
                         <span className="flex items-center gap-2">
                           <Calendar className="w-4 h-4 text-[#008EF4]" />
-                          {booking.dates}
+                          {formatDate(booking.date)}
                         </span>
                         <span className="flex items-center gap-2">
                           <Users className="w-4 h-4 text-[#008EF4]" />
-                          {booking.guests} {booking.guests === 1 ? "Guest" : "Guests"}
+                          {booking.totalSeats} {booking.totalSeats === 1 ? "Guest" : "Guests"}
                         </span>
                       </div>
                     </div>
-                    
+
                     <div className="flex flex-wrap items-center justify-between gap-3 mt-4 pt-4 border-t">
-                      <p className="text-gray-900">${booking.price.toLocaleString()}</p>
+                      <p className="text-gray-900">Rs. {booking.price.toLocaleString()}</p>
                       <div className="flex gap-2">
-                        <Button 
-                          variant="outline" 
+                        <Button
+                          variant="outline"
                           size="sm"
                           className="border-gray-200 hover:border-[#008EF4] hover:text-[#008EF4]"
                         >
@@ -178,7 +156,7 @@ export function BookingsTab() {
       <AddReviewDialog
         open={isReviewDialogOpen}
         onOpenChange={setIsReviewDialogOpen}
-        booking={selectedBooking}
+        booking={selectedBooking ? { id: selectedBooking.id, destination: selectedBooking.title } : null}
         onSubmit={handleAddReview}
       />
     </>

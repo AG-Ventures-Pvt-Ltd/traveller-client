@@ -9,7 +9,27 @@ interface AvatarImageProps extends Omit<React.ComponentProps<typeof Image>, 'onL
   onLoadingStatusChange?: (status: "loading" | "loaded" | "error") => void;
 }
 
-function Avatar({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+function Avatar({ className, children, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+  const [imageStatus, setImageStatus] = React.useState<"loading" | "loaded" | "error">("loading");
+
+  const avatarImage = React.Children.toArray(children).find(
+    (child) => React.isValidElement(child) && child.type === AvatarImage
+  ) as React.ReactElement<AvatarImageProps> | undefined;
+
+  const avatarFallback = React.Children.toArray(children).find(
+    (child) => React.isValidElement(child) && child.type === AvatarFallback
+  );
+
+  React.useEffect(() => {
+    if (!avatarImage || !avatarImage.props.src) {
+      setImageStatus("error");
+    } else {
+      setImageStatus("loading");
+    }
+  }, [avatarImage]);
+
+  const showFallback = imageStatus === "error";
+
   return (
     <div
       data-slot="avatar"
@@ -18,7 +38,13 @@ function Avatar({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
         className,
       )}
       {...props}
-    />
+    >
+      {avatarImage && avatarImage.props.src &&
+        React.cloneElement(avatarImage, {
+          onLoadingStatusChange: setImageStatus,
+        })}
+      {showFallback && avatarFallback}
+    </div>
   );
 }
 
@@ -30,12 +56,6 @@ function AvatarImage({
   height = 40,
   ...props
 }: AvatarImageProps) {
-  const [status, setStatus] = React.useState<"loading" | "loaded" | "error">("loading");
-
-  React.useEffect(() => {
-    onLoadingStatusChange?.(status);
-  }, [status, onLoadingStatusChange]);
-
   return (
     <Image
       data-slot="avatar-image"
@@ -43,23 +63,33 @@ function AvatarImage({
       alt={alt}
       width={typeof width === 'number' ? width : 40}
       height={typeof height === 'number' ? height : 40}
-      onLoad={() => setStatus("loaded")}
-      onError={() => setStatus("error")}
+      onLoad={() => onLoadingStatusChange?.("loaded")}
+      onError={() => onLoadingStatusChange?.("error")}
       {...props}
     />
   );
 }
 
-function AvatarFallback({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+function AvatarFallback({ className, name, children, ...props }: React.HTMLAttributes<HTMLDivElement> & { name?: string }) {
+  const initials = name
+    ? name
+        .split(" ")
+        .map((n) => n[0])
+        .join("")
+        .toUpperCase()
+    : "";
+
   return (
     <div
       data-slot="avatar-fallback"
       className={cn(
-        "bg-muted flex size-full items-center justify-center rounded-full",
+        "bg-gradient-to-br from-blue-500 to-blue-700 text-white flex size-full items-center justify-center rounded-full",
         className,
       )}
       {...props}
-    />
+    >
+      {children || initials}
+    </div>
   );
 }
 

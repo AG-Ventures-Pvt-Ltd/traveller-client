@@ -7,12 +7,13 @@ const OrderSummary = ({ tripId, selectedDate, guests = 1, onApplyDiscount, onSav
 
   const actualTripId = tripId ? (tripId.split('-').pop() || tripId) : '';
 
-  const { data : tripDetails, isLoading, error } = useGetData(`api/client/v1/trips/details/${actualTripId}/booking?date=${selectedDate.split('T')[0]}&seats=${guests}`);
+  const { data: tripDetails, isLoading, error } = useGetData(`api/client/v1/trips/details/${actualTripId}/booking?date=${selectedDate.split('T')[0]}&seats=${guests}`);
 
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error loading trip details</div>;
 
-  if (!tripDetails) return <div>No data available</div>;
+  if (isLoading) return <div className='flex-1 flex items-center justify-center'>Loading...</div>;
+  if (error) return <div className='flex-1 flex items-center justify-center'>{error?.message || 'Error loading trip details'}</div>;
+
+  if (!tripDetails) return <div className='flex-1 flex items-center justify-center'>No data available</div>;
 
 
   const subtotal = tripDetails.basePrice * guests;
@@ -32,7 +33,7 @@ const OrderSummary = ({ tripId, selectedDate, guests = 1, onApplyDiscount, onSav
     title: tripDetails.title,
     details: {
       poc: tripDetails.host.name,
-      travelPartner: tripDetails.host.name, 
+      travelPartner: tripDetails.host.name,
       numberOfPax: guests.toString()
     }
   };
@@ -45,16 +46,16 @@ const OrderSummary = ({ tripId, selectedDate, guests = 1, onApplyDiscount, onSav
         </h2>
 
         <TripDetails details={tripData.details} guests={guests} />
-        
-        <PricingSection 
-          pricing={pricing} 
+
+        <PricingSection
+          pricing={pricing}
           onApplyDiscount={onApplyDiscount}
           onSaveAndNext={onSaveAndNext}
           guests={guests}
           agreedToTerms={agreedToTerms}
           onAgreeToTerms={onAgreeToTerms}
         />
-        
+
         <SecureCheckout />
       </div>
     </div>

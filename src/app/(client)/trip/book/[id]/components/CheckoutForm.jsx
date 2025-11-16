@@ -1,12 +1,12 @@
 'use client'
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import FormInput from './FormInput';
 import Button from '../../../../../../common/components/atoms/Button';
 
 
 
-const CheckoutForm = ({ onQuickFill, onAddPax, initialGuests = 1, selectedDate }) => {
+const CheckoutForm = ({ onQuickFill, onAddPax, initialGuests = 1, selectedDate, onGuestsChange }) => {
   const initialFormData = {
     fullName: '',
     email: '',
@@ -19,6 +19,13 @@ const CheckoutForm = ({ onQuickFill, onAddPax, initialGuests = 1, selectedDate }
 
   const [guests, setGuests] = useState(Array.from({ length: initialGuests }, () => ({ ...initialFormData })));
   const [expanded, setExpanded] = useState(Array(initialGuests).fill(true));
+
+  // Notify parent when guest count changes
+  useEffect(() => {
+    if (onGuestsChange) {
+      onGuestsChange(guests.length);
+    }
+  }, [guests.length, onGuestsChange]);
 
   const updateGuest = (index, field, value) => {
     setGuests(prev => prev.map((g, i) => i === index ? { ...g, [field]: value } : g));
@@ -42,11 +49,9 @@ const CheckoutForm = ({ onQuickFill, onAddPax, initialGuests = 1, selectedDate }
         <h2 className="text-black text-2xl md:text-[32px] font-semibold font-dm-sans mb-6">
           Checkout
         </h2>
-
         <h3 className="text-black text-lg md:text-xl font-semibold font-dm-sans mb-6">
           Fill in Details
         </h3>
-
         {guests.map((guest, index) => (
           <div key={index} className="border border-[#DBDDE3] rounded-lg mb-4">
             <div 
@@ -65,7 +70,7 @@ const CheckoutForm = ({ onQuickFill, onAddPax, initialGuests = 1, selectedDate }
                     ×
                   </span>
                 )}
-                <span className="text-primary text-xl">{expanded[index] ? '−' : '+'}</span>
+                <span className="text-[#008EF4] text-xl">{expanded[index] ? '−' : '+'}</span>
               </div>
             </div>
             {expanded[index] && (
@@ -123,7 +128,7 @@ const CheckoutForm = ({ onQuickFill, onAddPax, initialGuests = 1, selectedDate }
 
         <Button 
           onClick={addAnotherPax}
-          className="w-full h-[54px]"
+          className="w-full h-[54px] bg-[#008EF4] hover:bg-[#0066cc] mb-6"
         >
           + Add Another Pax
         </Button>

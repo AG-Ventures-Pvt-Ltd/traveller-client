@@ -1,14 +1,14 @@
 'use client'
 
-import React, { useState } from 'react';
-import { useParams, useSearchParams } from 'next/navigation';
+import React, { useState, useEffect } from 'react';
+import { useParams, useSearchParams, useRouter } from 'next/navigation';
 import Header from './components/Header';
 import CheckoutForm from './components/CheckoutForm';
 import OrderSummary from './components/OrderSummary';
 
 const Page = () => {
   const searchParams = useSearchParams();
-
+  const router = useRouter();
   const { id } = useParams();
 
   const selectedDate = searchParams.get('date');
@@ -22,6 +22,16 @@ const Page = () => {
 
   const [guests, setGuests] = useState(initialGuests);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
+
+  // Update query params when guests change
+  useEffect(() => {
+    const currentGuests = searchParams.get('guests');
+    if (currentGuests !== guests.toString()) {
+      const params = new URLSearchParams(searchParams.toString());
+      params.set('guests', guests.toString());
+      router.replace(`/trip/book/${id}?${params.toString()}`, { scroll: false });
+    }
+  }, [guests, id, router]);
 
   const handleQuickFill = () => {
     // Implement quick fill logic
@@ -42,13 +52,14 @@ const Page = () => {
 
   return (
     <div className="flex flex-col w-full h-screen bg-[#F9F9FB]">
-      <Header logo={pageData.logo} currentStep={pageData.currentStep} />
+      <Header currentStep={pageData.currentStep} />
       <div className="flex flex-1 overflow-hidden">
         <CheckoutForm
           onQuickFill={handleQuickFill}
           onAddPax={handleAddPax}
           initialGuests={guests}
           selectedDate={selectedDate}
+          onGuestsChange={setGuests}
         />
         <OrderSummary
           tripId={id}

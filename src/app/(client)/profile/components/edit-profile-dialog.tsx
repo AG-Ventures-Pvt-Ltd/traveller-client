@@ -11,16 +11,13 @@ import { Button } from "@/common/ui/button";
 import { Input } from "@/common/ui/input";
 import { Label } from "@/common/ui/label";
 import { User, Mail, Phone } from "lucide-react";
+import { ProfileDetailsProps } from "./profile-details";
 
 interface EditProfileDialogProps {
-  user: {
-    name: string;
-    email: string;
-    phone: string;
-  };
+  user: ProfileDetailsProps['user'];
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSave: (data: { name: string; email: string; phone: string }) => void;
+  onSave: (data: { fullName: string; email: string; phone: string }) => void;
 }
 
 export function EditProfileDialog({
@@ -30,9 +27,9 @@ export function EditProfileDialog({
   onSave,
 }: EditProfileDialogProps) {
   const [formData, setFormData] = useState({
-    name: user.name,
-    email: user.email,
-    phone: user.phone,
+    fullName: user?.fullName,
+    email: user?.email,
+    phone: user?.phone,
   });
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -60,15 +57,15 @@ export function EditProfileDialog({
         <form onSubmit={handleSubmit}>
           <div className="space-y-5 py-4">
             <div className="space-y-2">
-              <Label htmlFor="name" className="flex items-center gap-2 text-gray-700">
+              <Label htmlFor="fullName" className="flex items-center gap-2 text-gray-700">
                 <User className="w-4 h-4 text-[#008EF4]" />
                 Full Name
               </Label>
               <Input
-                id="name"
-                value={formData.name}
+                id="fullName"
+                value={formData.fullName}
                 onChange={(e) =>
-                  setFormData({ ...formData, name: e.target.value })
+                  setFormData({ ...formData, fullName: e.target.value })
                 }
                 className="border-gray-200 focus:border-[#008EF4] focus:ring-[#008EF4]/20"
                 required

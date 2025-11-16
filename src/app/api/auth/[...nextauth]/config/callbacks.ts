@@ -35,12 +35,13 @@ export const authCallbacks: Pick<NextAuthOptions, 'callbacks'> = {
 
     async jwt({ token, account, profile, user }) {
 
-      if (account && user) {
+      if (!account && user) {
         token.userId = user.id;
         token.email = user.email;
         token.fullName = (user as { fullName?: string; name?: string }).fullName || user.name;
         return token;
       }
+
 
       if (account && profile) {
         await connectToDatabase();

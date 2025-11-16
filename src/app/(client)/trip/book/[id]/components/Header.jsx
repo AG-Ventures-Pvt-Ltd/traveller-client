@@ -1,18 +1,15 @@
+import Logo from '@/common/components/atoms/Logo/Logo';
 import React from 'react';
 
-const Header = ({ logo, currentStep }) => {
+const Header = ({ currentStep }) => {
   const steps = [
     { number: 1, label: 'Details' },
-    { number: 2, label: 'Payment' },
-    { number: 3, label: 'Confirmation' }
+    { number: 2, label: 'Payment' }
   ];
 
   return (
     <header className="w-full h-[88px] bg-white border-b border-[#DBDDE3] flex items-center justify-between px-4 md:px-8 lg:px-16 flex-shrink-0">
-      <h1 className="text-black text-2xl md:text-4xl font-semibold font-poppins">
-        {logo}
-      </h1>
-      
+      <Logo/>
       <div className="flex items-center gap-2 md:gap-4">
         {steps.map((step, index) => (
           <React.Fragment key={step.number}>

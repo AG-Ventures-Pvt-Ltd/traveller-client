@@ -85,7 +85,7 @@ const PricingSection = ({ pricing, onApplyDiscount, onSaveAndNext, guests = 1, a
         onClick={onSaveAndNext}
         className="w-full"
       >
-        Save & Next
+        Pay Now
       </Button>
     </div>
   );

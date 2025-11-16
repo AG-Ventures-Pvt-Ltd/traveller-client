@@ -72,4 +72,4 @@ const userDetailsSchema = new Schema<IUserDetails>(
 );
 
 export const UserDetails =
-  mongoose.models.UserDetails || mongoose.model<IUserDetails>('userprofile', userDetailsSchema);
+  mongoose.models.userprofile || mongoose.model<IUserDetails>('userprofile', userDetailsSchema);

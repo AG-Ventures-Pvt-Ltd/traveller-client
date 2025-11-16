@@ -1,7 +1,6 @@
 'use client'
 
 import axios, { AxiosInstance } from "axios";
-import { getSession } from "next-auth/react";
 
 export const baseAPI : AxiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL ,
@@ -11,11 +10,7 @@ export const baseAPI : AxiosInstance = axios.create({
 
 baseAPI.interceptors.request.use(
   async (config) => {
-    const session = await getSession();
-    if (session?.user?.id) {
-
-      config.headers['X-User-Id'] = session.user.id;
-    }
+    config.headers['X-Timestamp'] = new Date().toISOString();
     return config;
   },
   (error) => {
