@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/common/ui/card";
+import { CardContent, CardDescription, CardHeader, CardTitle } from "@/common/ui/card";
 import { Badge } from "@/common/ui/badge";
 import { Button } from "@/common/ui/button";
 import { MapPin, Calendar, Users, Star, Plane } from "lucide-react";
 import { AddReviewDialog } from "./add-review-dialog";
+import { BookingDetailsView } from "./booking-details-view";
 import Image from "next/image";
 import { useGetData } from "@/services/useGetData";
 import { formatDate } from "@/common/utils/dateUtils";
-// import { toast } from "sonner";
 
 interface Booking {
   id: string;
@@ -19,7 +19,42 @@ interface Booking {
   price: number;
   image: string;
   hasReview: boolean;
-  slug: boolean;
+  slug: string;
+  
+  // Optional fields for booking details
+  bookingDate?: Date;
+  startDate?: Date;
+  endDate?: Date;
+  duration?: string;
+  guestDetails?: {
+    name: string;
+    age: number;
+    gender: string;
+  }[];
+  paymentDetails?: {
+    transactionId: string;
+    paymentMethod: string;
+    paidAmount: number;
+    tax: number;
+    discount: number;
+    totalAmount: number;
+    paymentDate: Date;
+    status: "success" | "pending" | "failed";
+  };
+  tripDetails?: {
+    meetingPoint: string;
+    meetingTime: string;
+    endPoint: string;
+    hostName: string;
+    hostContact: string;
+  };
+  userReview?: {
+    rating: number;
+    review: string;
+    reviewDate: Date;
+  };
+  cancellationPolicy?: string;
+  bookingId?: string;
 }
 
 export function BookingsTab() {
@@ -27,6 +62,7 @@ export function BookingsTab() {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
   const [isReviewDialogOpen, setIsReviewDialogOpen] = useState(false);
+  const [showDetails, setShowDetails] = useState(false);
 
 
   useEffect(() => {
@@ -36,10 +72,19 @@ export function BookingsTab() {
   }, [userData]);
 
   const handleAddReview = (bookingId: string, rating: number, review: string) => {
+    // Update the booking to mark it as reviewed
     setBookings(bookings.map(b =>
-      b.id === bookingId ? { ...b, hasReview: true } : b
+      b.id === bookingId ? { 
+        ...b, 
+        hasReview: true,
+        userReview: {
+          rating,
+          review,
+          reviewDate: new Date()
+        }
+      } : b
     ));
-    // toast.success("Review added successfully");
+    // TODO: Send review to API
   };
 
   const getStatusColor = (status: string) => {
@@ -59,10 +104,33 @@ export function BookingsTab() {
     return <div>Loading...</div>;
   }
 
+  // Show booking details view if a booking is selected
+  if (showDetails && selectedBooking) {
+    return (
+      <>
+        <BookingDetailsView
+          booking={selectedBooking}
+          onBack={() => {
+            setShowDetails(false);
+            setSelectedBooking(null);
+          }}
+          onAddReview={handleAddReview}
+          onOpenReviewDialog={() => setIsReviewDialogOpen(true)}
+        />
+        <AddReviewDialog
+          open={isReviewDialogOpen}
+          onOpenChange={setIsReviewDialogOpen}
+          booking={selectedBooking ? { id: selectedBooking.id, destination: selectedBooking.title } : null}
+          onSubmit={handleAddReview}
+        />
+      </>
+    );
+  }
+
   return (
     <>
-      <Card className="shadow-lg border-0">
-        <CardHeader className="border-b bg-gradient-to-r from-gray-50 to-white">
+      <div >
+        <CardHeader className="border-b bg-gradient-to-r from-gray-50 to-white sticky">
           <div className="flex items-center gap-3">
             <div className="p-3 bg-[#008EF4]/10 rounded-xl">
               <Plane className="w-6 h-6 text-[#008EF4]" />
@@ -122,6 +190,10 @@ export function BookingsTab() {
                           variant="outline"
                           size="sm"
                           className="border-gray-200 hover:border-[#008EF4] hover:text-[#008EF4]"
+                          onClick={() => {
+                            setSelectedBooking(booking);
+                            setShowDetails(true);
+                          }}
                         >
                           View Details
                         </Button>
@@ -151,7 +223,7 @@ export function BookingsTab() {
             ))}
           </div>
         </CardContent>
-      </Card>
+      </div>
 
       <AddReviewDialog
         open={isReviewDialogOpen}

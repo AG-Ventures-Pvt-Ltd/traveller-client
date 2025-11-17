@@ -38,18 +38,19 @@ const theme = createTheme({
   },
 });
 
+const queryClient = new QueryClient({
+  queryCache: new QueryCache({
+    onError: (error, query) => {
+      logError({
+        error: error?.message || error,
+        location: 'React Query',
+        when: `fetching data for query key: ${query.queryKey}`,
+      });
+    }
+  })
+});
+
 export function Providers({ children }: { children: React.ReactNode }) {
-  const queryClient = new QueryClient({
-    queryCache: new QueryCache({
-      onError: (error, query) => {
-        logError({
-          error: error?.message || error,
-          location: 'React Query',
-          when: `fetching data for query key: ${query.queryKey}`,
-        });
-      }
-    })
-  });
 
 
   return (

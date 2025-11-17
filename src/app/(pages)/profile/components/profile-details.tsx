@@ -11,7 +11,7 @@ import { validatePhone } from "../../auth/utils/validations";
 import { notify } from "@/common/utils/notify";
 import Loader from "@/common/ui/Loader/Loader";
 
-export interface ProfileDetailsProps {
+interface ProfileDetailsProps {
   user?: {
     fullName: string;
     email: string;
@@ -27,11 +27,11 @@ export interface ProfileDetailsProps {
 }
 
 
-export function ProfileDetails({ user }: ProfileDetailsProps) {
+export function ProfileDetails() {
 
   const { data: fetchedUser, isLoading } = useGetData<NonNullable<ProfileDetailsProps['user']>>(`api/client/v1/user/me`);
 
-  const displayUser = fetchedUser || user;
+  const displayUser = fetchedUser ;
 
   const updateUser = usePostData({ url: 'api/client/v1/user/me/update' });
   const queryClient = useQueryClient();
@@ -54,7 +54,7 @@ export function ProfileDetails({ user }: ProfileDetailsProps) {
     }
   };
 
-  const parsedAddress = parseAddress(displayUser!.address || '');
+  const parsedAddress = displayUser ? parseAddress(displayUser.address || '') : { address: '', city: '', state: '' };
 
   const startEditing = (field: keyof NonNullable<ProfileDetailsProps['user']>) => {
     setEditingField(field);

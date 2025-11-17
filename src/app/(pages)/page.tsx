@@ -1,6 +1,6 @@
 'use client';
 
-import Landing from "./(client)/(landing)/page";
+import Landing from "./(landing)/page";
 import './globals.css';
 // import { useSession } from "next-auth/react";
 

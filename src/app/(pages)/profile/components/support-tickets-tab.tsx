@@ -66,7 +66,7 @@ export function SupportTicketsTab() {
 
   return (
     <Card className="shadow-lg border-0">
-      <CardHeader className="border-b bg-gradient-to-r from-gray-50 to-white">
+      <CardHeader className="border-b bg-gradient-to-r from-gray-50 to-white sticky top-0 z-10">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <div className="p-3 bg-[#008EF4]/10 rounded-xl">
@@ -86,11 +86,11 @@ export function SupportTicketsTab() {
           </Button>
         </div>
       </CardHeader>
-      <CardContent className="p-6">
+      <CardContent className="p-2">
         {isLoading ? (
           <Loader />
         ) : (
-          <div className="space-y-4">
+          <div className="space-y-8">
             {tickets?.tickets.map((ticket) => (
               <div
                 key={ticket._id}
