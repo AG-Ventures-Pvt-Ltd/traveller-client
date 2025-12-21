@@ -6,7 +6,7 @@ import { Typography } from '@mui/material';
 import { signIn } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import SignInForm from './components/Login/SignInForm';
 import SignUpForm from './components/Register/SignUpForm';
 import SideBanner from './components/SideBanner';
@@ -21,6 +21,8 @@ export default function Page() {
   const [isLogin, setIsLogin] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectUrl = searchParams.get('redirectUrl');
 
   const registerMutation = useRegisterUser();
 
@@ -31,7 +33,9 @@ export default function Page() {
       if (!result.success && result.error) {
         setErrorMessage(result.error);
       } else if (result.success) {
-        router.push('/trip');
+        console.log(redirectUrl,'redirect')
+        const redirectTo = redirectUrl || '/';
+        router.push(redirectTo);
       }
     } 
     else {
@@ -60,7 +64,9 @@ export default function Page() {
   };
 
   const handleGoogleLogin = () => {
-    signIn('google', { callbackUrl: '/trip' });
+    
+    const redirectTo = redirectUrl || '/';
+    signIn('google', { callbackUrl: redirectTo });
   };
 
   return (

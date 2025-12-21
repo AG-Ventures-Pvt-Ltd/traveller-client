@@ -53,8 +53,6 @@ export const credentialsProvider = CredentialsProvider({
       
       const result = {
         id: user._id.toString(),
-        email: user.email,
-        fullName: user.fullName,
         name: user.fullName,
       };
       

@@ -78,7 +78,6 @@ interface BookingDetailsViewProps {
 
 export function BookingDetailsView({ booking, onBack, onOpenReviewDialog }: BookingDetailsViewProps) {
 
-  // Generate dummy data for demonstration
   const dummyData = {
     bookingId: booking.bookingId || `BKG${booking.id?.slice(-6) || Math.random().toString(36).substr(2, 6).toUpperCase()}`,
     duration: booking.duration || "3 Days, 2 Nights",

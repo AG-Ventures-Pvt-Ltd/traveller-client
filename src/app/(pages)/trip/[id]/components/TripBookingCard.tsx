@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { Card, Button, Dialog, DialogContent, DialogTitle, Chip, LinearProgress, Box, IconButton } from "@mui/material";
+import { Card, Button, Dialog, DialogContent, DialogTitle, LinearProgress, Box, IconButton } from "@mui/material";
 import { CalendarIcon, Users, AlertCircle, Clock, X } from "lucide-react";
 import { format, addMonths } from "date-fns";
 import { useRouter, useParams } from "next/navigation";
 import { Calendar } from "@/common/ui/calendar";
 
 interface AvailableDate {
-  date: Date | string;
+  startDate: Date | string;
   price: number;
   seatsAvailable: number;
   totalSeats: number;
@@ -20,15 +20,15 @@ interface TripBookingCardProps {
 export function TripBookingCard({ availableDates, basePrice }: TripBookingCardProps) {
   const validAvailableDates = Array.isArray(availableDates) ? availableDates.map(d => ({
     ...d,
-    date: d.date instanceof Date ? d.date : new Date(d.date)
+    startDate: d.startDate instanceof Date ? d.startDate : new Date(d.startDate)
   })) : [];
   const validBasePrice = typeof basePrice === 'number' ? basePrice : 0;
 
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(validAvailableDates[0]?.date);
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(validAvailableDates[0]?.startDate);
   const [guests, setGuests] = useState(1);
   const [calendarOpen, setCalendarOpen] = useState(false);
   const [currentMonth, setCurrentMonth] = useState(() => {
-    const firstDate = validAvailableDates[0]?.date;
+    const firstDate = validAvailableDates[0]?.startDate;
     return firstDate ? new Date(firstDate.getFullYear(), firstDate.getMonth(), 1) : new Date();
   });
   const router = useRouter();
@@ -36,7 +36,7 @@ export function TripBookingCard({ availableDates, basePrice }: TripBookingCardPr
   const tripId = params.id as string;
 
   const selectedDateInfo = validAvailableDates.find(
-    (d) => d.date.toDateString() === selectedDate?.toDateString()
+    (d) => d.startDate.toDateString() === selectedDate?.toDateString()
   );
 
   const totalPrice = (selectedDateInfo?.price || validBasePrice) * guests;
@@ -123,11 +123,11 @@ export function TripBookingCard({ availableDates, basePrice }: TripBookingCardPr
                       month={currentMonth}
                       disableNavigation={true}
                       disabled={(date: Date) =>
-                        !validAvailableDates.some((d) => d.date.toDateString() === date.toDateString())
+                        !validAvailableDates.some((d) => d.startDate.toDateString() === date.toDateString())
                       }
                       modifiers={{
                         available: (date: Date) =>
-                          validAvailableDates.some((d) => d.date.toDateString() === date.toDateString()),
+                          validAvailableDates.some((d) => d.startDate.toDateString() === date.toDateString()),
                       }}
                     />
                   </div>
@@ -142,11 +142,11 @@ export function TripBookingCard({ availableDates, basePrice }: TripBookingCardPr
                       month={addMonths(currentMonth, 1)}
                       disableNavigation={true}
                       disabled={(date: Date) =>
-                        !validAvailableDates.some((d) => d.date.toDateString() === date.toDateString())
+                        !validAvailableDates.some((d) => d.startDate.toDateString() === date.toDateString())
                       }
                       modifiers={{
                         available: (date: Date) =>
-                          validAvailableDates.some((d) => d.date.toDateString() === date.toDateString()),
+                          validAvailableDates.some((d) => d.startDate.toDateString() === date.toDateString()),
                       }}
                     />
                   </div>
@@ -237,7 +237,7 @@ export function TripBookingCard({ availableDates, basePrice }: TripBookingCardPr
           sx={{ width: '100%', height: 56, fontSize: '1.125rem', textTransform: 'none' }}
           onClick={() => {
             const queryParams = new URLSearchParams({
-              date: selectedDate ? selectedDate.toISOString() : '',
+              startDate: selectedDate ? selectedDate.toISOString() : '',
               guests: guests.toString(),
             });
             router.push(`/trip/book/${tripId}?${queryParams.toString()}`);

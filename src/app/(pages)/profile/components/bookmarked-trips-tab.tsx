@@ -1,6 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/common/ui/card";
 import { Heart } from "lucide-react";
-import TripCard from "../../(landing)/components/TripSlider/TripCard";
+import TripCard from "../../(landing)/TripSlider/TripCard";
 import { useGetData } from "@/services/useGetData";
 import { API_ENDPOINTS } from "@/common/constants/apiEndpoints";
 
@@ -61,7 +61,7 @@ export function BookmarkedTripsTab() {
       <CardContent className="p-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {trips.map((trip) => (
-            <TripCard key={trip._id} trip={trip} />
+            <TripCard key={trip._id} trip={trip} showBookmark={true}/>
           ))}
         </div>
       </CardContent>

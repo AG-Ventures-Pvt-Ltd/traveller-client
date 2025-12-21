@@ -4,7 +4,6 @@ import { getToken } from 'next-auth/jwt'
 const protectedRoutes = [
   '/trip/book',
   '/profile',
-  // '/profile',
   // '/bookings',
   // '/settings',
 ];
@@ -14,6 +13,7 @@ const authRoutes = ['/auth'];
 export default async function proxy (request: NextRequest) {
 
   const { pathname } = request.nextUrl;
+  const originalPath = pathname + (request.nextUrl.search || '')
 
   const token = await getToken({ 
     req: request, 
@@ -29,11 +29,11 @@ export default async function proxy (request: NextRequest) {
 
   if (isProtectedRoute) {
     if (!token) {
-      return NextResponse.redirect(new URL('/auth', request.url))
+      return NextResponse.redirect(new URL(`/auth?redirectUrl=${encodeURIComponent(originalPath)}`, request.url))
     }
 
     if (token.error) {
-      return NextResponse.redirect(new URL('/auth', request.url))
+      return NextResponse.redirect(new URL(`/auth?redirectUrl=${encodeURIComponent(originalPath)}`, request.url))
     }
 
     return NextResponse.next()

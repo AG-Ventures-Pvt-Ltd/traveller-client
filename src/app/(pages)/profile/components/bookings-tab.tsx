@@ -146,7 +146,7 @@ export function BookingsTab() {
             {bookings.map((booking) => (
               <div
                 key={booking.id}
-                className="group relative overflow-hidden rounded-2xl border border-gray-200 hover:border-[#008EF4]/50 transition-all hover:shadow-xl bg-white"
+                className="group relative overflow-hidden rounded-2xl border border-gray-200 hover:border-[#008EF4]/50 transition-all hover:shadow-xl bg-white cursor-pointer"
               >
                 <div className="flex flex-col sm:flex-row gap-4 p-4">
                   <div className="relative sm:w-48 h-32 flex-shrink-0 overflow-hidden rounded-xl">
@@ -164,10 +164,10 @@ export function BookingsTab() {
                   </div>
                   <div className="flex-1 flex flex-col justify-between">
                     <div>
-                      <h3 className="text-gray-900 mb-3 group-hover:text-[#008EF4] transition-colors">
+                      <h3 className="text-lg font-semibold text-gray-900 mb-3 group-hover:text-[#008EF4] transition-colors">
                         {booking.title}
                       </h3>
-                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-gray-600">
+                      <div className="flex justify-between pr-8 text-gray-600">
                         <span className="flex items-center gap-2">
                           <MapPin className="w-4 h-4 text-[#008EF4]" />
                           {booking.address}
@@ -185,11 +185,11 @@ export function BookingsTab() {
 
                     <div className="flex flex-wrap items-center justify-between gap-3 mt-4 pt-4 border-t">
                       <p className="text-gray-900">Rs. {booking.price.toLocaleString()}</p>
-                      <div className="flex gap-2">
+                      <div className="flex gap-2 ">
                         <Button
                           variant="outline"
                           size="sm"
-                          className="border-gray-200 hover:border-[#008EF4] hover:text-[#008EF4]"
+                          className="border-gray-200 hover:border-[#008EF4] hover:text-[#008EF4] cursor-pointer"
                           onClick={() => {
                             setSelectedBooking(booking);
                             setShowDetails(true);

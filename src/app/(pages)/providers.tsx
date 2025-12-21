@@ -7,7 +7,6 @@ import { DM_Sans } from 'next/font/google';
 import { SessionProvider } from 'next-auth/react';
 
 
-
 const dmSans = DM_Sans({
   subsets: ['latin'],
   display: 'swap',
@@ -51,8 +50,6 @@ const queryClient = new QueryClient({
 });
 
 export function Providers({ children }: { children: React.ReactNode }) {
-
-
   return (
     <ThemeProvider theme={theme}>
       <QueryClientProvider client={queryClient}>

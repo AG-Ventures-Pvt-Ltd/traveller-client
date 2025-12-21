@@ -1,10 +1,16 @@
-import React from 'react'
+'use client'
+
+import React, { useState } from 'react'
 import Image from 'next/image'
 import { Input, InputAdornment, Box } from '@mui/material'
 import Button from '@/common/components/atoms/Button'
 import { MapPin } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 
 const Hero = () => {
+  const [query, setQuery] = useState('')
+  const router = useRouter()
+
   return (
     <div className='flex justify-between w-full mt-28 overflow-hidden'>
       <div className='flex flex-col gap-4 min-w-0'>
@@ -61,6 +67,8 @@ const Hero = () => {
         <Box className="relative bg-[#F7F7F7] rounded-lg w-[90%]">
           <Input
             placeholder="Places to go, things to do"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
             className="flex-1 border-1 border-[#DBDBDB] rounded-lg px-2 py-2 !pr-24 w-full"
             disableUnderline
             sx={{
@@ -85,6 +93,7 @@ const Hero = () => {
             className="!absolute !right-1 !top-1 !bottom-1 !rounded-lg !px-4 !py-2 !h-auto !mr-1.5 !my-1.5 !font-light"
             variant="contained"
             color="primary"
+            onClick={() => router.push(`/trips?destination=${query}`)}
           >
             Search
           </Button>

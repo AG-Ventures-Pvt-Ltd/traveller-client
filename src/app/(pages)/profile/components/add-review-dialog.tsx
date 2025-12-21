@@ -44,7 +44,7 @@ export function AddReviewDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[550px] border-0 shadow-2xl">
+      <DialogContent className="sm:max-w-[550px] border-0 shadow-2xl cursor-pointer">
         <DialogHeader>
           <div className="flex items-center gap-3 mb-2">
             <div className="p-3 bg-[#008EF4]/10 rounded-xl">

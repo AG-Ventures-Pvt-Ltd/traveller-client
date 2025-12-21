@@ -5,6 +5,9 @@ declare global {
     connection: Connection | null;
     promise: Promise<Connection> | null;
   };
+  interface Window {
+    Razorpay: new (options: RazorpayOptions) => RazorpayInstance;
+  }
 }
 
 declare module "next-auth" {
@@ -21,3 +24,18 @@ declare module "next-auth" {
   }
 }
 
+interface RazorpayOptions {
+  key: string;
+  amount: number;
+  currency: string;
+  order_id: string;
+  handler: (response: {
+    razorpay_payment_id: string;
+    razorpay_order_id: string;
+    razorpay_signature: string;
+  }) => void;
+}
+
+interface RazorpayInstance {
+  open: () => void;
+}

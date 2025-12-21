@@ -21,8 +21,9 @@ export const authOptions: NextAuthOptions = {
       options: {
         httpOnly: true,
         sameSite: 'lax',
+        // domain: process.env.NODE_ENV === 'production' ? process.env.MY_DOMAIN! : "localhost",
         path: '/',
-        secure: process.env.NODE_ENV === 'production',
+        secure: process.env.NODE_ENV === 'production' ? true : false,
       },
     },
   },

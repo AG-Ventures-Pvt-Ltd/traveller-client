@@ -19,10 +19,10 @@ export interface FilterValues {
 }
 
 const TripFilters: React.FC<TripFiltersProps> = ({ onFilterChange, onApplyFilters }) => {
-  const [numberOfDays, setNumberOfDays] = useState<number>(7);
-  const [maxPeople, setMaxPeople] = useState<number>(20);
-  const [minBudget, setMinBudget] = useState<number>(5000);
-  const [maxBudget, setMaxBudget] = useState<number>(50000);
+  const [numberOfDays, setNumberOfDays] = useState<number>(3);
+  const [maxPeople, setMaxPeople] = useState<number>(10);
+  const [minBudget, setMinBudget] = useState<number>(1000);
+  const [maxBudget, setMaxBudget] = useState<number>(10000);
   const [startDate, setStartDate] = useState<Date | undefined>();
   const [endDate, setEndDate] = useState<Date | undefined>();
 
@@ -41,10 +41,10 @@ const TripFilters: React.FC<TripFiltersProps> = ({ onFilterChange, onApplyFilter
   }, [numberOfDays, maxPeople, minBudget, maxBudget, startDate, endDate, onFilterChange]);
 
   const handleReset = () => {
-    setNumberOfDays(7);
-    setMaxPeople(20);
-    setMinBudget(5000);
-    setMaxBudget(50000);
+    setNumberOfDays(3);
+    setMaxPeople(10);
+    setMinBudget(1000);
+    setMaxBudget(10000);
     setStartDate(undefined);
     setEndDate(undefined);
   };
@@ -76,17 +76,17 @@ const TripFilters: React.FC<TripFiltersProps> = ({ onFilterChange, onApplyFilter
           <input
             type="range"
             min="1"
-            max="30"
+            max="20"
             value={numberOfDays}
             onChange={(e) => setNumberOfDays(parseInt(e.target.value))}
             className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
             style={{
-              background: `linear-gradient(to right, #3b82f6 0%, #3b82f6 ${((numberOfDays - 1) / 29) * 100}%, #e5e7eb ${((numberOfDays - 1) / 29) * 100}%, #e5e7eb 100%)`
+              background: `linear-gradient(to right, #3b82f6 0%, #3b82f6 ${((numberOfDays - 1) / 19) * 100}%, #e5e7eb ${((numberOfDays - 1) / 19) * 100}%, #e5e7eb 100%)`
             }}
           />
           <div className="flex justify-between font-medium text-xs text-gray-500 ">
             <span>1 day</span>
-            <span>30 days</span>
+            <span>20 days</span>
           </div>
         </div>
 
@@ -98,17 +98,17 @@ const TripFilters: React.FC<TripFiltersProps> = ({ onFilterChange, onApplyFilter
           <input
             type="range"
             min="1"
-            max="100"
+            max="40"
             value={maxPeople}
             onChange={(e) => setMaxPeople(parseInt(e.target.value))}
             className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
             style={{
-              background: `linear-gradient(to right, #3b82f6 0%, #3b82f6 ${((maxPeople - 1) / 99) * 100}%, #e5e7eb ${((maxPeople - 1) / 99) * 100}%, #e5e7eb 100%)`
+              background: `linear-gradient(to right, #3b82f6 0%, #3b82f6 ${((maxPeople - 1) / 39) * 100}%, #e5e7eb ${((maxPeople - 1) / 39) * 100}%, #e5e7eb 100%)`
             }}
           />
           <div className="flex justify-between font-medium text-xs text-gray-500 ">
             <span>1 person</span>
-            <span>100 people</span>
+            <span>40 people</span>
           </div>
         </div>
 
@@ -123,8 +123,8 @@ const TripFilters: React.FC<TripFiltersProps> = ({ onFilterChange, onApplyFilter
             <input
               type="range"
               min="0"
-              max="100000"
-              step="1000"
+              max="30000"
+              step="500"
               value={minBudget}
               onChange={(e) => {
                 const value = parseInt(e.target.value);
@@ -134,7 +134,7 @@ const TripFilters: React.FC<TripFiltersProps> = ({ onFilterChange, onApplyFilter
               }}
               className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
               style={{
-                background: `linear-gradient(to right, #3b82f6 0%, #3b82f6 ${(minBudget / 100000) * 100}%, #e5e7eb ${(minBudget / 100000) * 100}%, #e5e7eb 100%)`
+                background: `linear-gradient(to right, #3b82f6 0%, #3b82f6 ${(minBudget / 30000) * 100}%, #e5e7eb ${(minBudget / 30000) * 100}%, #e5e7eb 100%)`
               }}
             />
           </div>
@@ -144,8 +144,8 @@ const TripFilters: React.FC<TripFiltersProps> = ({ onFilterChange, onApplyFilter
             <input
               type="range"
               min="0"
-              max="100000"
-              step="1000"
+              max="30000"
+              step="500"
               value={maxBudget}
               onChange={(e) => {
                 const value = parseInt(e.target.value);
@@ -155,13 +155,13 @@ const TripFilters: React.FC<TripFiltersProps> = ({ onFilterChange, onApplyFilter
               }}
               className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
               style={{
-                background: `linear-gradient(to right, #3b82f6 0%, #3b82f6 ${(maxBudget / 100000) * 100}%, #e5e7eb ${(maxBudget / 100000) * 100}%, #e5e7eb 100%)`
+                background: `linear-gradient(to right, #3b82f6 0%, #3b82f6 ${(maxBudget / 30000) * 100}%, #e5e7eb ${(maxBudget / 30000) * 100}%, #e5e7eb 100%)`
               }}
             />
           </div>
           <div className="flex justify-between font-medium text-xs text-gray-500 mt-1">
             <span>₹0</span>
-            <span>₹1,00,000</span>
+            <span>₹30,000</span>
           </div>
         </div>
         <div>

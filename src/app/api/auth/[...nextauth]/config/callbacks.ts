@@ -24,20 +24,15 @@ export const authCallbacks: Pick<NextAuthOptions, 'callbacks'> = {
       return true;
     },
 
-    async redirect({ url, baseUrl }) {
-     
-      if (url.startsWith("/")) return `${baseUrl}${url}`;
-
-      else if (new URL(url).origin === baseUrl) return url;
-
-      return baseUrl;
+    async redirect({ url }) {
+      return url;
     },
 
     async jwt({ token, account, profile, user }) {
 
       if (!account && user) {
+        token.sub = user.id;
         token.userId = user.id;
-        token.email = user.email;
         token.fullName = (user as { fullName?: string; name?: string }).fullName || user.name;
         return token;
       }
@@ -84,9 +79,9 @@ export const authCallbacks: Pick<NextAuthOptions, 'callbacks'> = {
           }
         }
 
-        token.userId = dbUser._id.toString();
-        token.email = dbUser.email;
-        token.fullName = dbUser.fullName;
+        token.sub = dbUser._id.toString();
+        token.email = undefined;
+        token.picture = undefined;
         return token;
       }
 

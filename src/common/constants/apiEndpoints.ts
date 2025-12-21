@@ -2,6 +2,10 @@ export const API_ENDPOINTS = {
   TRIPS: {
     BASIC_DETAILS: (id: string) => `api/client/v1/trips/details/${id}/basic`,
     DETAILED_DETAILS: (id: string) => `api/client/v1/trips/details/${id}/detailed`,
+    FEATURED_TRIPS : (limit: string) => `/api/client/v1/trips/featured?limit=${limit}`, 
+  },
+  BOOKINGS : {
+    START: "/api/client/v1/bookings/start",
   },
   SUPPORT: {
     CREATE_TICKET: "/api/client/v1/support/tickets/create",
