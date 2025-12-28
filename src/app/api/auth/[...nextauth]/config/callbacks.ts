@@ -91,9 +91,9 @@ export const authCallbacks: Pick<NextAuthOptions, 'callbacks'> = {
     async session({ session, token }) {
       if (token) {
         session.user = {
-          id: token.userId as string,
+          id: (token.userId || token.sub) as string,
           email: token.email as string,
-          fullName: token.fullName as string,
+          fullName: (token.fullName || token.name) as string,
         };
       }
       return session;
