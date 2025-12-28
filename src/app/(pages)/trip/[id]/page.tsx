@@ -57,6 +57,7 @@ export default function TripDetail() {
    const MOCK_TRIPS = [
     {
         id: 1,
+        tripSlug: 'manali-adventure-trek-1',
         image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop',
         title: 'Manali Adventure Trek',
         rating: 4.5,
@@ -67,6 +68,7 @@ export default function TripDetail() {
     },
     {
         id: 2,
+        tripSlug: 'coorg-coffee-plantation-tour-2',
         image: 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=800&h=600&fit=crop',
         title: 'Coorg Coffee Plantation Tour Lets',
         rating: 4.8,
@@ -77,6 +79,7 @@ export default function TripDetail() {
     },
     {
         id: 3,
+        tripSlug: 'goa-beach-paradise-3',
         image: 'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=800&h=600&fit=crop',
         title: 'Goa Beach Paradise',
         rating: 4.6,
@@ -87,6 +90,7 @@ export default function TripDetail() {
     },
     {
         id: 4,
+        tripSlug: 'kerala-backwaters-4',
         image: 'https://images.unsplash.com/photo-1618083707368-b3823daa2726?w=800&h=600&fit=crop',
         title: 'Kerala Backwaters',
         rating: 4.9,
@@ -97,6 +101,7 @@ export default function TripDetail() {
     },
     {
         id: 5,
+        tripSlug: 'rajasthan-heritage-tour-5',
         image: 'https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=800&h=600&fit=crop',
         title: 'Rajasthan Heritage Tour',
         rating: 4.7,
@@ -107,6 +112,7 @@ export default function TripDetail() {
     },
     {
         id: 6,
+        tripSlug: 'shimla-hill-station-6',
         image: 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?w=800&h=600&fit=crop',
         title: 'Shimla Hill Station',
         rating: 4.4,
@@ -117,6 +123,7 @@ export default function TripDetail() {
     },
     {
         id: 7,
+        tripSlug: 'mysore-palace-experience-7',
         image: 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=800&h=600&fit=crop',
         title: 'Mysore Palace Experience',
         rating: 4.6,
@@ -127,6 +134,7 @@ export default function TripDetail() {
     },
     {
         id: 8,
+        tripSlug: 'darjeeling-tea-gardens-8',
         image: 'https://images.unsplash.com/photo-1570168007204-dfb528c6958f?w=800&h=600&fit=crop',
         title: 'Darjeeling Tea Gardens',
         rating: 4.8,

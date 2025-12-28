@@ -11,10 +11,22 @@ import { Button } from "@/common/ui/button";
 import { Input } from "@/common/ui/input";
 import { Label } from "@/common/ui/label";
 import { User, Mail, Phone } from "lucide-react";
-import { ProfileDetailsProps } from "./profile-details";
+
+interface UserData {
+  fullName: string;
+  email: string;
+  phone: string;
+  username: string;
+  birthDate?: string;
+  bio?: string;
+  city?: string;
+  state?: string;
+  address?: string;
+  avatar?: string;
+}
 
 interface EditProfileDialogProps {
-  user: ProfileDetailsProps['user'];
+  user?: UserData;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSave: (data: { fullName: string; email: string; phone: string }) => void;
@@ -27,9 +39,9 @@ export function EditProfileDialog({
   onSave,
 }: EditProfileDialogProps) {
   const [formData, setFormData] = useState({
-    fullName: user?.fullName,
-    email: user?.email,
-    phone: user?.phone,
+    fullName: user?.fullName || '',
+    email: user?.email || '',
+    phone: user?.phone || '',
   });
 
   const handleSubmit = (e: React.FormEvent) => {
