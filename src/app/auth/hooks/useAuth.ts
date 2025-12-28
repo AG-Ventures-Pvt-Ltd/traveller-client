@@ -11,11 +11,7 @@ export const useAuth = (
     options?: object
     ) => {
 
-    type LoginBody = { email: string; password: string; };
-    type RegisterBody = { email: string; name: string; password: string; };
-    type body = LoginBody | RegisterBody;
-
-    const { mutate : postData, isLoading , error } = usePostData({url : apiUrls[authType],options})
+    const { mutate : postData, isPending , error } = usePostData({url : apiUrls[authType], ...options})
     
     useEffect(() => {
         if (error) {
@@ -28,6 +24,6 @@ export const useAuth = (
         }
     }, [error, authType])
 
-    return { post: postData, loading : isLoading, error }
+    return { post: postData, loading : isPending, error }
 }
 

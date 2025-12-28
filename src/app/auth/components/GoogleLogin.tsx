@@ -2,7 +2,7 @@
 
 import Button from '@/common/components/atoms/Button'
 import React from 'react'
-import { useLogin, providers } from '../../../hooks/useLogin'
+import { useLogin, providers } from '../hooks/useLogin'
 import Image from 'next/image'
 
 

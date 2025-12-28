@@ -3,8 +3,8 @@
 import React from 'react'
 import { Form } from 'react-final-form'
 import Button from '@/common/components/atoms/Button'
-import { useLogin, providers } from '../../hooks/useLogin'
-import InputField from '@/common/fields/Input' // Assuming this matches your register form
+import { useLogin, providers } from '../hooks/useLogin'
+import InputField from '@/common/components/atoms/Input'
 import { useRouter } from 'next/navigation'
 
 
