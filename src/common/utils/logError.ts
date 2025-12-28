@@ -8,7 +8,7 @@ export interface LogErrorParams {
 }
 
 export const logError = ({ error, location, when }: LogErrorParams): void => {
-  console.log(`Error occured at ${location} when ${when}.`);
-  console.log('Full error : ', error);
+  console.log(`Error occured at ${location} when ${when}.
+      Full error : ${error}`);
 };
 

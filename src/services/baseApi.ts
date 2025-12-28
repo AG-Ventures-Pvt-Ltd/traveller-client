@@ -8,6 +8,16 @@ export const baseAPI : AxiosInstance = axios.create({
   withCredentials : true,
 });
 
+baseAPI.interceptors.request.use(
+  async (config) => {
+    config.headers['X-Timestamp'] = new Date().toISOString();
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
 export const getData = async <T>(url: string): Promise<T> => {
   try {
     const res = await baseAPI.get<{ data: T }>(url);

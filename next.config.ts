@@ -3,8 +3,17 @@ import type { NextConfig } from 'next';
 const nextConfig: NextConfig = {
   devIndicators: false,
   images: {
-    domains: ['res.cloudinary.com','lh3.googleusercontent.com'],
-  },
+  remotePatterns: [
+    { protocol: 'https', hostname: 'res.cloudinary.com' },
+    { protocol: 'https', hostname: 'lh3.googleusercontent.com' },
+    { protocol: 'https', hostname: 'images.unsplash.com' },
+    { protocol: 'https', hostname: 'placehold.co' },
+    { protocol: 'https', hostname: 'media.gettyimages.com' },
+    { protocol: 'https', hostname: 'wondrrprod.s3.ap-south-1.amazonaws.com' },
+  ],
+  qualities: [90,100],
+},
+
 };
 
 export default nextConfig;
