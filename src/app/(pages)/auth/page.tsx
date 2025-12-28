@@ -33,7 +33,6 @@ export default function Page() {
       if (!result.success && result.error) {
         setErrorMessage(result.error);
       } else if (result.success) {
-        console.log(redirectUrl,'redirect')
         const redirectTo = redirectUrl || '/';
         router.push(redirectTo);
       }
@@ -119,7 +118,7 @@ export default function Page() {
           </div>
         </div>
         <div className='flex justify-center'>
-          <Link href="/privacy-policy" className='underline'>Terms and conditions</Link>
+          <Link href=",rivacy-policy" className='underline'>Terms and conditions</Link>
           <span className='px-2'>•</span>
           <Link href="/privacy-policy" className='underline'>Privacy Policy</Link>
         </div>

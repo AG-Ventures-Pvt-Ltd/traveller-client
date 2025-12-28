@@ -9,7 +9,7 @@ export default function SideBanner() {
         <p className='w-full text-white text-end font-bold'>Wondrr</p>
       </div>
       <Image
-        src='/png/authbg.png'
+        src='/png/AuthBG.png'
         alt='Authentication Background'
         fill
         className='object-cover'
