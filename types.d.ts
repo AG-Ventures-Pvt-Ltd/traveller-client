@@ -14,12 +14,14 @@ declare module "next-auth" {
   interface User {
     _id?: string;
     fullName: string;
+    type : "Traveler" | "Host"
   }
   interface Session {
     user?: {
       id: string;
       email: string;
       fullName?: string;
+      type?:string;
     };
   }
 }

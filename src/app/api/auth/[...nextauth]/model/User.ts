@@ -6,7 +6,11 @@ interface IUserBase {
   password?: string;
   fullName?: string;
   username?: string;
-  refreshToken?: string;
+  provider?: {
+    type: string;
+    id?: string;
+  };
+  type : "Traveler" | "Host";
   isVerified?: boolean;
   createdAt: Date;
   updatedAt: Date;
@@ -16,9 +20,8 @@ export interface IUser extends IUserBase, Document {
   _id: Types.ObjectId;
   email: string;
   fullName?: string;
+  type: "Traveler" | "Host";
   isPasswordCorrect(candidatePassword: string): Promise<boolean>;
-  generateAccessToken(): string;
-  generateRefreshToken(): string;
 }
 
 const userSchema = new Schema<IUser>(
@@ -46,31 +49,31 @@ const userSchema = new Schema<IUser>(
       unique: [true, "User with this username already exists"],
       sparse: true,
     },
+    type: {
+      type: String,
+      enum: ['Traveler', 'Host'],
+      default: 'Traveler',
+      required: true,
+    },
+    provider: {
+      type: {
+        type: String,
+        enum: ['credentials', 'google', 'facebook'],
+        default: 'credentials',
+      },
+      id: {
+        type: String
+      }
+    },
     isVerified: {
       type: Boolean,
       default: false,
-    },
-    refreshToken: {
-      type: String
-    },
+    }
   },
   {
     timestamps: true,
   }
 );
-
-userSchema.index({ email: 1 }, { 
-  unique: true, 
-  name: 'unique_email',
-  collation: { locale: 'en', strength: 2 } 
-});
-
-userSchema.index({ username: 1 }, { 
-  unique: true, 
-  sparse: true,
-  name: 'unique_username',
-  collation: { locale: 'en', strength: 2 } 
-});
 
 userSchema.pre<IUser>('save', async function (next) {
   if (!this.isModified('password')) return next();
@@ -92,4 +95,4 @@ userSchema.methods.isPasswordCorrect = async function (
 };
 
 export const User =
-  mongoose.models.user || mongoose.model<IUser>('user', userSchema);
+  mongoose.models.user || mongoose.model<IUser>('User', userSchema);

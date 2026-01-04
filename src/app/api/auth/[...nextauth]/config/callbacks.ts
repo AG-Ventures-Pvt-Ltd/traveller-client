@@ -34,6 +34,7 @@ export const authCallbacks: Pick<NextAuthOptions, 'callbacks'> = {
         token.sub = user.id;
         token.userId = user.id;
         token.fullName = (user as { fullName?: string; name?: string }).fullName || user.name;
+        token.type = user.type;
         return token;
       }
 
@@ -80,9 +81,13 @@ export const authCallbacks: Pick<NextAuthOptions, 'callbacks'> = {
         }
 
         token.sub = dbUser._id.toString();
-        token.email = undefined;
+        // token.email = undefined;
         token.picture = undefined;
         return token;
+      }
+
+      if (account?.type == 'credentials') {
+        token.type = user.type;
       }
 
       return token;
@@ -94,6 +99,7 @@ export const authCallbacks: Pick<NextAuthOptions, 'callbacks'> = {
           id: (token.userId || token.sub) as string,
           email: token.email as string,
           fullName: (token.fullName || token.name) as string,
+          type : token.type as "Traveler" | "Host"
         };
       }
       return session;

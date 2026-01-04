@@ -21,7 +21,9 @@ export const credentialsProvider = CredentialsProvider({
         },
   },
 
-  authorize: async (credentials) => {
+  authorize: async (credentials,req) => {
+
+    const reqType = req?.headers?.origin == process.env.NEXT_PUBLIC_SUBDOMAIN! ? 'Host' : 'Traveler'
     
     if (!credentials?.password) {
       throw new Error("Password is required!");
@@ -44,6 +46,10 @@ export const credentialsProvider = CredentialsProvider({
       if (!user) {
         throw new Error("User not found!")
       }
+
+      if (user.type != reqType) {
+        throw new Error(`You don't have a ${reqType.toLowerCase()} account!`)
+      }
       
       const isPasswordCorrect = await user.isPasswordCorrect(credentials.password);
 
@@ -54,6 +60,7 @@ export const credentialsProvider = CredentialsProvider({
       const result = {
         id: user._id.toString(),
         name: user.fullName,
+        type : user.type
       };
       
       return result as unknown as NextAuthUser;

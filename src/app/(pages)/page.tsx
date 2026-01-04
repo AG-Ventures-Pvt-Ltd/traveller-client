@@ -1,5 +1,6 @@
 'use client';
 
+// import { useSession } from 'next-auth/react';
 import './globals.css';
 // import { useGetData } from '@/services/useGetData'
 // import Loader from '@/common/components/composites/Loader/loader'
@@ -26,6 +27,8 @@ export const Landing = () => {
     // if (isLoading) {
     //     return <Loader/>
     // }
+
+    // const data = useSession()
 
     return (
         <div className="w-full min-h-screen p-4 md:p-10 relative bg-[#0C1E3E] overflow-hidden">
