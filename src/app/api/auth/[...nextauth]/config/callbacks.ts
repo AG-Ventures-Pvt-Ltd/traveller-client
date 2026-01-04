@@ -2,7 +2,6 @@ import { NextAuthOptions } from "next-auth";
 import { User } from "../model/User";
 import { UserDetails } from "../model/UserDetails";
 import mongoose from "mongoose";
-import { connectToDatabase } from "@/lib/db/db";
 
 type FacebookProfile = { 
   picture?: { data?: { url?: string } }, 
@@ -40,7 +39,6 @@ export const authCallbacks: Pick<NextAuthOptions, 'callbacks'> = {
 
 
       if (account && profile) {
-        await connectToDatabase();
         
         let dbUser = await User.findOne({ email: profile?.email });
 

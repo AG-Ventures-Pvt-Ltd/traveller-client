@@ -1,30 +1,28 @@
 import CredentialsProvider from "next-auth/providers/credentials";
 import { User as NextAuthUser } from "next-auth";
-import { User } from "../model/User";
-import { connectToDatabase } from "@/lib/db/db";
-
+import axios from "axios";
 
 export const credentialsProvider = CredentialsProvider({
   name: "Credentials",
   credentials: {
-        email: { 
-          label: "Email", 
-          type: "text" 
-        },
-        username: { 
-          label: "Username", 
-          type: "text" 
-        },
-        password: { 
-          label: "Password", 
-          type: "password" 
-        },
+    email: {
+      label: "Email",
+      type: "text"
+    },
+    username: {
+      label: "Username",
+      type: "text"
+    },
+    password: {
+      label: "Password",
+      type: "password"
+    },
   },
 
-  authorize: async (credentials,req) => {
+  authorize: async (credentials, req) => {
 
     const reqType = req?.headers?.origin == process.env.NEXT_PUBLIC_SUBDOMAIN! ? 'Host' : 'Traveler'
-    
+
     if (!credentials?.password) {
       throw new Error("Password is required!");
     }
@@ -35,36 +33,32 @@ export const credentialsProvider = CredentialsProvider({
 
     try {
 
-      await connectToDatabase();
-
-      const query = credentials.email 
-                    ? { email: credentials.email }
-                    : { username: credentials.username };
-
-      const user = await User.findOne(query);
-
-      if (!user) {
-        throw new Error("User not found!")
+      const userData = {
+        email: credentials?.email, username: credentials?.username, password: credentials?.password,
+        reqType: reqType
       }
 
-      if (user.type != reqType) {
-        throw new Error(`You don't have a ${reqType.toLowerCase()} account!`)
-      }
-      
-      const isPasswordCorrect = await user.isPasswordCorrect(credentials.password);
+      try {
+        const res = await axios.post(process.env.NEXT_PUBLIC_API_URL + '/api/client/v1/user/login', userData);
 
-      if (!isPasswordCorrect) {
-        throw new Error("Invalid password!")
+        const user = res.data.data;
+
+        const result = {
+          id: user.userId.toString(),
+          name: user.fullName,
+          type: user.type
+        };
+
+        return result as unknown as NextAuthUser;
+
+      } catch (error) {
+        
+        if (axios.isAxiosError(error)) {
+          throw new Error(error.response?.data?.message || "Login failed");
+        }
+        throw new Error("Unexpected error");
       }
-      
-      const result = {
-        id: user._id.toString(),
-        name: user.fullName,
-        type : user.type
-      };
-      
-      return result as unknown as NextAuthUser;
-    } 
+    }
     catch (error) {
       throw error
     }
