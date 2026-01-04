@@ -2,13 +2,11 @@ import { NextRequest, NextResponse } from 'next/server';
 import mongoose from 'mongoose';
 import { User } from '../[...nextauth]/model/User';
 import { UserDetails } from '../[...nextauth]/model/UserDetails';
-import { connectToDatabase } from '@/lib/db/db';
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
   let session;
   
   try {
-    await connectToDatabase();
     session = await mongoose.startSession();
 
     session.startTransaction();
