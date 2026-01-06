@@ -1,12 +1,11 @@
 'use client'
 
 import React from 'react'
-import { MapPin, Star } from 'lucide-react'
+import { MapPin, Star, ArrowUpRight } from 'lucide-react'
 import Image from 'next/image'
 import { Button } from "@/common/ui/button";
 import { useRouter } from "next/navigation";
 import BookmarkButton from "@/common/components/atoms/BookmarkButton";
-
 
 
 interface Trip {
@@ -20,6 +19,7 @@ interface Trip {
     days?: number
     tripSlug?: string
     isBookmarked?: boolean
+    description?: string
 }
 
 interface TripCardProps {
@@ -39,42 +39,32 @@ const TripCard: React.FC<TripCardProps> = ({ trip, showBookmark = false }) => {
     };
 
     return (
-        <div onClick={handleCardClick} className='bg-white rounded-xl overflow-hidden border-1 border-[#d7d7d7] shadow-lg hover:shadow-xl transition-shadow duration-300 cursor-pointer h-[390px] flex flex-col'>
-            <div className='relative h-[195px] w-full overflow-hidden'>
-                <Image
-                    src={trip?.image || "null"}
-                    alt={trip.title}
-                    width={400}
-                    height={195}
-                    className='object-cover hover:scale-110 transition-transform duration-300 w-full h-full'
-                    quality={100}
-                />
-                {showBookmark && <BookmarkButton tripSlug={trip.tripSlug!} isBookmarked={trip.isBookmarked || false} />}
-            </div>
-            <div className='h-[50%] p-4 flex flex-col'>
-                <div className='flex flex-col items-start gap-2 w-full flex-grow'>
-                    <h3 className='text-lg font-normal text-gray-900 line-clamp-2 min-h-[3.5rem]'>
-                        {trip.title}
-                    </h3>
-                    <div className='flex items-center gap-1 text-gray-600'>
-                        <MapPin className='w-4 h-4' />
-                        <span className='text-sm line-clamp-1'>{trip.location}</span>
-                    </div>
-                    {trip.rating && (
-                        <div className='flex gap-1'>
-                            <Star className='w-4 h-4 fill-yellow-400 text-yellow-400' />
-                            <span className='text-sm text-gray-900 font-medium'>{trip.rating}/5</span>
-                            <span className='text-sm text-gray-500'>({trip.reviewCount} Reviews)</span>
-                        </div>
-                    )}
+        <div onClick={handleCardClick} className='relative w-full h-[480px] rounded-3xl overflow-hidden cursor-pointer'>
+            <Image
+                src={trip?.image || "null"}
+                alt={trip.title}
+                fill
+                className='object-cover opacity-90'
+                quality={100}
+            />
+            <ArrowUpRight className='absolute top-8 right-8 bg-black/50 rounded-full text-white p-2' size={48}/>
+            <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(0,0,0,0.8)_0%,rgba(0,0,0,0.2)_50%,rgba(0,0,0,0)_100%)]" />
+            {showBookmark && (
+                <div className="absolute top-6 right-6">
+                    <BookmarkButton tripSlug={trip.tripSlug!} isBookmarked={trip.isBookmarked || false} />
                 </div>
-                <div className='bg-gray-300 my-2 h-[1px] w-full flex-shrink-0 '></div>
-                <div className='flex justify-between items-center '>
-                    {trip.days && <div>{trip.days} days</div>}
-                    <div>
-                        <p className='text-xs text-gray-500 whitespace-nowrap'>Starting from</p>
-                        <p className='text-xl font-bold text-gray-900'>${trip.price.toLocaleString('en-US')}</p>
-                    </div>
+            )}
+            <div className="absolute bottom-6 left-6 right-6">
+                <div className="bg-black/20 rounded-full px-3 py-1 inline-block mb-3">
+                    <span className="text-white text-sm font-inter">{trip.location}</span>
+                </div>
+                <h3 className="text-white text-3xl font-normal leading-9 mb-3 font-inter">{trip.title}</h3>
+                {trip.description && (
+                    <p className="text-white/80 text-sm leading-5 mb-4 font-inter">{trip.description}</p>
+                )}
+                <div className="flex items-baseline">
+                    <span className="text-white text-2xl font-normal font-inter">${trip.price}</span>
+                    <span className="text-white/60 text-sm ml-3 font-inter">per person</span>
                 </div>
             </div>
         </div>

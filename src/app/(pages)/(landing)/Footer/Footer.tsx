@@ -1,54 +1,61 @@
 'use client'
 
 import React from 'react'
-import Button from '@/common/components/atoms/Button'
-import { ArrowRight } from 'lucide-react'
-import Image from 'next/image'
-
 
 const Footer = () => {
-    const navOptions = ['Home', 'About', 'Trips', 'Contact']
-
     return (
-        <div className='w-full pt-16 px-16'>
-            <div className='flex items-end justify-between '>
-                <div className='w-[50%]'>
-                    <h2 className='text-5xl text-black mb-8 w-[60%]'>
-                        Tailored Travel Experiences Just for You
-                    </h2>
-                    <div className='flex gap-4'>
-                        {navOptions.map((option) => (
-                            <button
-                                key={option}
-                                className='bg-white text-black text-lg px-6 mr-4 py-2 rounded-lg hover:bg-gray-100 transition-all flex items-center justify-center '
-                            >
-                                {option}
-                            </button>
-                        ))}
-                    </div>
+        <div className="w-full bg-black text-white px-12 pt-12 pb-6 flex flex-col gap-8">
+            <div className="flex justify-between items-center">
+                <div className="flex flex-col gap-4 ">
+                    <div className="text-3xl font-bold">Wondrr</div>
+                    <div className="text-gray-300 text-lg">&quot;Making Every Journey Memorable&quot;</div>
                 </div>
-                <div className='flex flex-col gap-6 w-[35%]'>
-                    <p className='text-[#828282] font-normal leading-relaxed'>
-                        Discover amazing destinations and create unforgettable memories with our
-                        expertly curated travel packages. Let us help you plan your dream vacation today.
-                    </p>
-                    <div>
-                        <Button
-                            variant='contained'
-                            className='!text-black !text-lg !font-normal !px-6 !py-2 !rounded-full !bg-[rgba(0,142,244,0.25)] '
-                        >
-                            Go Travelling <ArrowRight className='w-5 h-5 ml-2' strokeWidth={2} />
-                        </Button>
+                <div className="flex flex-col gap-4">
+                    <div className="text-white text-base">Newsletter</div>
+                    <div className="flex">
+                        <input
+                            className="bg-gray-100 text-gray-600 px-6 py-3 rounded-full flex-1"
+                            placeholder="Enter your email"
+                        />
+                        <button className="bg-green-400 text-black px-6 py-3 rounded-full ml-2 w-32">
+                            Subscribe
+                        </button>
                     </div>
                 </div>
             </div>
-                <Image
-                    src='/svg/Wondrr.svg'
-                    alt='quotes'
-                    height={0}
-                    width={0}
-                    className='h-auto w-[75%] mt-24'
-                />
+            <div className="flex justify-between items-start">
+                <div className="flex flex-col gap-6 w-52">
+                    <div className="text-gray-300 text-base leading-7">
+                        16 Avenue des Champs-<br />Élysées, 75008 Paris, France
+                    </div>
+                    <div className="text-gray-300 text-base">+33 1 23 45 67 89</div>
+                </div>
+                <div className="flex gap-16">
+                    <div className="flex flex-col gap-6">
+                        <div className="text-white text-base font-semibold">HOME</div>
+                        <div className="text-gray-400 text-sm leading-5 cursor-pointer hover:text-white">Destinations</div>
+                        <div className="text-gray-400 text-sm leading-5 cursor-pointer hover:text-white">About Us</div>
+                        <div className="text-gray-400 text-sm leading-5 cursor-pointer hover:text-white">Book Your Trip</div>
+                        <div className="text-gray-400 text-sm leading-5 cursor-pointer hover:text-white">Contact Us</div>
+                    </div>
+                    <div className="flex flex-col gap-6">
+                        <div className="text-white text-base font-semibold">CONTACT</div>
+                        <div className="text-gray-400 text-sm leading-5 cursor-pointer hover:text-white">Community</div>
+                        <div className="text-gray-400 text-sm leading-5 cursor-pointer hover:text-white">Knowledge Base</div>
+                        <div className="text-gray-400 text-sm leading-5 cursor-pointer hover:text-white">Support</div>
+                        <div className="text-gray-400 text-sm leading-5 cursor-pointer hover:text-white">How to Buy</div>
+                    </div>
+                    <div className="flex flex-col gap-6">
+                        <div className="text-white text-base font-semibold">LEARN</div>
+                        <div className="text-gray-400 text-sm leading-5 cursor-pointer hover:text-white">About</div>
+                        <div className="text-gray-400 text-sm leading-5 cursor-pointer hover:text-white">Pricing</div>
+                    </div>
+                </div>
+            </div>
+            <hr className="border-gray-700" />
+            <div className="flex justify-center items-center">
+                <div className="text-gray-400 text-sm">All Rights Reserved - Wondrr Trips</div>
+            </div>
         </div>
     )
 }
