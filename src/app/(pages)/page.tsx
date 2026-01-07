@@ -1,6 +1,7 @@
 'use client';
 
 import Footer from './(landing)/Footer/Footer';
+import InfoSection from './(landing)/InfoSection/InfoSection';
 import ReviewSection from './(landing)/ReviewSection/ReviewSection';
 import TripSlider from './(landing)/TripSlider/TripSlider';
 // import { useSession } from 'next-auth/react';
@@ -131,6 +132,7 @@ export const Landing = () => {
                 </div>
             </div>
             <TripSlider />
+            <InfoSection/>
             <ReviewSection />
             <Footer />
         </>
