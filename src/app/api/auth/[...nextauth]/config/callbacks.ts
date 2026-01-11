@@ -1,18 +1,17 @@
 import { NextAuthOptions } from "next-auth";
-import { User } from "../model/User";
-import { UserDetails } from "../model/UserDetails";
-import mongoose from "mongoose";
+import axios from "axios";
+import { API_ENDPOINTS } from "@/common/constants/apiEndpoints";
 
-type FacebookProfile = { 
-  picture?: { data?: { url?: string } }, 
-  email: string, 
-  name: string
-};
+// type FacebookProfile = {
+//   picture?: { data?: { url?: string } },
+//   email: string,
+//   name: string
+// };
 
-type GoogleProfile = { 
-    picture?: string, 
-    email: string, 
-    name: string 
+type GoogleProfile = {
+  id : string,
+  email: string,
+  fullName : string
 };
 
 
@@ -39,49 +38,29 @@ export const authCallbacks: Pick<NextAuthOptions, 'callbacks'> = {
 
 
       if (account && profile) {
-        
-        let dbUser = await User.findOne({ email: profile?.email });
 
-        if (!dbUser) {
-          const session = await mongoose.startSession();
-          
-          try {
-            session.startTransaction();
-
-            const fbProfile = profile as FacebookProfile;
-            const googleProfile = profile as GoogleProfile;
-
-            const [createdUser] = await User.create([{
-              fullName: profile.name,
-              email: profile.email,
-            }], { session });
-
-            await UserDetails.create([{
-              userId: createdUser._id,
-              mobileNumber: '',
-              countryCode: '+91',
-              avatar: fbProfile.picture?.data?.url || googleProfile.picture || undefined,
-              provider: {
-                type: account.provider,
-                id: account.providerAccountId,
-              },
-            }], { session });
-            
-            await session.commitTransaction();
-            
-            dbUser = createdUser;
-          } catch (error) {
-              await session.abortTransaction();
-              throw error;
-          } finally {
-              await session.endSession();
-          }
+        const user_data : GoogleProfile = {
+          email : profile.email || "",
+          id : profile.sub || "",
+          fullName : profile.name || "",
         }
 
-        token.sub = dbUser._id.toString();
-        // token.email = undefined;
-        token.picture = undefined;
-        return token;
+        try {
+          const res = await axios.post(process.env.NEXT_PUBLIC_API_URL + API_ENDPOINTS.USER.SOCIAL_LOGIN , user_data);
+
+          const user = res.data.data;
+
+          token.userId = user.userId.toString()
+          token.type = user.type
+          token.fullName = user.fullName
+
+        } catch (error) {
+
+          if (axios.isAxiosError(error)) {
+            throw new Error(error.response?.data?.message || "Login failed");
+          }
+          throw new Error("Unexpected error");
+        }
       }
 
       if (account?.type == 'credentials') {
@@ -97,7 +76,7 @@ export const authCallbacks: Pick<NextAuthOptions, 'callbacks'> = {
           id: (token.userId || token.sub) as string,
           email: token.email as string,
           fullName: (token.fullName || token.name) as string,
-          type : token.type as "Traveler" | "Host"
+          type: token.type as "Traveler" | "Host"
         };
       }
       return session;

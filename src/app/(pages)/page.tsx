@@ -43,7 +43,7 @@ export const Landing = () => {
                     <header className="w-full relative flex justify-between items-center mb-8 md:mb-12 z-10">
                         <div className="flex items-center gap-8 md:gap-24 w-full">
                             <h1 className="text-white text-2xl md:text-4xl font-bold font-['PolySans']">Wondrr</h1>
-                            <nav className="flex items-center gap-10 text-white text-xl font-['DM_Sans']">
+                            <nav className="flex items-center gap-10 text-white text-xl">
                                 <span>Home</span>
                                 <span>About Us</span>
                                 <span>Destinations</span>

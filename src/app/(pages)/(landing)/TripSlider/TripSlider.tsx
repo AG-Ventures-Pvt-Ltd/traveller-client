@@ -148,7 +148,7 @@ const TripSlider = ({ title, description, destinations, trips, className, showBo
 
             <div className='text-center mb-8 px-4'>
                 <div className='flex mx-[5%] gap-[16%] items-center'>
-                    <h1 className='text-6xl font-bold mb-4 text-black flex-5 text-start' style={{ fontFamily: 'DM Sans' }}>{displayTitle}</h1>
+                    <h1 className='text-6xl font-bold mb-4 text-black flex-5 text-start'>{displayTitle}</h1>
                     <p className='text-[#000000CC] font-light text-sm leading-5 flex-6 text-start' style={{ fontFamily: 'Inter' }}>
                         {displayDescription}
                     </p>

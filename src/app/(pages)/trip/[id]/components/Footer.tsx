@@ -1,184 +1,125 @@
 import { Facebook, Twitter, Instagram, Mail, Phone, MapPin } from "lucide-react";
-import { Divider, Typography, IconButton, Box } from "@mui/material";
+import { Separator } from "@/common/ui/separator";
 
 export function Footer() {
   return (
-    <Box component="footer" sx={{ bgcolor: 'grey.50', borderTop: 1, borderColor: 'divider', mt: 8 }}>
-      <Box sx={{ maxWidth: 'lg', mx: 'auto', px: 4, py: 6 }}>
+    <footer className="bg-gray-50 border-t border-gray-200 mt-8">
+      <div className="max-w-7xl mx-auto px-4 py-6">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="space-y-4">
-            <Typography variant="h6">TravelExplore</Typography>
-            <Typography variant="body2" color="text.secondary">
+            <h6 className="text-lg font-semibold">TravelExplore</h6>
+            <p className="text-sm text-gray-600">
               Discover amazing destinations and create unforgettable memories with our curated travel experiences.
-            </Typography>
+            </p>
             <div className="flex gap-3">
-              <IconButton 
-                size="small" 
-                sx={{ bgcolor: 'background.paper', '&:hover': { bgcolor: 'grey.100' } }}
-              >
+              <button className="p-2 bg-white hover:bg-gray-100 rounded-full transition-colors">
                 <Facebook className="h-5 w-5 text-gray-600" />
-              </IconButton>
-              <IconButton 
-                size="small" 
-                sx={{ bgcolor: 'background.paper', '&:hover': { bgcolor: 'grey.100' } }}
-              >
+              </button>
+              <button className="p-2 bg-white hover:bg-gray-100 rounded-full transition-colors">
                 <Twitter className="h-5 w-5 text-gray-600" />
-              </IconButton>
-              <IconButton 
-                size="small" 
-                sx={{ bgcolor: 'background.paper', '&:hover': { bgcolor: 'grey.100' } }}
-              >
+              </button>
+              <button className="p-2 bg-white hover:bg-gray-100 rounded-full transition-colors">
                 <Instagram className="h-5 w-5 text-gray-600" />
-              </IconButton>
+              </button>
             </div>
           </div>
 
           <div className="space-y-4">
-            <Typography variant="subtitle1">Quick Links</Typography>
+            <h6 className="text-base font-semibold">Quick Links</h6>
             <ul className="space-y-2">
               <li>
-                <Typography 
-                  variant="body2" 
-                  color="text.secondary" 
-                  sx={{ cursor: 'pointer', '&:hover': { color: 'text.primary' } }}
-                >
+                <a className="text-sm text-gray-600 hover:text-gray-900 cursor-pointer transition-colors">
                   About Us
-                </Typography>
+                </a>
               </li>
               <li>
-                <Typography 
-                  variant="body2" 
-                  color="text.secondary" 
-                  sx={{ cursor: 'pointer', '&:hover': { color: 'text.primary' } }}
-                >
+                <a className="text-sm text-gray-600 hover:text-gray-900 cursor-pointer transition-colors">
                   Destinations
-                </Typography>
+                </a>
               </li>
               <li>
-                <Typography 
-                  variant="body2" 
-                  color="text.secondary" 
-                  sx={{ cursor: 'pointer', '&:hover': { color: 'text.primary' } }}
-                >
+                <a className="text-sm text-gray-600 hover:text-gray-900 cursor-pointer transition-colors">
                   Travel Blog
-                </Typography>
+                </a>
               </li>
               <li>
-                <Typography 
-                  variant="body2" 
-                  color="text.secondary" 
-                  sx={{ cursor: 'pointer', '&:hover': { color: 'text.primary' } }}
-                >
+                <a className="text-sm text-gray-600 hover:text-gray-900 cursor-pointer transition-colors">
                   Become a Host
-                </Typography>
+                </a>
               </li>
             </ul>
           </div>
 
           <div className="space-y-4">
-            <Typography variant="subtitle1">Support</Typography>
+            <h6 className="text-base font-semibold">Support</h6>
             <ul className="space-y-2">
               <li>
-                <Typography 
-                  variant="body2" 
-                  color="text.secondary" 
-                  sx={{ cursor: 'pointer', '&:hover': { color: 'text.primary' } }}
-                >
+                <a className="text-sm text-gray-600 hover:text-gray-900 cursor-pointer transition-colors">
                   Help Center
-                </Typography>
+                </a>
               </li>
               <li>
-                <Typography 
-                  variant="body2" 
-                  color="text.secondary" 
-                  sx={{ cursor: 'pointer', '&:hover': { color: 'text.primary' } }}
-                >
+                <a className="text-sm text-gray-600 hover:text-gray-900 cursor-pointer transition-colors">
                   Safety
-                </Typography>
+                </a>
               </li>
               <li>
-                <Typography 
-                  variant="body2" 
-                  color="text.secondary" 
-                  sx={{ cursor: 'pointer', '&:hover': { color: 'text.primary' } }}
-                >
+                <a className="text-sm text-gray-600 hover:text-gray-900 cursor-pointer transition-colors">
                   Cancellation Policy
-                </Typography>
+                </a>
               </li>
               <li>
-                <Typography 
-                  variant="body2" 
-                  color="text.secondary" 
-                  sx={{ cursor: 'pointer', '&:hover': { color: 'text.primary' } }}
-                >
+                <a className="text-sm text-gray-600 hover:text-gray-900 cursor-pointer transition-colors">
                   Contact Us
-                </Typography>
+                </a>
               </li>
             </ul>
           </div>
 
           <div className="space-y-4">
-            <Typography variant="subtitle1">Contact</Typography>
+            <h6 className="text-base font-semibold">Contact</h6>
             <ul className="space-y-3">
               <li className="flex items-center gap-2">
                 <Mail className="h-4 w-4" />
-                <Typography variant="body2" color="text.secondary">
+                <span className="text-sm text-gray-600">
                   support@travelexplore.com
-                </Typography>
+                </span>
               </li>
               <li className="flex items-center gap-2">
                 <Phone className="h-4 w-4" />
-                <Typography variant="body2" color="text.secondary">
+                <span className="text-sm text-gray-600">
                   +1 (555) 123-4567
-                </Typography>
+                </span>
               </li>
               <li className="flex items-start gap-2">
                 <MapPin className="h-4 w-4 mt-1" />
-                <Typography variant="body2" color="text.secondary">
+                <span className="text-sm text-gray-600">
                   123 Travel Street, Adventure City, AC 12345
-                </Typography>
+                </span>
               </li>
             </ul>
           </div>
         </div>
 
-        <Divider sx={{ my: 4 }} />
+        <Separator className="my-4" />
 
-        <Box sx={{ 
-          display: 'flex', 
-          flexDirection: { xs: 'column', md: 'row' },
-          justifyContent: 'space-between', 
-          alignItems: 'center',
-          gap: 2
-        }}>
-          <Typography variant="body2" color="text.secondary">
+        <div className="flex flex-col md:flex-row justify-between items-center gap-2">
+          <p className="text-sm text-gray-600">
             © 2025 TravelExplore. All rights reserved.
-          </Typography>
+          </p>
           <div className="flex gap-6">
-            <Typography 
-              variant="body2" 
-              color="text.secondary" 
-              sx={{ cursor: 'pointer', '&:hover': { color: 'text.primary' } }}
-            >
+            <a className="text-sm text-gray-600 hover:text-gray-900 cursor-pointer transition-colors">
               Privacy Policy
-            </Typography>
-            <Typography 
-              variant="body2" 
-              color="text.secondary" 
-              sx={{ cursor: 'pointer', '&:hover': { color: 'text.primary' } }}
-            >
+            </a>
+            <a className="text-sm text-gray-600 hover:text-gray-900 cursor-pointer transition-colors">
               Terms of Service
-            </Typography>
-            <Typography 
-              variant="body2" 
-              color="text.secondary" 
-              sx={{ cursor: 'pointer', '&:hover': { color: 'text.primary' } }}
-            >
+            </a>
+            <a className="text-sm text-gray-600 hover:text-gray-900 cursor-pointer transition-colors">
               Cookie Policy
-            </Typography>
+            </a>
           </div>
-        </Box>
-      </Box>
-    </Box>
+        </div>
+      </div>
+    </footer>
   );
 }

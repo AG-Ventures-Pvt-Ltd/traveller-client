@@ -6,6 +6,10 @@ export const API_ENDPOINTS = {
   },
   BOOKINGS : {
     START: "/api/client/v1/bookings/start",
+    ADD_USERS: (bookingId: string) => `/api/client/v1/bookings/${bookingId}/addusers`,
+  },
+  DISCOUNTS: {
+    GET_AVAILABLE: (tripId: string) => `/api/client/v1/discounts/${tripId}`,
   },
   SUPPORT: {
     CREATE_TICKET: "/api/client/v1/support/tickets/create",
@@ -20,5 +24,10 @@ export const API_ENDPOINTS = {
     GET: "/api/client/v1/guestusers/me",
     UPDATE: (id: string) => `/api/client/v1/guestusers/me/update/${id}`,
     DELETE: (id: string) => `/api/client/v1/guestusers/me/delete/${id}`,
+  },
+  USER: {
+    REGISTER: "/api/client/v1/user/register",
+    VERIFY_EMAIL: (token: string, email: string) => `/api/client/v1/user/verifyEmail?token=${token}&email=${email}`,
+    SOCIAL_LOGIN: "/api/client/v1/user/social_login",
   },
 };

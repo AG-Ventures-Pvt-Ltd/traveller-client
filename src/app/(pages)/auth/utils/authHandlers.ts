@@ -6,12 +6,14 @@ export interface LoginValues {
 }
 
 export interface SignupValues {
-  firstName: string;
-  lastName: string;
+  firstName?: string;
+  lastName?: string;
+  fullName: string;
   email: string;
-  username: string;
-  phoneNumber: string;
+  username?: string;
+  phoneNumber?: string;
   password: string;
+  confirmPassword?: string;
 }
 
 export interface AuthResponse {

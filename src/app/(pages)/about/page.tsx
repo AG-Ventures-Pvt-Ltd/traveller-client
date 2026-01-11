@@ -1,7 +1,7 @@
 'use client'
 
 import Button from "@/common/components/atoms/Button";
-import { usePayment } from "@/app/(pages)/trip/book/[id]/hooks/usePayment";
+import { usePayment } from "@/app/(pages)/trip/book/[id]/[batchId]/hooks/usePayment";
 
 export default function Page() {
   const { startPayment } = usePayment();

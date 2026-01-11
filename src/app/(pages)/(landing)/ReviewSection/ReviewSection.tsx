@@ -62,7 +62,7 @@ const ReviewSection = () => {
 
     return (
         <div className="w-full min-h-[691px] bg-[#F0F7FE] overflow-hidden py-16 px-16">
-            <div className="text-7xl font-bold text-[#0D203F] mb-8" style={{ fontFamily: 'DM Sans' }}>
+            <div className="text-7xl font-bold text-[#0D203F] mb-8">
                 What people say<br /> about us ?
             </div>
             <div className="flex gap-[41px] justify-center">

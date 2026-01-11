@@ -2,29 +2,27 @@
 
 import { useState } from 'react';
 import { Form } from 'react-final-form';
-import { Typography } from '@mui/material';
-import { signIn } from 'next-auth/react';
-import Image from 'next/image';
-import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { ArrowRight, HelpCircle, MessageCircle, Shield } from 'lucide-react';
 import SignInForm from './components/Login/SignInForm';
 import SignUpForm from './components/Register/SignUpForm';
 import SideBanner from './components/SideBanner';
 import { handleAuthSubmit, LoginValues, SignupValues } from './utils/authHandlers';
-import { useRegisterUser } from './hooks/useRegisterUser';
+import usePostData from '@/services/usePostData';
+import { API_ENDPOINTS } from '@/common/constants/apiEndpoints';
 import { notify } from '@/common/utils/notify';
-import Button from '@/common/components/atoms/Button';
-
+import Button from '@/common/ui/Buttons/Button';
+import Link from 'next/link';
+import GoogleSignInButton from './components/GoogleSignInButton';
 
 export default function Page() {
-
   const [isLogin, setIsLogin] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [agreeToTerms, setAgreeToTerms] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirectUrl = searchParams.get('redirectUrl');
-
-  const registerMutation = useRegisterUser();
+  const registerMutation = usePostData({ url: API_ENDPOINTS.USER.REGISTER });
 
   const onSubmit = async (values: LoginValues | SignupValues) => {
     setErrorMessage(null);
@@ -36,94 +34,114 @@ export default function Page() {
         const redirectTo = redirectUrl || '/';
         router.push(redirectTo);
       }
-    } 
-    else {
-
+    } else {
       const signupValues = values as SignupValues;
-      const fullName = `${signupValues.firstName} ${signupValues.lastName}`;
       const data = {
         email: signupValues.email,
         password: signupValues.password,
-        fullName,
+        fullName: signupValues.fullName,
         username: signupValues.username,
-        mobileNumber: signupValues.phoneNumber,
+        mobileNumber: signupValues.phoneNumber || '',
       };
-      registerMutation.mutate(data, {
-        onSuccess: () => {
-          notify.success('Registration successful! Please log in.');
-          router.push('/trip');
-        },
-        onError: (error: Error) => {
-          const axiosError = error as { response?: { data?: { message?: string } } };
-          const errorMessage = axiosError?.response?.data?.message || error?.message || "Registration failed!";
-          setErrorMessage(errorMessage);
-        },
-      });
+      try {
+        await registerMutation.mutateAsync(data);
+        notify.success('Registration successful! Please log in.');
+        setIsLogin(true);
+        setAgreeToTerms(false);
+      } catch (error) {
+        const axiosError = error as { response?: { data?: { message?: string } } };
+        const errorMessage = axiosError?.response?.data?.message || (error as Error)?.message || "Registration failed!";
+        setErrorMessage(errorMessage);
+      }
     }
   };
 
-  const handleGoogleLogin = () => {
-    
-    const redirectTo = redirectUrl || '/';
-    signIn('google', { callbackUrl: redirectTo });
+  const toggleMode = () => {
+    setIsLogin(!isLogin);
+    setErrorMessage(null);
+    setAgreeToTerms(false);
   };
 
   return (
-    <div className="flex flex-col md:flex-row items-center justify-between h-screen w-full">
-      <div className="w-full flex flex-col justify-between h-full p-8 rounded-lg">
-        <Link href="/" className='font-extrabold text-3xl'>Wondrr</Link>
-        <div className='w-full flex flex-col items-center  gap-4'>
-          <Typography variant="h5" className="lg:w-[60%] xl:w-[48%] pb-4">
-            {isLogin ? 'Sign in to Get Started' : 'Sign up to Get Started'}
-          </Typography>
-          <Form
-            initialValues={!isLogin ? { phoneNumber: '+91' } : {}}
-            onSubmit={onSubmit}
-            render={({ handleSubmit }) => (
-              <form onSubmit={handleSubmit} className="flex flex-col lg:w-[60%] xl:w-[48%] gap-6 space-y-4">
-                {isLogin ? <SignInForm /> : <SignUpForm />}
-                <Button
-                  type="submit"
-                  variant="contained"
-                  color="primary"
-                  fullWidth
-                  className='!py-2'
-                >
-                  {isLogin ? 'Sign In' : 'Sign Up'}
-                </Button>
-                {errorMessage && (
-                  <Typography variant="body2" 
-                  align='center'
-                  className="!text-red-600 !text-sm !-mt-2">
-                    {errorMessage}
-                  </Typography>
-                )}
-                <Button
-                  variant="contained"
-                  color='secondary'
-                  startIcon={<Image src='/svg/GoogleLogo.svg' alt='Google' width={20} height={20} />}
-                  onClick={handleGoogleLogin}
-                  className='!py-2 !font-light'
-                  fullWidth
-                >
-                  Sign in with Google
-                </Button>
-              </form>
-            )}
-          />
-          <div className="text-center py-2">
-            <Typography variant="body2" color="secondary" className='!font-light'>
-              {isLogin ? "Don't have an account?" : 'Already have an account?'} <a href="#" className='underline' onClick={(e) => { e.preventDefault(); setIsLogin(!isLogin); setErrorMessage(null); }}>{isLogin ? 'Sign up' : 'Sign in'}</a>
-            </Typography>
-          </div>
+    <div className="flex">
+      <div className='md:w-1/2'>
+      <SideBanner />
+      </div>
+      <div className={`w-full md:w-1/2 flex flex-col justify-start items-center h-screen overflow-y-scroll px-[10%] sm:px-[14%] md:px-[4%] lg:px-[8%] xl:px-[12%] pt-12 pb-8`}>
+        <div className="flex flex-col gap-3 mb-8 w-full">
+          <h1 className="text-neutral-900 text-4xl font-bold font-['Satoshi']">
+            {isLogin ? 'Welcome Back' : 'Create Account'}
+          </h1>
+          <p className="text-neutral-700 text-base font-medium font-['Satoshi']">
+            {isLogin ? 'Continue your journey where you left off' : 'Start your adventure with us today'}
+          </p>
         </div>
-        <div className='flex justify-center'>
-          <Link href=",rivacy-policy" className='underline'>Terms and conditions</Link>
-          <span className='px-2'>•</span>
-          <Link href="/privacy-policy" className='underline'>Privacy Policy</Link>
+        <div className='w-full'>
+          <GoogleSignInButton redirectTo={redirectUrl || '/'}/>
+        </div>
+        <div className="flex justify-start items-center gap-4 mb-4">
+          <div className="flex-1 h-px bg-gray-200" />
+          <span className="text-neutral-700 text-sm font-medium font-['Satoshi'] leading-5">or</span>
+          <div className="flex-1 h-px bg-gray-200" />
+        </div>
+        <Form
+          onSubmit={onSubmit}
+          render={({ handleSubmit }) => (
+            <form onSubmit={handleSubmit} className="w-full flex flex-col gap-5">
+              {isLogin ? (
+                <SignInForm />
+              ) : (
+                <SignUpForm agreeToTerms={agreeToTerms} setAgreeToTerms={setAgreeToTerms} />
+              )}
+              {errorMessage && (
+                <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+                  <p className="text-red-600 text-sm text-center font-medium">
+                    {errorMessage}
+                  </p>
+                </div>
+              )}
+              <Button
+                type="submit"
+                fullWidth
+                disabled={!isLogin && !agreeToTerms}
+                className="!h-14 !bg-neutral-900 !rounded-xl !text-white !font-bold !text-base !normal-case hover:!bg-neutral-800 disabled:!opacity-50 disabled:!cursor-not-allowed"
+                endIcon={<ArrowRight size={20} />}
+              >
+                <span className="font-['Satoshi']">
+                  {isLogin ? 'Sign In' : 'Create Account'}
+                </span>
+              </Button>
+              <div className="flex justify-center items-center gap-2 mb-0">
+                <span className="text-neutral-700 text-base font-medium font-['Satoshi'] leading-6">
+                  {isLogin ? "Don't have an account?" : 'Already have an account?'}
+                </span>
+                <Button
+                  type="button"
+                  onClick={toggleMode}
+                  variant="text"
+                  className="!text-neutral-900 !text-base !font-bold !normal-case !p-0 !min-w-0 hover:!underline font-['Satoshi']"
+                >
+                  {isLogin ? 'Sign Up' : 'Sign In'}
+                </Button>
+              </div>
+            </form>
+          )}
+        />
+        <div className="flex justify-center items-center gap-6 pt-3 border-t border-gray-200">
+          <Link href="/help" className="flex items-center gap-1 text-neutral-700 text-sm font-medium font-['Satoshi'] leading-5 hover:text-neutral-900">
+            <HelpCircle size={16} />
+            Help Center
+          </Link>
+          <Link href="/contact" className="flex items-center gap-1 text-neutral-700 text-sm font-medium font-['Satoshi'] leading-5 hover:text-neutral-900">
+            <MessageCircle size={16} />
+            Contact Support
+          </Link>
+          <Link href="/privacy-policy" className="flex items-center gap-1 text-neutral-700 text-sm font-medium font-['Satoshi'] leading-5 hover:text-neutral-900">
+            <Shield size={16} />
+            Privacy
+          </Link>
         </div>
       </div>
-      <SideBanner />
     </div>
   );
 }

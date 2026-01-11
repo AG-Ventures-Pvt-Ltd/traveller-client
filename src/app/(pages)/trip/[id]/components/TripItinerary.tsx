@@ -1,24 +1,17 @@
-import { Accordion, AccordionSummary, AccordionDetails, Box, Typography } from "@mui/material";
-import { MapPin, Clock, Utensils, ChevronDown } from "lucide-react";
+import { useState } from "react";
+import { ChevronDown } from "lucide-react";
+import { TripItineraryProps, Activity } from '../types';
+import Card from "@/common/ui/Card";
 
-interface ItineraryDay {
-  day: number;
-  title: string;
-  description: string;
-  activities: string[];
-  meals?: string[];
-  duration?: string;
-}
 
-interface TripItineraryProps {
-  itinerary: ItineraryDay[];
-}
 
 export function TripItinerary({ itinerary }: TripItineraryProps) {
+  const [expandedDays, setExpandedDays] = useState<number[]>([]);
+
   if (!itinerary || !Array.isArray(itinerary) || itinerary.length === 0) {
     return (
-      <div className="space-y-4 my-8">
-        <h2 className="font-bold text-2xl">Day-wise Itinerary</h2>
+      <div className="flex flex-col gap-6 my-8">
+        <h2 className="text-2xl text-[#0F172B] tracking-tight">Tour Schedule</h2>
         <div className="text-gray-500 text-center py-8">
           Itinerary details are not available yet.
         </div>
@@ -26,85 +19,123 @@ export function TripItinerary({ itinerary }: TripItineraryProps) {
     );
   }
 
+  const toggleDay = (dayNumber: number) => {
+    setExpandedDays((prev) =>
+      prev.includes(dayNumber)
+        ? prev.filter((d) => d !== dayNumber)
+        : [...prev, dayNumber]
+    );
+  };
+
+  const normalizeActivities = (activities: (string | Activity)[]): Activity[] => {
+    return activities.map((activity) => {
+      if (typeof activity === 'string') {
+        return { description: activity };
+      }
+      return activity;
+    });
+  };
+
   return (
-    <div className="space-y-4 my-8">
-      <h2 className="font-bold text-2xl">Day-wise Itinerary</h2>
-      <div>
-        {itinerary.map((day) => (
-          <Accordion 
-            key={day.day}
-            sx={{
-              border: 'none',
-              boxShadow: 'none',
-              borderBottom: '1px solid',
-              borderColor: 'divider',
-              '&:before': {
-                display: 'none',
-              },
-              '&:last-child': {
-                borderBottom: 'none',
-              },
-            }}
-          >
-            <AccordionSummary
-              expandIcon={<ChevronDown />}
-              aria-controls={`day-${day.day}-content`}
-              id={`day-${day.day}-header`}
+    <div className="flex flex-col gap-6 my-8">
+      <h2 className="text-[#0F172B] tracking-tight font-bold text-xl">Tour Schedule</h2>
+      
+      <div className="flex flex-col gap-3">
+        {itinerary.map((day) => {
+          const isExpanded = expandedDays.includes(day.day);
+          const normalizedActivities = normalizeActivities(day.activities || []);
+
+          return (
+            <Card
+              key={day.day}
+              variant="fill"
+              className={`rounded-2xl overflow-hidden transition-all duration-300 ${
+                isExpanded 
+                  ? 'shadow-[0px_4px_6px_-4px_rgba(0,0,0,0.1),0px_2px_16px_-2px_rgba(0,0,0,0.1)]'
+                  : 'shadow-[0px_2px_4px_-2px_rgba(0,0,0,0.1)]'
+              }`}
             >
-              <div className="flex items-center gap-3">
-                <Box
-                  sx={{
-                    bgcolor: 'primary.main',
-                    color: 'white',
-                    borderRadius: '50%',
-                    width: 32,
-                    height: 32,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    flexShrink: 0,
-                  }}
-                >
-                  {day.day}
-                </Box>
-                <Typography>{day.title}</Typography>
-              </div>
-            </AccordionSummary>
-            <AccordionDetails>
-              <div className="space-y-4 pl-11 pt-2">
-                <Typography color="text.secondary">{day.description}</Typography>
+              <button
+                onClick={() => toggleDay(day.day)}
+                className="w-full p-6 flex items-center justify-between hover:bg-white/30 transition-colors duration-200"
+              >
+                <div className="flex flex-col gap-1 items-start">
+                  <div className="flex items-center gap-3">
+                    <div className="bg-[#0D203F] rounded-full h-12 w-12 flex items-center justify-center">
+                      <span className="text-white text-lg leading-4 font-bold">
+                        {day.day}
+                      </span>
+                    </div>
+                    <h3 className="text-lg text-[#0F172B] leading-7 font-bold">
+                      {day.title}
+                    </h3>
+                  </div>
+                </div>
                 
-                {day.duration && (
-                  <div className="flex items-center gap-2 text-sm">
-                    <Clock className="h-4 w-4 text-gray-500" />
-                    <span>{day.duration}</span>
-                  </div>
-                )}
+                <ChevronDown
+                  className={`w-6 h-6 text-[#0F172B] transition-transform duration-300 ${
+                    isExpanded ? 'rotate-180' : 'rotate-0'
+                  }`}
+                />
+              </button>
 
-                {day.activities.length > 0 && (
-                  <div>
-                    <Typography variant="subtitle1" sx={{ mb: 1 }}>Activities</Typography>
-                    <ul className="space-y-2">
-                      {day.activities.map((activity, index) => (
-                        <li key={index} className="flex items-start gap-2">
-                          <MapPin className="h-4 w-4 text-primary mt-1 flex-shrink-0" />
-                          <Typography variant="body2">{activity}</Typography>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
+              <div
+                className={`overflow-hidden transition-all duration-300 ${
+                  isExpanded ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'
+                }`}
+              >
+                <div className="px-6 pb-6 bg-white/40">
+                  <div className="flex flex-col gap-4">
+                    {day.description && (
+                      <p className="text-base text-[#334155] leading-6">
+                        {day.description}
+                      </p>
+                    )}
+                    
+                    {normalizedActivities.length > 0 && (
+                      <div className="flex flex-col gap-2">
+                        <span className="text-sm font-medium text-[#0F172B]">Activities</span>
+                        <div className="flex flex-wrap gap-2">
+                          {normalizedActivities.map((activity, index) => (
+                            <div
+                              key={index}
+                              className="px-3 py-2 bg-white rounded-lg border border-[#E2E8F0] text-sm text-[#334155] leading-5 hover:border-[#0D203F] transition-colors duration-200"
+                            >
+                              {activity.description}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
 
-                {day.meals && day.meals.length > 0 && (
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, bgcolor: 'grey.50', p: 1.5, borderRadius: 1 }}>
-                    <Utensils className="h-4 w-4 text-gray-500" />
-                    <Typography variant="body2">Meals: {day.meals.join(", ")}</Typography>
-                  </Box>
-                )}
+                    {day.meals && day.meals.length > 0 && (
+                      <div className="flex flex-col gap-2">
+                        <span className="text-sm font-medium text-[#0F172B]">Meals Included</span>
+                        <div className="flex flex-wrap gap-2">
+                          {day.meals.map((meal, index) => (
+                            <div
+                              key={index}
+                              className="px-3 py-2 bg-[#F0FDF4] rounded-lg border border-[#86EFAC] text-sm text-[#166534] leading-5"
+                            >
+                              {meal}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {day.duration && (
+                      <div className="flex items-center gap-2 text-sm text-[#475569]">
+                        <span className="font-medium">Duration:</span>
+                        <span>{day.duration}</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
               </div>
-            </AccordionDetails>
-          </Accordion>
-        ))}
+            </Card>
+          );
+        })}
       </div>
     </div>
   );

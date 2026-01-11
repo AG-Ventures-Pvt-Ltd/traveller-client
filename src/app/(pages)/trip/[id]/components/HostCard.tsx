@@ -1,86 +1,69 @@
-import { Avatar, Card, CardContent, Chip, Typography, Divider } from "@mui/material";
-import { Star, CheckCircle } from "lucide-react";
-
-interface HostCardProps {
-  name: string;
-  avatar?: string;
-  joinedDate: string;
-  verified: boolean;
-  rating: number;
-  totalReviews: number;
-  description: string;
-}
+import { Star } from "lucide-react";
+import Image from "next/image";
+import { HostCardProps } from '../types';
+import Card from "@/common/ui/Card";
 
 export function HostCard({
   name,
   avatar,
-  joinedDate,
-  verified,
+  initials,
   rating,
   totalReviews,
+  joinedDate = 0,
   description,
 }: HostCardProps) {
+  // Generate initials from name if not provided
+  const displayInitials = initials || name
+    .split(" ")
+    .map((word) => word[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2);
+
   return (
-    <Card
-      elevation={0}
-      sx={{
-        border: '1px solid #ececec',
-        borderRadius: 2,
-      }}
-    >
-      <CardContent sx={{ p: 3 }}>
-        <div className="space-y-6">
-          <div className="flex items-start gap-4">
-            <Avatar 
-              src={avatar} 
-              alt={name}
-              sx={{ width: 64, height: 64 }}
-            >
-              {name[0]}
-            </Avatar>
-            <div className="flex-1">
-              <div className="flex items-center gap-2 mb-1">
-                <Typography variant="h6">{name}</Typography>
-                {verified && (
-                  <Chip
-                    icon={<CheckCircle className="h-3 w-3" />}
-                    label="Verified"
-                    size="small"
-                    sx={{
-                      bgcolor: 'success.light',
-                      color: 'white',
-                      '& .MuiChip-icon': {
-                        color: 'white',
-                      },
-                    }}
-                  />
-                )}
-              </div>
-              <div className="flex items-center gap-2 text-sm text-gray-500">
-                <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                <span>{rating} ({totalReviews} reviews)</span>
-              </div>
-            </div>
+    <div className="flex flex-col gap-6 my-8 ">
+      <h2 className="text-xl font-bold text-[#0F172B] tracking-tight">Your Host</h2>
+
+      <Card className="flex flex-col gap-4 p-6">
+        <div className="flex gap-4">
+          <div className="w-16 h-16 bg-[#0D203F] rounded-full flex items-center justify-center flex-shrink-0">
+            {avatar ? (
+              <Image
+                src={avatar}
+                alt={name}
+                width={64}
+                height={64}
+                className="w-full h-full rounded-full object-cover"
+              />
+            ) : (
+              <span className="text-white text-xl font-bold leading-7">
+                {displayInitials}
+              </span>
+            )}
           </div>
+          <div className="flex-1 flex flex-col gap-1">
+            <h3 className="text-lg font-bold text-[#0F172B] leading-7">{name}</h3>
 
-          <div className="space-y-2">
-            <Typography color="text.secondary">{description}</Typography>
-          </div>
-
-          <Divider />
-
-          <div className="grid grid-cols-2 gap-4 mt-4">
-            <div>
-              <Typography variant="body2" color="text.secondary">Joined</Typography>
-              <Typography>{joinedDate}</Typography>
+            <div className="flex items-center gap-3 flex-wrap">
+              <div className="flex items-center gap-1">
+                <Star className="w-4 h-4 fill-yellow-500 text-yellow-500" />
+                <span className="text-sm font-medium text-[#0F172B] leading-5">
+                  {rating}
+                </span>
+                <span className="text-sm text-[#475569] leading-5">
+                  ({totalReviews} reviews)
+                </span>
+              </div>
+              {joinedDate && (
+                <span className="text-sm text-[#475569] leading-5">
+                  • Joined {joinedDate}
+                </span>
+              )}
             </div>
-            <div>
-              <Typography variant="body2" color="text.secondary">Total trips</Typography>
-              <Typography>{totalReviews}</Typography>
-            </div>
+            <p className="text-sm text-[#334155] leading-6">{description}</p>
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </Card>
+    </div>
   );
 }

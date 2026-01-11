@@ -4,14 +4,10 @@ import "./globals.css";
 import React from 'react';
 import { Providers } from "./providers";
 import { ToastContainer } from 'react-toastify';
-import { DM_Sans } from 'next/font/google';
 import Script from "next/script";
+import Navbar from '../(pages)/(landing)/Navbar/Navbar'
 
-const dmSans = DM_Sans({
-  subsets: ['latin'],
-  variable: '--font-dm',
-  display: 'swap',
-});
+
 interface RootLayoutProps {
   children: React.ReactNode;
 }
@@ -26,6 +22,8 @@ export default function RootLayout({ children }: RootLayoutProps) {
     }
   }, []);
 
+  const isEnvProd = process.env.NEXT_PUBLIC_ENV == 'PRODUCTION'
+
   return (
     <html lang="en">
       <head>
@@ -34,7 +32,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
           strategy="afterInteractive"
         />
         <Script async src="https://www.googletagmanager.com/gtag/js?id=G-8ZL8763359" />
-        <Script id="ga-init" strategy="afterInteractive">
+        {isEnvProd && <Script id="ga-init" strategy="afterInteractive">
           {`
             window.dataLayer = window.dataLayer || []
             function gtag() {
@@ -43,9 +41,9 @@ export default function RootLayout({ children }: RootLayoutProps) {
             gtag('js', new Date());
             gtag('config', 'G-8ZL8763359')
           `}
-        </Script>
-        <Script id="clairt-init" type="text/javascript">
-            {`
+        </Script>}
+        {isEnvProd && <Script id="clairt-init" type="text/javascript">
+          {`
             (function(c,l,a,r,i,t,y)  {
                 c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
                 t=l.createElement(r);
@@ -53,11 +51,12 @@ export default function RootLayout({ children }: RootLayoutProps) {
                 y=l.getElementsByTagName(r)[0];
                 y.parentNode.insertBefore(t,y);
             })(window, document, "clarity", "script", "uthr0z0hl7");
-      `}
-        </Script>
+          `}
+        </Script>}
       </head>
-      <body className={dmSans.variable}>
+      <body>
         <Providers>
+          <Navbar />
           {children}
           <ToastContainer position="top-right" />
         </Providers>

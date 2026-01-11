@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/common/ui/dialog";
-import { Button } from "@/common/ui/button";
+import { Button } from "@/common/ui/Buttons/Button";
 import { Label } from "@/common/ui/label";
 import { Textarea } from "@/common/ui/textarea";
 import { Select, MenuItem, FormControl } from "@mui/material";

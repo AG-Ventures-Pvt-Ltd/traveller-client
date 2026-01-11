@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { RangeCalendar } from './RangeCalendar';
-import { Button } from '@/common/ui/button';
+import { Button } from '@/common/ui/Buttons/Button';
 
 interface TripFiltersProps {
   onFilterChange: (filters: FilterValues) => void;

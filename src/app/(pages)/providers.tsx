@@ -3,26 +3,19 @@
 import { QueryClient, QueryCache, QueryClientProvider } from '@tanstack/react-query';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { logError } from '@/common/utils/logError';
-import { DM_Sans } from 'next/font/google';
 import { SessionProvider } from 'next-auth/react';
-
-
-const dmSans = DM_Sans({
-  subsets: ['latin'],
-  display: 'swap',
-});
 
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#008EF4',
+      main: '#0D203F',
     },
     secondary: {
       main: '#000000',
     }
   },
   typography: {
-    fontFamily: dmSans.style.fontFamily,
+    fontFamily: 'Satoshi, sans-serif',
   },
   components: {
     MuiButton: {

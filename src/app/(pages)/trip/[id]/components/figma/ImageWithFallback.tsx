@@ -39,7 +39,7 @@ export function ImageWithFallback(props: React.ComponentProps<typeof Image>) {
 
   return (
     <Image 
-      src={src} 
+      src={`${process.env.NEXT_PUBLIC_CLOUDFRONT_URL}${src}`} 
       alt={alt} 
       className={className} 
       style={style} 

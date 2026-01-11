@@ -1,35 +1,29 @@
-import { Star, ThumbsUp } from "lucide-react";
-import { Avatar, LinearProgress, Box, Typography } from "@mui/material";
+import { Star } from "lucide-react";
+import { TripReviewsProps } from '../types';
+import MyImage from "@/common/ui/Image";
 
-interface Review {
-  id: string;
-  author: string;
-  avatar?: string;
-  rating: number;
-  date: string;
-  comment: string;
-}
 
-interface TripReviewsProps {
-  reviews: Review[];
-  averageRating: number;
-  totalReviews: number;
-  ratingBreakdown: {
-    5: number;
-    4: number;
-    3: number;
-    2: number;
-    1: number;
-  };
-}
-
-export function TripReviews({ reviews, averageRating, totalReviews, ratingBreakdown }: TripReviewsProps) {
+export function TripReviews({
+  reviews,
+  averageRating,
+  totalReviews,
+}: TripReviewsProps) {
   if (!reviews || !Array.isArray(reviews) || reviews.length === 0) {
     return (
-      <div className="space-y-6 my-8">
-        <div className="flex items-center gap-2">
-          <Star className="h-8 w-8 fill-yellow-400 text-yellow-400" />
-          <h2 className="font-bold text-2xl">{averageRating} · {totalReviews} Reviews</h2>
+      <div className="flex flex-col gap-6 my-8">
+        <div className="flex justify-between items-center">
+          <h2 className="text-xl font-bold text-[#0F172B] tracking-tight">
+            Traveler Reviews
+          </h2>
+          <div className="flex items-center gap-2">
+            <Star className="w-5 h-5 fill-yellow-500 text-yellow-500" />
+            <span className="text-base font-medium text-[#0F172B] leading-6">
+              {averageRating}
+            </span>
+            <span className="text-sm text-[#475569] leading-5">
+              ({totalReviews} reviews)
+            </span>
+          </div>
         </div>
         <div className="text-gray-500 text-center py-8">
           Reviews are not available yet.
@@ -39,12 +33,14 @@ export function TripReviews({ reviews, averageRating, totalReviews, ratingBreakd
   }
 
   const StarRating = ({ rating }: { rating: number }) => (
-    <div className="flex gap-1">
+    <div className="flex items-center gap-0.5">
       {[1, 2, 3, 4, 5].map((star) => (
         <Star
           key={star}
-          className={`h-4 w-4 ${
-            star <= rating ? "fill-yellow-400 text-yellow-400" : "text-gray-300"
+          className={`w-3.5 h-3.5 ${
+            star <= rating
+              ? "fill-yellow-500 text-yellow-500"
+              : "text-gray-300"
           }`}
         />
       ))}
@@ -52,74 +48,81 @@ export function TripReviews({ reviews, averageRating, totalReviews, ratingBreakd
   );
 
   return (
-    <div className="space-y-6 my-8">
-      <div className="flex items-center gap-2">
-        <Star className="h-8 w-8 fill-yellow-400 text-yellow-400" />
-        <h2 className="font-bold text-2xl">{averageRating} · {totalReviews} Reviews</h2>
-      </div>
-
-      <div className="grid md:grid-cols-2 gap-8">
-        <div className="space-y-3">
-          {[5, 4, 3, 2, 1].map((rating) => {
-            const count = ratingBreakdown[rating as keyof typeof ratingBreakdown];
-            const percentage = (count / totalReviews) * 100;
-            return (
-              <div key={rating} className="flex items-center gap-3">
-                <span className="text-sm w-6">{rating}</span>
-                <LinearProgress 
-                  variant="determinate" 
-                  value={percentage} 
-                  sx={{ flex: 1, height: 8, borderRadius: 1 }}
-                />
-                <span className="text-sm text-gray-500 w-12 text-right">{count}</span>
-              </div>
-            );
-          })}
-        </div>
-
-        <div className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <Box sx={{ border: 1, borderColor: 'divider', borderRadius: 1, p: 2 }}>
-              <div className="flex items-center gap-2 mb-1">
-                <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                <span>{averageRating}</span>
-              </div>
-              <Typography variant="body2" color="text.secondary">Overall Rating</Typography>
-            </Box>
-            <Box sx={{ border: 1, borderColor: 'divider', borderRadius: 1, p: 2 }}>
-              <div className="flex items-center gap-2 mb-1">
-                <ThumbsUp className="h-4 w-4 text-primary" />
-                <span>98%</span>
-              </div>
-              <Typography variant="body2" color="text.secondary">Recommended</Typography>
-            </Box>
-          </div>
+    <div className="flex flex-col gap-6 my-8">
+      <div className="flex justify-between items-center">
+        <h2 className="text-2xl text-[#0F172B] tracking-tight">
+          Customer Reviews
+        </h2>
+        <div className="flex items-center gap-2">
+          <Star className="w-5 h-5 fill-yellow-500 text-yellow-500" />
+          <span className="text-base font-medium text-[#0F172B] leading-6">
+            {averageRating}
+          </span>
+          <span className="text-sm text-[#475569] leading-5">
+            ({totalReviews} reviews)
+          </span>
         </div>
       </div>
+      <div className="flex flex-col gap-4">
+        {reviews.map((review) => {
+          const displayInitials =
+            review.initials ||
+            review.author
+              .split(" ")
+              .map((word) => word[0])
+              .join("")
+              .toUpperCase()
+              .slice(0, 2);
 
-      <Box sx={{ pt: 3, borderTop: 1, borderColor: 'divider' }}>
-        <div className="space-y-6">
-          {reviews.map((review) => (
-            <div key={review.id} className="space-y-3">
-              <div className="flex items-start gap-3">
-                <Avatar src={review.avatar} alt={review.author}>
-                  {review.author[0]}
-                </Avatar>
-                <div className="flex-1">
-                  <div className="flex items-center justify-between mb-1">
-                    <span>{review.author}</span>
-                    <Typography variant="body2" color="text.secondary">{review.date}</Typography>
+          return (
+            <div
+              key={review.id}
+              className="flex flex-col p-6 bg-white/60 rounded-2xl"
+            >
+              <div className="flex gap-4">
+                <div className="w-12 h-12 bg-[#0D203F] rounded-full flex items-center justify-center flex-shrink-0">
+                  {review.avatar ? (
+                    <MyImage
+                      src={review.avatar}
+                      alt={review.author}
+                      width={0}
+                      height={0}
+                      className="w-full h-full rounded-full object-cover"
+                    />
+                  ) : (
+                    <span className="text-white text-base font-medium leading-6">
+                      {displayInitials}
+                    </span>
+                  )}
+                </div>
+                <div className="flex-1 flex flex-col gap-2">
+                  <div className="flex justify-between items-center">
+                    <div className="flex flex-col">
+                      <span className="text-base font-medium text-[#0F172B] leading-6">
+                        {review.author}
+                      </span>
+                      {review.location && (
+                        <span className="text-xs text-[#475569] leading-4">
+                          {review.location}
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex flex-col items-end gap-1">
+                      <StarRating rating={review.rating} />
+                      <span className="text-xs text-[#64748B] leading-4">
+                        {review.date}
+                      </span>
+                    </div>
                   </div>
-                  <StarRating rating={review.rating} />
-                  <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                  <p className="text-sm text-[#334155] leading-6">
                     {review.comment}
-                  </Typography>
+                  </p>
                 </div>
               </div>
             </div>
-          ))}
-        </div>
-      </Box>
+          );
+        })}
+      </div>
     </div>
   );
 }
