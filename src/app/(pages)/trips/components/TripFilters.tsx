@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { RangeCalendar } from './RangeCalendar';
-import { Button } from '@/common/ui/Buttons/Button';
+import Button from '@/common/ui/Buttons/Button';
 
 interface TripFiltersProps {
   onFilterChange: (filters: FilterValues) => void;
@@ -59,8 +59,8 @@ const TripFilters: React.FC<TripFiltersProps> = ({ onFilterChange, onApplyFilter
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-xl font-bold text-gray-900">Filters</h2>
         <Button
-          variant="ghost"
-          size="sm"
+          variant="contained"
+          // size="sm"
           onClick={handleReset}
           className="text-sm text-gray-600 hover:text-gray-900"
         >
@@ -177,7 +177,7 @@ const TripFilters: React.FC<TripFiltersProps> = ({ onFilterChange, onApplyFilter
         <Button
           onClick={onApplyFilters}
           className="w-full"
-          variant="default"
+          // variant="default"
         >
           Apply Filters
         </Button>

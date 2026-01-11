@@ -1,9 +1,8 @@
 'use client'
 
 import React from 'react'
-import { MapPin, Star, ArrowUpRight } from 'lucide-react'
+import { ArrowUpRight } from 'lucide-react'
 import Image from 'next/image'
-import { Button } from "@/common/ui/Buttons/Button";
 import { useRouter } from "next/navigation";
 import BookmarkButton from "@/common/components/atoms/BookmarkButton";
 

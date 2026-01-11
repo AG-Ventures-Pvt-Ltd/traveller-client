@@ -2,7 +2,7 @@
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/common/ui/dialog";
 import { Badge } from "@/common/ui/badge";
-import { Button } from "@/common/ui/Buttons/Button";
+import Button from "@/common/ui/Buttons/Button";
 import { Separator } from "@/common/ui/separator";
 import { MessageSquare, Clock, User, Tag } from "lucide-react";
 import { formatDateTime } from "@/common/utils/dateUtils";
@@ -164,7 +164,7 @@ export function TicketDetailsDialog({ ticket, open, onOpenChange }: TicketDetail
                 <Button className="flex-1 bg-[#008EF4] hover:bg-[#0077CC]">
                   Reply to Ticket
                 </Button>
-                <Button variant="outline" className="border-gray-300">
+                <Button className="border-gray-300">
                   Close Ticket
                 </Button>
               </div>

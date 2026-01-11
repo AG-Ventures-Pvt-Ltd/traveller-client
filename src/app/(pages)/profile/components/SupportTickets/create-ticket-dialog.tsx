@@ -2,13 +2,13 @@
 
 import { useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/common/ui/dialog";
-import { Button } from "@/common/ui/Buttons/Button";
+import Button from "@/common/ui/Buttons/Button";
 import { Label } from "@/common/ui/label";
-import { Textarea } from "@/common/ui/textarea";
 import { Select, MenuItem, FormControl } from "@mui/material";
 import { Plus, Send } from "lucide-react";
 import usePostData from "@/services/usePostData";
 import { API_ENDPOINTS } from "@/common/constants/apiEndpoints";
+import CustomInput from "@/common/ui/CustomInput";
 
 interface CreateTicketDialogProps {
   open: boolean;
@@ -118,7 +118,8 @@ export function CreateTicketDialog({ open, onOpenChange, onSuccess }: CreateTick
             <Label htmlFor="description" className="text-sm font-medium">
               Description <span className="text-red-500">*</span>
             </Label>
-            <Textarea
+            <CustomInput
+              
               id="description"
               placeholder="Please provide as much detail as possible about your issue..."
               value={formData.description}
@@ -143,7 +144,7 @@ export function CreateTicketDialog({ open, onOpenChange, onSuccess }: CreateTick
           <div className="flex gap-3 pt-4">
             <Button
               type="button"
-              variant="outline"
+              // variant="outline"
               onClick={() => onOpenChange(false)}
               className="flex-1 border-gray-300"
             >
