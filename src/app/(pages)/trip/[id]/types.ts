@@ -41,6 +41,7 @@ export interface Host {
   avatar?: string;
   initials?: string;
   rating: number;
+  username: string;
   totalReviews: number;
   joinedDate?: number;
   description: string;
@@ -62,6 +63,7 @@ export interface TripData {
   title: string;
   description: string;
   images?: string[];
+  category:string;
   meetingPoint: string;
   endPoint: string;
   itinerary?: ItineraryDay[];
@@ -90,8 +92,7 @@ export interface TripBookingCardProps {
   basePrice: number;
   duration?: string;
   meetingPoint?: string;
-  groupSize?: string;
-  tourType?: string;
+  category?: string;
   schedule?: string;
   difficulty?: string;
   languages?: string;
@@ -130,6 +131,7 @@ export interface HostCardProps {
   rating: number;
   totalReviews: number;
   joinedDate?: number;
+  username : string;
   description: string;
   responseTime?: string;
   languages?: string[];

@@ -7,7 +7,7 @@ import ReviewAndPay from './ReviewAndPay/ReviewAndPay';
 import TravelerDetails from './TravelerDetails/TravelerDetails';
 import { useBookingFlow } from '../hooks/useBookingFlow';
 import { useBookingStore } from '../store/useBookingStore';
-import { TravelerData, EmergencyContact, TravelerDetailsFormProps } from './types';
+import { EmergencyContact, TravelerDetailsFormProps } from './types';
 
 const TravelerDetailsForm: React.FC<TravelerDetailsFormProps> = ({
     guests,
@@ -15,18 +15,10 @@ const TravelerDetailsForm: React.FC<TravelerDetailsFormProps> = ({
     tripId,
     batchId,
 }) => {
-    const [travelers, setTravelers] = useState<TravelerData[]>(
-        Array.from({ length: guests }, () => ({
-            fullName: '',
-            gender: '',
-            email: '',
-            phone: '',
-            governmentId: null,
-        }))
-    );
+    const [selectedTravelerIds, setSelectedTravelerIds] = useState<string[]>([]);
     const [emergencyContact, setEmergencyContact] = useState<EmergencyContact>({
         name: '',
-        phone: '',
+        contactNumber: '',
     });
     const [isTravelerFormSubmitted, setIsTravelerFormSubmitted] = useState(false);
     const [isTravelerAccordionOpen, setIsTravelerAccordionOpen] = useState(true);
@@ -37,23 +29,13 @@ const TravelerDetailsForm: React.FC<TravelerDetailsFormProps> = ({
     const { initiateBooking, isProcessing } = useBookingFlow();
     const totalAmount = useBookingStore((state) => state.totalAmount);
 
+    const totalSelectedTravelers = selectedTravelerIds.length;
+
     useEffect(() => {
-        setTravelers(prevTravelers => {
-            if (guests > prevTravelers.length) {
-                const newTravelers = Array.from({ length: guests - prevTravelers.length }, () => ({
-                    fullName: '',
-                    gender: '',
-                    email: '',
-                    phone: '',
-                    governmentId: null,
-                }));
-                return [...prevTravelers, ...newTravelers];
-            } else if (guests < prevTravelers.length) {
-                return prevTravelers.slice(0, guests);
-            }
-            return prevTravelers;
-        });
-    }, [guests]);
+        if (totalSelectedTravelers !== guests) {
+            onGuestsChange(totalSelectedTravelers);
+        }
+    }, [totalSelectedTravelers, guests, onGuestsChange]);
 
     const handleTravelerNext = () => {
         setIsTravelerFormSubmitted(true);
@@ -79,10 +61,10 @@ const TravelerDetailsForm: React.FC<TravelerDetailsFormProps> = ({
         await initiateBooking({
             tripId,
             batchId,
-            travelers,
+            selectedTravelerIds,
             emergencyContact,
-            totalAmount : totalAmount,
-            numberOfPeople: guests,
+            totalAmount: totalAmount,
+            numberOfPeople: totalSelectedTravelers,
         });
     };
 
@@ -90,7 +72,7 @@ const TravelerDetailsForm: React.FC<TravelerDetailsFormProps> = ({
         <div className="flex flex-col gap-4">
             <Accordion
                 title="Traveller Details"
-                subtitle={`${guests} ${guests === 1 ? 'traveler' : 'travelers'}`}
+                subtitle={`${totalSelectedTravelers} ${totalSelectedTravelers === 1 ? 'traveler' : 'travelers'} selected`}
                 number={1}
                 defaultOpen={isTravelerAccordionOpen}
                 showEdit={isTravelerFormSubmitted && !isTravelerAccordionOpen}
@@ -99,10 +81,8 @@ const TravelerDetailsForm: React.FC<TravelerDetailsFormProps> = ({
                 className=""
             >
                 <TravelerDetails
-                    travelers={travelers}
-                    onTravelersChange={setTravelers}
-                    guests={guests}
-                    onGuestsChange={onGuestsChange}
+                    selectedTravelerIds={selectedTravelerIds}
+                    onSelectedTravelersChange={setSelectedTravelerIds}
                     onNext={handleTravelerNext}
                 />
             </Accordion>

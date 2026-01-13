@@ -38,7 +38,7 @@ export function TripImageGallery({ images }: TripImageGalleryProps) {
 
 
   return (
-    <div className="relative w-full h-[500px] mb-8 rounded-lg overflow-hidden group">
+    <div className="relative w-full h-[250px] sm:h-[350px] md:h-[450px] lg:h-[500px] mb-4 sm:mb-6 md:mb-8 rounded-lg overflow-hidden group">
       <ImageWithFallback
         src={validImages[currentIndex]}
         alt={`Trip image ${currentIndex + 1}`}
@@ -48,25 +48,25 @@ export function TripImageGallery({ images }: TripImageGalleryProps) {
 
       <button
         onClick={prevImage}
-        className="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-black/70 hover:bg-black/90 text-white rounded-full p-3 transition-all opacity-0 group-hover:opacity-100"
+        className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-10 bg-black/70 hover:bg-black/90 text-white rounded-full p-2 sm:p-3 transition-all opacity-100 sm:opacity-0 sm:group-hover:opacity-100"
       >
-        <ChevronLeft className="h-6 w-6" />
+        <ChevronLeft className="h-4 w-4 sm:h-6 sm:w-6" />
       </button>
 
       <button
         onClick={nextImage}
-        className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-black/70 hover:bg-black/90 text-white rounded-full p-3 transition-all opacity-0 group-hover:opacity-100"
+        className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-10 bg-black/70 hover:bg-black/90 text-white rounded-full p-2 sm:p-3 transition-all opacity-100 sm:opacity-0 sm:group-hover:opacity-100"
       >
-        <ChevronRight className="h-6 w-6" />
+        <ChevronRight className="h-4 w-4 sm:h-6 sm:w-6" />
       </button>
 
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+      <div className="absolute bottom-2 sm:bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5 sm:gap-2 z-10">
         {validImages.map((_, index) => (
           <button
             key={index}
             onClick={() => goToImage(index)}
             className={`transition-all rounded-full ${currentIndex === index
-                ? 'w-8 h-2 bg-white'
+                ? 'w-6 sm:w-8 h-2 bg-white'
                 : 'w-2 h-2 bg-white/50 hover:bg-white/80'
               }`}
             aria-label={`Go to image ${index + 1}`}

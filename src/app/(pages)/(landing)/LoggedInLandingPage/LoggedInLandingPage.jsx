@@ -5,11 +5,11 @@ import FeaturedDestinations from './components/FeaturedDestinations';
 
 const LoggedInLandingPage = () => {
   return (
-    <div className="w-full bg-white px-9 pt-40 pb-24">
+    <div className="w-full bg-white px-9 pt-10 pb-24">
       <div className="max-w-[1440px] mx-auto flex flex-col gap-24">
         <div className="relative flex flex-col gap-12">
           <HeroSection />
-          <SearchCard />
+          {/* <SearchCard /> */}
         </div>
         <FeaturedDestinations />
       </div>

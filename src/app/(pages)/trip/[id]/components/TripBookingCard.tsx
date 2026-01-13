@@ -10,8 +10,7 @@ export function TripBookingCard({
   basePrice,
   duration = "4—5 hours",
   meetingPoint = "Desert Gate Café",
-  groupSize = "Up to 6 people",
-  tourType = "Walking / Jeep",
+  category = "Walking / Jeep",
 }: TripBookingCardProps) {
   const validAvailableDates = Array.isArray(availableDates) ? availableDates.map(d => ({
     ...d,
@@ -29,55 +28,56 @@ export function TripBookingCard({
   );
 
   return (
-    <Card variant="fill" className="sticky border-0! top-26 p-7">
-      <Card className="max-w-[448px] ">
-        <div className="flex flex-col gap-6">
-          <div className="flex flex-col gap-3 pb-6 ">
-            <div className="flex items-center gap-3">
-              <CalendarIcon className="h-5 w-5 text-[#45556C]" />
-              <div className="flex gap-2">
-                <span className="text-sm font-bold">Duration:</span>
-                <span className="text-sm font-medium">{duration}</span>
+    <Card variant="fill" className="lg:sticky border-0! lg:top-26 p-4 sm:p-5 md:p-6 lg:p-7">
+      <Card className="max-w-full lg:max-w-[448px]">
+        <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-2 sm:gap-3 pb-3">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <CalendarIcon className="h-4 w-4 sm:h-5 sm:w-5 text-[#45556C] flex-shrink-0" />
+              <div className="flex gap-1 sm:gap-2 flex-wrap">
+                <span className="text-xs sm:text-sm font-bold">Duration:</span>
+                <span className="text-xs sm:text-sm font-medium">{duration}</span>
               </div>
             </div>
-            <div className="flex items-center gap-3">
-              <MapPin className="h-5 w-5 text-[#45556C]" />
-              <div className="flex gap-2">
-                <span className="text-sm font-bold">Meeting point:</span>
-                <span className="text-sm font-medium">{meetingPoint}</span>
+            <div className="flex items-center gap-2 sm:gap-3">
+              <MapPin className="h-4 w-4 sm:h-5 sm:w-5 text-[#45556C] flex-shrink-0" />
+              <div className="flex gap-1 sm:gap-2 flex-wrap">
+                <span className="text-xs sm:text-sm font-bold">Meeting point:</span>
+                <span className="text-xs sm:text-sm font-medium">{meetingPoint}</span>
               </div>
             </div>
-            <div className="flex items-center gap-3">
-              <Users2 className="h-5 w-5 text-[#45556C]" />
-              <div className="flex gap-2">
-                <span className="text-sm font-bold">Group Size:</span>
-                <span className="text-sm font-medium">{groupSize}</span>
+            <div className="flex items-center gap-2 sm:gap-3">
+              <Users2 className="h-4 w-4 sm:h-5 sm:w-5 text-[#45556C] flex-shrink-0" />
+              <div className="flex gap-1 sm:gap-2 flex-wrap">
+                <span className="text-xs sm:text-sm font-bold">Group Size:</span>
+                <span className="text-xs sm:text-sm font-medium">{selectedDateInfo?.totalSeats}</span>
               </div>
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-6 pb-6 ">
-            <div className="flex flex-col gap-1">
-              <span className="text-sm font-medium">Category</span>
-              <span className="text-sm font-bold">{tourType}</span>
+          <div className="grid grid-cols-2 gap-6 pb-3">
+            <div className="flex gap-1 items-end">
+              <span className="text-sm font-medium">Category :</span>
+              <span className="text-sm font-bold">{category}</span>
             </div>
           </div>
-          <div className="flex flex-col gap-3 pb-6 ">
-            <span className="text-sm font-bold">Available Dates</span>
-            <div className="grid grid-cols-3 gap-2">
+          <div className="flex flex-col gap-3 pb-6">
+            <span className="text-xs sm:text-sm font-bold">Available Dates</span>
+            <div className="grid grid-cols-3 sm:grid-cols-3 gap-1.5 sm:gap-2">
               {validAvailableDates.slice(0, 6).map((date, index) => (
                 <button
                   key={index}
                   onClick={() => setSelectedBatchId(date.batchId)}
-                  className={`p-2.5 rounded-xl border transition-all ${selectedBatchId === date.batchId
-                      ? 'border-[#0D203F] bg-[#0D203F] bg-opacity-5'
+                  className={`p-2 sm:p-2.5 rounded-lg sm:rounded-xl border transition-all min-h-[60px] sm:min-h-[auto]
+                    ${selectedBatchId === date.batchId
+                      ? 'border-[#0D203F] bg-[#0D203F] text-white! bg-opacity-5'
                       : 'border-[#E2E8F0] bg-white hover:border-[#0D203F]'
                     }`}
                 >
                   <div className="flex flex-col items-center gap-0.5">
-                    <span className="text-xs text-[#45556C]">
+                    <span className="text-[10px] sm:text-xs font-semibold">
                       {format(date.startDate, 'EEE')}
                     </span>
-                    <span className="text-sm text-[#0D203F]">
+                    <span className="text-xs sm:text-sm font-semibold">
                       {format(date.startDate, 'MMM dd')}
                     </span>
                   </div>
@@ -85,20 +85,20 @@ export function TripBookingCard({
               ))}
             </div>
           </div>
-          <div className="flex flex-col gap-3 pb-6 ">
+          <div className="flex flex-col gap-3 ">
             <div className="flex justify-between items-center">
-              <span className="text-sm text-[#45556C]">Seats Available</span>
+              <span className="text-sm font-semibold">Seats Available</span>
               <span className="text-[#314158]">
                 <span>4 / </span>
                 {selectedDateInfo?.totalSeats || 15}
               </span>
             </div>
           </div>
-          <div className="flex items-end gap-2">
-            <span className="font-bold text-2xl flex items-center">
-              <IndianRupee size={22} strokeWidth={3}/>{selectedDateInfo?.price || validBasePrice}
+          <div className="flex items-end gap-1 sm:gap-2">
+            <span className="font-bold text-xl sm:text-2xl flex items-center">
+              <IndianRupee size={18} strokeWidth={3} className="sm:w-[22px] sm:h-[22px]"/>{selectedDateInfo?.price || validBasePrice}
             </span>
-            <span className="text-base text-[#45556C] mb-0.5">/ per person</span>
+            <span className="text-sm sm:text-base text-[#45556C] mb-0.5">/ per person</span>
           </div>
           <div className="flex gap-2">
             <button
@@ -108,12 +108,12 @@ export function TripBookingCard({
                 }
               }}
               disabled={!selectedBatchId}
-              className="flex-1 h-12 bg-[#0D203F] hover:bg-[#1a2f4f] disabled:bg-[#cccccc] text-white rounded-full text-sm transition-colors"
+              className="flex-1 h-11 sm:h-12 bg-[#0D203F] hover:bg-[#1a2f4f] disabled:bg-[#cccccc] text-white rounded-full text-sm transition-colors"
             >
               Book this tour
             </button>
-            <button className="w-12 h-12 bg-[#0D203F] hover:bg-[#1a2f4f] rounded-full flex items-center justify-center transition-colors">
-              <Bookmark className="h-5 w-5 text-white" />
+            <button className="w-11 h-11 sm:w-12 sm:h-12 bg-[#0D203F] hover:bg-[#1a2f4f] rounded-full flex items-center justify-center transition-colors">
+              <Bookmark className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
             </button>
           </div>
         </div>

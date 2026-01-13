@@ -1,9 +1,9 @@
 export interface HostProfile {
   id: string;
-  name: string;
-  initials: string;
-  tagline: string;
-  description: string;
+  fullName: string;
+  yearsOfExperience: string;
+  bio: string;
+  avatar?: string;
   stats: HostStats;
   rating: number;
   reviewCount: number;
@@ -39,18 +39,60 @@ export interface Trip {
   reviewCount: number;
   duration: string;
   price: number;
-  imageUrl: string;
+  image: string;
+  slug: string;
+  isActive: boolean;
 }
 
 export interface Review {
   id: string;
   reviewerName: string;
   reviewerInitials: string;
-  reviewerLocation: string;
+  reviewerLocation?: string;
   rating: number;
   tripName: string;
   date: string;
   comment: string;
+}
+
+export interface ReviewData {
+  _id: string;
+  username: string;
+  tripTitle: string;
+  tripSlug: string;
+  rating: number;
+  comment: string;
+  helpful: number;
+  createdAt: string;
+}
+
+export interface RatingDistributionData {
+  "5": number;
+  "4": number;
+  "3": number;
+  "2": number;
+  "1": number;
+}
+
+export interface ReviewStats {
+  totalReviews: number;
+  averageRating: number;
+  ratingDistribution: RatingDistributionData;
+}
+
+export interface Pagination {
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+  hasNextPage: boolean;
+  hasPrevPage: boolean;
+}
+
+export interface ReviewsResponse {
+  reviews: ReviewData[];
+  stats: ReviewStats;
+  pagination: Pagination;
 }
 
 export interface RatingDistribution {

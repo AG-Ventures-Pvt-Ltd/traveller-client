@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { baseAPI } from '@/services/baseApi';
 import { TripDetailsState } from '../components/types';
+import { notify } from '@/common/utils/notify';
 
 
 const initialState = {
@@ -37,10 +38,6 @@ export const useTripDetailsStore = create<TripDetailsState>((set, get) => ({
       isLoading: isInitialLoad, // Only show loading on initial load
       isRefetching: !isInitialLoad, // Set refetching for background updates
       error: null,
-      currentTripId: tripId,
-      currentBatchId: batchId,
-      currentGuests: guests,
-      currentCouponCode: couponCode,
     });
 
     try {
@@ -50,18 +47,29 @@ export const useTripDetailsStore = create<TripDetailsState>((set, get) => ({
       }
       const response = await baseAPI.get(apiUrl);
       
+      // Only update state on successful response
       set({ 
         tripDetails: response.data.data,
         isLoading: false,
         isRefetching: false,
         error: null,
+        currentTripId: tripId,
+        currentBatchId: batchId,
+        currentGuests: guests,
+        currentCouponCode: couponCode,
       });
     } catch (error) {
+      const axiosError = error as { response?: { data?: { message?: string } } };
+      const errorMessage = axiosError?.response?.data?.message || (error instanceof Error ? error.message : 'Failed to fetch trip details');
+      
+      // Show error notification
+      notify.error(errorMessage);
+      
+      // Keep previous state, only update loading flags
       set({ 
-        tripDetails: null,
         isLoading: false,
         isRefetching: false,
-        error: error instanceof Error ? error : new Error('Failed to fetch trip details'),
+        error: error instanceof Error ? error : new Error(errorMessage),
       });
     }
   },
@@ -89,9 +97,16 @@ export const useTripDetailsStore = create<TripDetailsState>((set, get) => ({
         error: null,
       });
     } catch (error) {
+      const axiosError = error as { response?: { data?: { message?: string } } };
+      const errorMessage = axiosError?.response?.data?.message || (error instanceof Error ? error.message : 'Failed to fetch trip details');
+      
+      // Show error notification
+      notify.error(errorMessage);
+      
+      // Keep previous state, only update loading flags
       set({ 
         isRefetching: false,
-        error: error instanceof Error ? error : new Error('Failed to fetch trip details'),
+        error: error instanceof Error ? error : new Error(errorMessage),
       });
     }
   },

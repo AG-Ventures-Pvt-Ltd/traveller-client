@@ -1,5 +1,5 @@
 import { Award, ShieldCheck, Trophy, MessageCircle } from "lucide-react";
-import { Achievement } from "../types";
+import { Achievement } from "../../../types";
 
 interface AchievementCardProps {
   achievement: Achievement;

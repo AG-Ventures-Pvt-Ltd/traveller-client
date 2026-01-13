@@ -4,13 +4,19 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { useState, useEffect, useCallback } from 'react';
 import TripSearchCard from './components/TripSearchCard';
 import TripFilters, { FilterValues } from './components/TripFilters';
+import FilterModal from './components/FilterModal';
 import { useGetData } from '@/services/useGetData';
+import BackButton from '@/common/ui/BackButton';
+import { SlidersHorizontal } from 'lucide-react';
+import Button from '@/common/components/atoms/Button';
 
 interface Trip {
   title: string;
   image: string;
   address: string;
   duration: string;
+  startDate: string;
+  endDate: string;
   rating: number;
   totalReviews: number;
   basePrice: number;
@@ -23,6 +29,7 @@ interface Trip {
   difficulty: string;
   isFeatured: boolean;
   slug: string;
+  tags?: string[];
 }
 
 interface Pagination {
@@ -44,26 +51,51 @@ export default function Page() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const destination = searchParams.get('destination');
-  const [filters, setFilters] = useState<FilterValues>({});
-  const [appliedFilters, setAppliedFilters] = useState<FilterValues>({});
+  const [filters, setFilters] = useState<FilterValues>({
+    tourTypes: [],
+    priceRange: 5000,
+    durations: [],
+    durationRange: 5,
+    difficulties: [],
+    minRating: null,
+  });
+  const [appliedFilters, setAppliedFilters] = useState<FilterValues>({
+    tourTypes: [],
+    priceRange: 5000,
+    durations: [],
+    durationRange: 5,
+    difficulties: [],
+    minRating: null,
+  });
   const [apiUrl, setApiUrl] = useState<string | null>(null);
+  const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
 
   useEffect(() => {
     const params = new URLSearchParams();
 
-    if (appliedFilters.numberOfDays) params.append('numberOfDays', appliedFilters.numberOfDays.toString());
-    if (appliedFilters.maxPeople) params.append('maxPeople', appliedFilters.maxPeople.toString());
-    if (appliedFilters.minBudget) params.append('minBudget', appliedFilters.minBudget.toString());
-    if (appliedFilters.maxBudget) params.append('maxBudget', appliedFilters.maxBudget.toString());
-    if (appliedFilters.startDate) params.append('startDate', appliedFilters.startDate);
-    if (appliedFilters.endDate) params.append('endDate', appliedFilters.endDate);
+    // New filter structure
+    if (appliedFilters.tourTypes && appliedFilters.tourTypes.length > 0) {
+      params.append('tourTypes', appliedFilters.tourTypes.join(','));
+    }
+    if (appliedFilters.priceRange) {
+      params.append('maxBudget', appliedFilters.priceRange.toString());
+    }
+    if (appliedFilters.durationRange) {
+      params.append('numberOfDays', appliedFilters.durationRange.toString());
+    }
+    if (appliedFilters.difficulties && appliedFilters.difficulties.length > 0) {
+      params.append('difficulties', appliedFilters.difficulties.join(','));
+    }
+    if (appliedFilters.minRating) {
+      params.append('minRating', appliedFilters.minRating.toString());
+    }
     if (destination) params.append('destination', destination);
 
     const queryString = params.toString();
     setApiUrl(`api/client/v1/trips/search${queryString ? `?${queryString}` : ''}`);
   }, [appliedFilters, destination]);
 
-  const { data: tripsData, isLoading, error } = useGetData<TripsResponse>(apiUrl || '', {
+  const { data: tripsData, error } = useGetData<TripsResponse>(apiUrl || '', {
     queryKey: apiUrl ? [apiUrl] : ['trips-loading'],
     enabled: !!apiUrl,
   });
@@ -85,62 +117,99 @@ export default function Page() {
     router.push(`/trip/${slug}`);
   };
 
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  };
+
+  const calculateDays = (startDate: string, endDate: string) => {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    const diffTime = Math.abs(end.getTime() - start.getTime());
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays;
+  };
+
+  if (error) {
+    throw Error(error.message || 'Error Loading Trips')
+  }
+
   return (
-    <div className='flex gap-6 p-6 max-w-7xl mx-auto'>
-      <div className='flex-1'>
-        <TripFilters onFilterChange={handleFilterChange} onApplyFilters={handleApplyFilters} />
-      </div>
-      <div className='flex-[3]'>
-        <div className='mb-4'>
-          <h1 className='text-2xl font-bold text-gray-900'>
+    <div className='flex flex-col py-2'>
+      <BackButton className='mb-3 mx-[1%]' />
+      <div className='mb-4 mx-[1%] flex items-center justify-between'>
+        <div>
+          <h1 className='text-4xl font-bold text-gray-900'>
             {destination ? `Search Results for ${destination}` : 'All Trips'}
           </h1>
           {tripsData && (
-            <p className='text-sm text-gray-600 mt-1'>
+            <p className='text font-semibold text-gray-600 mt-1'>
               {tripsData.pagination?.total} {tripsData.pagination?.total === 1 ? 'trip' : 'trips'} found
             </p>
           )}
         </div>
+        {/* Mobile Filter Button */}
+        <div className='md:hidden'>
+          <Button
+            onClick={() => setIsFilterModalOpen(true)}
+            className="md:hidden flex items-center gap-2 bg-neutral-900 hover:bg-neutral-800 text-white font-bold rounded-xl px-4 h-12"
+          >
+            <SlidersHorizontal className="w-5 h-5" />
+            Filters
+          </Button>
+        </div>
+      </div>
 
-        {(!apiUrl || isLoading) && (
-          <div className='flex items-center justify-center py-12'>
-            <div className='text-gray-600'>Loading trips...</div>
+      <FilterModal
+        isOpen={isFilterModalOpen}
+        onClose={() => setIsFilterModalOpen(false)}
+        onFilterChange={handleFilterChange}
+        onApplyFilters={handleApplyFilters}
+      />
+
+      <div className='flex gap-6'>
+        {/* Desktop Filters */}
+        <div className='hidden md:block flex-1 sticky top-[12%] self-start'>
+          <TripFilters onFilterChange={handleFilterChange} onApplyFilters={handleApplyFilters} />
+        </div>
+
+        {/* Trips List */}
+        <div className='flex-1 md:flex-[3]'>
+          {tripsData && tripsData.trips?.length === 0 && (
+            <div className='bg-gray-50 border border-gray-200 text-gray-700 px-6 py-8 rounded-lg text-center'>
+              <p className='text-lg font-medium'>No trips found</p>
+              <p className='text-sm text-gray-600 mt-2'>Try adjusting your filters to see more results</p>
+            </div>
+          )}
+          <div className='space-y-4'>
+            {tripsData?.trips?.map((trip) => {
+              const days = trip.startDate && trip.endDate
+                ? calculateDays(trip.startDate, trip.endDate)
+                : parseInt(trip.duration) || 0;
+              const nextDeparture = trip.startDate ? formatDate(trip.startDate) : undefined;
+
+              return (
+                <TripSearchCard
+                  key={trip.slug}
+                  imageUrl={trip.image}
+                  title={trip.title}
+                  location={trip.address}
+                  days={days}
+                  rating={trip.rating}
+                  reviewCount={trip.totalReviews}
+                  originalPrice={trip.price}
+                  price={trip.basePrice}
+                  category={trip.category}
+                  nextDeparture={nextDeparture}
+                  difficulty={trip.difficulty}
+                  totalSeats={trip.totalSeats}
+                  tags={trip.tags}
+                  onBookmark={handleBookmark}
+                  onViewDetails={() => handleBookNow(trip.slug)}
+                />
+              );
+            })}
           </div>
-        )}
-
-        {error && (
-          <div className='bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg'>
-            Error loading trips: {error.message}
-          </div>
-        )}
-
-        {tripsData && tripsData.trips?.length === 0 && (
-          <div className='bg-gray-50 border border-gray-200 text-gray-700 px-6 py-8 rounded-lg text-center'>
-            <p className='text-lg font-medium'>No trips found</p>
-            <p className='text-sm text-gray-600 mt-2'>Try adjusting your filters to see more results</p>
-          </div>
-        )}
-
-        <div className='space-y-4'>
-          {tripsData?.trips?.map((trip) => {
-
-            return (
-              <TripSearchCard
-                key={trip.slug}
-                imageUrl={trip.image}
-                title={trip.title}
-                location={trip.address}
-                days={parseInt(trip.duration)}
-                rating={trip.rating}
-                reviewCount={trip.totalReviews}
-                price={trip?.price || trip.basePrice}
-                seatsLeft={trip.availableSeats || 0}
-                totalSeats={trip.totalSeats || 0}
-                onBookmark={handleBookmark}
-                onBookNow={() => handleBookNow(trip.slug)}
-              />
-            );
-          })}
         </div>
       </div>
     </div>

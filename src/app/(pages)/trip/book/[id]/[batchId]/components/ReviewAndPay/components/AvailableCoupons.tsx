@@ -6,9 +6,10 @@ import { API_ENDPOINTS } from '@/common/constants/apiEndpoints';
 
 interface Coupon {
   code: string;
-  discountType: 'fixed' | 'percentage';
+  discountType: 'fixed' | 'percentage' | 'people_count';
   discountValue: number;
   maxDiscountAmount?: number;
+  numberOfPeople?: number;
   description: string;
 }
 
@@ -43,6 +44,8 @@ const AvailableCoupons: React.FC<AvailableCouponsProps> = ({ tripId }) => {
           displayText = `Rs. ${coupon.discountValue} off`;
         } else if (coupon.discountType === 'percentage') {
           displayText = `${coupon.discountValue}% off upto Rs. ${coupon.maxDiscountAmount}`;
+        } else if (coupon.discountType === 'people_count') {
+          displayText = `For Group Booking of ${coupon.numberOfPeople}`;
         }
 
         return (

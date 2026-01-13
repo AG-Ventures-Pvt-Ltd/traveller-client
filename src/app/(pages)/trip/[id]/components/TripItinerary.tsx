@@ -37,8 +37,8 @@ export function TripItinerary({ itinerary }: TripItineraryProps) {
   };
 
   return (
-    <div className="flex flex-col gap-6 my-8">
-      <h2 className="text-[#0F172B] tracking-tight font-bold text-xl">Tour Schedule</h2>
+    <div className="flex flex-col gap-4 sm:gap-6 my-6 sm:my-8">
+      <h2 className="text-[#0F172B] tracking-tight font-bold text-lg sm:text-xl">Tour Schedule</h2>
       
       <div className="flex flex-col gap-3">
         {itinerary.map((day) => {
@@ -57,23 +57,23 @@ export function TripItinerary({ itinerary }: TripItineraryProps) {
             >
               <button
                 onClick={() => toggleDay(day.day)}
-                className="w-full p-6 flex items-center justify-between hover:bg-white/30 transition-colors duration-200"
+                className="w-full p-4 sm:p-6 flex items-center justify-between hover:bg-white/30 transition-colors duration-200"
               >
                 <div className="flex flex-col gap-1 items-start">
-                  <div className="flex items-center gap-3">
-                    <div className="bg-[#0D203F] rounded-full h-12 w-12 flex items-center justify-center">
-                      <span className="text-white text-lg leading-4 font-bold">
+                  <div className="flex items-center gap-2 sm:gap-3">
+                    <div className="bg-[#0D203F] rounded-full h-10 w-10 sm:h-12 sm:w-12 flex items-center justify-center flex-shrink-0">
+                      <span className="text-white text-base sm:text-lg leading-4 font-bold">
                         {day.day}
                       </span>
                     </div>
-                    <h3 className="text-lg text-[#0F172B] leading-7 font-bold">
+                    <h3 className="text-base sm:text-lg text-[#0F172B] leading-6 sm:leading-7 font-bold">
                       {day.title}
                     </h3>
                   </div>
                 </div>
                 
                 <ChevronDown
-                  className={`w-6 h-6 text-[#0F172B] transition-transform duration-300 ${
+                  className={`w-5 h-5 sm:w-6 sm:h-6 text-[#0F172B] transition-transform duration-300 flex-shrink-0 ${
                     isExpanded ? 'rotate-180' : 'rotate-0'
                   }`}
                 />
@@ -84,22 +84,22 @@ export function TripItinerary({ itinerary }: TripItineraryProps) {
                   isExpanded ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'
                 }`}
               >
-                <div className="px-6 pb-6 bg-white/40">
-                  <div className="flex flex-col gap-4">
+                <div className="px-4 sm:px-6 pb-4 sm:pb-6 bg-white/40">
+                  <div className="flex flex-col gap-3 sm:gap-4">
                     {day.description && (
-                      <p className="text-base text-[#334155] leading-6">
+                      <p className="text-sm sm:text-base text-[#334155] leading-5 sm:leading-6">
                         {day.description}
                       </p>
                     )}
                     
                     {normalizedActivities.length > 0 && (
                       <div className="flex flex-col gap-2">
-                        <span className="text-sm font-medium text-[#0F172B]">Activities</span>
-                        <div className="flex flex-wrap gap-2">
+                        <span className="text-xs sm:text-sm font-medium text-[#0F172B]">Activities</span>
+                        <div className="flex flex-wrap gap-1.5 sm:gap-2">
                           {normalizedActivities.map((activity, index) => (
                             <div
                               key={index}
-                              className="px-3 py-2 bg-white rounded-lg border border-[#E2E8F0] text-sm text-[#334155] leading-5 hover:border-[#0D203F] transition-colors duration-200"
+                              className="px-2 sm:px-3 py-1.5 sm:py-2 bg-white rounded-lg border border-[#E2E8F0] text-xs sm:text-sm text-[#334155] leading-4 sm:leading-5 hover:border-[#0D203F] transition-colors duration-200"
                             >
                               {activity.description}
                             </div>
@@ -110,12 +110,12 @@ export function TripItinerary({ itinerary }: TripItineraryProps) {
 
                     {day.meals && day.meals.length > 0 && (
                       <div className="flex flex-col gap-2">
-                        <span className="text-sm font-medium text-[#0F172B]">Meals Included</span>
-                        <div className="flex flex-wrap gap-2">
+                        <span className="text-xs sm:text-sm font-medium text-[#0F172B]">Meals Included</span>
+                        <div className="flex flex-wrap gap-1.5 sm:gap-2">
                           {day.meals.map((meal, index) => (
                             <div
                               key={index}
-                              className="px-3 py-2 bg-[#F0FDF4] rounded-lg border border-[#86EFAC] text-sm text-[#166534] leading-5"
+                              className="px-2 sm:px-3 py-1.5 sm:py-2 bg-[#F0FDF4] rounded-lg border border-[#86EFAC] text-xs sm:text-sm text-[#166534] leading-4 sm:leading-5"
                             >
                               {meal}
                             </div>
@@ -125,7 +125,7 @@ export function TripItinerary({ itinerary }: TripItineraryProps) {
                     )}
 
                     {day.duration && (
-                      <div className="flex items-center gap-2 text-sm text-[#475569]">
+                      <div className="flex items-center gap-2 text-xs sm:text-sm text-[#475569]">
                         <span className="font-medium">Duration:</span>
                         <span>{day.duration}</span>
                       </div>

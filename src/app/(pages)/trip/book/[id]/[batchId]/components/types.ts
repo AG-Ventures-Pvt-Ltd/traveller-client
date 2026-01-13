@@ -4,12 +4,27 @@ export interface TravelerData {
     gender: string;
     email: string;
     phone: string;
-    governmentId?: File | null;
+    governmentIdType?: string;
+    governmentIdNumber?: string;
+}
+
+export interface ExistingTraveler {
+    _id: string;
+    fullName: string;
+    email: string;
+    phone: string;
+    governmentIdType?: string;
+    governmentIdNumber?: string;
+}
+
+export interface ExistingTravelersResponse {
+    guestUsers: ExistingTraveler[];
+    owner: ExistingTraveler;
 }
 
 export interface EmergencyContact {
     name: string;
-    phone: string;
+    contactNumber: string;
 }
 
 // Trip and booking data types
@@ -25,12 +40,18 @@ export interface TripDetails {
         startDate: string;
         startTime: string;
     };
+    isCouponApplied: boolean;
+    couponMessage?: string;
+    appliedCoupon?: {
+        code: string;
+        displayText: string;
+    };
 }
 
 export interface BookingFlowParams {
     tripId: string;
     batchId: string;
-    travelers: TravelerData[];
+    selectedTravelerIds: string[];
     emergencyContact: EmergencyContact;
     totalAmount: number;
     numberOfPeople: number;
@@ -67,10 +88,8 @@ export interface TravelerDetailsFormProps {
 }
 
 export interface TravelerDetailsProps {
-    travelers: TravelerData[];
-    onTravelersChange: (updater: TravelerData[] | ((prev: TravelerData[]) => TravelerData[])) => void;
-    guests: number;
-    onGuestsChange: (guests: number) => void;
+    selectedTravelerIds: string[];
+    onSelectedTravelersChange: (ids: string[]) => void;
     onNext: () => void;
 }
 

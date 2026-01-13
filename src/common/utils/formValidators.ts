@@ -44,9 +44,9 @@ export const validateTravelerForm = (travelers: Array<{
 };
 
 // Emergency contact validation
-export const validateEmergencyContact = (contact: { name: string; phone: string }) => {
+export const validateEmergencyContact = (contact: { name: string; contactNumber: string }) => {
   const isNameValid = requiredTrimmed('Emergency contact name is required')(contact.name);
-  const isPhoneValid = composeValidators(requiredTrimmed('Emergency contact phone is required'), phoneNumber())(contact.phone);
+  const isPhoneValid = composeValidators(requiredTrimmed('Emergency contact phone is required'), phoneNumber())(contact.contactNumber);
 
   return !isNameValid && !isPhoneValid;
 };

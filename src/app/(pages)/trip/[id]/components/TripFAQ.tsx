@@ -25,10 +25,10 @@ export function TripFAQ({ faqs }: TripFAQProps) {
   };
 
   return (
-    <div className="flex flex-col gap-6 my-8">
-      <h2 className="text-xl font-bold text-[#0F172B] tracking-tight">FAQ</h2>
+    <div className="flex flex-col gap-4 sm:gap-6 my-6 sm:my-8">
+      <h2 className="text-lg sm:text-xl font-bold text-[#0F172B] tracking-tight">FAQ</h2>
 
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-2 sm:gap-3">
         {faqs.map((faq, index) => {
           const isExpanded = expandedFAQs.includes(index);
 
@@ -44,14 +44,14 @@ export function TripFAQ({ faqs }: TripFAQProps) {
             >
               <button
                 onClick={() => toggleFAQ(index)}
-                className="w-full p-6 flex items-center justify-between hover:bg-white/30 transition-colors duration-200"
+                className="w-full p-4 sm:p-6 flex items-center justify-between hover:bg-white/30 transition-colors duration-200 gap-3"
               >
-                <h3 className="text-lg font-medium text-[#0F172B] leading-6 text-left">
+                <h3 className="text-sm sm:text-base md:text-lg font-medium text-[#0F172B] leading-5 sm:leading-6 text-left">
                   {faq.question}
                 </h3>
                 
                 <ChevronDown
-                  className={`w-6 h-6 text-[#0F172B] transition-transform duration-300 ${
+                  className={`w-5 h-5 sm:w-6 sm:h-6 text-[#0F172B] transition-transform duration-300 flex-shrink-0 ${
                     isExpanded ? 'rotate-180' : 'rotate-0'
                   }`}
                 />
@@ -62,8 +62,8 @@ export function TripFAQ({ faqs }: TripFAQProps) {
                   isExpanded ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
                 }`}
               >
-                <div className="px-6 pb-6 bg-white/40">
-                  <p className="text-sm text-[#64748B] leading-6">{faq.answer}</p>
+                <div className="px-4 sm:px-6 pb-4 sm:pb-6 bg-white/40">
+                  <p className="text-xs sm:text-sm text-[#64748B] leading-5 sm:leading-6">{faq.answer}</p>
                 </div>
               </div>
             </Card>

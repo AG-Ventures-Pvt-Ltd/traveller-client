@@ -1,5 +1,5 @@
 import { TrendingUp, Clock, CheckCircle } from "lucide-react";
-import { PerformanceMetric as PerformanceMetricType } from "../types";
+import { PerformanceMetric as PerformanceMetricType } from "../../../types";
 
 interface PerformanceMetricProps {
   metric: PerformanceMetricType;

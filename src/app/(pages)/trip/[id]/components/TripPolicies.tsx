@@ -22,49 +22,49 @@ export function TripPolicies({
 
 }: TripPoliciesProps) {
   return (
-    <div className="flex flex-col gap-6 my-8">
-      <h2 className="text-xl font-bold text-[#0F172B] tracking-tight mb-0">Policies</h2>
-      <div className="grid md:grid-cols-2 gap-6">
-        <Card className="flex flex-col gap-4 p-6">
+    <div className="flex flex-col gap-4 sm:gap-6 my-6 sm:my-8">
+      <h2 className="text-lg sm:text-xl font-bold text-[#0F172B] tracking-tight mb-0">Policies</h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+        <Card className="flex flex-col gap-3 sm:gap-4 p-4 sm:p-6">
           <div className="flex items-center gap-2">
-            <FileText className="w-6 h-6 text-[#0F172B]" />
-            <h3 className="text-base font-bold text-[#0F172B] leading-6">
+            <FileText className="w-5 h-5 sm:w-6 sm:h-6 text-[#0F172B]" />
+            <h3 className="text-sm sm:text-base font-bold text-[#0F172B] leading-5 sm:leading-6">
               Cancellation Policy
             </h3>
           </div>
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-2 sm:gap-3">
             {cancellationRules.map((rule, index) => (
               <div
                 key={index}
-                className={`flex justify-between items-center py-2 ${
+                className={`flex flex-col sm:flex-row justify-between items-start sm:items-center gap-1 sm:gap-0 py-2 ${
                   index !== cancellationRules.length - 1
                     ? "border-b border-[#E2E8F0]"
                     : ""
                 }`}
               >
-                <span className="text-sm text-[#334155] leading-5">
+                <span className="text-xs sm:text-sm text-[#334155] leading-4 sm:leading-5">
                   {rule.timing}
                 </span>
-                <span className="text-sm font-medium text-[#0F172B] leading-5">
+                <span className="text-xs sm:text-sm font-medium text-[#0F172B] leading-4 sm:leading-5">
                   {rule.refund}
                 </span>
               </div>
             ))}
           </div>
         </Card>
-        <Card className="flex flex-col gap-4 p-6">
+        <Card className="flex flex-col gap-3 sm:gap-4 p-4 sm:p-6">
           <div className="flex items-center gap-2">
-            <ShieldCheck className="w-6 h-6 text-[#0F172B]" />
-            <h3 className="text-base font-bold text-[#0F172B] leading-6">Refund Policy</h3>
+            <ShieldCheck className="w-5 h-5 sm:w-6 sm:h-6 text-[#0F172B]" />
+            <h3 className="text-sm sm:text-base font-bold text-[#0F172B] leading-5 sm:leading-6">Refund Policy</h3>
           </div>
-          <p className="text-sm text-[#334155] leading-6">
+          <p className="text-xs sm:text-sm text-[#334155] leading-5 sm:leading-6">
             {refundProcessingTime}
           </p>
           <div className="flex flex-col gap-2">
             {refundTerms.map((term, index) => (
-              <div key={index} className="flex items-start gap-3">
-                <div className="w-1.5 h-1.5 rounded-full bg-[#0F172B] mt-2 flex-shrink-0" />
-                <span className="text-sm text-[#334155] leading-5">
+              <div key={index} className="flex items-start gap-2 sm:gap-3">
+                <div className="w-1.5 h-1.5 rounded-full bg-[#0F172B] mt-1.5 sm:mt-2 flex-shrink-0" />
+                <span className="text-xs sm:text-sm text-[#334155] leading-4 sm:leading-5">
                   {term.text}
                 </span>
               </div>

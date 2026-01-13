@@ -2,7 +2,8 @@ export const API_ENDPOINTS = {
   TRIPS: {
     BASIC_DETAILS: (id: string) => `api/client/v1/trips/details/${id}/basic`,
     DETAILED_DETAILS: (id: string) => `api/client/v1/trips/details/${id}/detailed`,
-    FEATURED_TRIPS : (limit: string) => `/api/client/v1/trips/featured?limit=${limit}`, 
+    FEATURED_TRIPS : (limit: string) => `/api/client/v1/trips/featured?limit=${limit}`,
+    HOST_TRIPS: (hostUsername: string) => `/api/client/v1/trips/user/${hostUsername}`,
   },
   BOOKINGS : {
     START: "/api/client/v1/bookings/start",
@@ -29,5 +30,22 @@ export const API_ENDPOINTS = {
     REGISTER: "/api/client/v1/user/register",
     VERIFY_EMAIL: (token: string, email: string) => `/api/client/v1/user/verifyEmail?token=${token}&email=${email}`,
     SOCIAL_LOGIN: "/api/client/v1/user/social_login",
+    HOST_PROFILE: (id: string) => `/api/client/v1/user/host/profile/${id}`,
+    ME: "/api/client/v1/user/me",
+    MY_TRIPS: "/api/client/v1/user/me/trips",
+    UPDATE: "/api/client/v1/user/me/update",
+    GET_EMERGENCY_CONTACT: "/api/client/v1/user/emergencyContact",
+    ADD_EMERGENCY_CONTACT: "/api/client/v1/user/addEmergencyContact"
+  },  RATINGS: {
+    BY_USERNAME: (username: string, page?: number, limit?: number) => {
+      const params = new URLSearchParams();
+      if (page) params.append('page', page.toString());
+      if (limit) params.append('limit', limit.toString());
+      const query = params.toString();
+      return `/api/client/v1/trips/ratings/${username}${query ? `?${query}` : ''}`;
+    },
+  },
+  LANDING_PAGE: {
+    FEATURED_TRIPS: '/api/client/v1/landingpage/featuredTrips',
   },
 };

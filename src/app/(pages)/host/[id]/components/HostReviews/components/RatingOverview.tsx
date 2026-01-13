@@ -1,5 +1,5 @@
 import { Star } from "lucide-react";
-import { RatingDistribution } from "../types";
+import { RatingDistribution } from "../../../types";
 
 interface RatingOverviewProps {
   overallRating: number;

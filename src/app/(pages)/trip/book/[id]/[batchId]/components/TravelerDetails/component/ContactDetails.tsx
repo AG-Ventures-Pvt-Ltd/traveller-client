@@ -18,21 +18,18 @@ const ContactDetails: React.FC<ContactDetailsProps> = ({
     });
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      onChange({
-        ...data,
-        governmentId: file,
-      });
-    }
-  };
-
   const genderOptions = [
     { value: 'male', label: 'Male' },
     { value: 'female', label: 'Female' },
     { value: 'other', label: 'Other' },
     { value: 'prefer-not-to-say', label: 'Prefer not to say' },
+  ];
+
+  const governmentIdTypeOptions = [
+    { value: 'adhaar', label: 'Adhaar' },
+    { value: 'passport', label: 'Passport' },
+    { value: 'driving-license', label: 'Driving License' },
+    { value: 'voter-id', label: 'Voter Id' },
   ];
 
   return (
@@ -101,15 +98,28 @@ const ContactDetails: React.FC<ContactDetailsProps> = ({
           </div>
         </div>
       </div>
-        <CustomInput
-          variant="file"
-          label="Government ID"
-          required={true}
-          accept=".jpg,.jpeg,.png,.pdf"
-          placeholder="Click to upload government ID"
-          helperText="Upload passport, national ID, or driver's license (JPG, PNG, or PDF)"
-          onChange={handleFileChange}
-        />
+      <div className="flex gap-4">
+        <div className="flex-1">
+          <CustomSelect
+            value={data.governmentIdType || ''}
+            onChange={(value) => handleInputChange('governmentIdType', value)}
+            placeholder="Select ID type"
+            options={governmentIdTypeOptions}
+            label="Government ID Type"
+            required={true}
+            className="bg-white rounded-xl border border-[#EDEDED] focus:border-[#121212]"
+          />
+        </div>
+        <div className="flex-1">
+          <CustomInput
+            label="Government ID Number"
+            placeholder="Enter ID number"
+            value={data.governmentIdNumber || ''}
+            onChange={(e) => handleInputChange('governmentIdNumber', e.target.value)}
+            required={true}
+          />
+        </div>
+      </div>
     </div>
   );
 };

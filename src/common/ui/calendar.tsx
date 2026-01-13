@@ -15,6 +15,7 @@ interface CalendarProps {
   month?: Date;
   className?: string;
   disableNavigation?: boolean;
+  showYearNavigation?: boolean;
 }
 
 const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -27,8 +28,10 @@ function Calendar({
   month,
   className,
   disableNavigation = false,
+  showYearNavigation = false,
 }: CalendarProps) {
   const [currentMonth, setCurrentMonth] = React.useState(month || new Date());
+  const [showYearSelector, setShowYearSelector] = React.useState(false);
 
   React.useEffect(() => {
     if (month) {
@@ -69,6 +72,24 @@ function Calendar({
     setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1));
   };
 
+  const handlePrevYear = () => {
+    setCurrentMonth(new Date(currentMonth.getFullYear() - 1, currentMonth.getMonth()));
+  };
+
+  const handleNextYear = () => {
+    setCurrentMonth(new Date(currentMonth.getFullYear() + 1, currentMonth.getMonth()));
+  };
+
+  const handleMonthSelect = (monthIndex: number) => {
+    setCurrentMonth(new Date(currentMonth.getFullYear(), monthIndex));
+    setShowYearSelector(false);
+  };
+
+  const handleYearSelect = (year: number) => {
+    setCurrentMonth(new Date(year, currentMonth.getMonth()));
+    setShowYearSelector(false);
+  };
+
   const isSameDay = (date1: Date | null, date2: Date | null) => {
     if (!date1 || !date2) return false;
     return (
@@ -86,27 +107,109 @@ function Calendar({
   return (
     <div className={cn("p-3", className)} style={{ minHeight: '240px' }}>
       {!disableNavigation && (
-        <div className="flex justify-center items-center relative mb-4">
-          <button
-            type="button"
-            onClick={handlePrevMonth}
-            className="absolute left-1 p-1 hover:bg-gray-100 rounded-md opacity-50 hover:opacity-100"
-            style={{ color: 'black' }}
-          >
-            <ChevronLeft className="h-4 w-4" />
-          </button>
-          <div className="text-sm font-medium" style={{ color: 'black' }}>
-            {MONTHS[currentMonth.getMonth()]} {currentMonth.getFullYear()}
+        <>
+          {/* Year Navigation */}
+          {showYearNavigation && (
+            <div className="flex justify-center items-center relative mb-2">
+              <button
+                type="button"
+                onClick={handlePrevYear}
+                className="absolute left-1 p-1 hover:bg-gray-100 rounded-md opacity-50 hover:opacity-100"
+                style={{ color: 'black' }}
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowYearSelector(!showYearSelector)}
+                className="text-sm font-medium hover:bg-gray-100 px-2 py-1 rounded-md"
+                style={{ color: 'black' }}
+              >
+                {currentMonth.getFullYear()}
+              </button>
+              <button
+                type="button"
+                onClick={handleNextYear}
+                className="absolute right-1 p-1 hover:bg-gray-100 rounded-md opacity-50 hover:opacity-100"
+                style={{ color: 'black' }}
+              >
+                <ChevronRight className="h-4 w-4" />
+              </button>
+            </div>
+          )}
+
+          {/* Month Navigation */}
+          <div className="flex justify-center items-center relative mb-4">
+            <button
+              type="button"
+              onClick={handlePrevMonth}
+              className="absolute left-1 p-1 hover:bg-gray-100 rounded-md opacity-50 hover:opacity-100"
+              style={{ color: 'black' }}
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowYearSelector(!showYearSelector)}
+              className="text-sm font-medium hover:bg-gray-100 px-2 py-1 rounded-md"
+              style={{ color: 'black' }}
+            >
+              {MONTHS[currentMonth.getMonth()]} {showYearNavigation ? '' : currentMonth.getFullYear()}
+            </button>
+            <button
+              type="button"
+              onClick={handleNextMonth}
+              className="absolute right-1 p-1 hover:bg-gray-100 rounded-md opacity-50 hover:opacity-100"
+              style={{ color: 'black' }}
+            >
+              <ChevronRight className="h-4 w-4" />
+            </button>
           </div>
-          <button
-            type="button"
-            onClick={handleNextMonth}
-            className="absolute right-1 p-1 hover:bg-gray-100 rounded-md opacity-50 hover:opacity-100"
-            style={{ color: 'black' }}
-          >
-            <ChevronRight className="h-4 w-4" />
-          </button>
-        </div>
+
+          {/* Year/Month Selector */}
+          {showYearSelector && (
+            <div className="absolute top-full left-0 right-0 z-10 bg-white border border-gray-200 rounded-md shadow-lg max-h-48 overflow-y-auto">
+              {showYearNavigation ? (
+                // Year selector
+                <div className="grid grid-cols-4 gap-1 p-2">
+                  {Array.from({ length: 12 }, (_, i) => {
+                    const year = currentMonth.getFullYear() - 5 + i;
+                    return (
+                      <button
+                        key={year}
+                        type="button"
+                        onClick={() => handleYearSelect(year)}
+                        className={cn(
+                          "p-2 text-sm hover:bg-gray-100 rounded",
+                          year === currentMonth.getFullYear() && "bg-blue-100 text-blue-600 font-medium"
+                        )}
+                      >
+                        {year}
+                      </button>
+                    );
+                  })}
+                </div>
+              ) : (
+                // Month selector
+                <div className="grid grid-cols-3 gap-1 p-2">
+                  {MONTHS.map((month, index) => (
+                    <button
+                      key={month}
+                      type="button"
+                      onClick={() => handleMonthSelect(index)}
+                      className={cn(
+                        "p-2 text-sm hover:bg-gray-100 rounded",
+                        index === currentMonth.getMonth() && "bg-blue-100 text-blue-600 font-medium"
+                      )}
+                    >
+                      {month}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+        </>
       )}
 
       <table className="w-full border-collapse">

@@ -31,7 +31,7 @@ const BackButton: React.FC<BackButtonProps> = ({
 
   return (
     <div
-      className={`flex items-center gap-4 text-maintext rounded-lg cursor-pointer w-fit hover:opacity-70 transition-opacity ${className}`}
+      className={`hidden md:flex items-center gap-4 text-maintext rounded-lg cursor-pointer w-fit hover:opacity-70 transition-opacity ${className}`}
       onClick={handleClick}
     >
       <div className='bg-primary text-white p-2 rounded-full'>

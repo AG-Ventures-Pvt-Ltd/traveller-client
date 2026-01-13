@@ -9,13 +9,17 @@ import { User } from 'lucide-react'
 import { usePathname } from "next/navigation";
 
 
-const navItems = ['Tours', 'About', 'Blog']
+const navItems = [
+          { title : 'Trips', route : "/trips" }, 
+          { title : 'About', route : "/about" }, 
+        ]
 
 const hiddenPaths = ['/auth', '/verify']
 
 const Navbar = () => {
 
   const { data: session } = useSession();
+
   const router = useRouter();
 
   const pathname = usePathname();
@@ -35,8 +39,8 @@ const Navbar = () => {
         <div className='flex-1 flex justify-end items-center'>
           <div className='flex items-center gap-5'>
             {navItems.map((item) => (
-              <div key={item} className='flex flex-col items-start text-[#121212] font-bold'>
-                {item}
+              <div key={item.title} onClick={() => router.push(item.route)} className='flex flex-col items-start text-[#121212] font-bold cursor-pointer'>
+                {item.title}
               </div>
             ))}
             <div className='flex flex-col items-start'>
@@ -45,7 +49,7 @@ const Navbar = () => {
                   className='p-2 bg-black rounded-full flex items-center gap-2.5 cursor-pointer'
                   onClick={() => router.push('/profile')}
                 >
-                  <User className='text-white'/>
+                  <User className='text-white' />
                 </div>
               ) : (
                 <button

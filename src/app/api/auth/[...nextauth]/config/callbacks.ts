@@ -50,6 +50,7 @@ export const authCallbacks: Pick<NextAuthOptions, 'callbacks'> = {
 
           const user = res.data.data;
 
+          token.sub = user.userId.toString()
           token.userId = user.userId.toString()
           token.type = user.type
           token.fullName = user.fullName

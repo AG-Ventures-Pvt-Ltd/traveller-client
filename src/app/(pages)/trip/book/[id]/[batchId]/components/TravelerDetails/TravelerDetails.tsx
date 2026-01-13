@@ -1,40 +1,70 @@
 'use client';
 
-import React, { useMemo, useCallback } from 'react';
-import { Minus, Plus } from 'lucide-react';
-import ContactDetails from './component/ContactDetails';
-import { TravelerData, TravelerDetailsProps } from '../types';
-import { validateTravelerForm } from '@/common/utils/formValidators';
+import React, { useMemo, useCallback, useState } from 'react';
+import { ChevronDown, Plus, Pencil } from 'lucide-react';
+import Checkbox from '@/common/ui/Checkbox';
+import { AddTravelerModal } from '@/app/(pages)/profile/components';
+import { useGetData } from '@/services/useGetData';
+import { API_ENDPOINTS } from '@/common/constants/apiEndpoints';
+import { TravelerDetailsProps, ExistingTraveler, ExistingTravelersResponse } from '../types';
 
 const TravelerDetails: React.FC<TravelerDetailsProps> = ({
-    travelers,
-    onTravelersChange,
-    guests,
-    onGuestsChange,
+    selectedTravelerIds,
+    onSelectedTravelersChange,
     onNext,
 }) => {
-    
-    const handleTravelerChange = useCallback((index: number, data: TravelerData) => {
-        onTravelersChange(prevTravelers => {
-            const newTravelers = [...prevTravelers];
-            newTravelers[index] = data;
-            return newTravelers;
-        });
-    }, [onTravelersChange]);
+    const [isAccordionOpen, setIsAccordionOpen] = useState(true);
+    const [isTravelerModalOpen, setIsTravelerModalOpen] = useState(false);
+    const [editingTraveler, setEditingTraveler] = useState<ExistingTraveler | null>(null);
+    const ownerInitialized = React.useRef(false);
 
-    const handleGuestsIncrease = useCallback(() => {
-        onGuestsChange(guests + 1);
-    }, [guests, onGuestsChange]);
+    const { data: travelersResponse, refetch: refetchTravelers } = useGetData<ExistingTravelersResponse>(
+        `${API_ENDPOINTS.GUEST_USERS.GET}?location=booking`
+    );
 
-    const handleGuestsDecrease = useCallback(() => {
-        if (guests > 1) {
-            onGuestsChange(guests - 1);
+    // Extract owner and guest users separately
+    const owner = useMemo(() => travelersResponse?.owner, [travelersResponse]);
+    const guestTravelers = useMemo(() => travelersResponse?.guestUsers || [], [travelersResponse]);
+
+    // Auto-select owner on mount
+    React.useEffect(() => {
+        if (owner && owner._id && !ownerInitialized.current) {
+            ownerInitialized.current = true;
+            if (!selectedTravelerIds.includes(owner._id)) {
+                onSelectedTravelersChange([...selectedTravelerIds, owner._id]);
+            }
         }
-    }, [guests, onGuestsChange]);
+    }, [owner, selectedTravelerIds, onSelectedTravelersChange]);
+
+    const handleTravelerSelect = useCallback((travelerId: string, isSelected: boolean) => {
+        if (isSelected) {
+            onSelectedTravelersChange([...selectedTravelerIds, travelerId]);
+        } else {
+            onSelectedTravelersChange(selectedTravelerIds.filter(id => id !== travelerId));
+        }
+    }, [selectedTravelerIds, onSelectedTravelersChange]);
+
+    const handleAddTraveler = useCallback(() => {
+        setEditingTraveler(null);
+        setIsTravelerModalOpen(true);
+    }, []);
+
+    const handleEditTraveler = useCallback((traveler: ExistingTraveler) => {
+        setEditingTraveler(traveler);
+        setIsTravelerModalOpen(true);
+    }, []);
+
+    const handleCloseTravelerModal = useCallback(() => {
+        setIsTravelerModalOpen(false);
+        setEditingTraveler(null);
+        void refetchTravelers();
+    }, [refetchTravelers]);
+
+    const totalSelectedTravelers = selectedTravelerIds.length;
 
     const isFormValid = useMemo(() => {
-        return validateTravelerForm(travelers);
-    }, [travelers]);
+        return selectedTravelerIds.length > 0;
+    }, [selectedTravelerIds]);
 
     const handleNext = useCallback(() => {
         if (isFormValid) {
@@ -46,52 +76,118 @@ const TravelerDetails: React.FC<TravelerDetailsProps> = ({
         <div className="flex flex-col">
             <div className="pb-5">
                 <p className="text-[#404040] text-[14px] font-medium font-['Satoshi'] leading-[21px]">
-                    We&apos;ll use this information to send you confirmation and updates about your booking
+                    Select travelers from your saved list or add new travelers
                 </p>
             </div>
+
             <div className="py-5 flex flex-col gap-3 border-t border-[#EDEDED]">
                 <h3 className="text-[#121212] text-[15px] font-bold font-['Satoshi'] leading-[22.5px]">
                     Number of travelers
                 </h3>
-                <div className="flex items-center gap-4">
-                    <button
-                        onClick={handleGuestsDecrease}
-                        disabled={guests <= 1}
-                        className={`w-12 h-12 rounded-xl border border-[#EDEDED] flex items-center justify-center transition-all ${guests <= 1
-                            ? 'bg-white opacity-50 cursor-not-allowed'
-                            : 'bg-white hover:bg-gray-50'
-                            }`}
-                    >
-                        <Minus className="w-5 h-5 text-[#121212]" strokeWidth={2} />
-                    </button>
-                    <div className="flex-1 flex flex-col items-center">
+                <div className="flex items-center">
+                    <div className="flex flex-col">
                         <span className="text-[#121212] text-2xl font-bold font-['Satoshi'] leading-9">
-                            {guests}
+                            {totalSelectedTravelers}
                         </span>
                         <span className="text-[#404040] text-[14px] font-medium font-['Satoshi'] leading-[21px]">
-                            Adults
+                            {totalSelectedTravelers === 1 ? 'Traveler selected' : 'Travelers selected'}
                         </span>
                     </div>
-                    <button
-                        onClick={handleGuestsIncrease}
-                        className="w-12 h-12 bg-[#121212] rounded-xl flex items-center justify-center hover:bg-[#2a2a2a] transition-colors"
-                    >
-                        <Plus className="w-5 h-5 text-white" strokeWidth={2} />
-                    </button>
                 </div>
             </div>
-            <div className="flex flex-col">
-                {travelers.map((traveler, index) => (
-                    <div key={index} className="pt-5">
-                        <ContactDetails
-                            travelerIndex={index + 1}
-                            isPrimary={index === 0}
-                            data={traveler}
-                            onChange={(data) => handleTravelerChange(index, data)}
-                        />
+
+            <div className="pt-5 border-t border-[#EDEDED]">
+                <div
+                    className="flex justify-between items-center py-4 cursor-pointer"
+                    onClick={() => setIsAccordionOpen(!isAccordionOpen)}
+                >
+                    <h3 className="text-[#121212] text-[15px] font-bold font-['Satoshi'] leading-[22.5px]">
+                        Select travelers
+                    </h3>
+                    <ChevronDown
+                        className={`w-5 h-5 text-[#121212] transition-transform ${
+                            isAccordionOpen ? 'rotate-180' : ''
+                        }`}
+                        strokeWidth={2}
+                    />
+                </div>
+
+                {isAccordionOpen && (
+                    <div className="flex flex-col gap-3 pb-4">
+                        {owner && (
+                            <div className="flex items-start gap-3 p-4 bg-[#F9F9F9] rounded-xl border border-[#EDEDED]">
+                                <Checkbox
+                                    id={`traveler-${owner._id}`}
+                                    checked={selectedTravelerIds.includes(owner._id)}
+                                    onChange={(checked) => handleTravelerSelect(owner._id, checked)}
+                                />
+                                <div className="flex-1 flex flex-col gap-1">
+                                    <span className="text-[#121212] text-[15px] font-bold font-['Satoshi'] leading-[22.5px]">
+                                        {owner.fullName} (you)
+                                    </span>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Guest Travelers Section */}
+                        {guestTravelers.length > 0 ? (
+                            guestTravelers.map((traveler) => (
+                                <div
+                                    key={traveler._id}
+                                    className="flex items-start gap-3 p-4 bg-[#F9F9F9] rounded-xl border border-[#EDEDED]"
+                                >
+                                    <Checkbox
+                                        id={`traveler-${traveler._id}`}
+                                        checked={selectedTravelerIds.includes(traveler._id)}
+                                        onChange={(checked) => handleTravelerSelect(traveler._id, checked)}
+                                    />
+                                    <div className="flex-1 flex flex-col gap-1">
+                                        <span className="text-[#121212] text-[15px] font-bold font-['Satoshi'] leading-[22.5px]">
+                                            {traveler.fullName}
+                                        </span>
+                                        <div className="flex flex-col gap-0.5">
+                                            <span className="text-[#404040] text-[13px] font-medium font-['Satoshi'] leading-[19.5px]">
+                                                {traveler.email}
+                                            </span>
+                                            <span className="text-[#404040] text-[13px] font-medium font-['Satoshi'] leading-[19.5px]">
+                                                {traveler.phone}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <button
+                                        onClick={() => handleEditTraveler(traveler)}
+                                        className="p-2 hover:bg-[#EDEDED] rounded-lg transition-colors"
+                                        aria-label="Edit traveler"
+                                    >
+                                        <Pencil className="w-4 h-4 text-[#404040]" strokeWidth={2} />
+                                    </button>
+                                </div>
+                            ))
+                        ) : (
+                            !owner && (
+                                <div className="flex flex-col items-center justify-center py-8 gap-3">
+                                    <p className="text-[#404040] text-[14px] font-medium font-['Satoshi'] text-center">
+                                        No saved travelers found. Add travelers to get started.
+                                    </p>
+                                </div>
+                            )
+                        )}
                     </div>
-                ))}
+                )}
             </div>
+
+            {/* Add New Traveler Button */}
+            <div className="pt-5">
+                <button
+                    onClick={handleAddTraveler}
+                    className="w-full py-4 rounded-xl border-2 border-[#121212] text-[#121212] text-[16px] font-bold font-['Satoshi'] leading-6 transition-colors hover:bg-[#121212] hover:text-white flex items-center justify-center gap-2"
+                >
+                    <Plus className="w-5 h-5" strokeWidth={2} />
+                    Add New Traveler
+                </button>
+            </div>
+
+            {/* Next Button */}
             <div className="pt-6">
                 <button
                     onClick={handleNext}
@@ -105,6 +201,13 @@ const TravelerDetails: React.FC<TravelerDetailsProps> = ({
                     Next
                 </button>
             </div>
+
+            {/* Add Traveler Modal */}
+            <AddTravelerModal
+                open={isTravelerModalOpen}
+                onClose={handleCloseTravelerModal}
+                existingTraveler={editingTraveler}
+            />
         </div>
     );
 };

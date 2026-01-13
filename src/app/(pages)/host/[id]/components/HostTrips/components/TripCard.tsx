@@ -1,6 +1,7 @@
-import { MapPin, Star, Clock } from "lucide-react";
-import Image from "next/image";
-import { Trip } from "../types";
+import { MapPin, Star, Clock, IndianRupee } from "lucide-react";
+import { Trip } from "../../../types";
+import MyImage from "@/common/ui/Image";
+import Button from "@/common/ui/Buttons/Button";
 
 interface TripCardProps {
   trip: Trip;
@@ -10,10 +11,9 @@ interface TripCardProps {
 export function TripCard({ trip, onViewDetails }: TripCardProps) {
   return (
     <div className="w-full max-w-[436px] bg-white rounded-3xl border-2 border-gray-200 overflow-hidden flex flex-col">
-      {/* Image */}
       <div className="relative w-full h-60 overflow-hidden">
-        <Image
-          src={trip.imageUrl}
+        <MyImage
+          src={trip.image}
           alt={trip.title}
           fill
           className="object-cover"
@@ -24,62 +24,52 @@ export function TripCard({ trip, onViewDetails }: TripCardProps) {
           </span>
         </div>
       </div>
-
-      {/* Content */}
       <div className="pl-6 pt-6 flex flex-col gap-4 pb-6">
-        {/* Title and Location */}
         <div className="flex flex-col gap-2">
           <h3 className="text-neutral-900 text-xl font-bold font-['Satoshi'] leading-6">
             {trip.title}
           </h3>
           <div className="flex items-center gap-2">
-            <MapPin className="w-4 h-4 text-neutral-700" strokeWidth={1.33} />
+            <MapPin className="w-4 h-4 text-neutral-700" strokeWidth={2} />
             <span className="text-neutral-700 text-sm font-medium font-['Satoshi']">
               {trip.location}
             </span>
           </div>
         </div>
-
-        {/* Rating and Duration */}
         <div className="flex items-center gap-4">
-          <div className="flex items-center gap-1.5">
+          {trip.rating > 0 && (<div className="flex items-center gap-1.5">
             <div className="w-4 h-4 bg-neutral-900 rounded-full flex items-center justify-center">
-              <Star className="w-3 h-3 fill-white text-white" strokeWidth={1.33} />
+              <Star className="w-3 h-3 fill-white text-white" strokeWidth={2} />
             </div>
             <span className="text-neutral-900 text-sm font-bold font-['Satoshi']">
               {trip.rating}
             </span>
-            <span className="text-neutral-700 text-sm font-medium font-['Satoshi']">
-              ({trip.reviewCount})
-            </span>
-          </div>
+          </div>)}
           <div className="flex items-center gap-1.5">
-            <Clock className="w-4 h-4 text-neutral-700" strokeWidth={1.33} />
+            <Clock className="w-4 h-4 text-neutral-700" strokeWidth={2} />
             <span className="text-neutral-700 text-sm font-medium font-['Satoshi']">
               {trip.duration}
             </span>
           </div>
         </div>
-
-        {/* Divider */}
         <div className="w-full h-px bg-gray-200" />
-
-        {/* Price and Button */}
-        <div className="flex justify-between items-center pr-6">
-          <div className="flex items-baseline gap-1">
-            <span className="text-neutral-900 text-3xl font-bold font-['Satoshi']">
-              ${trip.price}
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pr-6">
+          <div className="flex items-end gap-1">
+            <span className="text-neutral-900 text-2xl sm:!text-3xl lg:!text-4xl font-bold font-['Satoshi'] flex items-center">
+              <IndianRupee size={24} className="sm:w-6 sm:h-6 lg:w-8 lg:h-8"/>{trip.price}
             </span>
-            <span className="text-neutral-700 text-sm font-medium font-['Satoshi']">
+            <span className="text-neutral-700 text-sm sm:text-base lg:text-lg font-medium font-['Satoshi']">
               / person
             </span>
           </div>
-          <button
-            onClick={() => onViewDetails?.(trip.id)}
-            className="px-5 py-2.5 bg-neutral-900 rounded-xl text-white text-sm font-bold font-['Satoshi'] hover:bg-neutral-800 transition-colors"
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => onViewDetails?.(trip.slug)}
+            className="px-4 sm:px-5! py-2! rounded-xl! text-white! text-sm! font-bold! w-full sm:w-auto"
           >
             View Details
-          </button>
+          </Button>
         </div>
       </div>
     </div>

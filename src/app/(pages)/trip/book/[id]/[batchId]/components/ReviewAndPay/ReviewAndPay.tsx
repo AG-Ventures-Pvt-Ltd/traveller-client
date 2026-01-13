@@ -1,9 +1,10 @@
 'use client';
 
-import React, { useState } from 'react';
-import { CheckCircle2 } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { CheckCircle2, OctagonAlert } from 'lucide-react';
 import AvailableCoupons from './components/AvailableCoupons';
 import { useBookingStore } from '../../store/useBookingStore';
+import { useTripDetailsStore } from '../../store/useTripDetailsStore';
 
 interface ReviewAndPayProps {
   totalAmount: number;
@@ -20,9 +21,19 @@ const ReviewAndPay: React.FC<ReviewAndPayProps> = ({
   const [promoCode, setPromoCode] = useState('');
   const [isPromoApplied, setIsPromoApplied] = useState(false);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
-  
-  const setCouponCode = useBookingStore((state) => state.setCouponCode);
 
+  const setCouponCode = useBookingStore((state) => state.setCouponCode);
+  const { tripDetails, error } = useTripDetailsStore();
+
+  useEffect(() => {
+    if (tripDetails?.isCouponApplied && !error) {
+      setIsPromoApplied(true);
+    } else {
+      setIsPromoApplied(false);
+    }
+  }, [tripDetails, error]);
+
+  
   const handleRemovePromo = () => {
     setPromoCode('');
     setIsPromoApplied(false);
@@ -31,7 +42,6 @@ const ReviewAndPay: React.FC<ReviewAndPayProps> = ({
 
   const handleApplyPromo = () => {
     if (promoCode.trim()) {
-      setIsPromoApplied(true);
       setCouponCode(promoCode.trim());
     }
   };
@@ -42,7 +52,7 @@ const ReviewAndPay: React.FC<ReviewAndPayProps> = ({
         <h3 className="text-neutral-900 text-base font-bold font-['Satoshi'] leading-6">
           Have a promo code?
         </h3>
-        <div className="flex gap-2.5">
+        <div className="flex flex-col sm:flex-row gap-2 sm:gap-2.5">
           <div className="flex-1">
             <input
               type="text"
@@ -50,22 +60,21 @@ const ReviewAndPay: React.FC<ReviewAndPayProps> = ({
               onChange={(e) => setPromoCode(e.target.value)}
               placeholder="Enter promo code"
               disabled={isPromoApplied}
-              className={`w-full px-4 py-3 bg-white rounded-xl border-2 border-gray-200 text-[#121212] text-base font-medium font-['Satoshi'] placeholder:text-[#12121280] focus:outline-none focus:border-[#121212] ${
-                isPromoApplied ? 'opacity-50 cursor-not-allowed' : ''
-              }`}
+              className={`w-full px-4 py-3 bg-white rounded-xl border-2 border-gray-200 text-[#121212] text-base font-medium font-['Satoshi'] placeholder:text-[#12121280] focus:outline-none focus:border-[#121212] ${isPromoApplied ? 'opacity-50 cursor-not-allowed' : ''
+                }`}
             />
           </div>
           {isPromoApplied ? (
             <button
               onClick={handleRemovePromo}
-              className="w-24 h-12 bg-red-500 rounded-xl text-white text-base font-bold font-['Satoshi'] leading-6 hover:bg-red-600 transition-colors"
+              className="w-full sm:w-24 h-12 bg-red-500 rounded-xl text-white text-base font-bold font-['Satoshi'] leading-6 hover:bg-red-600 transition-colors"
             >
               Remove
             </button>
           ) : (
             <button
               onClick={handleApplyPromo}
-              className="w-24 h-12 bg-[#121212] rounded-xl text-white text-base font-bold font-['Satoshi'] leading-6 hover:bg-[#2a2a2a] transition-colors"
+              className="w-full sm:w-24 h-12 bg-[#121212] rounded-xl text-white text-base font-bold font-['Satoshi'] leading-6 hover:bg-[#2a2a2a] transition-colors"
             >
               Apply
             </button>
@@ -78,8 +87,28 @@ const ReviewAndPay: React.FC<ReviewAndPayProps> = ({
               <p className="text-green-800 text-sm font-bold font-['Satoshi'] leading-5">
                 Coupon applied: {promoCode}
               </p>
-              <p className="text-green-700 text-xs font-medium font-['Satoshi'] leading-5">
-                10% off on total tour price
+              {tripDetails?.appliedCoupon?.displayText && (
+                <p className="text-green-700 text-xs font-medium font-['Satoshi'] leading-5">
+                  {tripDetails.appliedCoupon.displayText}
+                </p>
+              )}
+              {tripDetails?.couponMessage && (
+                <p className="text-green-700 text-xs font-medium font-['Satoshi'] leading-5">
+                  {tripDetails.couponMessage}
+                </p>
+              )}
+            </div>
+          </div>
+        )}
+        {!isPromoApplied && tripDetails?.couponMessage && !tripDetails?.isCouponApplied && (
+          <div className="pl-3.5 py-4 bg-red-50 rounded-xl border-2 border-red-200 flex items-center gap-2.5">
+            <OctagonAlert className='text-red-800'/>
+            <div className="flex flex-col">
+              <p className="text-red-800 text-sm font-bold font-['Satoshi'] leading-5">
+                Coupon Error
+              </p>
+              <p className="text-red-700 text-xs font-medium font-['Satoshi'] leading-5">
+                {tripDetails.couponMessage}
               </p>
             </div>
           </div>
@@ -110,11 +139,10 @@ const ReviewAndPay: React.FC<ReviewAndPayProps> = ({
       <button
         onClick={onComplete}
         disabled={!agreedToTerms || isSubmitting}
-        className={`w-full py-4 rounded-xl text-white text-base font-bold font-['Satoshi'] leading-6 transition-colors ${
-          agreedToTerms && !isSubmitting
+        className={`w-full py-4 rounded-xl text-white text-base font-bold font-['Satoshi'] leading-6 transition-colors ${agreedToTerms && !isSubmitting
             ? 'bg-[#121212] hover:bg-[#2a2a2a]'
             : 'bg-neutral-900 opacity-30 cursor-not-allowed'
-        }`}
+          }`}
       >
         {isSubmitting ? 'Processing...' : 'Complete booking'}
       </button>
