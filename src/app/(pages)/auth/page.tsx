@@ -128,11 +128,11 @@ export default function Page() {
           )}
         />
         <div className="flex justify-center items-center gap-6 pt-3 border-t border-gray-200">
-          <Link href="/help" className="flex items-center gap-1 text-neutral-700 text-sm font-medium font-['Satoshi'] leading-5 hover:text-neutral-900">
+          <Link href="#" className="flex items-center gap-1 text-neutral-700 text-sm font-medium font-['Satoshi'] leading-5 hover:text-neutral-900">
             <HelpCircle size={16} />
             Help Center
           </Link>
-          <Link href="/contact" className="flex items-center gap-1 text-neutral-700 text-sm font-medium font-['Satoshi'] leading-5 hover:text-neutral-900">
+          <Link href="#" className="flex items-center gap-1 text-neutral-700 text-sm font-medium font-['Satoshi'] leading-5 hover:text-neutral-900">
             <MessageCircle size={16} />
             Contact Support
           </Link>

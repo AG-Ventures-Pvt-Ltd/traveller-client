@@ -32,8 +32,8 @@ const Footer = () => {
                 {
                     title: 'Contact',
                     links: [
-                        { label: 'support@wondrr.com', href: 'mailto:support@wondrr.com' },
-                        { label: '+91-8217728508', href: 'tel:+91-XXXX-XXXXXX' },
+                        { label: 'support@wondrr.in', href: 'mailto:support@wondrr.in' },
+                        { label: '+91-8217728508', href: 'tel:+91-8217728508' },
                         { label: '+91-9151315550', href: 'tel:+91-9151315550' }
                     ]
                 }
