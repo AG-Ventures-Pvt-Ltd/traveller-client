@@ -1,5 +1,5 @@
 import { useState } from "react";
-import  Card from "@/common/ui/Card";
+import Card from "@/common/ui/Card";
 import { CalendarIcon, MapPin, Users2, Bookmark, IndianRupee } from "lucide-react";
 import { format } from "date-fns";
 import { useRouter, useParams } from "next/navigation";
@@ -30,9 +30,9 @@ export function TripBookingCard({
 
   const calculatedDuration = selectedDateInfo?.endDate
     ? formatDurationOnly(
-        selectedDateInfo.startDate instanceof Date ? selectedDateInfo.startDate.toISOString() : selectedDateInfo.startDate,
-        selectedDateInfo.endDate instanceof Date ? selectedDateInfo.endDate.toISOString() : selectedDateInfo.endDate
-      )
+      selectedDateInfo.startDate instanceof Date ? selectedDateInfo.startDate.toISOString() : selectedDateInfo.startDate,
+      selectedDateInfo.endDate instanceof Date ? selectedDateInfo.endDate.toISOString() : selectedDateInfo.endDate
+    )
     : duration;
 
   const selectedMeetingPoint = selectedDateInfo?.meetingPoint || meetingPoint;
@@ -99,14 +99,13 @@ export function TripBookingCard({
             <div className="flex justify-between items-center">
               <span className="text-sm font-semibold">Seats Available</span>
               <span className="text-[#314158]">
-                <span>{selectedDateInfo?.seatsAvailable || 0} / </span>
-                {selectedDateInfo?.totalSeats || 15}
+                {selectedDateInfo?.seatsAvailable || 0}
               </span>
             </div>
           </div>
           <div className="flex items-end gap-1 sm:gap-2">
             <span className="font-bold text-xl sm:text-2xl flex items-center">
-              <IndianRupee size={18} strokeWidth={3} className="sm:w-[22px] sm:h-[22px]"/>{selectedDateInfo?.price || validBasePrice}
+              <IndianRupee size={18} strokeWidth={3} className="sm:w-[22px] sm:h-[22px]" />{selectedDateInfo?.price || validBasePrice}
             </span>
             <span className="text-sm sm:text-base text-[#45556C] mb-0.5">/ per person</span>
           </div>

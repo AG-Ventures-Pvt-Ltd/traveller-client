@@ -52,6 +52,10 @@ export default function RootLayout({ children }: RootLayoutProps) {
             })(window, document, "clarity", "script", "uthr0z0hl7");
           `}
         </Script>}
+        <head>
+          <title>Wondrr Trips</title>
+          <link rel="icon" href="/png/favicon.png" />
+        </head>
       </head>
       <body>
         <Providers>
