@@ -98,7 +98,7 @@ const DestinationCard = ({
                 {trip?.price}
               </span>
               <span className="text-neutral-700 text-xs sm:text-sm font-medium font-['Satoshi'] pb-0.5 sm:pb-1">
-                /day
+                /person
               </span>
             </div>
           </div>

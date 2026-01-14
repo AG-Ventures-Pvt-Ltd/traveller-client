@@ -65,8 +65,8 @@ export function TripBookingCard({
             </div>
           </div>
           <div className="grid grid-cols-2 gap-6 pb-3">
-            <div className="flex gap-1 items-end">
-              <span className="text-sm font-medium">Category :</span>
+            <div className="flex gap-1 items-end whitespace-nowrap">
+              <span className="text-sm font-medium">Category:</span>
               <span className="text-sm font-bold">{category}</span>
             </div>
           </div>
