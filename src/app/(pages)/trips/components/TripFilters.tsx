@@ -11,9 +11,9 @@ interface TripFiltersProps {
 
 export interface FilterValues {
   tourTypes: string[];
-  priceRange: number;
+  priceRange: number | null;
   durations: string[];
-  durationRange: number;
+  durationRange: number | null;
   difficulties: string[];
   minRating: number | null;
 }
@@ -32,9 +32,9 @@ const TripFilters: React.FC<TripFiltersProps> = ({ onFilterChange, onApplyFilter
     new Set(['tourType', 'priceRange', 'duration', 'difficulty', 'rating'])
   );
   const [tourTypes, setTourTypes] = useState<string[]>([]);
-  const [priceRange, setPriceRange] = useState<number>(5000);
+  const [priceRange, setPriceRange] = useState<number | null>(null);
   const [durations, setDurations] = useState<string[]>([]);
-  const [durationRange, setDurationRange] = useState<number>(5);
+  const [durationRange, setDurationRange] = useState<number | null>(null);
   // const [difficulties, setDifficulties] = useState<string[]>([]);
   // const [minRating, setMinRating] = useState<number | null>(null);
 
@@ -76,9 +76,9 @@ const TripFilters: React.FC<TripFiltersProps> = ({ onFilterChange, onApplyFilter
 
   const handleClearAll = () => {
     setTourTypes([]);
-    setPriceRange(5000);
+    setPriceRange(null);
     setDurations([]);
-    setDurationRange(5);
+    setDurationRange(null);
     // setDifficulties([]);
     // setMinRating(null);
   };
@@ -155,27 +155,27 @@ const TripFilters: React.FC<TripFiltersProps> = ({ onFilterChange, onApplyFilter
                 </span>
                 <span className="text-neutral-900 text-sm font-bold flex items-center">
                   <IndianRupee className="w-3 h-3" />
-                  {priceRange.toLocaleString()}
+                  {(priceRange || 20000).toLocaleString()}
                 </span>
               </div>
               <div className="relative h-4">
                 <div className="absolute top-1/2 -translate-y-1/2 w-full h-1.5 bg-neutral-200 rounded-xl" />
                 <div
                   className="absolute top-1/2 -translate-y-1/2 h-1.5 bg-black rounded-xl"
-                  style={{ width: `${(priceRange / 20000) * 100}%` }}
+                  style={{ width: `${((priceRange || 20000) / 20000) * 100}%` }}
                 />
                 <input
                   type="range"
                   min="0"
                   max="20000"
                   step="500"
-                  value={priceRange}
+                  value={priceRange || 20000}
                   onChange={(e) => setPriceRange(parseInt(e.target.value))}
                   className="absolute top-0 w-full h-4 opacity-0 cursor-pointer"
                 />
                 <div
                   className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-2.5 h-2.5 bg-neutral-700 rounded-full pointer-events-none"
-                  style={{ left: `${(priceRange / 20000) * 100}%` }}
+                  style={{ left: `${((priceRange || 20000) / 20000) * 100}%` }}
                 />
               </div>
             </div>
@@ -201,26 +201,26 @@ const TripFilters: React.FC<TripFiltersProps> = ({ onFilterChange, onApplyFilter
             <div className="flex flex-col gap-3">
               <div className="flex justify-between items-center">
                 <span className="text-neutral-900 text-sm font-bold">1 day</span>
-                <span className="text-neutral-900 text-sm font-bold">{durationRange} days</span>
+                <span className="text-neutral-900 text-sm font-bold">{durationRange || 10} days</span>
               </div>
               <div className="relative h-4">
                 <div className="absolute top-1/2 -translate-y-1/2 w-full h-1.5 bg-neutral-200 rounded-xl" />
                 <div
                   className="absolute top-1/2 -translate-y-1/2 h-1.5 bg-black rounded-xl"
-                  style={{ width: `${((durationRange - 1) / 9) * 100}%` }}
+                  style={{ width: `${(((durationRange || 10) - 1) / 9) * 100}%` }}
                 />
                 <input
                   type="range"
                   min="1"
                   max="10"
                   step="1"
-                  value={durationRange}
+                  value={durationRange || 10}
                   onChange={(e) => setDurationRange(parseInt(e.target.value))}
                   className="absolute top-0 w-full h-4 opacity-0 cursor-pointer"
                 />
                 <div
                   className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-2.5 h-2.5 bg-neutral-700 rounded-full pointer-events-none"
-                  style={{ left: `${((durationRange - 1) / 9) * 100}%` }}
+                  style={{ left: `${(((durationRange || 10) - 1) / 9) * 100}%` }}
                 />
               </div>
             </div>

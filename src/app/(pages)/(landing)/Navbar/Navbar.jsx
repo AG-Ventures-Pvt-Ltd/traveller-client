@@ -53,7 +53,7 @@ const Navbar = () => {
                 </div>
               ) : (
                 <button
-                  className='px-[17px] py-2 bg-black rounded-xl flex items-center gap-2.5'
+                  className='px-[17px] py-2 bg-black rounded-xl flex items-center gap-2.5 whitespace-nowrap'
                   onClick={() => router.push('/auth')}
                 >
                   <div className='flex flex-col justify-center text-white text-[15.4px] font-bold leading-[20.8px]'>

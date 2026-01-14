@@ -156,14 +156,12 @@ const useS3Upload = (): UseS3UploadReturn => {
       results.push(...uploadResults);
 
       const failedUploads = uploadResults.filter((r) => !r.success);
-      const successfulUploads = uploadResults.filter((r) => r.success);
 
       if (failedUploads.length > 0) {
         notify.error(
           `${failedUploads.length} out of ${totalFiles} images failed to upload`
         );
       } else {
-        notify.success(`Successfully uploaded ${successfulUploads.length} images`);
       }
     } catch (error) {
       const errorMessage =

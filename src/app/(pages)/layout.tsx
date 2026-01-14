@@ -3,7 +3,6 @@
 import "./globals.css";
 import React from 'react';
 import { Providers } from "./providers";
-import { ToastContainer } from 'react-toastify';
 import Script from "next/script";
 import Navbar from '../(pages)/(landing)/Navbar/Navbar'
 
@@ -58,7 +57,6 @@ export default function RootLayout({ children }: RootLayoutProps) {
         <Providers>
           <Navbar />
           {children}
-          <ToastContainer position="top-right" />
         </Providers>
       </body>
     </html>

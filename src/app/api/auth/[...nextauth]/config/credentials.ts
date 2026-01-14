@@ -52,7 +52,6 @@ export const credentialsProvider = CredentialsProvider({
         return result as unknown as NextAuthUser;
 
       } catch (error) {
-        
         if (axios.isAxiosError(error)) {
           throw new Error(error.response?.data?.message || "Login failed");
         }

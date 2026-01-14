@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react';
+import { signOut } from 'next-auth/react';
 import { useGetData } from '@/services/useGetData';
 import usePostData from '@/services/usePostData';
 import { API_ENDPOINTS } from '@/common/constants/apiEndpoints';
@@ -113,6 +114,10 @@ export default function Page() {
     setIsEditModalOpen(true);
   };
 
+  const handleLogout = async () => {
+    await signOut({ callbackUrl: '/auth' });
+  };
+
   const handleSaveProfile = (updatedData: ProfileData, addressComponents: { address: string; city: string; state: string }) => {
     const updatePayload = {
       birthDate: updatedData.birthDate,
@@ -205,6 +210,7 @@ export default function Page() {
         <ProfileCard 
           profileData={profileData} 
           onEditProfile={handleEditProfile}
+          onLogout={handleLogout}
         />
         {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {stats.map((stat, index) => (

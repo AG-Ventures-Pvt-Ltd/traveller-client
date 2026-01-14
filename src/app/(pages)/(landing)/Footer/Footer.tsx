@@ -1,56 +1,90 @@
 'use client'
 
 import React from 'react'
+import Image from 'next/image'
 
 const Footer = () => {
+
+    const CONTENT = {
+        footer: {
+            tagline: 'Building trust in group travel.',
+            sections: [
+                {
+                    title: 'Explore',
+                    links: [
+                        { label: 'Trips', href: '/trips' },
+                        { label: 'About Us', href: '/about' }
+                    ]
+                },
+                {
+                    title: 'Company',
+                    links: [
+                        { label: 'Partner With Us', href: 'https://partner.wondrr.in/auth?mode=signup' },
+                    ]
+                },
+                {
+                    title: 'Support',
+                    links: [
+                        { label: 'Privacy Policy', href: '/privacy-policy' },
+                        { label: 'Refund Policy', href: '/booking-policy' }
+                    ]
+                },
+                {
+                    title: 'Contact',
+                    links: [
+                        { label: 'support@wondrr.com', href: 'mailto:support@wondrr.com' },
+                        { label: '+91-8217728508', href: 'tel:+91-XXXX-XXXXXX' },
+                        { label: '+91-9151315550', href: 'tel:+91-9151315550' }
+                    ]
+                }
+            ],
+            social: [{ label: 'Instagram', href: 'https://instagram.com/wondrr.in' }],
+            copyright: '© 2026 Wondrr. All rights reserved.'
+        }
+    }
     return (
-        <div className="w-full bg-black text-white px-4 sm:px-8 md:px-12 pt-8 sm:pt-12 pb-6 flex flex-col gap-6 sm:gap-8">
-            <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 lg:gap-0">
-                <div className="flex flex-col gap-3 sm:gap-4">
-                    <div className="text-2xl sm:text-3xl font-bold">Wondrr</div>
-                    <div className="text-gray-300 text-base sm:text-lg">&quot;Making Every Journey Memorable&quot;</div>
-                </div>
-                <div className="flex flex-col gap-3 sm:gap-4 w-full lg:w-auto">
-                    <div className="text-white text-sm sm:text-base">Newsletter</div>
-                    <div className="flex flex-col sm:flex-row gap-2">
-                        <input
-                            className="bg-gray-100 text-gray-600 px-4 sm:px-6 py-2.5 sm:py-3 rounded-full flex-1 text-sm sm:text-base"
-                            placeholder="Enter your email"
-                        />
-                        <button className="bg-gray-100 text-black px-6 py-2.5 sm:py-3 rounded-full w-full sm:w-32 text-sm sm:text-base">
-                            Subscribe
-                        </button>
+        <footer className="flex flex-col gap-8 md:gap-12 py-12 md:py-24 w-full bg-neutral-900 border-t border-neutral-800">
+            <div className="flex flex-col lg:flex-row justify-between gap-8 md:gap-16 px-5 md:px-9 max-w-[1520px] w-full mx-auto">
+                <div className="flex flex-col gap-4 md:gap-6 flex-1 max-w-full lg:max-w-sm">
+                    <h3 className="text-2xl md:text-3xl font-black text-white">Wondrr</h3>
+                    <p className="text-neutral-300 text-sm md:text-base font-medium">
+                        {CONTENT.footer.tagline}
+                    </p>
+                    <div className="flex gap-3">
+                        {CONTENT.footer.social.map((platform) => (
+                            <a key={platform.label} href={platform.href} target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center cursor-pointer hover:bg-white/20 transition-colors">
+                                <Image src='/svg/instagram.svg' width={30} height={30} alt='instagram'/>
+                            </a>
+                        ))}
                     </div>
                 </div>
-            </div>
-            <div className="flex flex-col md:flex-row justify-between items-start gap-8 md:gap-4">
-                <div className="grid grid-cols-2 md:flex gap-8 sm:gap-12 md:gap-16 w-full md:w-auto">
-                    <div className="flex flex-col gap-4 sm:gap-6">
-                        <div className="text-white text-sm sm:text-base font-semibold">HOME</div>
-                        <div className="text-gray-400 text-xs sm:text-sm leading-5 cursor-pointer hover:text-white">Destinations</div>
-                        <div className="text-gray-400 text-xs sm:text-sm leading-5 cursor-pointer hover:text-white">About Us</div>
-                        <div className="text-gray-400 text-xs sm:text-sm leading-5 cursor-pointer hover:text-white">Book Your Trip</div>
-                        <div className="text-gray-400 text-xs sm:text-sm leading-5 cursor-pointer hover:text-white">Contact Us</div>
-                    </div>
-                    <div className="flex flex-col gap-4 sm:gap-6">
-                        <div className="text-white text-sm sm:text-base font-semibold">CONTACT</div>
-                        <div className="text-gray-400 text-xs sm:text-sm leading-5 cursor-pointer hover:text-white">Community</div>
-                        <div className="text-gray-400 text-xs sm:text-sm leading-5 cursor-pointer hover:text-white">Knowledge Base</div>
-                        <div className="text-gray-400 text-xs sm:text-sm leading-5 cursor-pointer hover:text-white">Support</div>
-                        <div className="text-gray-400 text-xs sm:text-sm leading-5 cursor-pointer hover:text-white">How to Buy</div>
-                    </div>
-                    <div className="flex flex-col gap-4 sm:gap-6">
-                        <div className="text-white text-sm sm:text-base font-semibold">LEARN</div>
-                        <div className="text-gray-400 text-xs sm:text-sm leading-5 cursor-pointer hover:text-white">About</div>
-                        <div className="text-gray-400 text-xs sm:text-sm leading-5 cursor-pointer hover:text-white">Pricing</div>
-                    </div>
+
+                <div className="flex flex-wrap gap-8 md:gap-12 lg:gap-16 flex-1 justify-start lg:justify-end">
+                    {CONTENT.footer.sections.map((section) => (
+                        <div key={section.title} className="flex flex-col gap-3 md:gap-4 min-w-[120px]">
+                            <h4 className="text-white text-xs md:text-sm font-bold uppercase tracking-wide">
+                                {section.title}
+                            </h4>
+                            <ul className="flex flex-col gap-2 md:gap-3">
+                                {section.links.map((link) => (
+                                    <li key={link.label}>
+                                        <a href={link.href} className="text-neutral-400 text-sm md:text-base font-medium hover:text-white transition-colors">
+                                            {link.label}
+                                        </a>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    ))}
                 </div>
             </div>
-            <hr className="border-gray-700" />
-            <div className="flex justify-center items-center">
-                <div className="text-gray-400 text-xs sm:text-sm text-center">All Rights Reserved - Wondrr Trips</div>
+
+            <div className="pt-6 md:pt-8 border-t border-neutral-800 px-5 md:px-9 max-w-[1520px] w-full mx-auto">
+                <p className="text-neutral-400 text-xs md:text-sm font-medium text-center">
+                    {CONTENT.footer.copyright}
+                </p>
             </div>
-        </div>
+        </footer>
     )
 }
 

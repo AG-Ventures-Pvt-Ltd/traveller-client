@@ -4,6 +4,7 @@ import { CalendarIcon, MapPin, Users2, Bookmark, IndianRupee } from "lucide-reac
 import { format } from "date-fns";
 import { useRouter, useParams } from "next/navigation";
 import { TripBookingCardProps } from '../types';
+import { formatDurationOnly } from "@/common/utils/dateUtils";
 
 export function TripBookingCard({
   availableDates,
@@ -27,6 +28,15 @@ export function TripBookingCard({
     (d) => d.batchId === selectedBatchId
   );
 
+  const calculatedDuration = selectedDateInfo?.endDate
+    ? formatDurationOnly(
+        selectedDateInfo.startDate instanceof Date ? selectedDateInfo.startDate.toISOString() : selectedDateInfo.startDate,
+        selectedDateInfo.endDate instanceof Date ? selectedDateInfo.endDate.toISOString() : selectedDateInfo.endDate
+      )
+    : duration;
+
+  const selectedMeetingPoint = selectedDateInfo?.meetingPoint || meetingPoint;
+
   return (
     <Card variant="fill" className="lg:sticky border-0! lg:top-26 p-4 sm:p-5 md:p-6 lg:p-7">
       <Card className="max-w-full lg:max-w-[448px]">
@@ -36,14 +46,14 @@ export function TripBookingCard({
               <CalendarIcon className="h-4 w-4 sm:h-5 sm:w-5 text-[#45556C] flex-shrink-0" />
               <div className="flex gap-1 sm:gap-2 flex-wrap">
                 <span className="text-xs sm:text-sm font-bold">Duration:</span>
-                <span className="text-xs sm:text-sm font-medium">{duration}</span>
+                <span className="text-xs sm:text-sm font-medium">{calculatedDuration}</span>
               </div>
             </div>
             <div className="flex items-center gap-2 sm:gap-3">
               <MapPin className="h-4 w-4 sm:h-5 sm:w-5 text-[#45556C] flex-shrink-0" />
               <div className="flex gap-1 sm:gap-2 flex-wrap">
                 <span className="text-xs sm:text-sm font-bold">Meeting point:</span>
-                <span className="text-xs sm:text-sm font-medium">{meetingPoint}</span>
+                <span className="text-xs sm:text-sm font-medium">{selectedMeetingPoint}</span>
               </div>
             </div>
             <div className="flex items-center gap-2 sm:gap-3">
@@ -89,7 +99,7 @@ export function TripBookingCard({
             <div className="flex justify-between items-center">
               <span className="text-sm font-semibold">Seats Available</span>
               <span className="text-[#314158]">
-                <span>4 / </span>
+                <span>{selectedDateInfo?.seatsAvailable || 0} / </span>
                 {selectedDateInfo?.totalSeats || 15}
               </span>
             </div>

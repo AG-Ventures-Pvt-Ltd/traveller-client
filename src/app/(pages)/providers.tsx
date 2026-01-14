@@ -4,11 +4,14 @@ import { QueryClient, QueryCache, QueryClientProvider } from '@tanstack/react-qu
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { logError } from '@/common/utils/logError';
 import { SessionProvider } from 'next-auth/react';
+import { ToastProvider, useToast } from '@/common/utils/ToastContext';
+import { setToastHandler } from '@/common/utils/notify';
+import { useEffect } from 'react';
 
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#0D203F',
+      main: '#171717',
     },
     secondary: {
       main: '#000000',
@@ -42,12 +45,26 @@ const queryClient = new QueryClient({
   })
 });
 
+function ToastInitializer({ children }: { children: React.ReactNode }) {
+  const { addToast } = useToast();
+
+  useEffect(() => {
+    setToastHandler(addToast);
+  }, [addToast]);
+
+  return <>{children}</>;
+}
+
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <ThemeProvider theme={theme}>
       <QueryClientProvider client={queryClient}>
         <SessionProvider>
-          {children}
+          <ToastProvider>
+            <ToastInitializer>
+              {children}
+            </ToastInitializer>
+          </ToastProvider>
         </SessionProvider>
       </QueryClientProvider>
     </ThemeProvider>

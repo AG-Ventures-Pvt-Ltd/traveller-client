@@ -5,9 +5,10 @@ import React from 'react';
 interface ProfileHeaderProps {
   username: string;
   onEditProfile: () => void;
+  onLogout?: () => void;
 }
 
-const ProfileHeader: React.FC<ProfileHeaderProps> = ({ username, onEditProfile }) => {
+const ProfileHeader: React.FC<ProfileHeaderProps> = ({ username, onEditProfile, onLogout }) => {
   const isNotAdded = username === 'Not added yet';
   
   return (
@@ -29,6 +30,18 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ username, onEditProfile }
             <path d="M11 2L14 5L5 14H2V11L11 2Z" stroke="currentColor" strokeWidth="1.33" />
           </svg>
         </button>
+        {onLogout && (
+          <button
+            className="bg-red-600 text-white px-4 py-3 rounded-xl hover:bg-red-700 transition-colors flex items-center gap-2"
+            onClick={onLogout}
+            title="Logout"
+          >
+            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
+            <span className="hidden sm:inline font-['Satoshi'] font-bold">Logout</span>
+          </button>
+        )}
       </div>
     </div>
   );

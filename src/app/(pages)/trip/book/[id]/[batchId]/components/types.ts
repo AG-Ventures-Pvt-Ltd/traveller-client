@@ -46,6 +46,9 @@ export interface TripDetails {
         code: string;
         displayText: string;
     };
+    sharingPrice?: { additionalPricePerPerson: number; people: number }[];
+    roomSharingCost?: number;
+    roomSharingCostTotal?: number;
 }
 
 export interface BookingFlowParams {
@@ -61,8 +64,10 @@ export interface BookingFlowParams {
 export interface BookingStore {
     totalAmount: number;
     couponCode: string;
+    roomSharing: number | null;
     setTotalAmount: (amount: number) => void;
     setCouponCode: (code: string) => void;
+    setRoomSharing: (sharing: number | null) => void;
 }
 
 export interface TripDetailsState {
@@ -74,7 +79,8 @@ export interface TripDetailsState {
     currentBatchId: string;
     currentGuests: number;
     currentCouponCode: string;
-    fetchTripDetails: (tripId: string, batchId: string, guests: number, couponCode?: string) => Promise<void>;
+    currentRoomSharing: number | null;
+    fetchTripDetails: (tripId: string, batchId: string, guests: number, couponCode?: string, roomSharing?: number | null) => Promise<void>;
     refetch: () => Promise<void>;
     reset: () => void;
 }

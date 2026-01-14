@@ -30,10 +30,12 @@ export interface FAQ {
 
 export interface AvailableDate {
   startDate: Date | string;
+  endDate?: Date | string;
   price: number;
   seatsAvailable: number;
   totalSeats: number;
   batchId: string;
+  meetingPoint?: string;
 }
 
 export interface Host {

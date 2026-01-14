@@ -20,9 +20,10 @@ interface ProfileData {
 interface ProfileCardProps {
   profileData: ProfileData;
   onEditProfile: () => void;
+  onLogout?: () => void;
 }
 
-const ProfileCard: React.FC<ProfileCardProps> = ({ profileData, onEditProfile }) => {
+const ProfileCard: React.FC<ProfileCardProps> = ({ profileData, onEditProfile, onLogout }) => {
   return (
     <div className="w-full bg-gradient-to-b from-neutral-50 to-gray-200 rounded-3xl border-2 border-gray-200 p-8 md:p-12">
       <div className="flex flex-col md:flex-row gap-8">
@@ -31,6 +32,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ profileData, onEditProfile })
           <ProfileHeader
             username={profileData.username}
             onEditProfile={onEditProfile}
+            onLogout={onLogout}
           />
           <ProfileBio bio={profileData.bio} />
           <ContactInfo

@@ -13,12 +13,13 @@ const initialState = {
   currentBatchId: '',
   currentGuests: 1,
   currentCouponCode: '',
+  currentRoomSharing: null,
 };
 
 export const useTripDetailsStore = create<TripDetailsState>((set, get) => ({
   ...initialState,
 
-  fetchTripDetails: async (tripId: string, batchId: string, guests: number, couponCode: string = '') => {
+  fetchTripDetails: async (tripId: string, batchId: string, guests: number, couponCode: string = '', roomSharing: number | null = null) => {
     const state = get();
     
     if (
@@ -27,6 +28,7 @@ export const useTripDetailsStore = create<TripDetailsState>((set, get) => ({
       state.currentBatchId === batchId &&
       state.currentGuests === guests &&
       state.currentCouponCode === couponCode &&
+      state.currentRoomSharing === roomSharing &&
       !state.error
     ) {
       return;
@@ -45,6 +47,9 @@ export const useTripDetailsStore = create<TripDetailsState>((set, get) => ({
       if (couponCode) {
         apiUrl += `&couponCode=${encodeURIComponent(couponCode)}`;
       }
+      if (roomSharing !== null) {
+        apiUrl += `&roomSharing=${roomSharing}`;
+      }
       const response = await baseAPI.get(apiUrl);
       
       // Only update state on successful response
@@ -57,6 +62,7 @@ export const useTripDetailsStore = create<TripDetailsState>((set, get) => ({
         currentBatchId: batchId,
         currentGuests: guests,
         currentCouponCode: couponCode,
+        currentRoomSharing: roomSharing,
       });
     } catch (error) {
       const axiosError = error as { response?: { data?: { message?: string } } };
@@ -75,7 +81,7 @@ export const useTripDetailsStore = create<TripDetailsState>((set, get) => ({
   },
 
   refetch: async () => {
-    const { currentTripId, currentBatchId, currentGuests, currentCouponCode } = get();
+    const { currentTripId, currentBatchId, currentGuests, currentCouponCode, currentRoomSharing } = get();
     
     if (!currentTripId || !currentBatchId) {
       return;
@@ -88,6 +94,9 @@ export const useTripDetailsStore = create<TripDetailsState>((set, get) => ({
       let apiUrl = `api/client/v1/trips/details/${currentTripId}/booking?batchId=${currentBatchId}&seats=${currentGuests}`;
       if (currentCouponCode) {
         apiUrl += `&couponCode=${encodeURIComponent(currentCouponCode)}`;
+      }
+      if (currentRoomSharing !== null) {
+        apiUrl += `&roomSharing=${currentRoomSharing}`;
       }
       const response = await baseAPI.get(apiUrl);
       

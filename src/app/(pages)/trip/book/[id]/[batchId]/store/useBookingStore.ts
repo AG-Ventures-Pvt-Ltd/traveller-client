@@ -4,6 +4,8 @@ import { BookingStore } from '../components/types';
 export const useBookingStore = create<BookingStore>((set) => ({
     totalAmount: 0,
     couponCode: '',
+    roomSharing: null,
     setTotalAmount: (amount) => set({ totalAmount: amount }),
     setCouponCode: (code) => set({ couponCode: code }),
+    setRoomSharing: (sharing) => set({ roomSharing: sharing }),
 }));

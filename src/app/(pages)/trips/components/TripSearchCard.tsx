@@ -54,12 +54,12 @@ const TripSearchCard: React.FC<TripSearchCardProps> = ({
                     loading="eager"
                 />
                 {/* Bookmark Button */}
-                <button
+                {/* <button
                     onClick={onBookmark}
                     className="w-10 h-10 absolute top-3 right-3 bg-white/95 rounded-full shadow-md flex items-center justify-center hover:bg-white transition-colors"
                 >
                     <Heart className="w-5 h-5 text-neutral-900" />
-                </button>
+                </button> */}
                 {/* Discount Badge */}
                 {discount && (
                     <div className="absolute top-3 left-3 bg-neutral-900 rounded-full px-3 py-1.5">

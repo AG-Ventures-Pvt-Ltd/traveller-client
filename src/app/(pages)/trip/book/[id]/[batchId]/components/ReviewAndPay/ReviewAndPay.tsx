@@ -5,6 +5,7 @@ import { CheckCircle2, OctagonAlert } from 'lucide-react';
 import AvailableCoupons from './components/AvailableCoupons';
 import { useBookingStore } from '../../store/useBookingStore';
 import { useTripDetailsStore } from '../../store/useTripDetailsStore';
+import { useParams } from 'next/navigation';
 
 interface ReviewAndPayProps {
   totalAmount: number;
@@ -21,9 +22,19 @@ const ReviewAndPay: React.FC<ReviewAndPayProps> = ({
   const [promoCode, setPromoCode] = useState('');
   const [isPromoApplied, setIsPromoApplied] = useState(false);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
+  const [selectedSharing, setSelectedSharing] = useState<number | null>(null);
 
   const setCouponCode = useBookingStore((state) => state.setCouponCode);
-  const { tripDetails, error } = useTripDetailsStore();
+  const setRoomSharing = useBookingStore((state) => state.setRoomSharing);
+  const { tripDetails, error, fetchTripDetails, currentGuests, currentCouponCode } = useTripDetailsStore();
+  const params = useParams();
+  const batchId = params.batchId as string;
+
+  const sharingOptions = (tripDetails?.sharingPrice || []).map((option) => ({
+    type: option.people === 1 ? 'Single Room' : option.people === 2 ? 'Double Sharing' : 'Triple Sharing',
+    price: option.additionalPricePerPerson,
+    value: option.people,
+  }));
 
   useEffect(() => {
     if (tripDetails?.isCouponApplied && !error) {
@@ -38,16 +49,53 @@ const ReviewAndPay: React.FC<ReviewAndPayProps> = ({
     setPromoCode('');
     setIsPromoApplied(false);
     setCouponCode('');
+    // Refetch trip details without coupon but with current room sharing
+    fetchTripDetails(tripId, batchId, currentGuests, '', selectedSharing);
   };
 
   const handleApplyPromo = () => {
     if (promoCode.trim()) {
       setCouponCode(promoCode.trim());
+      // Refetch trip details with new coupon and current room sharing
+      fetchTripDetails(tripId, batchId, currentGuests, promoCode.trim(), selectedSharing);
     }
+  };
+
+  const handleSharingSelect = async (value: number) => {
+    const newValue = selectedSharing === value ? null : value;
+    setSelectedSharing(newValue);
+    setRoomSharing(newValue);
+    // Refetch trip details with new room sharing
+    await fetchTripDetails(tripId, batchId, currentGuests, currentCouponCode, newValue);
   };
 
   return (
     <div className="flex flex-col gap-7">
+      <div className="flex flex-col gap-3">
+        <h3 className="text-neutral-900 text-base font-bold font-['Satoshi'] leading-6">
+          Choose Room Sharing
+        </h3>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          {sharingOptions.map((option) => (
+            <button
+              key={option.value}
+              onClick={() => handleSharingSelect(option.value)}
+              className={`p-4 rounded-xl border-2 transition-all ${
+                selectedSharing === option.value
+                  ? 'border-[#121212] bg-[#121212] text-white'
+                  : 'border-gray-200 bg-white hover:border-[#121212]'
+              }`}
+            >
+              <div className="text-center">
+                <p className="text-sm font-bold font-['Satoshi']">{option.type}</p>
+                <p className="text-xs font-medium font-['Satoshi'] mt-1">
+                  ₹{option.price} additional per person
+                </p>
+              </div>
+            </button>
+          ))}
+        </div>
+      </div>
       <div className="flex flex-col gap-3">
         <h3 className="text-neutral-900 text-base font-bold font-['Satoshi'] leading-6">
           Have a promo code?
@@ -125,11 +173,11 @@ const ReviewAndPay: React.FC<ReviewAndPayProps> = ({
           />
           <p className="text-neutral-700 text-sm font-medium font-['Satoshi'] leading-5">
             I agree to the{' '}
-            <a href="#" className="text-neutral-900 underline">
+            <a href="/booking-policy" className="text-neutral-900 underline">
               Terms and Conditions
             </a>{' '}
             and{' '}
-            <a href="#" className="text-neutral-900 underline">
+            <a href="/booking-policy" className="text-neutral-900 underline">
               Cancellation Policy
             </a>
             . I understand that this booking is non-refundable.

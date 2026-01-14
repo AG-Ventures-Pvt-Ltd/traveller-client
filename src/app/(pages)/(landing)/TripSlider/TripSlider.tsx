@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { ArrowLeft, ArrowRight } from 'lucide-react'
 import DestinationCard from '../LoggedInLandingPage/components/DestinationCard'
 
@@ -35,12 +35,22 @@ const TripSlider = ({ trips, className, showBookmark = true, isLoading = false }
     const [startX, setStartX] = useState(0)
     const [scrollLeft, setScrollLeft] = useState(0)
     const [hasMoved, setHasMoved] = useState(false)
+    const [windowWidth, setWindowWidth] = useState(1024)
     const sliderRef = React.useRef<HTMLDivElement>(null)
 
-    const cardsToShow = 3
+    // Handle window resize
+    useEffect(() => {
+        const handleResize = () => setWindowWidth(window.innerWidth)
+        handleResize()
+        window.addEventListener('resize', handleResize)
+        return () => window.removeEventListener('resize', handleResize)
+    }, [])
+
+    // Responsive values based on window width
+    const cardsToShow = windowWidth < 640 ? 1 : windowWidth < 1024 ? 2 : 3
     const cardsToScroll = 1
-    const cardWidth = 380
-    const gap = 24
+    const cardWidth = windowWidth < 640 ? 300 : windowWidth < 1024 ? 320 : 380
+    const gap = windowWidth < 640 ? 12 : 24
     const totalCardWidth = cardWidth + gap
     const maxIndex = Math.max(0, (displayTrips?.length || 0) - cardsToShow)
 
@@ -59,13 +69,35 @@ const TripSlider = ({ trips, className, showBookmark = true, isLoading = false }
         setScrollLeft(currentIndex)
     }
 
+    const handleTouchStart = (e: React.TouchEvent) => {
+        setIsDragging(true)
+        setHasMoved(false)
+        setStartX(e.touches[0].pageX - (sliderRef.current?.offsetLeft || 0))
+        setScrollLeft(currentIndex)
+    }
+
     const handleMouseMove = (e: React.MouseEvent) => {
         if (!isDragging) return
         e.preventDefault()
         const x = e.pageX - (sliderRef.current?.offsetLeft || 0)
         const walk = (startX - x) / totalCardWidth
 
-        if (Math.abs(walk) > 0.5) {
+        if (Math.abs(walk) > 0.3) {
+            setHasMoved(true)
+        }
+
+        const newIndex = Math.round(scrollLeft + walk)
+        const clampedIndex = Math.max(0, Math.min(maxIndex, newIndex))
+        setCurrentIndex(clampedIndex)
+    }
+
+    const handleTouchMove = (e: React.TouchEvent) => {
+        if (!isDragging) return
+        e.preventDefault()
+        const x = e.touches[0].pageX - (sliderRef.current?.offsetLeft || 0)
+        const walk = (startX - x) / totalCardWidth
+
+        if (Math.abs(walk) > 0.3) {
             setHasMoved(true)
         }
 
@@ -76,6 +108,12 @@ const TripSlider = ({ trips, className, showBookmark = true, isLoading = false }
 
     const handleMouseUp = () => {
         setIsDragging(false)
+        setHasMoved(false)
+    }
+
+    const handleTouchEnd = () => {
+        setIsDragging(false)
+        setHasMoved(false)
     }
 
     const handleMouseLeave = () => {
@@ -84,19 +122,19 @@ const TripSlider = ({ trips, className, showBookmark = true, isLoading = false }
 
     return (
         <div className={`w-full overflow-hidden relative ${className}`}>
-            <div className='relative mx-auto px-8'>
+            <div className='relative mx-auto px-4 sm:px-6 lg:px-8'>
                 <button
                     onClick={handlePrev}
                     disabled={currentIndex === 0}
-                    className='absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white rounded-full p-1 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-all border-1 cursor-pointer'
+                    className='hidden sm:flex absolute left-2 sm:left-0 top-1/2 -translate-y-1/2 z-10 bg-white rounded-full p-1 sm:p-2 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-all border shadow-md'
                     aria-label='Previous'
                 >
-                    <ArrowLeft className='w-4 h-4 text-gray-800' />
+                    <ArrowLeft className='w-3 h-3 sm:w-4 sm:h-4 text-gray-800' />
                 </button>
                 <button
                     onClick={handleNext}
                     disabled={currentIndex >= maxIndex}
-                    className='absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white rounded-full p-1 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-all border-1 cursor-pointer'
+                    className='hidden sm:flex absolute right-2 sm:right-0 top-1/2 -translate-y-1/2 z-10 bg-white rounded-full p-1 sm:p-2 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-all border shadow-md'
                     aria-label='Next'
                 >
                     <ArrowRight className='w-4 h-4 text-gray-800' />
@@ -112,6 +150,9 @@ const TripSlider = ({ trips, className, showBookmark = true, isLoading = false }
                     onMouseMove={handleMouseMove}
                     onMouseUp={handleMouseUp}
                     onMouseLeave={handleMouseLeave}
+                    onTouchStart={handleTouchStart}
+                    onTouchMove={handleTouchMove}
+                    onTouchEnd={handleTouchEnd}
                 >
                     <div
                         className='flex transition-transform duration-500 ease-in-out'
@@ -160,7 +201,7 @@ const TripSlider = ({ trips, className, showBookmark = true, isLoading = false }
                                         pointerEvents: (isDragging && hasMoved) ? 'none' : 'auto'
                                     }}
                                 >
-                                    <DestinationCard trip={trip} showBookmark={showBookmark} />
+                                    <DestinationCard trip={trip} />
                                 </div>
                             ))
                         )}

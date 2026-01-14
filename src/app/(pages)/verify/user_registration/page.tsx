@@ -1,11 +1,9 @@
 'use client';
 
 import { useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import { useGetData } from '@/services/useGetData';
-import { API_ENDPOINTS } from '@/common/constants/apiEndpoints';
+import { useEffect } from 'react';
+import usePostData from '@/services/usePostData';
 import Loader from '@/common/ui/Loader/Loader';
-import { notify } from '@/common/utils/notify';
 
 interface VerificationResponse {
   message: string;
@@ -16,27 +14,16 @@ export default function Page() {
   const searchParams = useSearchParams();
   const token = searchParams.get('token');
   const email = searchParams.get('email');
-  const [apiUrl, setApiUrl] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (token && email) {
-      setApiUrl(API_ENDPOINTS.USER.VERIFY_EMAIL(token, email));
-    }
-  }, [token, email]);
-
-  const { data, isLoading, error } = useGetData<VerificationResponse>(apiUrl || '', {
-    queryKey: apiUrl ? [apiUrl] : ['verification-loading'],
-    enabled: !!apiUrl,
+  const { mutate, data, isPending: isLoading, error } = usePostData<VerificationResponse>({
+    url: '/api/client/v1/user/verifyOTP'
   });
 
   useEffect(() => {
-    if (data?.success) {
-      notify.success(data.message || 'Email verified successfully!');
+    if (token && email) {
+      mutate({ otp: token, email });
     }
-    if (error) {
-      notify.error(error.message || 'Email verification failed. Please try again.');
-    }
-  }, [data, error]);
+  }, [token, email, mutate]);
 
   if (!token || !email) {
     return (

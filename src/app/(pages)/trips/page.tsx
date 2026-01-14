@@ -53,17 +53,17 @@ export default function Page() {
   const destination = searchParams.get('destination');
   const [filters, setFilters] = useState<FilterValues>({
     tourTypes: [],
-    priceRange: 5000,
+    priceRange: null,
     durations: [],
-    durationRange: 5,
+    durationRange: null,
     difficulties: [],
     minRating: null,
   });
   const [appliedFilters, setAppliedFilters] = useState<FilterValues>({
     tourTypes: [],
-    priceRange: 5000,
+    priceRange: null,
     durations: [],
-    durationRange: 5,
+    durationRange: null,
     difficulties: [],
     minRating: null,
   });

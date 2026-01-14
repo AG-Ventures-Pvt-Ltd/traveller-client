@@ -31,6 +31,17 @@ export const formatDateRangeWithDuration = (startDate: string, endDate: string):
   return `${formattedStart} - ${formattedEnd} • ${diffDays}D/${nights}N`;
 };
 
+export const formatDurationOnly = (startDate: string, endDate: string): string => {
+  const startUtc = new Date(startDate);
+  const endUtc = new Date(endDate);
+  const start = new Date(startUtc.getTime() + (5.5 * 60 * 60 * 1000));
+  const end = new Date(endUtc.getTime() + (5.5 * 60 * 60 * 1000));
+  const diffTime = Math.abs(end.getTime() - start.getTime());
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1; // inclusive days
+  const nights = diffDays - 1;
+  return `${diffDays}D/${nights}N`;
+};
+
 export const formatTimeTo12Hour = (timeString: string): string => {
   const [hours, minutes] = timeString.split(':').map(Number);
   const period = hours >= 12 ? 'PM' : 'AM';

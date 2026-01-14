@@ -34,7 +34,7 @@ const BackButton: React.FC<BackButtonProps> = ({
       className={`hidden md:flex items-center gap-4 text-maintext rounded-lg cursor-pointer w-fit hover:opacity-70 transition-opacity ${className}`}
       onClick={handleClick}
     >
-      <div className='bg-primary text-white p-2 rounded-full'>
+      <div className='bg-neutral-900 text-white p-2 rounded-full'>
         <ArrowLeft size={iconSize} />
       </div>
       <span className="font-bold">{label}</span>

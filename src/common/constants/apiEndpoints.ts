@@ -28,7 +28,7 @@ export const API_ENDPOINTS = {
   },
   USER: {
     REGISTER: "/api/client/v1/user/register",
-    VERIFY_EMAIL: (token: string, email: string) => `/api/client/v1/user/verifyEmail?token=${token}&email=${email}`,
+    VERIFY_EMAIL: () => `/api/client/v1/user/verifyOTP`,
     SOCIAL_LOGIN: "/api/client/v1/user/social_login",
     HOST_PROFILE: (id: string) => `/api/client/v1/user/host/profile/${id}`,
     ME: "/api/client/v1/user/me",

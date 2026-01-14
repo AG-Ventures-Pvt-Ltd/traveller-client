@@ -14,7 +14,7 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({ tripId, batchId, guests = 1
   const setTotalAmount = useBookingStore((state) => state.setTotalAmount);
   const couponCode = useBookingStore((state) => state.couponCode);
   
-  const { tripDetails, isLoading, error, fetchTripDetails } = useTripDetailsStore();
+  const { tripDetails, isLoading, fetchTripDetails } = useTripDetailsStore();
 
   useEffect(() => {
     if (actualTripId && batchId) {
@@ -90,6 +90,16 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({ tripId, batchId, guests = 1
             <IndianRupee size={14} className="sm:w-[16px] sm:h-[16px]" />{tripDetails.grandTotalWithoutFee}
           </span>
         </div>
+        {tripDetails.roomSharingCostTotal && tripDetails.roomSharingCostTotal > 0 && (
+          <div className="flex justify-between items-start">
+            <span className="text-neutral-700 text-xs sm:text-sm font-medium font-['Satoshi'] flex items-center">
+              Room Sharing Cost (<IndianRupee size={12}/> {tripDetails.roomSharingCost} x {guests})
+            </span>
+            <span className="text-neutral-900 text-xs sm:text-sm font-bold font-['Satoshi'] flex items-center">
+              <IndianRupee size={12} className="sm:w-[14px] sm:h-[14px]" />{tripDetails.roomSharingCostTotal}
+            </span>
+          </div>
+        )}
         {tripDetails.discount > 0 && (
           <div className="flex justify-between items-start">
             <span className="text-green-600 text-xs sm:text-sm font-medium font-['Satoshi']">
@@ -102,7 +112,7 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({ tripId, batchId, guests = 1
         )}
         <div className="flex justify-between items-start">
           <span className="text-neutral-700 text-xs sm:text-sm font-medium font-['Satoshi']">
-            Platform Fee
+            Convenience Fee
           </span>
           <span className="text-neutral-900 text-xs sm:text-sm font-bold font-['Satoshi'] flex items-center">
             <IndianRupee size={12} className="sm:w-[14px] sm:h-[14px]" />{tripDetails.serviceFee}

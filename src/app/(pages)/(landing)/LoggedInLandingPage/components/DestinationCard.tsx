@@ -87,21 +87,22 @@ const DestinationCard = ({
           )}
         </div>
         <div className="w-full h-px bg-gray-200" />
-        <div className="flex justify-between items-center">
-          <div className="flex items-end ">
-            <span className="text-neutral-700 text-base font-medium font-['Satoshi']">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 sm:gap-0">
+          <div className="flex flex-col gap-1">
+            <span className="text-neutral-700 text-sm font-medium font-['Satoshi']">
               From
             </span>
-            <span className='flex items-end'>
-            <span className="flex items-center text-neutral-900 text-2xl font-bold font-['Satoshi']">
-              <IndianRupee size={24} strokeWidth={3}/>{trip?.price}
-            </span>
-            <span className="text-neutral-700 text-sm font-medium font-['Satoshi'] pb-1">
-              /day
-            </span>
-            </span>
+            <div className="flex items-end gap-1">
+              <span className="flex items-center text-neutral-900 text-xl sm:text-2xl font-bold font-['Satoshi']">
+                <IndianRupee size={20} className="sm:w-6 sm:h-6" strokeWidth={3}/>
+                {trip?.price}
+              </span>
+              <span className="text-neutral-700 text-xs sm:text-sm font-medium font-['Satoshi'] pb-0.5 sm:pb-1">
+                /day
+              </span>
+            </div>
           </div>
-          <button className="px-6 py-3 bg-neutral-900 rounded-full hover:bg-neutral-800 transition-colors">
+          <button className="px-4 sm:px-6 py-2 sm:py-3 bg-neutral-900 rounded-full hover:bg-neutral-800 transition-colors w-full sm:w-auto">
             <span className="text-white text-sm font-bold font-['Satoshi']">
               Explore
             </span>
