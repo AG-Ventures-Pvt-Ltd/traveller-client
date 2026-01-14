@@ -1,4 +1,5 @@
 import React from 'react'
+import { X, Check, AlertTriangle } from 'lucide-react'
 
 const Policy = () => {
   return (
@@ -421,12 +422,12 @@ const Policy = () => {
       <h2 className="text-2xl font-bold mb-4">What We Don&apos;t Use</h2>
       <p className="mb-4">We do <strong>NOT</strong> use the following:</p>
       <ul className="list-none ml-4 mb-6 space-y-1">
-        <li>❌ Marketing or advertising cookies</li>
-        <li>❌ Social media tracking cookies (Facebook Pixel, etc.)</li>
-        <li>❌ Third-party advertising networks</li>
-        <li>❌ Cross-site behavioral profiling for ads</li>
-        <li>❌ Retargeting or remarketing cookies</li>
-        <li>❌ Cookies that sell your data to third parties</li>
+        <li className="flex items-center gap-2"><X className="w-4 h-4 text-red-500 flex-shrink-0" /> Marketing or advertising cookies</li>
+        <li className="flex items-center gap-2"><X className="w-4 h-4 text-red-500 flex-shrink-0" /> Social media tracking cookies (Facebook Pixel, etc.)</li>
+        <li className="flex items-center gap-2"><X className="w-4 h-4 text-red-500 flex-shrink-0" /> Third-party advertising networks</li>
+        <li className="flex items-center gap-2"><X className="w-4 h-4 text-red-500 flex-shrink-0" /> Cross-site behavioral profiling for ads</li>
+        <li className="flex items-center gap-2"><X className="w-4 h-4 text-red-500 flex-shrink-0" /> Retargeting or remarketing cookies</li>
+        <li className="flex items-center gap-2"><X className="w-4 h-4 text-red-500 flex-shrink-0" /> Cookies that sell your data to third parties</li>
       </ul>
 
       <hr className="my-8" />
@@ -434,10 +435,10 @@ const Policy = () => {
       <h2 className="text-2xl font-bold mb-4">Why These Cookies Are Essential</h2>
       <p className="mb-4">These cookies are necessary for core website functionality:</p>
       <ul className="list-none ml-4 mb-4 space-y-2">
-        <li>✅ <strong>Login and Account Access:</strong> Without session cookies, you would need to re-enter your credentials on every page</li>
-        <li>✅ <strong>Security:</strong> Authentication cookies protect your account from unauthorized access</li>
-        <li>✅ <strong>Payment Processing:</strong> Razorpay cookies enable secure payment transactions</li>
-        <li>✅ <strong>Shopping Cart:</strong> Remembering items you&apos;re booking</li>
+        <li className="flex items-start gap-2"><Check className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" /> <span><strong>Login and Account Access:</strong> Without session cookies, you would need to re-enter your credentials on every page</span></li>
+        <li className="flex items-start gap-2"><Check className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" /> <span><strong>Security:</strong> Authentication cookies protect your account from unauthorized access</span></li>
+        <li className="flex items-start gap-2"><Check className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" /> <span><strong>Payment Processing:</strong> Razorpay cookies enable secure payment transactions</span></li>
+        <li className="flex items-start gap-2"><Check className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" /> <span><strong>Shopping Cart:</strong> Remembering items you&apos;re booking</span></li>
       </ul>
       <p className="mb-6">
         <strong>These cookies cannot be disabled</strong> as they are essential for the website to work. They are not used for tracking or marketing.
@@ -501,17 +502,17 @@ const Policy = () => {
       
       <p className="font-semibold mb-2">Disabling Essential Cookies:</p>
       <ul className="list-none ml-4 mb-4 space-y-1">
-        <li>❌ You will not be able to log into your account</li>
-        <li>❌ You cannot complete bookings or payments</li>
-        <li>❌ The website will not function properly</li>
-        <li>❌ Your session will not be maintained</li>
+        <li className="flex items-center gap-2"><X className="w-4 h-4 text-red-500 flex-shrink-0" /> You will not be able to log into your account</li>
+        <li className="flex items-center gap-2"><X className="w-4 h-4 text-red-500 flex-shrink-0" /> You cannot complete bookings or payments</li>
+        <li className="flex items-center gap-2"><X className="w-4 h-4 text-red-500 flex-shrink-0" /> The website will not function properly</li>
+        <li className="flex items-center gap-2"><X className="w-4 h-4 text-red-500 flex-shrink-0" /> Your session will not be maintained</li>
       </ul>
 
       <p className="font-semibold mb-2">Disabling Analytics Cookies:</p>
       <ul className="list-none ml-4 mb-4 space-y-1">
-        <li>✅ Website will continue to work normally</li>
-        <li>✅ You can still book trips and make payments</li>
-        <li>⚠️ We won&apos;t be able to improve your experience based on usage data</li>
+        <li className="flex items-center gap-2"><Check className="w-4 h-4 text-green-500 flex-shrink-0" /> Website will continue to work normally</li>
+        <li className="flex items-center gap-2"><Check className="w-4 h-4 text-green-500 flex-shrink-0" /> You can still book trips and make payments</li>
+        <li className="flex items-center gap-2"><AlertTriangle className="w-4 h-4 text-yellow-500 flex-shrink-0" /> We won&apos;t be able to improve your experience based on usage data</li>
       </ul>
 
       <p className="mb-6">
