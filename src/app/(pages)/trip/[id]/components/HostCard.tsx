@@ -1,5 +1,5 @@
 import { Star } from "lucide-react";
-import Image from "next/image";
+import MyImage from "@/common/ui/Image";
 import { HostCardProps } from '../types';
 import Card from "@/common/ui/Card";
 import { useRouter } from "next/navigation";
@@ -32,7 +32,7 @@ export function HostCard({
         <div className="flex gap-3 sm:gap-4">
           <div className="w-12 h-12 sm:w-16 sm:h-16 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
             {avatar ? (
-              <Image
+              <MyImage
                 src={avatar}
                 alt={name}
                 width={64}
