@@ -32,7 +32,7 @@ export default function Page() {
         </div>
         <div className="flex justify-center lg:justify-end items-start mt-6 lg:mt-0">
           <div className="relative w-full max-w-sm sm:max-w-md lg:max-w-none">
-            <Image width={652} height={500} className="rounded-2xl sm:rounded-3xl shadow-xl sm:shadow-2xl w-full h-auto" src="/png/aboutmain.jpg" alt="Hero" />
+            <Image width={652} height={500} className="rounded-2xl sm:rounded-3xl shadow-xl sm:shadow-2xl w-full h-auto" src="/png/aboutmain.jpg" alt="Hero" quality={90}/>
             {/* <div className="absolute -left-4 sm:-left-8 top-[200px] sm:top-[300px] lg:top-[413px] w-32 sm:w-44 h-20 sm:h-28 bg-white rounded-xl sm:rounded-2xl shadow-lg outline-2 outline-offset-[-1.84px] outline-gray-200 p-3 sm:p-4">
               <div className="text-primary text-2xl sm:text-3xl lg:text-4xl font-bold font-['Satoshi']">1000+</div>
               <div className="text-neutral-700 text-xs sm:text-sm font-medium font-['Satoshi']">Trips Organized</div>
@@ -111,7 +111,7 @@ export default function Page() {
             />
           </div>
           <div className="bg-neutral-900 rounded-2xl sm:rounded-3xl p-6 sm:p-8 lg:p-12 text-center relative overflow-hidden">
-            <Image fill className="object-cover opacity-10" src="/png/A11.jpg" alt="Background" />
+            <Image fill className="object-cover opacity-10" src="/png/A11.jpg" alt="Background" quality={90}/>
             <div className="relative text-white text-xl sm:text-2xl lg:text-3xl font-bold font-['Satoshi'] leading-7 sm:leading-8 lg:leading-10">
               &quot;Structure doesn&apos;t limit creativity.<br />It enables reliability.&quot;
             </div>
@@ -126,8 +126,8 @@ export default function Page() {
             <div className="text-neutral-700 text-base sm:text-lg lg:text-xl font-medium font-['Satoshi'] leading-6 sm:leading-7 lg:leading-8 mt-2 sm:mt-4">Two sides. One platform. Mutual benefit.</div>
           </div>
           <div className="flex flex-col sm:flex-row gap-6 sm:gap-8">
-            <Image width={588} height={280} className="flex-1 h-48 sm:h-56 lg:h-72 rounded-2xl sm:rounded-3xl shadow-lg w-full" src="/png/A12.jpg" alt="Operators" />
-            <Image width={588} height={280} className="flex-1 h-48 sm:h-56 lg:h-72 rounded-2xl sm:rounded-3xl shadow-lg w-full" src="/png/A11.jpg" alt="Travelers" />
+            <Image width={588} height={280} className="flex-1 h-48 sm:h-56 lg:h-72 rounded-2xl sm:rounded-3xl shadow-lg w-full" src="/png/A12.jpg" alt="Operators" quality={90}/>
+            <Image width={588} height={280} className="flex-1 h-48 sm:h-56 lg:h-72 rounded-2xl sm:rounded-3xl shadow-lg w-full" src="/png/A11.jpg" alt="Travelers" quality={90}/>
           </div>
           <div className="flex flex-col lg:flex-row gap-6 sm:gap-8">
             <UserCard

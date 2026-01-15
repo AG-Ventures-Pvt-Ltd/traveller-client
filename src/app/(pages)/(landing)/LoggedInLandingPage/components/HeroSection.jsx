@@ -57,7 +57,7 @@ const HeroSection = () => {
                 alt="Destination 1"
                 width={0}
                 height={0}
-                
+                quality={90}
               />
             </div>
             <div className="h-24 sm:h-32 lg:h-50">
@@ -67,7 +67,7 @@ const HeroSection = () => {
                 alt="Destination 2"
                 width={0}
                 height={0}
-                
+                quality={90}
               />
             </div>
           </div>
@@ -79,7 +79,7 @@ const HeroSection = () => {
                 alt="Destination 3"
                 width={0}
                 height={0}
-                
+                quality={90}
               />
             </div>
             <div className="h-24 sm:h-32 lg:h-46">
@@ -89,7 +89,7 @@ const HeroSection = () => {
                 alt="Destination 4"
                 width={0}
                 height={0}
-                
+                quality={90}
               />
             </div>
           </div>

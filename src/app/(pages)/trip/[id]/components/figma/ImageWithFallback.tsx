@@ -30,7 +30,8 @@ export function ImageWithFallback(props: React.ComponentProps<typeof Image>) {
             style={style} 
             {...(fill ? { fill } : { width: width || 88, height: height || 88 })}
             {...rest} 
-            data-original-url={src} 
+            data-original-url={src}
+            quality={90} 
           />
         </div>
       </div>
@@ -46,7 +47,7 @@ export function ImageWithFallback(props: React.ComponentProps<typeof Image>) {
       {...(fill ? { fill } : { width: width || 88, height: height || 88 })}
       {...rest} 
       onError={handleError}
-      quality={100}
+      quality={90}
     />
   )
 }

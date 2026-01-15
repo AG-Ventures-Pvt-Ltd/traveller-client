@@ -53,7 +53,7 @@ const Footer = () => {
                     <div className="flex gap-3">
                         {CONTENT.footer.social.map((platform) => (
                             <a key={platform.label} href={platform.href} target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center cursor-pointer hover:bg-white/20 transition-colors">
-                                <Image src='/svg/instagram.svg' width={30} height={30} alt='instagram'/>
+                                <Image src='/svg/instagram.svg' width={30} height={30} quality={90}alt='instagram'/>
                             </a>
                         ))}
                     </div>

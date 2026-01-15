@@ -66,6 +66,7 @@ function AvatarImage({
       onLoad={() => onLoadingStatusChange?.("loaded")}
       onError={() => onLoadingStatusChange?.("error")}
       {...props}
+      quality={90}
     />
   );
 }

@@ -88,6 +88,7 @@ export default function ThreeImageCarousel(
                                             src={item.src}
                                             alt={item.alt || 'Some Wondrr Image'}
                                             className="w-full h-full object-cover  rounded-2xl"
+                                            quality={90}
                                         />
                                     </div>
                                 </div>}

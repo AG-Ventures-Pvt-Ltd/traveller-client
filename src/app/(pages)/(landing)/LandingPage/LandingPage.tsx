@@ -125,6 +125,7 @@ const LandingPage = () => {
             width={1920}
             height={600}
             className="absolute inset-0 w-full h-full object-cover -z-10"
+            quality={90}
           />
           <div className="absolute inset-0 bg-gradient-to-b from-neutral-900/0 via-neutral-900/0 to-neutral-900/80 md:from-black/30 md:to-black/50 -z-10" />
 
@@ -225,6 +226,7 @@ const LandingPage = () => {
                   width={353}
                   height={292}
                   className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  quality={90}
                 />
                 <div className="absolute inset-0 bg-gradient-to-b from-black/0 to-black/30 rounded-3xl" />
               </div>
@@ -250,6 +252,7 @@ const LandingPage = () => {
                     width={353}
                     height={210}
                     className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    quality={90}
                   />
                   <div className="absolute inset-0 bg-gradient-to-b from-black/30 to-black/0 rounded-3xl" />
                 </div>
@@ -296,6 +299,7 @@ const LandingPage = () => {
                   width={400}
                   height={488}
                   className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  quality={90}
                 />
                 <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/32 rounded-3xl" />
                 <div className="relative flex flex-col justify-end h-full gap-4">
@@ -317,6 +321,7 @@ const LandingPage = () => {
                   width={400}
                   height={488}
                   className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  quality={90}
                 />
                 <div className="absolute inset-0 bg-gradient-to-b from-black/32 to-transparent rounded-3xl" />
                 <div className="relative">
@@ -481,6 +486,7 @@ const LandingPage = () => {
                   width={400}
                   height={450}
                   className="absolute inset-0 w-full h-full object-cover -z-10 transition-transform duration-300 group-hover:scale-105"
+                  quality={90}
                 />
                 <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/60 rounded-2xl md:rounded-3xl" />
                 <div className="relative flex flex-col">
@@ -527,10 +533,10 @@ const LandingPage = () => {
 
           <div className="flex gap-2 flex-1">
             <div className="rounded-2xl md:rounded-3xl overflow-hidden flex-1">
-              <Image width={370} height={378} src="/png/S42.jpg" alt="CTA 1" className="w-full h-full object-cover min-h-[250px] md:min-h-0" />
+              <Image width={370} height={378} src="/png/S42.jpg" alt="CTA 1" className="w-full h-full object-cover min-h-[250px] md:min-h-0" quality={90}/>
             </div>
             <div className="hidden md:block rounded-3xl overflow-hidden flex-1">
-              <Image width={370} height={315} src="/png/S41.jpg" alt="CTA 2" className="w-full h-full object-cover" />
+              <Image width={370} height={315} src="/png/S41.jpg" alt="CTA 2" className="w-full h-full object-cover" quality={90}/>
             </div>
           </div>
         </section>
