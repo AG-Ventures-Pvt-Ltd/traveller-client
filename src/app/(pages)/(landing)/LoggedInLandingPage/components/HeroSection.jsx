@@ -50,13 +50,13 @@ const HeroSection = () => {
         </div>
         <div className="flex-1 flex w-full gap-3 sm:gap-4">
           <div className='flex-1 flex flex-col gap-3 sm:gap-4'>
-            <div className="h-32 sm:h-40 lg:h-68">
+            <div className="relative h-32 sm:h-40 lg:h-68">
               <Image
                 className="w-full h-full object-cover rounded-xl sm:rounded-2xl shadow-lg"
                 src="/png/L22.png"
                 alt="Destination 1"
-                width={0}
-                height={0}
+                fill
+                sizes="(max-width: 768px) 100vw, 50vw"
                 quality={90}
               />
             </div>

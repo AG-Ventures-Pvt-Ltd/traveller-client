@@ -35,8 +35,6 @@ export function HostCard({
               <MyImage
                 src={avatar}
                 alt={name}
-                width={64}
-                height={64}
                 className="w-full h-full rounded-full object-cover"
               />
             ) : (

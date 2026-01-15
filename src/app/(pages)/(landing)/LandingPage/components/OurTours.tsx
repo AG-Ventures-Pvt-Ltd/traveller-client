@@ -86,9 +86,8 @@ const OurTours = () => {
                 <MyImage
                   src={trip.image || 'https://placehold.co/400x488'}
                   alt={trip.title}
-                  width={400}
-                  height={488}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full"
+                  style={{ objectFit: 'cover' }}
                 />
               </div>
               <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/65 rounded-2xl sm:rounded-3xl" />

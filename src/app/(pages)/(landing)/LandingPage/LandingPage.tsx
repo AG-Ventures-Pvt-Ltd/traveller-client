@@ -122,8 +122,7 @@ const LandingPage = () => {
           <Image
             src="/png/MainBG.jpg"
             alt="Hero background"
-            width={1920}
-            height={600}
+            fill
             className="absolute inset-0 w-full h-full object-cover -z-10"
             quality={90}
           />
@@ -318,8 +317,8 @@ const LandingPage = () => {
                 <Image
                   src="/png/S23.jpg"
                   alt="Nature path"
-                  width={400}
-                  height={488}
+                  height={0}
+                  width={0}
                   className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                   quality={90}
                 />

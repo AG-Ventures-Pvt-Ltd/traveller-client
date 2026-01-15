@@ -39,11 +39,10 @@ const DestinationCard = ({
     <div onClick={handleCardClick} className="w-full bg-white rounded-3xl border-2 border-gray-200 overflow-hidden flex flex-col cursor-pointer">
       <div className="relative h-[240px] overflow-hidden">
         <MyImage
-          className="w-full h-full object-cover"
-          src={trip?.image || "/"}
+          className="w-full h-full"
+          src={trip?.image || ""}
           alt={trip?.title || ""}
-          width={0}
-          height={0}
+          style={{ objectFit: 'cover' }}
         />
         {showBookmark && (
           <div className="absolute top-4 right-4">

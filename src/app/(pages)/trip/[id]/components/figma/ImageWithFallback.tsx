@@ -44,7 +44,7 @@ export function ImageWithFallback(props: React.ComponentProps<typeof Image>) {
       alt={alt} 
       className={className} 
       style={style} 
-      {...(fill ? { fill } : { width: width || 88, height: height || 88 })}
+      fill
       {...rest} 
       onError={handleError}
       quality={90}

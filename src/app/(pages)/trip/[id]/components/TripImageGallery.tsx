@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { TripImageGalleryProps } from '../types';
+import MyImage from "@/common/ui/Image";
 
 export function TripImageGallery({ images }: TripImageGalleryProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -39,12 +39,11 @@ export function TripImageGallery({ images }: TripImageGalleryProps) {
 
   return (
     <div className="relative w-full h-[250px] sm:h-[350px] md:h-[450px] lg:h-[500px] mb-4 sm:mb-6 md:mb-8 rounded-lg overflow-hidden group">
-      <ImageWithFallback
+      <MyImage
         src={validImages[currentIndex]}
         alt={`Trip image ${currentIndex + 1}`}
-        fill
-        className="object-cover rounded-2xl"
-        quality={90}
+        className="w-full h-full rounded-2xl"
+        style={{ objectFit: 'cover' }}
       />
 
       <button

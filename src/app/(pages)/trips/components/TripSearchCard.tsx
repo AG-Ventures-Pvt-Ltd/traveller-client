@@ -48,10 +48,8 @@ const TripSearchCard: React.FC<TripSearchCardProps> = ({
                 <MyImage
                     src={imageUrl}
                     alt={title}
-                    fill
-                    sizes="320px"
-                    className="object-cover"
-                    loading="eager"
+                    className="w-full h-full rounded-2xl"
+                    style={{ objectFit: 'cover' }}
                 />
                 {/* Bookmark Button */}
                 {/* <button
