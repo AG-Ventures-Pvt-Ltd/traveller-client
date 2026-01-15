@@ -51,7 +51,7 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({ tripId, batchId, guests = 1
             src={tripDetails.tripImages}
             alt={tripDetails.title}
             fill
-            className="object-cover"
+            className="h-full w-full"
           />
         </div>
         <div className="flex-1">

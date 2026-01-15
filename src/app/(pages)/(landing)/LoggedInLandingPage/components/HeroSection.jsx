@@ -60,35 +60,35 @@ const HeroSection = () => {
                 quality={90}
               />
             </div>
-            <div className="h-24 sm:h-32 lg:h-50">
+            <div className="relative h-24 sm:h-32 lg:h-50">
               <Image
                 className="w-full h-full object-cover rounded-xl sm:rounded-2xl shadow-lg"
                 src="/png/L21.png"
                 alt="Destination 2"
-                width={0}
-                height={0}
+                fill
+                sizes="(max-width: 768px) 100vw, 50vw"
                 quality={90}
               />
             </div>
           </div>
           <div className='flex-1 flex flex-col gap-3 sm:gap-4 w-full' >
-            <div className="h-24 sm:h-32 lg:h-46">
+            <div className="relative h-24 sm:h-32 lg:h-46">
               <Image
                 className="w-full h-full object-cover rounded-xl sm:rounded-2xl shadow-lg"
                 src="/png/L12.png"
                 alt="Destination 3"
-                width={0}
-                height={0}
+                fill
+                sizes="(max-width: 768px) 100vw, 50vw"
                 quality={90}
               />
             </div>
-            <div className="h-24 sm:h-32 lg:h-46">
+            <div className="relative h-24 sm:h-32 lg:h-46">
               <Image
                 className="w-full h-full object-cover rounded-xl sm:rounded-2xl shadow-lg"
                 src="/png/L11.png"
                 alt="Destination 4"
-                width={0}
-                height={0}
+                fill
+                sizes="(max-width: 768px) 100vw, 50vw"
                 quality={90}
               />
             </div>

@@ -12,7 +12,8 @@ const MyImage = ({ src, alt,className, ...props }: WondrrImageProps) => {
                 alt={alt || 'Some Trip Image'}
                 fill
                 sizes="(max-width: 640px) 100vw, (max-width: 768px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
-                quality={100}
+                quality={90}
+                style={{ 'objectFit' : 'cover' }}
                 {...props}
             />
         </div>

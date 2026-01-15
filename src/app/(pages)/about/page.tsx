@@ -5,16 +5,20 @@ import MyImage from "@/common/ui/Image";
 import { Calendar, CreditCard, FileText, MapPin, MessageCircle, Shell, Shield, TrendingUp, Users, Zap } from 'lucide-react';
 import { ProblemCard, ApproachCard, UserCard, PrincipleCard } from './components';
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 export default function Page() {
+
+  const router = useRouter()
+
   return (
     <div className="flex flex-col min-h-screen bg-white">
-      <section className="flex flex-col lg:flex-row px-4 sm:px-6 lg:px-12 pt-8 sm:pt-12 bg-gradient-to-b from-neutral-50 to-white border-b-2 border-gray-200 justify-between pb-12 sm:pb-20">
-        <div className="flex flex-col gap-4 sm:gap-6 lg:w-1/2">
+      <section className="flex flex-col lg:flex-row px-4 sm:px-6 lg:px-12 mt-12 pt-8 sm:pt-12 bg-gradient-to-b from-neutral-50 to-white border-b-2 border-gray-200 justify-between pb-12 sm:pb-20 gap-12">
+        <div className="flex-1 flex flex-col gap-4 sm:gap-6 lg:w-1/2">
           <div className="flex items-center gap-4">
             <div className="px-4 py-3 bg-neutral-900 rounded-full flex items-center sm:px-4 whitespace-nowrap">
               <div className="mr-2 text-white">
-                <Shield size={16}/>
+                <Shield size={16} />
               </div>
               <div className="text-white text-xs sm:text-sm font-bold font-['Satoshi']">Trust-First Platform</div>
             </div>
@@ -30,9 +34,9 @@ export default function Page() {
             </div>
           </div>
         </div>
-        <div className="flex justify-center lg:justify-end items-start mt-6 lg:mt-0">
-          <div className="relative w-full max-w-sm sm:max-w-md lg:max-w-none">
-            <Image width={652} height={500} className="rounded-2xl sm:rounded-3xl shadow-xl sm:shadow-2xl w-full h-auto" src="/png/aboutmain.jpg" alt="Hero" quality={90}/>
+        <div className="flex-1 flex justify-center lg:justify-end items-start mt-6 lg:mt-0 w-full">
+          <div className="relative w-full max-w-sm sm:max-w-md lg:max-w-2xl h-64 sm:h-80 lg:h-120">
+            <Image fill className="rounded-2xl sm:rounded-3xl shadow-xl sm:shadow-2xl object-cover" src="/png/aboutmain.jpg" alt="Hero" quality={90} />
             {/* <div className="absolute -left-4 sm:-left-8 top-[200px] sm:top-[300px] lg:top-[413px] w-32 sm:w-44 h-20 sm:h-28 bg-white rounded-xl sm:rounded-2xl shadow-lg outline-2 outline-offset-[-1.84px] outline-gray-200 p-3 sm:p-4">
               <div className="text-primary text-2xl sm:text-3xl lg:text-4xl font-bold font-['Satoshi']">1000+</div>
               <div className="text-neutral-700 text-xs sm:text-sm font-medium font-['Satoshi']">Trips Organized</div>
@@ -80,38 +84,38 @@ export default function Page() {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             <ApproachCard
-              icon={<Calendar/>}
+              icon={<Calendar />}
               title="Structured Trip Management"
               description="Operators can create trips with detailed itineraries, manage multiple batches, set capacities, and update information in one place—visible to all participants."
             />
             <ApproachCard
-              icon={<Shield/>}
+              icon={<Shield />}
               title="Transparency By Default"
               description="Clear pricing, refund policies, host profiles, and reviews are mandatory. No hidden surprises. Everything travelers need to know is upfront."
             />
             <ApproachCard
-              icon={<CreditCard/>}
+              icon={<CreditCard />}
               title="Payment Tracking"
               description="Automated payment reminders, status tracking, and refund workflows eliminate manual errors and reduce operator workload significantly."
             />
             <ApproachCard
-              icon={<Users/>}
+              icon={<Users />}
               title="Participant Management"
               description="Track who's joined, who's paid, who's pending. Send batch-specific updates. Manage waitlists. All in one dashboard."
             />
             <ApproachCard
-              icon={<MessageCircle/>}
+              icon={<MessageCircle />}
               title="Clear Communication"
               description="No more lost messages. Important trip updates, policy changes, and announcements reach everyone through organized channels."
             />
             <ApproachCard
-              icon={<TrendingUp/>}
+              icon={<TrendingUp />}
               title="Scalable Operations"
               description="Operators can grow from 10 trips a year to 100+ without chaos. Systems scale with the business, not against it."
             />
           </div>
           <div className="bg-neutral-900 rounded-2xl sm:rounded-3xl p-6 sm:p-8 lg:p-12 text-center relative overflow-hidden">
-            <Image fill className="object-cover opacity-10" src="/png/A11.jpg" alt="Background" quality={90}/>
+            <Image fill className="h-full w-full opacity-10" style={{ objectFit: 'cover' }} src="/png/A11.jpg" alt="Background" quality={90} />
             <div className="relative text-white text-xl sm:text-2xl lg:text-3xl font-bold font-['Satoshi'] leading-7 sm:leading-8 lg:leading-10">
               &quot;Structure doesn&apos;t limit creativity.<br />It enables reliability.&quot;
             </div>
@@ -126,8 +130,26 @@ export default function Page() {
             <div className="text-neutral-700 text-base sm:text-lg lg:text-xl font-medium font-['Satoshi'] leading-6 sm:leading-7 lg:leading-8 mt-2 sm:mt-4">Two sides. One platform. Mutual benefit.</div>
           </div>
           <div className="flex flex-col sm:flex-row gap-6 sm:gap-8">
-            <Image width={588} height={280} className="flex-1 h-48 sm:h-56 lg:h-72 rounded-2xl sm:rounded-3xl shadow-lg w-full" src="/png/A12.jpg" alt="Operators" quality={90}/>
-            <Image width={588} height={280} className="flex-1 h-48 sm:h-56 lg:h-72 rounded-2xl sm:rounded-3xl shadow-lg w-full" src="/png/A11.jpg" alt="Travelers" quality={90}/>
+            <div className="relative flex-1 h-48 sm:h-56 lg:h-72 rounded-2xl sm:rounded-3xl shadow-lg ">
+              <Image
+                className="w-full h-full rounded-3xl"
+                src="/png/A12.jpg"
+                alt="Operators"
+                fill
+                style={{ objectFit: 'cover' }}
+                quality={90}
+              />
+            </div>
+            <div className="relative flex-1 h-48 sm:h-56 lg:h-72 rounded-2xl sm:rounded-3xl shadow-lg">
+              <Image
+                className="h-full w-full rounded-3xl"
+                src="/png/A11.jpg"
+                alt="Travelers"
+                fill
+                style={{ objectFit: 'cover' }}
+                quality={90}
+              />
+            </div>
           </div>
           <div className="flex flex-col lg:flex-row gap-6 sm:gap-8">
             <UserCard
@@ -142,7 +164,7 @@ export default function Page() {
               ]}
               bg="bg-gradient-to-b from-neutral-900 to-zinc-800"
               textColor="text-white"
-              icon={<Users/>}
+              icon={<Users />}
             />
             <UserCard
               title="For Travelers"
@@ -156,7 +178,7 @@ export default function Page() {
               ]}
               bg="bg-gradient-to-b from-neutral-50 to-gray-200"
               textColor="text-neutral-900"
-              icon={<MapPin/>}
+              icon={<MapPin />}
             />
           </div>
         </div>
@@ -170,22 +192,22 @@ export default function Page() {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8">
             <PrincipleCard
-              icon={<Shell/>}
+              icon={<Shell />}
               title="Clarity Over Complexity"
               description="We don't add features for the sake of it. Every tool serves a clear purpose: reduce confusion, increase trust, and make coordination effortless."
             />
             <PrincipleCard
-              icon={<Shield/>}
+              icon={<Shield />}
               title="Trust as Infrastructure"
               description="Trust isn't built through promises. It's built through systems—transparent pricing, clear policies, verified reviews, and accountability at every step."
             />
             <PrincipleCard
-              icon={<FileText/>}
+              icon={<FileText />}
               title="Structure Enables Scale"
               description="Chaos doesn't scale. Whether you're managing 5 travelers or 500, structured systems ensure quality remains consistent and operations stay manageable."
             />
             <PrincipleCard
-              icon={<Zap/>}
+              icon={<Zap />}
               title="Empower, Don't Replace"
               description="We're not trying to replace travel operators. We're giving them the infrastructure to do what they do best—create great experiences—without the operational headaches."
             />
@@ -197,7 +219,7 @@ export default function Page() {
         <div className="flex flex-col gap-6 sm:gap-8">
           <div className="flex items-center justify-center gap-4">
             <div className="h-8 sm:h-10 bg-white/10 rounded-full flex items-center px-3 sm:px-4 gap-2">
-                <TrendingUp className="text-white w-4 h-4 sm:w-5 sm:h-5"/>
+              <TrendingUp className="text-white w-4 h-4 sm:w-5 sm:h-5" />
               <div className="text-white text-xs sm:text-sm font-bold font-['Satoshi']">Long-Term Vision</div>
             </div>
           </div>
@@ -214,8 +236,8 @@ export default function Page() {
             </div>
           </div>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <Button className="bg-white! text-neutral-900! w-full sm:w-auto">Explore Tours</Button>
-            <Button className="bg-white/10! text-white! border-2! border-white/20! w-full sm:w-auto">Contact Us</Button>
+            <Button className="bg-white! text-neutral-900! w-full sm:w-auto" onClick={() => router.push('/trips')}>Explore Tours</Button>
+            <Button className="bg-white/10! text-white! border-2! border-white/20! w-full sm:w-auto" onClick={() => router.push('/privacy-policy')}>Contact Us</Button>
           </div>
         </div>
       </section>

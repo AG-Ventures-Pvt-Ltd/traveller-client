@@ -79,8 +79,8 @@ export function TripBookingCard({
                   onClick={() => setSelectedBatchId(date.batchId)}
                   className={`p-2 sm:p-2.5 rounded-lg sm:rounded-xl border transition-all min-h-[60px] sm:min-h-[auto]
                     ${selectedBatchId === date.batchId
-                      ? 'border-[#0D203F] bg-[#0D203F] text-white! bg-opacity-5'
-                      : 'border-[#E2E8F0] bg-white hover:border-[#0D203F]'
+                      ? 'border-primary bg-primary text-white! bg-opacity-5'
+                      : 'border-[#E2E8F0] bg-white'
                     }`}
                 >
                   <div className="flex flex-col items-center gap-0.5">
@@ -117,11 +117,11 @@ export function TripBookingCard({
                 }
               }}
               disabled={!selectedBatchId}
-              className="flex-1 h-11 sm:h-12 bg-[#0D203F] hover:bg-[#1a2f4f] disabled:bg-[#cccccc] text-white rounded-full text-sm transition-colors"
+              className="flex-1 h-11 sm:h-12 bg-primary disabled:bg-[#cccccc] text-white rounded-full text-sm transition-colors"
             >
               Book this tour
             </button>
-            <button className="w-11 h-11 sm:w-12 sm:h-12 bg-[#0D203F] hover:bg-[#1a2f4f] rounded-full flex items-center justify-center transition-colors">
+            <button className="w-11 h-11 sm:w-12 sm:h-12 bg-neutral-900 rounded-full flex items-center justify-center transition-colors">
               <Bookmark className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
             </button>
           </div>

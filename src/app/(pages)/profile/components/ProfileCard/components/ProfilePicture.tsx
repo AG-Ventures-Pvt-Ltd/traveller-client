@@ -16,9 +16,7 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ imageSrc }) => {
           <MyImage 
             src={imageSrc} 
             alt="Profile" 
-            width={160}
-            height={160}
-            className="rounded-2xl" 
+            className="w-full h-full" 
           />
         ) : (
           <div className="w-full h-full bg-gray-100 rounded-2xl flex items-center justify-center">

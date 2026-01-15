@@ -127,8 +127,6 @@ const LandingPage = () => {
             quality={90}
           />
           <div className="absolute inset-0 bg-gradient-to-b from-neutral-900/0 via-neutral-900/0 to-neutral-900/80 md:from-black/30 md:to-black/50 -z-10" />
-
-          {/* Mobile Layout */}
           <div className="md:hidden flex flex-col justify-end items-start gap-10">
             <div className="flex flex-col justify-start items-start gap-10">
               <div className="flex flex-col justify-start items-start">
@@ -245,14 +243,13 @@ const LandingPage = () => {
             <div className="w-full h-72 flex flex-col justify-start items-center gap-3">
               <div className="w-full flex-1 p-6 relative rounded-3xl flex flex-col justify-start items-end overflow-hidden group">
                 <div className="absolute inset-0 overflow-hidden">
-                  <Image
-                    src="/png/S23.jpg"
-                    alt="Nature path"
-                    width={353}
-                    height={210}
-                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                    quality={90}
-                  />
+                    <Image
+                      src="/png/S23.jpg"
+                      alt="Nature path"
+                      fill
+                      className="w-full h-full transition-transform duration-300 group-hover:scale-105 object-cover"
+                      quality={100}
+                    />
                   <div className="absolute inset-0 bg-gradient-to-b from-black/30 to-black/0 rounded-3xl" />
                 </div>
                 <div className="px-4 py-2 relative rounded-full inline-flex justify-center items-center border border-white z-10">
@@ -317,8 +314,7 @@ const LandingPage = () => {
                 <Image
                   src="/png/S23.jpg"
                   alt="Nature path"
-                  height={0}
-                  width={0}
+                  fill
                   className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                   quality={90}
                 />
@@ -525,23 +521,23 @@ const LandingPage = () => {
                 {CONTENT.cta.button}
               </button>
               <div className="w-10 h-10 md:w-12 md:h-12 bg-neutral-900 rounded-full flex items-center justify-center">
-                <ArrowUpRight className='text-white'/>
+                <ArrowUpRight className='text-white' />
               </div>
             </div>
           </div>
 
           <div className="flex gap-2 flex-1">
             <div className="rounded-2xl md:rounded-3xl overflow-hidden flex-1">
-              <Image width={370} height={378} src="/png/S42.jpg" alt="CTA 1" className="w-full h-full object-cover min-h-[250px] md:min-h-0" quality={90}/>
+              <Image width={370} height={378} src="/png/S42.jpg" alt="CTA 1" className="w-full h-full object-cover min-h-[250px] md:min-h-0" quality={90} />
             </div>
             <div className="hidden md:block rounded-3xl overflow-hidden flex-1">
-              <Image width={370} height={315} src="/png/S41.jpg" alt="CTA 2" className="w-full h-full object-cover" quality={90}/>
+              <Image width={370} height={315} src="/png/S41.jpg" alt="CTA 2" className="w-full h-full object-cover" quality={90} />
             </div>
           </div>
         </section>
       </div>
 
-      <Footer/>
+      <Footer />
     </div>
   )
 }
