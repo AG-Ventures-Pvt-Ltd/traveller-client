@@ -10,7 +10,6 @@ const MyImage = ({src, alt, ...props}: WondrrImageProps) => {
             src={`${src.startsWith('/') ? (process.env.NEXT_PUBLIC_CLOUDFRONT_URL+src) : src }`}
             alt={alt || 'Some Trip Image'}
             {...props}
-            unoptimized
         />
     )
 }

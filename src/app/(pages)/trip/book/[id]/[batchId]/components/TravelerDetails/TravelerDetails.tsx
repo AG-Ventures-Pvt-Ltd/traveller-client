@@ -7,6 +7,9 @@ import { AddTravelerModal } from '@/app/(pages)/profile/components';
 import { useGetData } from '@/services/useGetData';
 import { API_ENDPOINTS } from '@/common/constants/apiEndpoints';
 import { TravelerDetailsProps, ExistingTraveler, ExistingTravelersResponse } from '../types';
+import { EditOwnerModal } from './EditOwnerModal';
+import usePostData from '@/services/usePostData';
+import { notify } from '@/common/utils/notify';
 
 const TravelerDetails: React.FC<TravelerDetailsProps> = ({
     selectedTravelerIds,
@@ -16,13 +19,17 @@ const TravelerDetails: React.FC<TravelerDetailsProps> = ({
     const [isAccordionOpen, setIsAccordionOpen] = useState(true);
     const [isTravelerModalOpen, setIsTravelerModalOpen] = useState(false);
     const [editingTraveler, setEditingTraveler] = useState<ExistingTraveler | null>(null);
+    const [isEditOwnerModalOpen, setIsEditOwnerModalOpen] = useState(false);
     const ownerInitialized = React.useRef(false);
+
+    const { mutate: updateProfile, isPending: isUpdatingProfile } = usePostData({
+        url: API_ENDPOINTS.USER.UPDATE,
+    });
 
     const { data: travelersResponse, refetch: refetchTravelers } = useGetData<ExistingTravelersResponse>(
         `${API_ENDPOINTS.GUEST_USERS.GET}?location=booking`
     );
 
-    // Extract owner and guest users separately
     const owner = useMemo(() => travelersResponse?.owner, [travelersResponse]);
     const guestTravelers = useMemo(() => travelersResponse?.guestUsers || [], [travelersResponse]);
 
@@ -54,6 +61,33 @@ const TravelerDetails: React.FC<TravelerDetailsProps> = ({
         setIsTravelerModalOpen(true);
     }, []);
 
+    const handleEditOwner = useCallback(() => {
+        setIsEditOwnerModalOpen(true);
+    }, []);
+
+    const handleSaveOwnerDetails = useCallback((data: Partial<ExistingTraveler>) => {
+        const updatePayload = {
+            fullName: data.fullName,
+            mobileNumber: data.phone,
+            governmentIdType: data.governmentIdType,
+            governmentIdNumber: data.governmentIdNumber,
+        };
+
+        updateProfile(updatePayload, {
+            onSuccess: () => {
+                notify.success('Profile updated successfully!');
+                void refetchTravelers();
+            },
+            onError: () => {
+                notify.error('Failed to update profile. Please try again.');
+            },
+        });
+    }, [updateProfile, refetchTravelers]);
+
+    const handleCloseOwnerModal = useCallback(() => {
+        setIsEditOwnerModalOpen(false);
+    }, []);
+
     const handleCloseTravelerModal = useCallback(() => {
         setIsTravelerModalOpen(false);
         setEditingTraveler(null);
@@ -62,9 +96,17 @@ const TravelerDetails: React.FC<TravelerDetailsProps> = ({
 
     const totalSelectedTravelers = selectedTravelerIds.length;
 
+    const isOwnerComplete = useMemo(() => {
+        return owner &&
+               owner.fullName?.trim() &&
+               owner.phone?.trim() &&
+               owner.governmentIdType?.trim() &&
+               owner.governmentIdNumber?.trim();
+    }, [owner]);
+
     const isFormValid = useMemo(() => {
-        return selectedTravelerIds.length > 0;
-    }, [selectedTravelerIds]);
+        return selectedTravelerIds.length > 0 && isOwnerComplete;
+    }, [selectedTravelerIds, isOwnerComplete]);
 
     const handleNext = useCallback(() => {
         if (isFormValid) {
@@ -122,14 +164,35 @@ const TravelerDetails: React.FC<TravelerDetailsProps> = ({
                                     onChange={(checked) => handleTravelerSelect(owner._id, checked)}
                                 />
                                 <div className="flex-1 flex flex-col gap-1">
-                                    <span className="text-[#121212] text-[15px] font-bold font-['Satoshi'] leading-[22.5px]">
-                                        {owner.fullName} (you)
-                                    </span>
+                                    <div className="flex items-center justify-between">
+                                        <span className="text-[#121212] text-[15px] font-bold font-['Satoshi'] leading-[22.5px]">
+                                            {owner.fullName} (you)
+                                        </span>
+                                        <button
+                                            onClick={handleEditOwner}
+                                            className="p-2 hover:bg-[#EDEDED] rounded-lg transition-colors"
+                                            aria-label="Edit your details"
+                                        >
+                                            <Pencil className="w-4 h-4 text-[#404040]" strokeWidth={2} />
+                                        </button>
+                                    </div>
+                                    <div className="flex flex-col gap-0.5">
+                                        <span className="text-[#404040] text-[13px] font-medium font-['Satoshi'] leading-[19.5px]">
+                                            {owner.email}
+                                        </span>
+                                        <span className="text-[#404040] text-[13px] font-medium font-['Satoshi'] leading-[19.5px]">
+                                            {owner.phone || 'Mobile number not provided'}
+                                        </span>
+                                        {(!isOwnerComplete) && (
+                                            <span className="text-red-600 text-[12px] font-medium font-['Satoshi'] leading-[18px] mt-1">
+                                                Complete your details to proceed
+                                            </span>
+                                        )}
+                                    </div>
                                 </div>
                             </div>
                         )}
 
-                        {/* Guest Travelers Section */}
                         {guestTravelers.length > 0 ? (
                             guestTravelers.map((traveler) => (
                                 <div
@@ -175,8 +238,6 @@ const TravelerDetails: React.FC<TravelerDetailsProps> = ({
                     </div>
                 )}
             </div>
-
-            {/* Add New Traveler Button */}
             <div className="pt-5">
                 <button
                     onClick={handleAddTraveler}
@@ -186,8 +247,6 @@ const TravelerDetails: React.FC<TravelerDetailsProps> = ({
                     Add New Traveler
                 </button>
             </div>
-
-            {/* Next Button */}
             <div className="pt-6">
                 <button
                     onClick={handleNext}
@@ -201,13 +260,20 @@ const TravelerDetails: React.FC<TravelerDetailsProps> = ({
                     Next
                 </button>
             </div>
-
-            {/* Add Traveler Modal */}
             <AddTravelerModal
                 open={isTravelerModalOpen}
                 onClose={handleCloseTravelerModal}
                 existingTraveler={editingTraveler}
             />
+            {owner && (
+                <EditOwnerModal
+                    open={isEditOwnerModalOpen}
+                    onClose={handleCloseOwnerModal}
+                    owner={owner}
+                    onSave={handleSaveOwnerDetails}
+                    isLoading={isUpdatingProfile}
+                />
+            )}
         </div>
     );
 };

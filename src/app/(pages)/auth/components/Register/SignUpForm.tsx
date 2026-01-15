@@ -8,10 +8,7 @@ import CustomInput from '@/common/ui/CustomInput';
 import Button from '@/common/ui/Buttons/Button';
 import Link from 'next/link';
 
-interface SignUpFormProps {
-  agreeToTerms: boolean;
-  setAgreeToTerms: (value: boolean) => void;
-}
+import { SignUpFormProps } from '../../types';
 
 export default function SignUpForm({ agreeToTerms, setAgreeToTerms }: SignUpFormProps) {
   const [showPassword, setShowPassword] = useState(false);

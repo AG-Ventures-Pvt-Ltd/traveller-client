@@ -84,7 +84,7 @@ export default function ThreeImageCarousel(
                                         <Image
                                             height={0}
                                             width={0}
-                                            unoptimized
+                                            
                                             src={item.src}
                                             alt={item.alt || 'Some Wondrr Image'}
                                             className="w-full h-full object-cover  rounded-2xl"

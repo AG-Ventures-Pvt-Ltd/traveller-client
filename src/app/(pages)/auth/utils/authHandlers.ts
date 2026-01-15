@@ -1,27 +1,5 @@
 import { signIn } from 'next-auth/react';
-
-export interface LoginValues {
-  emailOrUsername: string;
-  password: string;
-}
-
-export interface SignupValues {
-  firstName?: string;
-  lastName?: string;
-  fullName: string;
-  email: string;
-  username?: string;
-  phoneNumber?: string;
-  password: string;
-  confirmPassword?: string;
-}
-
-export interface AuthResponse {
-  success: boolean;
-  error?: string;
-  message?: string;
-  status?: number;
-}
+import { LoginValues, AuthResponse } from '../types';
 
 export const handleAuthSubmit = async (values: LoginValues): Promise<AuthResponse> => {
 

@@ -67,10 +67,12 @@ export default function Page() {
     address: '',
     memberSince: '',
     birthDate: '',
-    avatar: ''
+    avatar: '',
+    governmentIdType: '',
+    governmentIdNumber: ''
   });
 
-  const { data: userData, isLoading, error } = useGetData<{ fullName?: string; username?: string; bio?: string; email?: string; phone?: string; address?: string; city?: string; createdAt?: string; birthDate?: string; avatar?: string; emergencyContact?: { name: string; contactNumber: string } }>(API_ENDPOINTS.USER.ME);
+  const { data: userData, isLoading, error } = useGetData<{ fullName?: string; username?: string; bio?: string; email?: string; phone?: string; address?: string; city?: string; createdAt?: string; birthDate?: string; avatar?: string; governmentIdType?: string; governmentIdNumber?: string; emergencyContact?: { name: string; contactNumber: string } }>(API_ENDPOINTS.USER.ME);
 
   const formatDate = (dateString: string) => {
     if (!dateString) return 'Not added yet';
@@ -93,7 +95,9 @@ export default function Page() {
         address: userData.address || userData.city || 'Not added yet',
         memberSince: formatDate(userData.createdAt || ''),
         birthDate: userData.birthDate || 'Not added yet',
-        avatar: userData.avatar || ""
+        avatar: userData.avatar || "",
+        governmentIdType: userData.governmentIdType || 'Not added yet',
+        governmentIdNumber: userData.governmentIdNumber || 'Not added yet'
       });
     }
   }, [userData]);
@@ -120,6 +124,7 @@ export default function Page() {
 
   const handleSaveProfile = (updatedData: ProfileData, addressComponents: { address: string; city: string; state: string }) => {
     const updatePayload = {
+      username: updatedData.username,
       birthDate: updatedData.birthDate,
       bio: updatedData.bio,
       address: {
@@ -128,7 +133,9 @@ export default function Page() {
         state: addressComponents.state,
       },
       avatar: updatedData.avatar,
-      mobileNumber: updatedData.phone, 
+      mobileNumber: updatedData.phone,
+      governmentIdType: updatedData.governmentIdType,
+      governmentIdNumber: updatedData.governmentIdNumber,
     };
 
     updateProfile(updatePayload, {
@@ -179,7 +186,6 @@ export default function Page() {
         onSuccess: () => {
           setIsDeleteTravelerModalOpen(false);
           setTravelerToDelete(null);
-          // TODO: Refresh the travelers list
         }
       });
     }
@@ -243,6 +249,8 @@ export default function Page() {
         {activeTab === 0 && (
           <ProfileDetailsTab
             birthDate={profileData.birthDate}
+            governmentIdType={profileData.governmentIdType}
+            governmentIdNumber={profileData.governmentIdNumber}
             emergencyContact={userData?.emergencyContact ? {
               name: userData.emergencyContact.name,
               contactNumber: userData.emergencyContact.contactNumber

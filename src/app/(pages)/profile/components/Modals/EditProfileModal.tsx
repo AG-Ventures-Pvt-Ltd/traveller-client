@@ -3,10 +3,12 @@
 import { useState, useEffect } from 'react';
 import Modal from '@/common/ui/Modal';
 import CustomInput from '@/common/ui/CustomInput';
+import CustomSelect from '@/common/ui/CustomSelect';
 import { DatePicker } from '@/common/ui/DatePicker';
 import Button from '@/common/ui/Buttons/Button';
 import { ProfileData } from '../../types';
 import useS3Upload from '@/common/hooks/useS3Upload';
+import MyImage from '@/common/ui/Image';
 
 interface EditProfileModalProps {
   open: boolean;
@@ -28,6 +30,8 @@ export function EditProfileModal({ open, onClose, profileData, onSave, isLoading
     address: data.address === 'Not added yet' ? '' : data.address,
     birthDate: data.birthDate === 'Not added yet' ? '' : data.birthDate,
     avatar: data.avatar === 'Not added yet' ? '' : data.avatar,
+    governmentIdType: data.governmentIdType === 'Not added yet' ? '' : data.governmentIdType,
+    governmentIdNumber: data.governmentIdNumber === 'Not added yet' ? '' : data.governmentIdNumber,
   });
 
   const [formData, setFormData] = useState<ProfileData>(getCleanFormData(profileData));
@@ -111,7 +115,6 @@ export function EditProfileModal({ open, onClose, profileData, onSave, isLoading
           avatarUrl = uploadResults[0].url;
         }
       } catch (error) {
-        console.error('Failed to upload avatar:', error);
         return; // Don't proceed with save if upload failed
       }
     }
@@ -141,6 +144,15 @@ export function EditProfileModal({ open, onClose, profileData, onSave, isLoading
     >
       <div className="flex flex-col gap-5 max-w-[528px]">
         {/* Phone Number */}
+        {/* Username */}
+        <CustomInput
+          label="Username"
+          value={formData.username}
+          onChange={(e) => handleChange('username', e.target.value)}
+          placeholder="Enter your username"
+          fullWidth
+        />
+
         <CustomInput
           label="Mobile Number"
           type="tel"
@@ -148,8 +160,29 @@ export function EditProfileModal({ open, onClose, profileData, onSave, isLoading
           onChange={(e) => handleChange('phone', e.target.value)}
           fullWidth
         />
+        {/* Government ID Type */}
+        <CustomSelect
+          label="Government ID Type"
+          value={formData.governmentIdType || ''}
+          onChange={(value) => handleChange('governmentIdType', value)}
+          placeholder="Select ID type"
+          options={[
+            { value: 'passport', label: 'Passport' },
+            { value: 'aadhar', label: 'Aadhar Card' },
+            { value: 'pan', label: 'PAN Card' },
+            { value: 'driving_license', label: 'Driving License' },
+            { value: 'voter_id', label: 'Voter ID' },
+          ]}
+        />
 
-        {/* Birth Date */}
+        {/* Government ID Number */}
+        <CustomInput
+          label="Government ID Number"
+          value={formData.governmentIdNumber || ''}
+          onChange={(e) => handleChange('governmentIdNumber', e.target.value)}
+          placeholder="Enter your ID number"
+          fullWidth
+        />
         <DatePicker
           label="Date of Birth"
           value={birthDate}
@@ -157,8 +190,6 @@ export function EditProfileModal({ open, onClose, profileData, onSave, isLoading
           placeholder="Select your date of birth"
           showYearNavigation={true}
         />
-
-        {/* Address Components */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <CustomInput
             label="Address"
@@ -182,8 +213,6 @@ export function EditProfileModal({ open, onClose, profileData, onSave, isLoading
             fullWidth
           />
         </div>
-
-        {/* Bio */}
         <CustomInput
           label="Bio"
           variant="textarea"
@@ -192,15 +221,13 @@ export function EditProfileModal({ open, onClose, profileData, onSave, isLoading
           rows={4}
           fullWidth
         />
-
-        {/* Avatar Upload */}
         <div className="flex flex-col gap-3">
           <label className="text-neutral-900 text-sm font-bold font-['Satoshi']">
             Profile Picture
           </label>
           <div className="flex items-center gap-4">
             <div className="relative w-20 h-20 rounded-full overflow-hidden bg-gray-100 flex-shrink-0">
-              <img
+              <MyImage
                 src={previewUrl || formData.avatar || 'https://placehold.co/80x80'}
                 alt="Avatar preview"
                 className="w-full h-full object-cover"

@@ -22,6 +22,7 @@ declare module "next-auth" {
       email: string;
       fullName?: string;
       type?:string;
+      avatar?:string
     };
   }
 }

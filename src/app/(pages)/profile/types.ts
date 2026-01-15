@@ -8,6 +8,8 @@ export interface ProfileData {
   memberSince: string;
   birthDate: string;
   avatar: string;
+  governmentIdType?: string;
+  governmentIdNumber?: string;
 }
 
 export interface EmergencyContact {

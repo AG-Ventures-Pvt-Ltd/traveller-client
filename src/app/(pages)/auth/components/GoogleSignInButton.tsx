@@ -2,10 +2,7 @@
 
 import { signIn } from 'next-auth/react';
 import Button from '@/common/ui/Buttons/Button';
-
-interface GoogleSignInButtonProps {
-  redirectTo?: string;
-}
+import { GoogleSignInButtonProps } from '../types';
 
 const GoogleSignInButton = ({ redirectTo }: GoogleSignInButtonProps) => {
   const handleGoogleSignIn = () => {

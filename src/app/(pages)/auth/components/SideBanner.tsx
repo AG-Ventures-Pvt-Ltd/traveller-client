@@ -13,7 +13,6 @@ export default function SideBanner() {
         alt='Authentication Background'
         fill
         className='object-cover'
-        unoptimized={true}
       />
     </div>
   );

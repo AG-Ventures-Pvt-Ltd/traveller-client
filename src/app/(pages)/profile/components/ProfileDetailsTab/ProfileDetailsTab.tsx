@@ -17,6 +17,8 @@ interface TravelerDetail {
 
 interface ProfileDetailsTabProps {
   birthDate: string;
+  governmentIdType?: string;
+  governmentIdNumber?: string;
   emergencyContact?: EmergencyContact | null;
   onEditEmergencyContact: () => void;
   onAddTraveler: () => void;
@@ -26,6 +28,8 @@ interface ProfileDetailsTabProps {
 
 export function ProfileDetailsTab({
   birthDate,
+  governmentIdType,
+  governmentIdNumber,
   emergencyContact: propEmergencyContact,
   onEditEmergencyContact,
   onAddTraveler,
@@ -56,6 +60,22 @@ export function ProfileDetailsTab({
             </span>
             <span className="text-neutral-900 text-base font-bold font-['Satoshi']">
               {birthDate}
+            </span>
+          </div>
+          <div className="flex flex-col gap-2">
+            <span className="text-neutral-700 text-sm font-medium font-['Satoshi']">
+              Government ID Type
+            </span>
+            <span className="text-neutral-900 text-base font-bold font-['Satoshi']">
+              {governmentIdType || 'Not added yet'}
+            </span>
+          </div>
+          <div className="flex flex-col gap-2">
+            <span className="text-neutral-700 text-sm font-medium font-['Satoshi']">
+              Government ID Number
+            </span>
+            <span className="text-neutral-900 text-base font-bold font-['Satoshi']">
+              {governmentIdNumber || 'Not added yet'}
             </span>
           </div>
         </div>
