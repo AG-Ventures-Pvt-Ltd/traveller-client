@@ -13,14 +13,15 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({ tripId, batchId, guests = 1
   
   const setTotalAmount = useBookingStore((state) => state.setTotalAmount);
   const couponCode = useBookingStore((state) => state.couponCode);
+  const roomSharing = useBookingStore((state) => state.roomSharing);
   
   const { tripDetails, isLoading, fetchTripDetails } = useTripDetailsStore();
 
   useEffect(() => {
     if (actualTripId && batchId) {
-      fetchTripDetails(actualTripId, batchId, guests, couponCode);
+      fetchTripDetails(actualTripId, batchId, guests, couponCode, roomSharing);
     }
-  }, [actualTripId, batchId, guests, couponCode, fetchTripDetails]);
+  }, [actualTripId, batchId, guests, couponCode, roomSharing, fetchTripDetails]);
 
   const grandTotal = tripDetails ? tripDetails.grandTotal : 0;
 
@@ -100,6 +101,14 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({ tripId, batchId, guests = 1
             </span>
           </div>
         )}
+        <div className="flex justify-between items-start">
+          <span className="text-neutral-700 text-xs sm:text-sm font-medium font-['Satoshi']">
+            Convenience Fee
+          </span>
+          <span className="text-neutral-900 text-xs sm:text-sm font-bold font-['Satoshi'] flex items-center">
+            <IndianRupee size={12} className="sm:w-[14px] sm:h-[14px]" />{tripDetails.serviceFee}
+          </span>
+        </div>
         {tripDetails.discount > 0 && (
           <div className="flex justify-between items-start">
             <span className="text-green-600 text-xs sm:text-sm font-medium font-['Satoshi']">
@@ -110,14 +119,6 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({ tripId, batchId, guests = 1
             </span>
           </div>
         )}
-        <div className="flex justify-between items-start">
-          <span className="text-neutral-700 text-xs sm:text-sm font-medium font-['Satoshi']">
-            Convenience Fee
-          </span>
-          <span className="text-neutral-900 text-xs sm:text-sm font-bold font-['Satoshi'] flex items-center">
-            <IndianRupee size={12} className="sm:w-[14px] sm:h-[14px]" />{tripDetails.serviceFee}
-          </span>
-        </div>
       </div>
       <Divider />
       <div className="flex justify-between items-center">
