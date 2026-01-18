@@ -69,13 +69,11 @@ export function TripCard({
     <div className="bg-white rounded-3xl border-2 border-gray-200 overflow-hidden">
       <div className="flex flex-col">
         {/* Image Section */}
-        <div className="relative w-full h-48 sm:h-56 md:h-64 lg:w-72 lg:h-80 flex-shrink-0">
+        <div className="relative w-full h-48 sm:h-56 md:h-64 lg:h-80 flex-shrink-0">
           <MyImage
             src={image}
             alt={title}
-            width={280}
-            height={352}
-            className="w-full h-full object-cover"
+            className="w-full h-full"
           />
           <div className={`absolute top-3 left-3 sm:top-4 sm:left-4 ${statusStyle.bg} rounded-lg px-2 sm:px-3 py-1 sm:py-1.5`}>
             <span className={`${statusStyle.text} text-xs font-bold font-['Satoshi'] leading-4`}>
@@ -93,7 +91,7 @@ export function TripCard({
                 <h3 className="text-neutral-900 text-xl sm:text-2xl font-bold font-['Satoshi'] leading-7 sm:leading-9">
                   {title}
                 </h3>
-                <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 text-sm">
+                <div className="flex flex-col gap-2 text-sm">
                   <div className="flex items-center gap-1.5 text-neutral-700">
                     <svg className="w-4 h-4" viewBox="0 0 16 16" fill="none">
                       <path
@@ -112,38 +110,40 @@ export function TripCard({
                     </svg>
                     <span className="font-medium font-['Satoshi']">{location}</span>
                   </div>
-                  <div className="flex items-center gap-1.5 text-neutral-700">
-                    <svg className="w-4 h-4" viewBox="0 0 16 16" fill="none">
-                      <rect
-                        x="2"
-                        y="3"
-                        width="12"
-                        height="11"
-                        stroke="currentColor"
-                        strokeWidth="1.33"
-                        rx="1"
-                      />
-                      <path d="M2 7H14" stroke="currentColor" strokeWidth="1.33" />
-                    </svg>
-                    <span className="font-medium font-['Satoshi']">{date}</span>
-                  </div>
-                  <div className="flex items-center gap-1.5 text-neutral-700">
-                    <svg className="w-4 h-4" viewBox="0 0 16 16" fill="none">
-                      <circle
-                        cx="8"
-                        cy="8"
-                        r="6"
-                        stroke="currentColor"
-                        strokeWidth="1.33"
-                      />
-                      <path
-                        d="M8 4V8H11"
-                        stroke="currentColor"
-                        strokeWidth="1.33"
-                        strokeLinecap="round"
-                      />
-                    </svg>
-                    <span className="font-medium font-['Satoshi']">{duration}</span>
+                  <div className='flex gap-4 md:gap-6'>
+                    <div className="flex items-center gap-1.5 text-neutral-700">
+                      <svg className="w-4 h-4" viewBox="0 0 16 16" fill="none">
+                        <rect
+                          x="2"
+                          y="3"
+                          width="12"
+                          height="11"
+                          stroke="currentColor"
+                          strokeWidth="1.33"
+                          rx="1"
+                        />
+                        <path d="M2 7H14" stroke="currentColor" strokeWidth="1.33" />
+                      </svg>
+                      <span className="font-medium font-['Satoshi']">{date}</span>
+                    </div>
+                    <div className="flex items-center gap-1.5 text-neutral-700">
+                      <svg className="w-4 h-4" viewBox="0 0 16 16" fill="none">
+                        <circle
+                          cx="8"
+                          cy="8"
+                          r="6"
+                          stroke="currentColor"
+                          strokeWidth="1.33"
+                        />
+                        <path
+                          d="M8 4V8H11"
+                          stroke="currentColor"
+                          strokeWidth="1.33"
+                          strokeLinecap="round"
+                        />
+                      </svg>
+                      <span className="font-medium font-['Satoshi']">{duration}</span>
+                    </div>
                   </div>
                 </div>
                 <p className="text-neutral-700 text-sm font-medium font-['Satoshi']">
@@ -152,22 +152,20 @@ export function TripCard({
                 {/* Payment and Booking Status */}
                 {(paymentStatus || bookingStatus) && (
                   <div className="flex flex-wrap gap-2 mt-2">
-                    <div className={`inline-flex items-center rounded-lg px-2 py-1 text-xs font-bold font-['Satoshi'] ${
-                      (paymentStatus || 'pending').toLowerCase() === 'completed' ? 'bg-green-100 text-green-700' :
-                      (paymentStatus || 'pending').toLowerCase() === 'pending' ? 'bg-yellow-100 text-yellow-700' :
-                      (paymentStatus || 'pending').toLowerCase() === 'failed' ? 'bg-red-100 text-red-700' :
-                      'bg-gray-100 text-gray-700'
-                    }`}>
+                    <div className={`inline-flex items-center rounded-lg px-2 py-1 text-xs font-bold font-['Satoshi'] ${(paymentStatus || 'pending').toLowerCase() === 'completed' ? 'bg-green-100 text-green-700' :
+                        (paymentStatus || 'pending').toLowerCase() === 'pending' ? 'bg-yellow-100 text-yellow-700' :
+                          (paymentStatus || 'pending').toLowerCase() === 'failed' ? 'bg-red-100 text-red-700' :
+                            'bg-gray-100 text-gray-700'
+                      }`}>
                       Payment: {paymentStatus || 'pending'}
                     </div>
                     {bookingStatus && (
-                      <div className={`inline-flex items-center rounded-lg px-2 py-1 text-xs font-bold font-['Satoshi'] ${
-                        bookingStatus.toLowerCase() === 'confirmed' ? 'bg-green-100 text-green-700' :
-                        bookingStatus.toLowerCase() === 'pending' ? 'bg-yellow-100 text-yellow-700' :
-                        bookingStatus.toLowerCase() === 'cancelled' ? 'bg-red-100 text-red-700' :
-                        bookingStatus.toLowerCase() === 'failed' ? 'bg-red-100 text-red-700' :
-                        'bg-gray-100 text-gray-700'
-                      }`}>
+                      <div className={`inline-flex items-center rounded-lg px-2 py-1 text-xs font-bold font-['Satoshi'] ${bookingStatus.toLowerCase() === 'confirmed' ? 'bg-green-100 text-green-700' :
+                          bookingStatus.toLowerCase() === 'pending' ? 'bg-yellow-100 text-yellow-700' :
+                            bookingStatus.toLowerCase() === 'cancelled' ? 'bg-red-100 text-red-700' :
+                              bookingStatus.toLowerCase() === 'failed' ? 'bg-red-100 text-red-700' :
+                                'bg-gray-100 text-gray-700'
+                        }`}>
                         Booking: {bookingStatus}
                       </div>
                     )}
@@ -176,7 +174,7 @@ export function TripCard({
               </div>
               <div className="text-right flex-shrink-0">
                 <div className="text-neutral-900 text-3xl font-bold font-['Satoshi'] leading-[48px] flex items-center">
-                  <IndianRupee size={30} strokeWidth={2.5}/> {price}
+                  <IndianRupee size={30} strokeWidth={2.5} /> {price}
                 </div>
                 <div className="text-neutral-700 text-xs font-medium font-['Satoshi']">
                   Total paid

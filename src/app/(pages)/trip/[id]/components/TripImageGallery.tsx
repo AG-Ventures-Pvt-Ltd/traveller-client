@@ -42,10 +42,8 @@ export function TripImageGallery({ images }: TripImageGalleryProps) {
       <MyImage
         src={validImages[currentIndex]}
         alt={`Trip image ${currentIndex + 1}`}
-        className="w-full h-full rounded-2xl"
-        style={{ objectFit: 'cover' }}
+        className="w-full h-full rounded-3xl overflow-hidden"
       />
-
       <button
         onClick={prevImage}
         className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-10 bg-black/70 hover:bg-black/90 text-white rounded-full p-2 sm:p-3 transition-all opacity-100 sm:opacity-0 sm:group-hover:opacity-100"

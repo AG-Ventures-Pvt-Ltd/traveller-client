@@ -6,11 +6,11 @@ import { API_ENDPOINTS } from "@/common/constants/apiEndpoints";
 import { useParams } from "next/navigation";
 import MyImage from "@/common/ui/Image";
 
-  
+
 export function HostProfileCard() {
   const params = useParams();
   const id = params.id as string;
-  
+
   const { data: fetchedHost, isLoading, error } = useGetData<HostProfile>(API_ENDPOINTS.USER.HOST_PROFILE(id));
 
   const hostData = fetchedHost;
@@ -27,7 +27,7 @@ export function HostProfileCard() {
     <div className="w-full p-6 sm:p-8 lg:p-12 bg-neutral-50 rounded-2xl sm:rounded-3xl border-2 border-gray-200 flex flex-col gap-0">
       <div className="flex flex-col sm:flex-row gap-6 sm:gap-8">
         {hostData.avatar ? (
-          <MyImage src={hostData.avatar} alt={hostData.fullName} className="w-20 h-20 sm:w-24 sm:h-24 lg:w-28 lg:h-28 rounded-full object-cover flex-shrink-0 mx-auto sm:mx-0" />
+            <MyImage src={hostData.avatar} alt={hostData.fullName} className="w-20 h-20 sm:w-24 sm:h-24 lg:w-28 lg:h-28 rounded-full overflow-hidden flex-shrink-0 mx-auto sm:mx-0" />
         ) : (
           <div className="w-20 h-20 sm:w-24 sm:h-24 lg:w-28 lg:h-28 bg-neutral-900 rounded-full flex items-center justify-center flex-shrink-0 mx-auto sm:mx-0">
             <span className="text-white text-2xl sm:text-3xl lg:text-5xl font-bold font-['Satoshi']">

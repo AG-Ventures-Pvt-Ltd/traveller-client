@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { SlidersHorizontal, ChevronDown, IndianRupee } from 'lucide-react';
 import Button from '@/common/components/atoms/Button';
+import { TRIP_CATEGORIES } from '../consants';
 
 interface TripFiltersProps {
   onFilterChange?: (filters: FilterValues) => void;
@@ -18,7 +19,6 @@ export interface FilterValues {
   minRating: number | null;
 }
 
-const TOUR_TYPES = ['Adventure', 'Cultural', 'Luxury', 'Nature', 'Relaxation'];
 // const DIFFICULTIES = ['Easy', 'Moderate', 'Challenging'];
 // const RATINGS = [
 //   { label: '4.5+ stars', value: 4.5 },
@@ -84,7 +84,7 @@ const TripFilters: React.FC<TripFiltersProps> = ({ onFilterChange, onApplyFilter
   };
 
   return (
-    <div className="w-80 bg-white rounded-3xl border-2 border-gray-200 px-7 pt-7 pb-2 flex flex-col gap-7 sticky top-4 ">
+    <div className="w-80 bg-white rounded-3xl border-2 border-gray-200 px-7 pt-7 pb-6 flex flex-col gap-3 sticky top-4 ">
       {/* Header */}
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-2.5">
@@ -102,7 +102,7 @@ const TripFilters: React.FC<TripFiltersProps> = ({ onFilterChange, onApplyFilter
       {/* Filter Sections */}
       <div className="flex flex-col gap-6">
         {/* Tour Type */}
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-1">
           <button
             onClick={() => toggleSection('tourType')}
             className="flex justify-between items-center"
@@ -115,8 +115,8 @@ const TripFilters: React.FC<TripFiltersProps> = ({ onFilterChange, onApplyFilter
             />
           </button>
           {expandedSections.has('tourType') && (
-            <div className="flex flex-col gap-2.5">
-              {TOUR_TYPES.map((type) => (
+            <div className="grid grid-cols-2 gap-2.5">
+              {TRIP_CATEGORIES.map((type) => (
                 <label key={type} className="flex items-center gap-2.5 cursor-pointer">
                   <input
                     type="checkbox"
@@ -134,7 +134,7 @@ const TripFilters: React.FC<TripFiltersProps> = ({ onFilterChange, onApplyFilter
         <div className="h-px bg-gray-200" />
 
         {/* Price Range */}
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-1">
           <button
             onClick={() => toggleSection('priceRange')}
             className="flex justify-between items-center"
@@ -182,10 +182,10 @@ const TripFilters: React.FC<TripFiltersProps> = ({ onFilterChange, onApplyFilter
           )}
         </div>
 
-        <div className="h-px bg-gray-200" />
+        <div className="h-[1px] bg-gray-200" />
 
         {/* Duration */}
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-1">
           <button
             onClick={() => toggleSection('duration')}
             className="flex justify-between items-center"

@@ -66,6 +66,7 @@ export interface TripData {
   description: string;
   images?: string[];
   category:string;
+  location:string;
   meetingPoint: string;
   endPoint: string;
   itinerary?: ItineraryDay[];

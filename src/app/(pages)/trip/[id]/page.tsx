@@ -80,7 +80,7 @@ export default function TripDetail() {
                     Location
                   </p>
                   <p className="text-sm sm:text-base">
-                    {tripData.meetingPoint}
+                    {tripData.location}
                   </p>
                 </div>
               </div>

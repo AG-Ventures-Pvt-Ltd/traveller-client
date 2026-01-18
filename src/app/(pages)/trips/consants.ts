@@ -1,0 +1,15 @@
+export const TRIP_CATEGORIES = [
+  'Adventure',
+  'Cultural',
+  'Relaxation',
+  'Wildlife',
+  'Beach',
+  'Mountain',
+  'Road Trip',
+  'Spiritual',
+  'Trek',
+  'Desert',
+  'Historical',
+  'Camping',
+  'Other',
+] as const

@@ -75,7 +75,8 @@ export default function Page() {
 
     // New filter structure
     if (appliedFilters.tourTypes && appliedFilters.tourTypes.length > 0) {
-      params.append('tourTypes', appliedFilters.tourTypes.join(','));
+      const lowercaseCategories = appliedFilters.tourTypes.map(category => category.toLowerCase());
+      params.append('category', JSON.stringify(lowercaseCategories));
     }
     if (appliedFilters.priceRange) {
       params.append('maxBudget', appliedFilters.priceRange.toString());

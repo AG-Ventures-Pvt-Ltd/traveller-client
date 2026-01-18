@@ -15,8 +15,7 @@ export function TripCard({ trip, onViewDetails }: TripCardProps) {
         <MyImage
           src={trip.image}
           alt={trip.title}
-          fill
-          className="object-cover"
+          className="w-full h-full"
         />
         <div className="absolute top-4 left-4">
           <span className="px-3 pt-1.5 pb-1 bg-white/95 rounded-[50px] text-neutral-900 text-xs font-bold font-['Satoshi']">

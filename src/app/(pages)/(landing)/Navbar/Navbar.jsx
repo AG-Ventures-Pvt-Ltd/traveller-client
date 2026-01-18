@@ -18,7 +18,7 @@ const hiddenPaths = ['/auth', '/verify']
 
 const Navbar = () => {
 
-  const { data: session } = useSession();
+  const { status } = useSession();
 
   const router = useRouter();
 
@@ -44,14 +44,21 @@ const Navbar = () => {
               </div>
             ))}
             <div className='flex flex-col items-start'>
-              {session?.user ? (
+              {status === 'loading' && (
+                <div className='p-2 bg-gray-200 rounded-full flex items-center gap-2.5 animate-pulse relative overflow-hidden'>
+                  <div className='w-4 h-4 bg-gray-300 rounded-full animate-pulse'></div>
+                  <div className='absolute inset-0 bg-gradient-to-r from-transparent via-gray-100/50 to-transparent animate-pulse'></div>
+                </div>
+              )}
+              {status === 'authenticated' && (
                 <div
                   className='p-2 bg-black rounded-full flex items-center gap-2.5 cursor-pointer'
                   onClick={() => router.push('/profile')}
                 >
                   <User className='text-white' />
                 </div>
-              ) : (
+              )}
+              {status === 'unauthenticated' && (
                 <button
                   className='px-[17px] py-2 bg-black rounded-xl flex items-center gap-2.5 whitespace-nowrap'
                   onClick={() => router.push('/auth')}

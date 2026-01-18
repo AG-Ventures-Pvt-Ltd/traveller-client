@@ -35,7 +35,7 @@ export function HostCard({
               <MyImage
                 src={avatar}
                 alt={name}
-                className="w-full h-full rounded-full object-cover"
+                className="w-full h-full rounded-full object-cover overflow-hidden"
               />
             ) : (
               <span className="text-white text-base sm:text-xl font-bold leading-6 sm:leading-7">
@@ -47,18 +47,18 @@ export function HostCard({
             <h3 className="text-base sm:text-lg font-bold text-[#0F172B] leading-6 sm:leading-7 hover:underline">{name}</h3>
 
             <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
-              <div className="flex items-center gap-1">
+              {/* <div className="flex items-center gap-1">
                 <Star className="w-3.5 h-3.5 sm:w-4 sm:h-4 fill-yellow-500 text-yellow-500" />
                 <span className="text-xs sm:text-sm font-medium text-[#0F172B] leading-4 sm:leading-5">
-                  {rating}
+                  {rating || 0}
                 </span>
                 <span className="text-xs sm:text-sm text-[#475569] leading-4 sm:leading-5">
-                  ({totalReviews} reviews)
+                  ({totalReviews || 0} reviews) • 
                 </span>
-              </div>
+              </div> */}
               {joinedDate && (
                 <span className="text-xs sm:text-sm text-[#475569] leading-4 sm:leading-5">
-                  • Joined {joinedDate}
+                  Joined {joinedDate}
                 </span>
               )}
             </div>

@@ -32,7 +32,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ username, onEditProfile, 
         </button>
         {onLogout && (
           <button
-            className="bg-red-600 text-white px-4 py-3 rounded-xl hover:bg-red-700 transition-colors flex items-center gap-2"
+            className="bg-red-500 text-white px-4 py-3 rounded-xl hover:bg-red-700 transition-colors flex items-center gap-2"
             onClick={onLogout}
             title="Logout"
           >

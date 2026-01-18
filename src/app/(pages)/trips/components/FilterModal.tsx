@@ -5,6 +5,7 @@ import { SlidersHorizontal, ChevronDown, IndianRupee } from 'lucide-react';
 import MobileModal from '@/common/ui/MobileModal';
 import Button from '@/common/components/atoms/Button';
 import { FilterValues } from './TripFilters';
+import { TRIP_CATEGORIES } from '../consants';
 
 interface FilterModalProps {
   isOpen: boolean;
@@ -13,7 +14,6 @@ interface FilterModalProps {
   onApplyFilters: () => void;
 }
 
-const TOUR_TYPES = ['Adventure', 'Cultural', 'Luxury', 'Nature', 'Relaxation'];
 
 const FilterModal: React.FC<FilterModalProps> = ({
   isOpen,
@@ -107,8 +107,8 @@ const FilterModal: React.FC<FilterModalProps> = ({
               />
             </button>
             {expandedSections.has('tourType') && (
-              <div className="flex flex-col gap-3 pl-4">
-                {TOUR_TYPES.map((type) => (
+              <div className="grid grid-cols-2 gap-3 pl-4">
+                {TRIP_CATEGORIES.map((type) => (
                   <label key={type} className="flex items-center gap-3 cursor-pointer">
                     <input
                       type="checkbox"
