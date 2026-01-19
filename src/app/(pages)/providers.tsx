@@ -7,6 +7,7 @@ import { SessionProvider } from 'next-auth/react';
 import { ToastProvider, useToast } from '@/common/utils/ToastContext';
 import { setToastHandler } from '@/common/utils/notify';
 import { useEffect } from 'react';
+import { Analytics } from "@vercel/analytics/next"
 
 const theme = createTheme({
   palette: {
@@ -59,6 +60,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <ThemeProvider theme={theme}>
       <QueryClientProvider client={queryClient}>
+        <Analytics/>
         <SessionProvider>
           <ToastProvider>
             <ToastInitializer>
