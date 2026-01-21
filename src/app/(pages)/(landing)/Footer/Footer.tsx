@@ -19,7 +19,7 @@ const Footer = () => {
                 {
                     title: 'Company',
                     links: [
-                        { label: 'Partner With Us', href: 'https://partner.wondrr.in/auth?mode=signup' },
+                        { label: 'Partner With Us', href: '/partner-with-us' },
                     ]
                 },
                 {
@@ -43,7 +43,7 @@ const Footer = () => {
         }
     }
     return (
-        <footer className="flex flex-col gap-8 md:gap-12 py-12 md:py-24 w-full bg-neutral-900 border-t border-neutral-800">
+        <footer className="flex flex-col gap-8 md:gap-12 pt-10 md:pt-16 pb-8 md:pb-8 w-full bg-neutral-900 border-t border-neutral-800">
             <div className="flex flex-col lg:flex-row justify-between gap-8 md:gap-16 px-5 md:px-9 max-w-[1520px] w-full mx-auto">
                 <div className="flex flex-col gap-4 md:gap-6 flex-1 max-w-full lg:max-w-sm">
                     <h3 className="text-2xl md:text-3xl font-black text-white">Wondrr</h3>
@@ -53,7 +53,7 @@ const Footer = () => {
                     <div className="flex gap-3">
                         {CONTENT.footer.social.map((platform) => (
                             <a key={platform.label} href={platform.href} target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center cursor-pointer hover:bg-white/20 transition-colors">
-                                <Image src='/svg/instagram.svg' width={30} height={30} quality={90}alt='instagram'/>
+                                <Image src='/svg/instagram.svg' width={30} height={30} quality={90} alt='instagram' />
                             </a>
                         ))}
                     </div>

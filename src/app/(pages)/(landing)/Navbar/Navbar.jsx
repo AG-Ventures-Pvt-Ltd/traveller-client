@@ -12,6 +12,8 @@ import { usePathname } from "next/navigation";
 const navItems = [
           { title : 'Trips', route : "/trips" }, 
           { title : 'About', route : "/about" }, 
+          { title : 'Partner',  route : '/partner-with-us'},
+          { title : 'How We Work',  route : '/how-we-work'}
         ]
 
 const hiddenPaths = ['/auth', '/verify']
@@ -31,13 +33,13 @@ const Navbar = () => {
   }
 
   return (
-    <div className='px-9 py-5 bg-white/96 flex items-center border-b border-b-[#EDEDED] sticky top-0 z-50'>
+    <div className='px-2 md:px-9 py-5 bg-white/96 flex items-center border-b border-b-[#EDEDED] sticky top-0 z-50'>
       <div className='flex-1 flex items-center gap-2.5'>
         <div className='flex-1 flex flex-col items-start justify-center'>
           <Logo />
         </div>
         <div className='flex-1 flex justify-end items-center'>
-          <div className='flex items-center gap-5'>
+          <div className='flex items-center gap-3 md:gap-5'>
             {navItems.map((item) => (
               <div key={item.title} onClick={() => router.push(item.route)} className='flex flex-col items-start text-[#121212] font-bold cursor-pointer'>
                 {item.title}

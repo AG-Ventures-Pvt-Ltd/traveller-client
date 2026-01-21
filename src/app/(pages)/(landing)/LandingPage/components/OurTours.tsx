@@ -37,14 +37,14 @@ const OurTours = () => {
     <section className="flex flex-col gap-6 sm:gap-8 px-4 sm:px-6 lg:px-9 py-12 sm:py-16 lg:py-24 w-full">
       <div className="flex flex-col gap-4 sm:gap-6">
         <div className="px-3 sm:px-4 py-2 bg-neutral-50 rounded-full inline-flex items-center self-start">
-          <span className="text-neutral-900 text-xs sm:text-sm font-medium">Our Tours</span>
+          <span className="text-neutral-900 text-xs sm:text-sm font-medium">Our Trips</span>
         </div>
 
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 sm:gap-0">
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-medium leading-tight text-neutral-900 sm:ml-0 lg:ml-16">
-            Find your perfect
+            Find Your Perfect
             <br />
-            wondrr experience
+            Group Trip Experience
           </h2>
 
           <div className="flex items-center gap-2">
@@ -52,7 +52,7 @@ const OurTours = () => {
               onClick={handleSeeAllClick}
               className="px-4 sm:px-6 py-2 sm:py-3 bg-neutral-900 text-white rounded-full font-bold hover:bg-neutral-800 hover:scale-105 transition-transform text-sm sm:text-base cursor-pointer"
             >
-              See All Tours
+              See All Group Trips
             </button>
             <div className="w-10 sm:w-12 h-10 sm:h-12 bg-neutral-900 rounded-full flex items-center justify-center text-white cursor-pointer hover:scale-105 transition-transform">
               <ArrowUpRight size={16} className="sm:w-5 sm:h-5" />
