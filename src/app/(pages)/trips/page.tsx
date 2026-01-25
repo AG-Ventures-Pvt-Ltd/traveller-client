@@ -28,6 +28,7 @@ interface Trip {
   category: string;
   difficulty: string;
   isFeatured: boolean;
+  isBookmarked:boolean;
   slug: string;
   tags?: string[];
 }
@@ -109,11 +110,6 @@ export default function Page() {
     setAppliedFilters(filters);
   }, [filters]);
 
-  const handleBookmark = () => {
-    // Implement bookmark logic
-    // TODO: Add bookmark functionality
-  };
-
   const handleBookNow = (slug: string) => {
     router.push(`/trip/${slug}`);
   };
@@ -192,6 +188,7 @@ export default function Page() {
               return (
                 <TripSearchCard
                   key={trip.slug}
+                  tripSlug={trip.slug}
                   imageUrl={trip.image}
                   title={trip.title}
                   location={trip.address}
@@ -204,8 +201,8 @@ export default function Page() {
                   nextDeparture={nextDeparture}
                   difficulty={trip.difficulty}
                   totalSeats={trip.totalSeats}
-                  tags={trip.tags}
-                  onBookmark={handleBookmark}
+                  tags={trip.tags}   
+                  isBookmarked={trip.isBookmarked}               
                   onViewDetails={() => handleBookNow(trip.slug)}
                 />
               );

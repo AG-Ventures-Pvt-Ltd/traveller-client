@@ -37,11 +37,11 @@ export interface Trip {
   category: string;
   rating: number;
   reviewCount: number;
-  duration: string;
   price: number;
   image: string;
   slug: string;
-  isActive: boolean;
+  duration?:string;
+  isBookMarked : boolean
 }
 
 export interface Review {

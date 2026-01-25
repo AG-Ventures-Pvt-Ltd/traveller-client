@@ -87,7 +87,7 @@ export default function Page() {
           </p>
           <a
             href="/auth"
-            className="inline-block px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
+            className="inline-block px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
           >
             Back to Login
           </a>
@@ -121,7 +121,7 @@ export default function Page() {
           </p>
           <a
             href="/auth"
-            className="inline-block px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
+            className="inline-block px-6 py-3 bg-primary text-white  rounded-lg hover:bg-primary/90 transition-colors"
           >
             Go to Login
           </a>

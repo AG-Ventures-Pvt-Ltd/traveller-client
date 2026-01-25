@@ -1,6 +1,8 @@
 'use client'
 import React, { useState } from 'react'
 import Image from 'next/image'
+import ArrowButton from '@/common/ui/Buttons/ArrowButton'
+import { useRouter } from 'next/navigation'
 
 interface FAQItem {
     question: string
@@ -26,6 +28,8 @@ const FAQSection: React.FC<FAQSectionProps> = ({ content }) => {
     const toggleFaq = (index: number) => {
         setExpandedFaqIndex(expandedFaqIndex === index ? null : index)
     }
+
+    const router = useRouter()
 
     return (
         <section className="flex flex-col gap-6 md:gap-10 px-5 md:px-9 py-12 md:py-24 w-full" aria-labelledby="faq-heading">
@@ -91,12 +95,9 @@ const FAQSection: React.FC<FAQSectionProps> = ({ content }) => {
                             <p className="mb-4 text-white text-sm md:text-base">
                                 {content.helpCard.answer}
                             </p>
-                            <button
-                                className="px-4 md:px-6 py-2.5 md:py-3 bg-white text-neutral-900 rounded-full font-bold self-start hover:bg-neutral-100 hover:scale-105 transition-transform cursor-pointer text-sm md:text-base"
-                                aria-label="Contact our support team"
-                            >
+                            <ArrowButton onClick={() => router.push('/contact')}>
                                 {content.helpCard.cta}
-                            </button>
+                            </ArrowButton>
                         </div>
                     </article>
                 </aside>

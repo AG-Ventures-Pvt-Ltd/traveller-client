@@ -12,8 +12,8 @@ interface TravelerDetail {
   fullName: string;
   email: string;
   phone: string;
-  governmentIdType?: string;
-  governmentIdNumber?: string;
+  // governmentIdType?: string;
+  // governmentIdNumber?: string;
 }
 
 interface AddTravelerModalProps {
@@ -48,8 +48,8 @@ export function AddTravelerModal({
     fullName: '',
     email: '',
     phone: '',
-    governmentIdType: '',
-    governmentIdNumber: '',
+    // governmentIdType: '',
+    // governmentIdNumber: '',
   });
 
   const isLoading = isCreatingGuestUser || isUpdatingGuestUser;
@@ -64,8 +64,8 @@ export function AddTravelerModal({
           fullName: '',
           email: '',
           phone: '',
-          governmentIdType: '',
-          governmentIdNumber: '',
+          // governmentIdType: '',
+          // governmentIdNumber: '',
         });
       }
     }
@@ -129,7 +129,7 @@ export function AddTravelerModal({
             onChange={(e) => handleChange('phone', e.target.value)}
           />
 
-          <CustomInput
+          {/* <CustomInput
             label="Government ID Type"
             placeholder="e.g., Passport, National ID"
             value={formData.governmentIdType || ''}
@@ -141,7 +141,7 @@ export function AddTravelerModal({
             placeholder="Enter ID number"
             value={formData.governmentIdNumber || ''}
             onChange={(e) => handleChange('governmentIdNumber', e.target.value)}
-          />
+          /> */}
         </div>
 
         <div className="flex gap-3 mt-4">

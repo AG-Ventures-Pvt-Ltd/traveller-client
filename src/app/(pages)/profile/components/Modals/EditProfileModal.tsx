@@ -114,7 +114,7 @@ export function EditProfileModal({ open, onClose, profileData, onSave, isLoading
         if (uploadResults[0]?.success) {
           avatarUrl = uploadResults[0].url;
         }
-      } catch (error) {
+      } catch {
         return; // Don't proceed with save if upload failed
       }
     }

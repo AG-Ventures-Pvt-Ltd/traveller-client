@@ -9,6 +9,7 @@ import UserTripsSkeleton from './UserTripsSkeleton';
 
 
 interface TripApiResponse {
+  _id : string;
   image?: string;
   status?: string;
   tripName?: string;
@@ -22,6 +23,7 @@ interface TripApiResponse {
   paymentStatus?: string;
   bookingStatus?: string;
   hasReview?: boolean;
+  bookingId : string;
   isCompleted?: boolean;
   review?: {
     rating?: number;
@@ -44,9 +46,7 @@ export function UserTrips({ activeFilter, onAddReview }: UserTripsProps) {
     // TODO: Implement delete review functionality
   };
 
-  const handleDownloadReceipt = () => {
-    // TODO: Implement receipt download functionality
-  };
+
   const { data: tripsData, isLoading, error } = useGetData<TripApiResponse[]>(API_ENDPOINTS.USER.MY_TRIPS);
 
   if (isLoading) {
@@ -85,6 +85,7 @@ export function UserTrips({ activeFilter, onAddReview }: UserTripsProps) {
     };
 
     return {
+      _id: trip.bookingId,
       image: trip.image || 'https://placehold.co/280x352',
       status: normalizeStatus(trip.status || ''),
       title: trip.tripName || trip.title || trip.name || 'Untitled Trip',
@@ -122,14 +123,26 @@ export function UserTrips({ activeFilter, onAddReview }: UserTripsProps) {
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
       {filteredTrips.map((trip, index) => (
         <TripCard
           key={index}
-          {...trip}
+          _id={trip._id}
+          image={trip.image}
+          status={trip.status}
+          title={trip.title}
+          location={trip.location}
+          date={trip.date}
+          duration={trip.duration}
+          host={trip.host}
+          price={trip.price}
+          paymentStatus={trip.paymentStatus}
+          bookingStatus={trip.bookingStatus}
+          hasReview={trip.hasReview}
+          isCompleted={trip.isCompleted}
+          review={trip.review}
           onEditReview={handleEditReview}
           onDeleteReview={handleDeleteReview}
-          onDownloadReceipt={handleDownloadReceipt}
           onAddReview={() => onAddReview(trip.title)}
         />
       ))}

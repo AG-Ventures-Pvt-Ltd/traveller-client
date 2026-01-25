@@ -39,7 +39,7 @@ const Navbar = () => {
           <Logo />
         </div>
         <div className='flex-1 flex justify-end items-center'>
-          <div className='flex items-center gap-3 md:gap-5'>
+          <div className='flex items-center gap-3 md:gap-12'>
             {navItems.map((item) => (
               <div key={item.title} onClick={() => router.push(item.route)} className='flex flex-col items-start text-[#121212] font-bold cursor-pointer'>
                 {item.title}

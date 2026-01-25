@@ -3,6 +3,7 @@ import React from 'react'
 import Image from 'next/image'
 import { ArrowUpRight } from 'lucide-react'
 import { useRouter } from 'next/navigation'
+import ArrowButton from '@/common/ui/Buttons/ArrowButton'
 
 interface ExploreSectionProps {
   content: {
@@ -107,19 +108,9 @@ const ExploreSection: React.FC<ExploreSectionProps> = ({ content }) => {
             <span className="text-neutral-900">{content.title} </span>
             <span className="text-neutral-700">{content.subtitle}</span>
           </h2>
-
-          <div className="flex items-center gap-2">
-            <button 
-              className="px-6 py-3 bg-neutral-900 text-white rounded-full font-bold hover:bg-neutral-800 hover:scale-105 transition-transform cursor-pointer" 
-              onClick={() => router.push('/trips')}
-              aria-label="Start your trip and explore destinations"
-            >
-              {content.cta}
-            </button>
-            <div className="w-12 h-12 bg-neutral-900 rounded-full flex items-center justify-center text-white" aria-hidden="true">
-              <ArrowUpRight />
-            </div>
-          </div>
+          <ArrowButton onClick={() => router.push('/trips')}>
+            {content.cta}
+          </ArrowButton>
         </header>
 
         <div className="flex gap-3 flex-2">

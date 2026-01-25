@@ -1,6 +1,6 @@
 'use client'
 import React from 'react'
-import { UserCheck, ListPlus, Users, Banknote } from 'lucide-react'
+import { UserCheck, ListPlus, Users, Banknote, ChevronRight } from 'lucide-react'
 
 const PartnersFlowSection = () => {
   const steps = [
@@ -80,9 +80,7 @@ const PartnersFlowSection = () => {
               {/* Connector Arrow for Desktop */}
               {index < steps.length - 1 && (
                 <div className="hidden md:block absolute -right-4 top-1/2 -translate-y-1/2 z-10">
-                  <svg width="32" height="32" viewBox="0 0 32 32" fill="none" className="text-neutral-300">
-                    <path d="M12 8L20 16L12 24" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
+                  <ChevronRight className="w-8 h-8 text-neutral-300" />
                 </div>
               )}
             </article>

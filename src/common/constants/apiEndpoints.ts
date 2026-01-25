@@ -7,7 +7,7 @@ export const API_ENDPOINTS = {
   },
   BOOKINGS : {
     START: "/api/client/v1/bookings/start",
-    ADD_USERS: (bookingId: string) => `/api/client/v1/bookings/${bookingId}/addusers`,
+    GET_BY_ID: (id: string) => `/api/client/v1/bookings/${id}`,
   },
   DISCOUNTS: {
     GET_AVAILABLE: (tripId: string) => `/api/client/v1/discounts/${tripId}`,

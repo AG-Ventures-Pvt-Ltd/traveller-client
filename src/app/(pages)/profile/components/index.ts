@@ -17,3 +17,4 @@ export { AddTravelerModal } from './Modals/AddTravelerModal';
 export { UserTrips } from './UserTrips/UserTrips';
 export { default as ProfileCardSkeleton } from './ProfileCard/ProfileCardSkeleton';
 export { default as UserTripsSkeleton } from './UserTrips/UserTripsSkeleton';
+export { default as BookmarksTab } from './BookmarksTab';

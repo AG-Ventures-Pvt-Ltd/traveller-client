@@ -3,10 +3,12 @@ import Button from '@/common/components/atoms/Button';
 import { Heart, MapPin, Users, Clock, Star, Calendar, IndianRupee } from 'lucide-react';
 import Card from '@/common/ui/Card';
 import MyImage from '@/common/ui/Image';
+import BookmarkButton from '@/common/components/atoms/BookmarkButton';
 
 
 interface TripSearchCardProps {
     imageUrl: string;
+    tripSlug:string;
     title: string;
     location: string;
     days: number;
@@ -20,12 +22,13 @@ interface TripSearchCardProps {
     tags?: string[];
     totalSeats?: number;
     difficulty?: string;
-    onBookmark: () => void;
+    isBookmarked:boolean;
     onViewDetails: () => void;
 }
 
 const TripSearchCard: React.FC<TripSearchCardProps> = ({
     imageUrl,
+    tripSlug,
     title,
     location,
     days,
@@ -38,7 +41,7 @@ const TripSearchCard: React.FC<TripSearchCardProps> = ({
     category,
     tags = [],
     totalSeats,
-    onBookmark,
+    isBookmarked,
     onViewDetails,
 }) => {
     return (
@@ -51,12 +54,7 @@ const TripSearchCard: React.FC<TripSearchCardProps> = ({
                     className="w-full h-full rounded-2xl"
                     style={{ objectFit: 'cover' }}
                 />
-                {/* <button
-                    onClick={onBookmark}
-                    className="w-10 h-10 absolute top-3 right-3 bg-white/95 rounded-full shadow-md flex items-center justify-center hover:bg-white transition-colors"
-                >
-                    <Heart className="w-5 h-5 text-neutral-900" />
-                </button> */}
+                <BookmarkButton tripSlug={tripSlug} isBookmarked={isBookmarked} icon={Heart}/>
                 {discount && (
                     <div className="absolute top-3 left-3 bg-neutral-900 rounded-full px-3 py-1.5">
                         <span className="text-white text-xs font-bold flex items-center ">Save <IndianRupee/> {discount}</span>

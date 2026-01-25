@@ -3,10 +3,10 @@
 import { useState, useEffect } from 'react';
 import Modal from '@/common/ui/Modal';
 import CustomInput from '@/common/ui/CustomInput';
-import CustomSelect from '@/common/ui/CustomSelect';
+// import CustomSelect from '@/common/ui/CustomSelect';
 import Button from '@/common/ui/Buttons/Button';
 import { ExistingTraveler } from '../types';
-import { governmentIdOptions } from '@/app/(pages)/profile/constants';
+// import { governmentIdOptions } from '@/app/(pages)/profile/constants';
 
 interface EditOwnerModalProps {
   open: boolean;
@@ -20,8 +20,8 @@ export function EditOwnerModal({ open, onClose, owner, onSave, isLoading = false
   const [formData, setFormData] = useState({
     fullName: '',
     phone: '',
-    governmentIdType: '',
-    governmentIdNumber: '',
+    // governmentIdType: '',
+    // governmentIdNumber: '',
   });
 
   // Reset form when modal opens
@@ -30,8 +30,8 @@ export function EditOwnerModal({ open, onClose, owner, onSave, isLoading = false
       setFormData({
         fullName: owner.fullName || '',
         phone: owner.phone || '',
-        governmentIdType: owner.governmentIdType || '',
-        governmentIdNumber: owner.governmentIdNumber || '',
+        // governmentIdType: owner.governmentIdType || '',
+        // governmentIdNumber: owner.governmentIdNumber || '',
       });
     }
   }, [open, owner]);
@@ -41,7 +41,9 @@ export function EditOwnerModal({ open, onClose, owner, onSave, isLoading = false
   };
 
   const handleSubmit = () => {
-    if (!formData.fullName.trim() || !formData.phone.trim() || !formData.governmentIdType.trim() || !formData.governmentIdNumber.trim()) {
+    if (!formData.fullName.trim() || !formData.phone.trim() 
+    // || !formData.governmentIdType.trim() || !formData.governmentIdNumber.trim()
+  ) {
       return;
     }
 
@@ -49,7 +51,8 @@ export function EditOwnerModal({ open, onClose, owner, onSave, isLoading = false
     onClose();
   };
 
-  const isFormValid = formData.fullName.trim() && formData.phone.trim() && formData.governmentIdType.trim() && formData.governmentIdNumber.trim();
+  const isFormValid = formData.fullName.trim() && formData.phone.trim() 
+  // && formData.governmentIdType.trim() && formData.governmentIdNumber.trim();
 
   return (
     <Modal
@@ -81,7 +84,7 @@ export function EditOwnerModal({ open, onClose, owner, onSave, isLoading = false
           fullWidth
           required
         />
-        <CustomSelect
+        {/* <CustomSelect
           label="Government ID Type"
           value={formData.governmentIdType}
           onChange={(value) => handleChange('governmentIdType', value)}
@@ -96,7 +99,7 @@ export function EditOwnerModal({ open, onClose, owner, onSave, isLoading = false
           placeholder="Enter your ID number"
           fullWidth
           required
-        />
+        /> */}
         <div className="flex gap-3 mt-2">
           <Button
             onClick={onClose}

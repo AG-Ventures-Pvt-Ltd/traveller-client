@@ -69,8 +69,8 @@ const TravelerDetails: React.FC<TravelerDetailsProps> = ({
         const updatePayload = {
             fullName: data.fullName,
             mobileNumber: data.phone,
-            governmentIdType: data.governmentIdType,
-            governmentIdNumber: data.governmentIdNumber,
+            // governmentIdType: data.governmentIdType,
+            // governmentIdNumber: data.governmentIdNumber,
         };
 
         updateProfile(updatePayload, {
@@ -99,9 +99,9 @@ const TravelerDetails: React.FC<TravelerDetailsProps> = ({
     const isOwnerComplete = useMemo(() => {
         return owner &&
                owner.fullName?.trim() &&
-               owner.phone?.trim() &&
-               owner.governmentIdType?.trim() &&
-               owner.governmentIdNumber?.trim();
+               owner.phone?.trim()
+            //  &&  owner.governmentIdType?.trim() &&
+            //    owner.governmentIdNumber?.trim();
     }, [owner]);
 
     const isFormValid = useMemo(() => {

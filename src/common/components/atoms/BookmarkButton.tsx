@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { Bookmark } from 'lucide-react'
+import { Bookmark, LucideIcon } from 'lucide-react'
 import usePostData from "@/services/usePostData";
 import { API_ENDPOINTS } from "@/common/constants/apiEndpoints";
 import { useQueryClient } from "@tanstack/react-query";
@@ -9,9 +9,10 @@ import { useQueryClient } from "@tanstack/react-query";
 interface BookmarkButtonProps {
   tripSlug: string;
   isBookmarked: boolean;
+  icon?: LucideIcon;
 }
 
-const BookmarkButton: React.FC<BookmarkButtonProps> = ({ tripSlug, isBookmarked }) => {
+const BookmarkButton: React.FC<BookmarkButtonProps> = ({ tripSlug, isBookmarked, icon: Icon = Bookmark }) => {
   const queryClient = useQueryClient();
 
   const toggleBookmark = usePostData({
@@ -31,7 +32,7 @@ const BookmarkButton: React.FC<BookmarkButtonProps> = ({ tripSlug, isBookmarked 
       onClick={handleToggle}
       className="absolute top-4 right-4 p-2.5 bg-white rounded-full shadow-lg hover:bg-red-50 transition-all hover:scale-110"
     >
-      <Bookmark className={`w-5 h-5 ${isBookmarked ? 'text-[#008EF4] fill-[#008EF4]' : 'text-gray-400'}`} />
+      <Icon className={`w-5 h-5 ${isBookmarked ? 'text-[#008EF4] fill-[#008EF4]' : 'text-gray-400'}`} />
     </button>
   );
 };

@@ -26,9 +26,11 @@ export interface TravelerDetail {
 }
 
 export interface Trip {
+  _id: string;
   image: string;
   status: 'completed' | 'upcoming' | 'cancelled';
   title: string;
+  bookingId?:string
   location: string;
   date: string;
   duration: string;

@@ -2,6 +2,7 @@ import { MapPin, Star, Clock, IndianRupee } from "lucide-react";
 import { Trip } from "../../../types";
 import MyImage from "@/common/ui/Image";
 import Button from "@/common/ui/Buttons/Button";
+import BookmarkButton from "@/common/components/atoms/BookmarkButton";
 
 interface TripCardProps {
   trip: Trip;
@@ -22,18 +23,21 @@ export function TripCard({ trip, onViewDetails }: TripCardProps) {
             {trip.category}
           </span>
         </div>
+        <div>
+          <BookmarkButton tripSlug={trip.slug} isBookmarked={trip.isBookMarked}/>
+        </div>
       </div>
       <div className="pl-6 pt-6 flex flex-col gap-4 pb-6">
         <div className="flex flex-col gap-2">
           <h3 className="text-neutral-900 text-xl font-bold font-['Satoshi'] leading-6">
             {trip.title}
           </h3>
-          <div className="flex items-center gap-2">
+          {trip.location && <div className="flex items-center gap-2">
             <MapPin className="w-4 h-4 text-neutral-700" strokeWidth={2} />
-            <span className="text-neutral-700 text-sm font-medium font-['Satoshi']">
+            <span className="text-neutral-700 text-sm font-medium">
               {trip.location}
             </span>
-          </div>
+          </div>}
         </div>
         <div className="flex items-center gap-4">
           {trip.rating > 0 && (<div className="flex items-center gap-1.5">
@@ -44,18 +48,18 @@ export function TripCard({ trip, onViewDetails }: TripCardProps) {
               {trip.rating}
             </span>
           </div>)}
-          <div className="flex items-center gap-1.5">
+          {trip.duration && <div className="flex items-center gap-1.5">
             <Clock className="w-4 h-4 text-neutral-700" strokeWidth={2} />
             <span className="text-neutral-700 text-sm font-medium font-['Satoshi']">
               {trip.duration}
             </span>
-          </div>
+          </div>}
         </div>
         <div className="w-full h-px bg-gray-200" />
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pr-6">
           <div className="flex items-end gap-1">
             <span className="text-neutral-900 text-2xl sm:!text-3xl lg:!text-4xl font-bold font-['Satoshi'] flex items-center">
-              <IndianRupee size={24} className="sm:w-6 sm:h-6 lg:w-8 lg:h-8"/>{trip.price}
+              <IndianRupee size={24} className="sm:w-6 sm:h-6 lg:w-8 lg:h-8" />{trip.price}
             </span>
             <span className="text-neutral-700 text-sm sm:text-base lg:text-lg font-medium font-['Satoshi']">
               / person

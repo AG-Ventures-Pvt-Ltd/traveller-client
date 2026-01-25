@@ -1,7 +1,9 @@
 import MyImage from '@/common/ui/Image';
-import { IndianRupee } from 'lucide-react';
+import { IndianRupee, MapPin, Calendar, Clock, Star, Pencil, Trash2, Check } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 interface TripCardProps {
+  _id?:string;
   image: string;
   status: 'completed' | 'upcoming' | 'cancelled';
   title: string;
@@ -43,6 +45,7 @@ const statusConfig = {
 };
 
 export function TripCard({
+  _id,
   image,
   status,
   title,
@@ -58,17 +61,17 @@ export function TripCard({
   review,
   onEditReview,
   onDeleteReview,
-  onDownloadReceipt,
   onAddReview,
 }: TripCardProps) {
   // Ensure status is valid, fallback to 'upcoming' if not
   const validStatus = statusConfig[status] ? status : 'upcoming';
   const statusStyle = statusConfig[validStatus];
 
+  const router = useRouter()
+
   return (
-    <div className="bg-white rounded-3xl border-2 border-gray-200 overflow-hidden">
+    <div className="bg-white rounded-3xl border-2 border-gray-200 overflow-hidden cursor-pointer" onClick={() => router.push(`/profile/bookings/${_id}`)}>
       <div className="flex flex-col">
-        {/* Image Section */}
         <div className="relative w-full h-48 sm:h-56 md:h-64 lg:h-80 flex-shrink-0">
           <MyImage
             src={image}
@@ -82,66 +85,25 @@ export function TripCard({
           </div>
         </div>
 
-        {/* Content Section */}
-        <div className="flex-1 p-4 sm:p-6 lg:p-8 flex flex-col justify-between">
+        <div className="flex-1 p-4 sm:p-6 lg:p-6 flex flex-col justify-between">
           <div className="flex flex-col gap-3 sm:gap-4">
-            {/* Header */}
             <div className="flex flex-col sm:flex-row justify-between items-start gap-3 sm:gap-4">
               <div className="flex-1 flex flex-col gap-2">
                 <h3 className="text-neutral-900 text-xl sm:text-2xl font-bold font-['Satoshi'] leading-7 sm:leading-9">
                   {title}
                 </h3>
-                <div className="flex flex-col gap-2 text-sm">
+                <div className="flex flex-col gap-2 md:gap-4 text-sm">
                   <div className="flex items-center gap-1.5 text-neutral-700">
-                    <svg className="w-4 h-4" viewBox="0 0 16 16" fill="none">
-                      <path
-                        d="M8 4V8L10.5 10.5"
-                        stroke="currentColor"
-                        strokeWidth="1.33"
-                        strokeLinecap="round"
-                      />
-                      <circle
-                        cx="8"
-                        cy="8"
-                        r="6"
-                        stroke="currentColor"
-                        strokeWidth="1.33"
-                      />
-                    </svg>
+                    <MapPin className="w-4 h-4" />
                     <span className="font-medium font-['Satoshi']">{location}</span>
                   </div>
-                  <div className='flex gap-4 md:gap-6'>
+                  <div className='flex flex-col gap-4 md:gap-2'>
                     <div className="flex items-center gap-1.5 text-neutral-700">
-                      <svg className="w-4 h-4" viewBox="0 0 16 16" fill="none">
-                        <rect
-                          x="2"
-                          y="3"
-                          width="12"
-                          height="11"
-                          stroke="currentColor"
-                          strokeWidth="1.33"
-                          rx="1"
-                        />
-                        <path d="M2 7H14" stroke="currentColor" strokeWidth="1.33" />
-                      </svg>
+                      <Calendar className="w-4 h-4" />
                       <span className="font-medium font-['Satoshi']">{date}</span>
                     </div>
                     <div className="flex items-center gap-1.5 text-neutral-700">
-                      <svg className="w-4 h-4" viewBox="0 0 16 16" fill="none">
-                        <circle
-                          cx="8"
-                          cy="8"
-                          r="6"
-                          stroke="currentColor"
-                          strokeWidth="1.33"
-                        />
-                        <path
-                          d="M8 4V8H11"
-                          stroke="currentColor"
-                          strokeWidth="1.33"
-                          strokeLinecap="round"
-                        />
-                      </svg>
+                      <Clock className="w-4 h-4" />
                       <span className="font-medium font-['Satoshi']">{duration}</span>
                     </div>
                   </div>
@@ -149,7 +111,6 @@ export function TripCard({
                 <p className="text-neutral-700 text-sm font-medium font-['Satoshi']">
                   Hosted by {host}
                 </p>
-                {/* Payment and Booking Status */}
                 {(paymentStatus || bookingStatus) && (
                   <div className="flex flex-wrap gap-2 mt-2">
                     <div className={`inline-flex items-center rounded-lg px-2 py-1 text-xs font-bold font-['Satoshi'] ${(paymentStatus || 'pending').toLowerCase() === 'completed' ? 'bg-green-100 text-green-700' :
@@ -181,8 +142,6 @@ export function TripCard({
                 </div>
               </div>
             </div>
-
-            {/* Review Section */}
             {review && (
               <div className="bg-neutral-50 rounded-xl border-2 border-gray-200 p-4 flex flex-col gap-3">
                 <div className="flex justify-between items-center">
@@ -192,16 +151,13 @@ export function TripCard({
                     </span>
                     <div className="flex gap-1">
                       {[...Array(5)].map((_, i) => (
-                        <svg
+                        <Star
                           key={i}
                           className="w-4 h-4"
-                          viewBox="0 0 16 16"
                           fill={i < review.rating ? '#F59E0B' : 'none'}
                           stroke="#F59E0B"
-                          strokeWidth="1.33"
-                        >
-                          <path d="M8 2L9.5 6.5H14L10.5 9.5L12 14L8 11L4 14L5.5 9.5L2 6.5H6.5L8 2Z" />
-                        </svg>
+                          strokeWidth={1.33}
+                        />
                       ))}
                     </div>
                   </div>
@@ -210,26 +166,14 @@ export function TripCard({
                       onClick={onEditReview}
                       className="flex items-center gap-1 text-neutral-900 text-xs font-bold font-['Satoshi']"
                     >
-                      <svg className="w-3.5 h-3.5" viewBox="0 0 14 14" fill="none">
-                        <path
-                          d="M10 2L12 4L5 11H3V9L10 2Z"
-                          stroke="currentColor"
-                          strokeWidth="1"
-                        />
-                      </svg>
+                      <Pencil className="w-3.5 h-3.5" />
                       Edit
                     </button>
                     <button
                       onClick={onDeleteReview}
                       className="flex items-center gap-1 text-red-600 text-xs font-bold font-['Satoshi']"
                     >
-                      <svg className="w-3.5 h-3.5" viewBox="0 0 14 14" fill="none">
-                        <path
-                          d="M3 4H11M4 4V12H10V4M5 2H9"
-                          stroke="currentColor"
-                          strokeWidth="1"
-                        />
-                      </svg>
+                      <Trash2 className="w-3.5 h-3.5" />
                       Delete
                     </button>
                   </div>
@@ -240,25 +184,6 @@ export function TripCard({
               </div>
             )}
           </div>
-
-          {/* Download Receipt Button */}
-          <button
-            onClick={onDownloadReceipt}
-            className="mt-4 bg-neutral-50 rounded-xl border-2 border-gray-200 py-3 flex items-center justify-center gap-2 text-neutral-900 text-sm font-bold font-['Satoshi'] hover:bg-neutral-100 transition-colors"
-          >
-            <svg className="w-4 h-4" viewBox="0 0 16 16" fill="none">
-              <path
-                d="M8 2V10M8 10L5 7M8 10L11 7"
-                stroke="currentColor"
-                strokeWidth="1.33"
-                strokeLinecap="round"
-              />
-              <path d="M2 11V13H14V11" stroke="currentColor" strokeWidth="1.33" />
-            </svg>
-            Download Receipt
-          </button>
-
-          {/* Review Action Buttons */}
           {isCompleted && (
             <div className="mt-3 flex gap-2">
               {hasReview ? (
@@ -266,13 +191,7 @@ export function TripCard({
                   onClick={onEditReview}
                   className="flex-1 bg-neutral-900 text-white rounded-xl py-3 flex items-center justify-center gap-2 text-sm font-bold font-['Satoshi'] hover:bg-neutral-800 transition-colors"
                 >
-                  <svg className="w-4 h-4" viewBox="0 0 16 16" fill="none">
-                    <path
-                      d="M11 2L14 5L5 14H2V11L11 2Z"
-                      stroke="currentColor"
-                      strokeWidth="1.33"
-                    />
-                  </svg>
+                  <Pencil className="w-4 h-4" />
                   Edit Review
                 </button>
               ) : (
@@ -280,22 +199,7 @@ export function TripCard({
                   onClick={onAddReview}
                   className="flex-1 bg-neutral-900 text-white rounded-xl py-3 flex items-center justify-center gap-2 text-sm font-bold font-['Satoshi'] hover:bg-neutral-800 transition-colors"
                 >
-                  <svg className="w-4 h-4" viewBox="0 0 16 16" fill="none">
-                    <path
-                      d="M8 4L10 6L14 2"
-                      stroke="currentColor"
-                      strokeWidth="1.33"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    <path
-                      d="M8 8V12H4"
-                      stroke="currentColor"
-                      strokeWidth="1.33"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
+                  <Check className="w-4 h-4" />
                   Add Review
                 </button>
               )}

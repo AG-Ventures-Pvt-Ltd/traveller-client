@@ -7,17 +7,19 @@ import usePostData from '@/services/usePostData';
 import { API_ENDPOINTS } from '@/common/constants/apiEndpoints';
 import Modal from '@/common/ui/Modal';
 import Button from '@/common/ui/Buttons/Button';
-import { 
-  ProfileCard, 
-  TabNavigation, 
-  TripFilterButtons, 
-  ProfileDetailsTab, 
-  EditProfileModal, 
-  UserTrips, 
-  AddReviewModal, 
+import { useRouter, useSearchParams } from 'next/navigation';
+import {
+  ProfileCard,
+  TabNavigation,
+  TripFilterButtons,
+  ProfileDetailsTab,
+  EditProfileModal,
+  UserTrips,
+  AddReviewModal,
   ProfileCardSkeleton,
   AddEmergencyContactModal,
   AddTravelerModal,
+  BookmarksTab,
 } from './components';
 import { ProfileData, Tab, FilterOption } from './types';
 
@@ -31,6 +33,8 @@ interface TravelerDetail {
 }
 
 export default function Page() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState(0);
   const [activeFilter, setActiveFilter] = useState(0);
   const [isWriteReviewModalOpen, setIsWriteReviewModalOpen] = useState(false);
@@ -43,6 +47,17 @@ export default function Page() {
   const [travelerToDelete, setTravelerToDelete] = useState<TravelerDetail | null>(null);
 
   const [deleteUrl, setDeleteUrl] = useState('');
+
+  // Initialize active tab from query params
+  useEffect(() => {
+    const tabParam = searchParams.get('tab');
+    if (tabParam) {
+      const tabIndex = parseInt(tabParam, 10);
+      if (!isNaN(tabIndex) && tabIndex >= 0 && tabIndex <= 3) {
+        setActiveTab(tabIndex);
+      }
+    }
+  }, [searchParams]);
 
   const { mutate: updateProfile, isPending: isUpdatingProfile } = usePostData({
     url: API_ENDPOINTS.USER.UPDATE,
@@ -106,6 +121,7 @@ export default function Page() {
     { label: 'Profile Details', active: activeTab === 0 },
     { label: 'My Trips', active: activeTab === 1 },
     { label: 'My Reviews', active: activeTab === 2 },
+    { label: 'My Bookmarks', active: activeTab === 3 },
   ];
 
   const filters: FilterOption[] = [
@@ -150,6 +166,10 @@ export default function Page() {
 
   const handleTabChange = (index: number) => {
     setActiveTab(index);
+    // Update query params to persist tab state
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('tab', index.toString());
+    router.replace(`?${params.toString()}`, { scroll: false });
   };
 
   const handleFilterChange = (index: number) => {
@@ -200,6 +220,7 @@ export default function Page() {
             <div className="h-10 bg-gray-200 rounded-xl w-32 animate-pulse" />
             <div className="h-10 bg-gray-200 rounded-xl w-32 animate-pulse" />
             <div className="h-10 bg-gray-200 rounded-xl w-32 animate-pulse" />
+            <div className="h-10 bg-gray-200 rounded-xl w-32 animate-pulse" />
           </div>
         </div>
       </div>
@@ -213,8 +234,8 @@ export default function Page() {
   return (
     <div className="min-h-screen p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
       <div className="flex flex-col gap-6 sm:gap-8">
-        <ProfileCard 
-          profileData={profileData} 
+        <ProfileCard
+          profileData={profileData}
           onEditProfile={handleEditProfile}
           onLogout={handleLogout}
         />
@@ -245,6 +266,9 @@ export default function Page() {
               <p className="text-neutral-700 text-lg font-['Satoshi']">No reviews yet</p>
             </div>
           </div>
+        )}
+        {activeTab === 3 && (
+          <BookmarksTab />
         )}
         {activeTab === 0 && (
           <ProfileDetailsTab
@@ -295,7 +319,7 @@ export default function Page() {
       >
         <div className="flex flex-col gap-4">
           <p className="text-neutral-700">
-            Are you sure you want to delete <span className="font-semibold">{travelerToDelete?.fullName}</span>? 
+            Are you sure you want to delete <span className="font-semibold">{travelerToDelete?.fullName}</span>?
             This action cannot be undone.
           </p>
           <div className="flex gap-3 mt-4">
@@ -318,5 +342,6 @@ export default function Page() {
           </div>
         </div>
       </Modal>
-</div>
-)}
+    </div>
+  )
+}
