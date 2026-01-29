@@ -1,0 +1,10 @@
+# *
+User-agent: *
+Disallow: /verify/*
+Disallow: /auth/
+
+# Host
+Host: https://wondrr.in
+
+# Sitemaps
+Sitemap: https://wondrr.in/sitemap.xml

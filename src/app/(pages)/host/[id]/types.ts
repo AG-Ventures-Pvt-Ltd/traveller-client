@@ -41,7 +41,8 @@ export interface Trip {
   image: string;
   slug: string;
   duration?:string;
-  isBookMarked : boolean
+  isBookMarked : boolean;
+  isActive: boolean;
 }
 
 export interface Review {

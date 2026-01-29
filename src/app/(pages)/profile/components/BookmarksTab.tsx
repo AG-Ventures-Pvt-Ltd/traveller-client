@@ -40,7 +40,8 @@ const BookmarksTab = () => {
     price: bookmark.price,
     image: bookmark.image,
     slug: bookmark.tripSlug,
-    isBookMarked : true
+    isBookMarked: true,
+    isActive: true
   })
 
   if (isLoading) {
