@@ -14,12 +14,13 @@ const initialState = {
   currentGuests: 1,
   currentCouponCode: '',
   currentRoomSharing: null,
+  currentReferralCode: '',
 };
 
 export const useTripDetailsStore = create<TripDetailsState>((set, get) => ({
   ...initialState,
 
-  fetchTripDetails: async (tripId: string, batchId: string, guests: number, couponCode: string = '', roomSharing: number | null = null) => {
+  fetchTripDetails: async (tripId: string, batchId: string, guests: number, couponCode: string = '', roomSharing: number | null = null, referralCode: string = '') => {
     const state = get();
     
     if (
@@ -29,6 +30,7 @@ export const useTripDetailsStore = create<TripDetailsState>((set, get) => ({
       state.currentGuests === guests &&
       state.currentCouponCode === couponCode &&
       state.currentRoomSharing === roomSharing &&
+      state.currentReferralCode === referralCode &&
       !state.error
     ) {
       return;
@@ -50,6 +52,9 @@ export const useTripDetailsStore = create<TripDetailsState>((set, get) => ({
       if (roomSharing !== null) {
         apiUrl += `&roomSharing=${roomSharing}`;
       }
+      if (referralCode) {
+        apiUrl += `&referralCode=${encodeURIComponent(referralCode)}`;
+      }
       const response = await baseAPI.get(apiUrl);
       
       // Only update state on successful response
@@ -63,6 +68,7 @@ export const useTripDetailsStore = create<TripDetailsState>((set, get) => ({
         currentGuests: guests,
         currentCouponCode: couponCode,
         currentRoomSharing: roomSharing,
+        currentReferralCode: referralCode,
       });
     } catch (error) {
       const axiosError = error as { response?: { data?: { message?: string } } };
@@ -81,7 +87,7 @@ export const useTripDetailsStore = create<TripDetailsState>((set, get) => ({
   },
 
   refetch: async () => {
-    const { currentTripId, currentBatchId, currentGuests, currentCouponCode, currentRoomSharing } = get();
+    const { currentTripId, currentBatchId, currentGuests, currentCouponCode, currentRoomSharing, currentReferralCode } = get();
     
     if (!currentTripId || !currentBatchId) {
       return;
@@ -97,6 +103,9 @@ export const useTripDetailsStore = create<TripDetailsState>((set, get) => ({
       }
       if (currentRoomSharing !== null) {
         apiUrl += `&roomSharing=${currentRoomSharing}`;
+      }
+      if (currentReferralCode) {
+        apiUrl += `&referralCode=${encodeURIComponent(currentReferralCode)}`;
       }
       const response = await baseAPI.get(apiUrl);
       

@@ -28,6 +28,7 @@ const TravelerDetailsForm: React.FC<TravelerDetailsFormProps> = ({
 
     const { initiateBooking, isProcessing } = useBookingFlow();
     const totalAmount = useBookingStore((state) => state.totalAmount);
+    const couponCode = useBookingStore((state) => state.couponCode);
 
     const totalSelectedTravelers = selectedTravelerIds.length;
 
@@ -57,7 +58,7 @@ const TravelerDetailsForm: React.FC<TravelerDetailsFormProps> = ({
         setIsContactAccordionOpen(true);
     };
 
-    const handleCompleteBooking = async () => {
+    const handleCompleteBooking = async (referralCode?: string) => {
         await initiateBooking({
             tripId,
             batchId,
@@ -65,6 +66,8 @@ const TravelerDetailsForm: React.FC<TravelerDetailsFormProps> = ({
             emergencyContact,
             totalAmount: totalAmount,
             numberOfPeople: totalSelectedTravelers,
+            couponCode: couponCode || undefined,
+            referralCode: referralCode || undefined,
         });
     };
 

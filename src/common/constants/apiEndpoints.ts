@@ -4,10 +4,14 @@ export const API_ENDPOINTS = {
     DETAILED_DETAILS: (id: string) => `api/client/v1/trips/details/${id}/detailed`,
     FEATURED_TRIPS : (limit: string) => `/api/client/v1/trips/featured?limit=${limit}`,
     HOST_TRIPS: (hostUsername: string) => `/api/client/v1/trips/user/${hostUsername}`,
+    BATCH_DETAILS: (batchId: string) => `/api/client/v1/trips/host/trip/batch/${batchId}`,
   },
   BOOKINGS : {
     START: "/api/client/v1/bookings/start",
     GET_BY_ID: (id: string) => `/api/client/v1/bookings/${id}`,
+  },
+  PAYMENTS: {
+    START: "/api/client/v1/payments/start",
   },
   DISCOUNTS: {
     GET_AVAILABLE: (tripId: string) => `/api/client/v1/discounts/${tripId}`,

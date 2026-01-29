@@ -6,10 +6,11 @@ import AvailableCoupons from './components/AvailableCoupons';
 import { useBookingStore } from '../../store/useBookingStore';
 import { useTripDetailsStore } from '../../store/useTripDetailsStore';
 import { useParams } from 'next/navigation';
+import { notify } from '@/common/utils/notify';
 
 interface ReviewAndPayProps {
   totalAmount: number;
-  onComplete: () => void;
+  onComplete: (referralCode?: string) => void;
   tripId: string;
   isSubmitting?: boolean;
 }
@@ -20,12 +21,15 @@ const ReviewAndPay: React.FC<ReviewAndPayProps> = ({
   isSubmitting = false,
 }) => {
   const [promoCode, setPromoCode] = useState('');
+  const [referralCode, setLocalReferralCode] = useState('');
   const [isPromoApplied, setIsPromoApplied] = useState(false);
+  const [isReferralApplied, setIsReferralApplied] = useState(false);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [selectedSharing, setSelectedSharing] = useState<number | null>(null);
 
   const setCouponCode = useBookingStore((state) => state.setCouponCode);
   const setRoomSharing = useBookingStore((state) => state.setRoomSharing);
+  const setReferralCode = useBookingStore((state) => state.setReferralCode);
   const { tripDetails, error, fetchTripDetails, currentGuests, currentCouponCode } = useTripDetailsStore();
   const params = useParams();
   const batchId = params.batchId as string;
@@ -44,21 +48,45 @@ const ReviewAndPay: React.FC<ReviewAndPayProps> = ({
     }
   }, [tripDetails, error]);
 
+  useEffect(() => {
+    if (tripDetails?.isReferralApplied && !error) {
+      setIsReferralApplied(true);
+      if (tripDetails.referralMessage) {
+        notify.success(tripDetails.referralMessage);
+      }
+    } else {
+      if (tripDetails?.referralMessage && !tripDetails?.isReferralApplied) {
+        notify.error(tripDetails.referralMessage);
+        setIsReferralApplied(false);
+      }
+    }
+  }, [tripDetails, error]);
+
   
   const handleRemovePromo = () => {
     setPromoCode('');
     setIsPromoApplied(false);
     setCouponCode('');
-    // Refetch trip details without coupon but with current room sharing
     fetchTripDetails(tripId, batchId, currentGuests, '', selectedSharing);
   };
 
   const handleApplyPromo = () => {
     if (promoCode.trim()) {
       setCouponCode(promoCode.trim());
-      // Refetch trip details with new coupon and current room sharing
       fetchTripDetails(tripId, batchId, currentGuests, promoCode.trim(), selectedSharing);
     }
+  };
+
+  const handleApplyReferral = () => {
+    if (referralCode.trim()) {
+      setReferralCode(referralCode.trim());
+    }
+  };
+
+  const handleRemoveReferral = () => {
+    setLocalReferralCode('');
+    setIsReferralApplied(false);
+    setReferralCode('');
   };
 
   const handleSharingSelect = async (value: number) => {
@@ -163,6 +191,54 @@ const ReviewAndPay: React.FC<ReviewAndPayProps> = ({
         )}
         <AvailableCoupons tripId={tripId} />
       </div>
+      <div className="flex flex-col gap-3">
+        <h3 className="text-neutral-900 text-base font-bold font-['Satoshi'] leading-6">
+          Have a referral code?
+        </h3>
+        <div className="flex flex-col sm:flex-row gap-2 sm:gap-2.5">
+          <div className="flex-1">
+            <input
+              type="text"
+              value={referralCode}
+              onChange={(e) => setLocalReferralCode(e.target.value)}
+              placeholder="Enter referral code (optional)"
+              disabled={isReferralApplied}
+              className={`w-full px-4 py-3 bg-white rounded-xl border-2 border-gray-200 text-[#121212] text-base font-medium font-['Satoshi'] placeholder:text-[#12121280] focus:outline-none focus:border-[#121212] ${isReferralApplied ? 'opacity-50 cursor-not-allowed' : ''}`}
+            />
+          </div>
+          {isReferralApplied ? (
+            <button
+              onClick={handleRemoveReferral}
+              className="w-full sm:w-24 h-12 bg-red-500 rounded-xl text-white text-base font-bold font-['Satoshi'] leading-6 hover:bg-red-600 transition-colors"
+            >
+              Remove
+            </button>
+          ) : (
+            <button
+              onClick={handleApplyReferral}
+              disabled={!referralCode.trim()}
+              className={`w-full sm:w-24 h-12 rounded-xl text-white text-base font-bold font-['Satoshi'] leading-6 transition-colors ${referralCode.trim() ? 'bg-[#121212] hover:bg-[#2a2a2a]' : 'bg-neutral-900 opacity-30 cursor-not-allowed'}`}
+            >
+              Apply
+            </button>
+          )}
+        </div>
+        {isReferralApplied && (
+          <div className="pl-3.5 py-4 bg-blue-50 rounded-xl border-2 border-blue-200 flex items-center gap-2.5">
+            <CheckCircle2 className="w-4 h-4 text-blue-600" strokeWidth={1.5} />
+            <div className="flex flex-col">
+              <p className="text-blue-800 text-sm font-bold font-['Satoshi'] leading-5">
+                Referral code applied: {referralCode}
+              </p>
+              {tripDetails?.referralMessage && (
+                <p className="text-blue-700 text-xs font-medium font-['Satoshi'] leading-5">
+                  {tripDetails.referralMessage}
+                </p>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
       <div className="px-5 py-5 bg-neutral-50 rounded-xl border-2 border-gray-200">
         <div className="flex gap-3">
           <input
@@ -185,7 +261,7 @@ const ReviewAndPay: React.FC<ReviewAndPayProps> = ({
         </div>
       </div>
       <button
-        onClick={onComplete}
+        onClick={() => onComplete(isReferralApplied ? referralCode : undefined)}
         disabled={!agreedToTerms || isSubmitting}
         className={`w-full py-4 rounded-xl text-white text-base font-bold font-['Satoshi'] leading-6 transition-colors ${agreedToTerms && !isSubmitting
             ? 'bg-[#121212] hover:bg-[#2a2a2a]'

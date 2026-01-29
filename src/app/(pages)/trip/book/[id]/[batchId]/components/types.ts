@@ -34,6 +34,7 @@ export interface TripDetails {
     basePrice: number;
     serviceFee: number;
     discount: number;
+    referralDiscount?: number;
     grandTotalWithoutFee: number;
     grandTotal: number;
     selectedDateDetails: {
@@ -46,6 +47,8 @@ export interface TripDetails {
         code: string;
         displayText: string;
     };
+    isReferralApplied?: boolean;
+    referralMessage?: string;
     sharingPrice?: { additionalPricePerPerson: number; people: number }[];
     roomSharingCost?: number;
     roomSharingCostTotal?: number;
@@ -58,6 +61,8 @@ export interface BookingFlowParams {
     emergencyContact: EmergencyContact;
     totalAmount: number;
     numberOfPeople: number;
+    couponCode?: string;
+    referralCode?: string;
 }
 
 // Store interfaces
@@ -65,9 +70,11 @@ export interface BookingStore {
     totalAmount: number;
     couponCode: string;
     roomSharing: number | null;
+    referralCode: string;
     setTotalAmount: (amount: number) => void;
     setCouponCode: (code: string) => void;
     setRoomSharing: (sharing: number | null) => void;
+    setReferralCode: (code: string) => void;
 }
 
 export interface TripDetailsState {
@@ -80,7 +87,8 @@ export interface TripDetailsState {
     currentGuests: number;
     currentCouponCode: string;
     currentRoomSharing: number | null;
-    fetchTripDetails: (tripId: string, batchId: string, guests: number, couponCode?: string, roomSharing?: number | null) => Promise<void>;
+    currentReferralCode: string;
+    fetchTripDetails: (tripId: string, batchId: string, guests: number, couponCode?: string, roomSharing?: number | null, referralCode?: string) => Promise<void>;
     refetch: () => Promise<void>;
     reset: () => void;
 }

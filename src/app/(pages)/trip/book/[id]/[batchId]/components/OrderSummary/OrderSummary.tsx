@@ -7,21 +7,35 @@ import Divider from '@/common/ui/Divider';
 import { useBookingStore } from '../../store/useBookingStore';
 import { useTripDetailsStore } from '../../store/useTripDetailsStore';
 import { OrderSummaryProps } from '../types';
+import { useGetData } from '@/services/useGetData';
+import { API_ENDPOINTS } from '@/common/constants/apiEndpoints';
+
+interface BatchDetails {
+  tripImage: string;
+  tripTitle: string;
+  tripLocation: string;
+  availableSeats: number;
+  startDate: string;
+  startTime: string;
+}
 
 const OrderSummary: React.FC<OrderSummaryProps> = ({ tripId, batchId, guests = 1 }) => {
   const actualTripId = tripId ? (tripId.split('-').pop() || tripId) : '';
-  
+
   const setTotalAmount = useBookingStore((state) => state.setTotalAmount);
   const couponCode = useBookingStore((state) => state.couponCode);
   const roomSharing = useBookingStore((state) => state.roomSharing);
-  
+  const referralCode = useBookingStore((state) => state.referralCode);
+
   const { tripDetails, isLoading, fetchTripDetails } = useTripDetailsStore();
 
+  const { data: batchDetails, isLoading : isBatchLoading } = useGetData<BatchDetails>(batchId ? API_ENDPOINTS.TRIPS.BATCH_DETAILS(batchId) : '');
+
   useEffect(() => {
-    if (actualTripId && batchId) {
-      fetchTripDetails(actualTripId, batchId, guests, couponCode, roomSharing);
+    if (actualTripId && batchId && guests > 0) {
+      fetchTripDetails(actualTripId, batchId, guests, couponCode, roomSharing, referralCode);
     }
-  }, [actualTripId, batchId, guests, couponCode, roomSharing, fetchTripDetails]);
+  }, [actualTripId, batchId, guests, couponCode, roomSharing, referralCode, fetchTripDetails]);
 
   const grandTotal = tripDetails ? tripDetails.grandTotal : 0;
 
@@ -31,16 +45,11 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({ tripId, batchId, guests = 1
     }
   }, [grandTotal, setTotalAmount]);
 
-  if (isLoading) return <OrderSummarySkeleton />;
 
-  // if (error) { 
-  //   return (
-  //     <div className="flex-1 flex items-center justify-center">{error?.message || 'Error loading trip details'}</div>
-  //   )
-  // };
-  
-  if (!tripDetails) { 
-      return (
+  if (isLoading || isBatchLoading) return <OrderSummarySkeleton />;
+
+  if (!tripDetails) {
+    return (
       <div className="flex-1 flex items-center justify-center">No data available</div>
     )
   }
@@ -49,16 +58,22 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({ tripId, batchId, guests = 1
       <div className='flex flex-col sm:flex-row gap-3 sm:gap-4'>
         <div className="relative aspect-[2/2] rounded-2xl overflow-hidden w-full sm:w-[32%] h-32 sm:h-auto">
           <MyImage
-            src={tripDetails.tripImages}
-            alt={tripDetails.title}
+            src={batchDetails?.tripImage || ''}
+            alt={'Cover Image'}
             fill
             className="h-full w-full"
           />
         </div>
-        <div className="flex-1">
-          <h3 className="text-neutral-900 text-base sm:text-lg font-bold font-['Satoshi'] ">
-            {tripDetails.title}
+        <div className="flex-1 flex flex-col gap-1.5">
+          <h3 className="text-neutral-900 text-base sm:text-lg font-bold font-['Satoshi'] leading-tight">
+            {batchDetails?.tripTitle}
           </h3>
+          <p className="text-neutral-600 text-xs sm:text-sm font-medium font-['Satoshi']">
+            {batchDetails?.tripLocation}
+          </p>
+          <p className="text-orange-600 text-xs sm:text-sm font-bold font-['Satoshi'] mt-1">
+            {batchDetails?.availableSeats} seats left
+          </p>
         </div>
       </div>
       <Divider />
@@ -72,12 +87,12 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({ tripId, batchId, guests = 1
         <div className="flex items-center gap-2.5">
           <Calendar className="w-4 h-4 text-neutral-700" strokeWidth={1.33} />
           <span className="text-neutral-700 text-base font-medium font-['Satoshi']">
-            {new Date(tripDetails.selectedDateDetails.startDate).toLocaleDateString('en-US', {
+            {batchDetails?.startDate ? new Date(batchDetails.startDate).toLocaleDateString('en-US', {
               weekday: 'short',
               month: 'short',
               day: 'numeric',
               year: 'numeric'
-            })} • {tripDetails.selectedDateDetails.startTime}
+            }) : ''} • {batchDetails?.startTime || ''}
           </span>
         </div>
       </div>
@@ -91,13 +106,14 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({ tripId, batchId, guests = 1
             <IndianRupee size={14} className="sm:w-[16px] sm:h-[16px]" />{tripDetails.grandTotalWithoutFee}
           </span>
         </div>
-        {tripDetails.roomSharingCostTotal && tripDetails.roomSharingCostTotal > 0 && (
+        {(tripDetails.roomSharingCostTotal ?? 0) > 0 && (
           <div className="flex justify-between items-start">
             <span className="text-neutral-700 text-xs sm:text-sm font-medium font-['Satoshi'] flex items-center">
-              Room Sharing Cost (<IndianRupee size={12}/> {tripDetails.roomSharingCost} x {guests})
+              Room Sharing Cost (<IndianRupee size={12} /> {tripDetails.roomSharingCost} x {guests})
             </span>
             <span className="text-neutral-900 text-xs sm:text-sm font-bold font-['Satoshi'] flex items-center">
-              <IndianRupee size={12} className="sm:w-[14px] sm:h-[14px]" />{tripDetails.roomSharingCostTotal}
+              <IndianRupee size={12} className="sm:w-[14px] sm:h-[14px]" />
+              {tripDetails.roomSharingCostTotal}
             </span>
           </div>
         )}
@@ -119,6 +135,16 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({ tripId, batchId, guests = 1
             </span>
           </div>
         )}
+        {(tripDetails.referralDiscount ?? 0) > 0 && (
+          <div className="flex justify-between items-start">
+            <span className="text-blue-600 text-xs sm:text-sm font-medium font-['Satoshi']">
+              Referral Discount
+            </span>
+            <span className="text-blue-600 text-xs sm:text-sm font-bold font-['Satoshi'] flex items-center">
+              -<IndianRupee size={12} className="sm:w-[14px] sm:h-[14px]" />{tripDetails.referralDiscount}
+            </span>
+          </div>
+        )}
       </div>
       <Divider />
       <div className="flex justify-between items-center">
@@ -133,15 +159,15 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({ tripId, batchId, guests = 1
       <div className='flex flex-col gap-2'>
         <h3 className='font-bold text-sm sm:text-base'>Book with confidence</h3>
         <div className='flex items-center gap-2'>
-            <Shield size={14} className="sm:w-[16px] sm:h-[16px]" strokeWidth={2.5}/>
-            <p className="text-xs sm:text-sm">Secure payment processing</p>
+          <Shield size={14} className="sm:w-[16px] sm:h-[16px]" strokeWidth={2.5} />
+          <p className="text-xs sm:text-sm">Secure payment processing</p>
         </div>
         <div className='flex items-center gap-2'>
-          <Check size={14} className="sm:w-[16px] sm:h-[16px]" strokeWidth={2.5}/>
+          <Check size={14} className="sm:w-[16px] sm:h-[16px]" strokeWidth={2.5} />
           <p className="text-xs sm:text-sm">Instant confirmation</p>
         </div>
         <div className='flex items-center gap-2'>
-          <Phone size={14} className="sm:w-[16px] sm:h-[16px]" strokeWidth={2.5}/>
+          <Phone size={14} className="sm:w-[16px] sm:h-[16px]" strokeWidth={2.5} />
           <p className="text-xs sm:text-sm">24/7 customer support</p>
         </div>
       </div>
