@@ -1,8 +1,6 @@
 {
   "git": {
     "deploymentEnabled": {
-      "dev1" :true,
-      "production": false,
       "*": false
     }
   }
