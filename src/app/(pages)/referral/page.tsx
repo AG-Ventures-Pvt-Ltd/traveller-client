@@ -3,8 +3,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { useGetData } from '@/services/useGetData';
-import { API_ENDPOINTS } from '@/common/constants/apiEndpoints';
 
 import HeroSection from './components/HeroSection';
 import ReferralCodeCard from './components/ReferralCodeCard';
@@ -15,23 +13,11 @@ import ShareModal from './components/ShareModal';
 
 const REFERRAL_TARGET = 8;
 
-// Type for the API response data
-interface ReferralData {
-    referralCode: string;
-    successfulReferrals: number;
-}
-
-// Type for the API response structure
-interface ReferralApiResponse {
-    success: boolean;
-    data: ReferralData;
-    message: string;
-}
-
 const ReferralPage = () => {
     const { data: session, status } = useSession();
     const router = useRouter();
     const [showShareModal, setShowShareModal] = useState(false);
+    const [countdown, setCountdown] = useState('');
 
     // Redirect if not authenticated
     useEffect(() => {
@@ -40,10 +26,42 @@ const ReferralPage = () => {
         }
     }, [status, router]);
 
-    // Use the custom hook to fetch referral data
-    const { data: referralData, isLoading, error, refetch } = useGetData<ReferralData>(
-        API_ENDPOINTS.REFERRAL.GET_MY_REFERRAL_DATA
-    );
+    // Countdown to midnight (12 AM tonight)
+    useEffect(() => {
+        const calculateCountdown = () => {
+            const now = new Date();
+            const midnight = new Date();
+            midnight.setHours(24, 0, 0, 0); // Set to midnight tonight
+
+            const diff = midnight.getTime() - now.getTime();
+
+            if (diff <= 0) {
+                setCountdown('00:00:00');
+                return;
+            }
+
+            const hours = Math.floor(diff / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+            setCountdown(
+                `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
+            );
+        };
+
+        calculateCountdown();
+        const interval = setInterval(calculateCountdown, 1000);
+
+        return () => clearInterval(interval);
+    }, []);
+
+    // Mock data - Backend disconnected temporarily
+    const referralData = {
+        referralCode: countdown, // Using countdown instead of referral code
+        successfulReferrals: 0 // Set to 0 by default
+    };
+
+    const isLoading = false;
 
     // Loading state
     if (status === 'loading' || isLoading) {
@@ -52,25 +70,6 @@ const ReferralPage = () => {
                 <div className="flex flex-col items-center gap-4">
                     <div className="w-12 h-12 border-4 border-neutral-200 border-t-neutral-900 rounded-full animate-spin"></div>
                     <p className="text-neutral-700 text-base font-medium">Loading...</p>
-                </div>
-            </div>
-        );
-    }
-
-    // Error state
-    if (error || !referralData) {
-        return (
-            <div className="min-h-screen bg-white flex items-center justify-center">
-                <div className="flex flex-col items-center gap-4 max-w-md text-center">
-                    <p className="text-neutral-900 text-xl font-bold">
-                        {error?.message || 'Unable to load referral data'}
-                    </p>
-                    <button
-                        onClick={() => refetch()}
-                        className="bg-neutral-900 text-white rounded-xl px-6 py-3 font-bold hover:bg-neutral-800 transition-colors"
-                    >
-                        Retry
-                    </button>
                 </div>
             </div>
         );
