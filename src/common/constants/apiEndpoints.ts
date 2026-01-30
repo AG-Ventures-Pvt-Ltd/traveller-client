@@ -2,11 +2,11 @@ export const API_ENDPOINTS = {
   TRIPS: {
     BASIC_DETAILS: (id: string) => `api/client/v1/trips/details/${id}/basic`,
     DETAILED_DETAILS: (id: string) => `api/client/v1/trips/details/${id}/detailed`,
-    FEATURED_TRIPS : (limit: string) => `/api/client/v1/trips/featured?limit=${limit}`,
+    FEATURED_TRIPS: (limit: string) => `/api/client/v1/trips/featured?limit=${limit}`,
     HOST_TRIPS: (hostUsername: string) => `/api/client/v1/trips/user/${hostUsername}`,
     BATCH_DETAILS: (batchId: string) => `/api/client/v1/trips/host/trip/batch/${batchId}`,
   },
-  BOOKINGS : {
+  BOOKINGS: {
     START: "/api/client/v1/bookings/start",
     GET_BY_ID: (id: string) => `/api/client/v1/bookings/${id}`,
   },
@@ -40,7 +40,7 @@ export const API_ENDPOINTS = {
     UPDATE: "/api/client/v1/user/me/update",
     GET_EMERGENCY_CONTACT: "/api/client/v1/user/emergencyContact",
     ADD_EMERGENCY_CONTACT: "/api/client/v1/user/addEmergencyContact"
-  },  RATINGS: {
+  }, RATINGS: {
     BY_USERNAME: (username: string, page?: number, limit?: number) => {
       const params = new URLSearchParams();
       if (page) params.append('page', page.toString());
@@ -51,5 +51,8 @@ export const API_ENDPOINTS = {
   },
   LANDING_PAGE: {
     FEATURED_TRIPS: '/api/client/v1/landingpage/featuredTrips',
+  },
+  REFERRAL: {
+    GET_MY_REFERRAL_DATA: '/api/client/v1/referrals/my-code'
   },
 };

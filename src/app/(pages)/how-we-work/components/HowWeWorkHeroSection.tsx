@@ -20,7 +20,7 @@ const HowWeWorkHeroSection = () => {
           <h1 className="text-white text-5xl font-medium leading-[1.15]">
             How Booking a<br />Group Trip Works
           </h1>
-          
+
           <p className="text-neutral-300 text-base font-medium leading-relaxed">
             Discover, compare, and book verified group trips across India in a few simple steps.
           </p>
@@ -55,7 +55,7 @@ const HowWeWorkHeroSection = () => {
               How Booking a<br />Group Trip<br />
               <span className="text-neutral-400">Works</span>
             </h1>
-            
+
             <p className="text-neutral-300 text-xl font-medium leading-relaxed max-w-lg">
               Discover, compare, and book verified group trips across India in a few simple steps.
             </p>
@@ -85,7 +85,7 @@ const HowWeWorkHeroSection = () => {
               priority
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
-            
+
             {/* Floating Badge */}
             <div className="absolute bottom-8 left-8 right-8 p-6 bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl">
               <p className="text-neutral-900 text-lg font-bold">Quick & Easy Booking</p>
