@@ -57,6 +57,15 @@ const Navbar = () => {
                     {item.title}
                   </div>
                 ))}
+                {/* Refer & Win - Only for authenticated users */}
+                {status === 'authenticated' && (
+                  <div
+                    onClick={() => handleNavigation('/referral')}
+                    className='flex flex-col items-start text-[#121212] font-bold cursor-pointer hover:text-gray-600 transition-colors'
+                  >
+                    Refer & Win
+                  </div>
+                )}
               </div>
 
               {/* Auth Section - Always Visible */}
@@ -124,7 +133,7 @@ const Navbar = () => {
             <div
               key={item.title}
               onClick={() => handleNavigation(item.route)}
-              className={`px-6 py-4 text-[#121212] font-bold cursor-pointer hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-b-0 ${mobileMenuOpen ? 'animate-[slideIn_0.3s_ease-out_forwards]' : 'opacity-0'
+              className={`px-6 py-4 text-[#121212] font-bold cursor-pointer hover:bg-gray-50 transition-colors border-b border-gray-100 ${mobileMenuOpen ? 'animate-[slideIn_0.3s_ease-out_forwards]' : 'opacity-0'
                 }`}
               style={{
                 animationDelay: mobileMenuOpen ? `${index * 0.05}s` : '0s',
@@ -133,6 +142,20 @@ const Navbar = () => {
               {item.title}
             </div>
           ))}
+
+          {/* Refer & Win - Only for authenticated users */}
+          {status === 'authenticated' && (
+            <div
+              onClick={() => handleNavigation('/referral')}
+              className={`px-6 py-4 text-[#121212] font-bold cursor-pointer hover:bg-gray-50 transition-colors ${mobileMenuOpen ? 'animate-[slideIn_0.3s_ease-out_forwards]' : 'opacity-0'
+                }`}
+              style={{
+                animationDelay: mobileMenuOpen ? `${navItems.length * 0.05}s` : '0s',
+              }}
+            >
+              Refer & Win
+            </div>
+          )}
         </div>
       </div>
 
