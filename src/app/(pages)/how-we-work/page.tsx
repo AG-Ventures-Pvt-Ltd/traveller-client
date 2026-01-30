@@ -6,6 +6,8 @@ import PartnersFlowSection from './components/PartnersFlowSection'
 import PaymentsSupportSection from './components/PaymentsSupportSection'
 import WhyBookSection from './components/WhyBookSection'
 import FinalCTASection from './components/FinalCTASection'
+import GroupAdv from './components/GroupAdv'
+import ThreePage from './components/ThreePage'
 import Footer from '../(landing)/Footer/Footer'
 
 const HowWeWork = () => {
@@ -16,8 +18,10 @@ const HowWeWork = () => {
       </div>
       <div className="flex flex-col justify-center mx-[4%] md:mx-[6%] w-full max-w-[1600px]">
         <TravelersFlowSection />
+        <GroupAdv />
         <PartnersFlowSection />
         <PaymentsSupportSection />
+        <ThreePage />
         <WhyBookSection />
         <FinalCTASection />
       </div>

@@ -1,94 +1,74 @@
-'use client'
-import React from 'react'
-import Image from 'next/image'
-import { Lock, DollarSign, Headphones } from 'lucide-react'
+import React from 'react';
+import { CreditCard, DollarSign, Headphones } from 'lucide-react';
 
 const PaymentsSupportSection = () => {
   const features = [
     {
-      icon: Lock,
-      title: "Secure online payments",
-      description: "All transactions are encrypted and protected with industry-standard security measures."
+      icon: CreditCard,
+      title: 'Secure online payments',
+      description:
+        'All transactions are encrypted and protected with industry-standard security measures. Your payment information is always safe with us.',
     },
     {
       icon: DollarSign,
-      title: "Transparent pricing",
-      description: "No hidden fees or surprise charges. See the complete cost breakdown before booking."
+      title: 'Transparent pricing',
+      description:
+        'No hidden fees or surprise charges. See the complete cost breakdown including taxes and fees before you book your trip.',
     },
     {
       icon: Headphones,
-      title: "Dedicated support before and during the trip",
-      description: "Our support team is available to assist you throughout your journey."
-    }
-  ]
+      title: 'Dedicated support before and during the trip',
+      description:
+        'Our support team is available 24/7 to assist you with any questions or concerns throughout your entire journey.',
+    },
+  ];
 
   return (
-    <section className="flex flex-col lg:flex-row gap-8 md:gap-12 px-5 md:px-9 py-12 md:py-24 w-full" aria-labelledby="payments-heading">
-      {/* Left - Content */}
-      <div className="flex-1 flex flex-col gap-8">
-        <header className="flex flex-col gap-4">
-          <div className="px-4 py-2 bg-neutral-50 rounded-full inline-flex items-center self-start">
-            <span className="text-neutral-900 text-sm font-medium">Trust & Safety</span>
+    <div className="bg-white py-16 md:py-24 px-6 md:px-12 lg:px-16">
+      <div className="max-w-7xl mx-auto flex flex-col gap-12">
+        {/* Header */}
+        <div className="flex flex-col gap-4">
+          <div className="inline-flex items-center justify-center bg-neutral-50 rounded-full px-4 py-2 self-start">
+            <span className="text-neutral-900 text-sm font-medium font-['Satoshi'] leading-5">
+              Trust &amp; Safety
+            </span>
           </div>
-          
-          <h2 id="payments-heading" className="text-2xl md:text-3xl lg:text-4xl font-medium leading-tight">
+          <h2 className="text-4xl font-medium font-['Satoshi'] leading-10">
             <span className="text-neutral-900">Payments, Support </span>
-            <span className="text-neutral-700">& Safety</span>
+            <span className="text-neutral-700">&amp; Safety</span>
           </h2>
-        </header>
+        </div>
 
-        {/* Features List */}
-        <div className="flex flex-col gap-6">
+        {/* Features Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {features.map((feature, index) => {
-            const IconComponent = feature.icon
+            const IconComponent = feature.icon;
             return (
-              <article 
+              <div
                 key={index}
-                className="flex items-start gap-4 p-6 bg-neutral-50 rounded-2xl hover:bg-neutral-100 transition-colors group"
+                className="bg-neutral-50 rounded-2xl p-6 flex flex-col gap-4"
               >
-                <div className="w-12 h-12 md:w-14 md:h-14 bg-neutral-900 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
-                  <IconComponent size={24} className="text-white" aria-hidden="true" />
+                {/* Icon */}
+                <div className="size-14 bg-neutral-900 rounded-xl flex items-center justify-center flex-shrink-0">
+                  <IconComponent size={24} className="text-white" />
                 </div>
-                <div className="flex flex-col gap-2 flex-1">
-                  <h3 className="text-neutral-900 text-lg md:text-xl font-bold">
+
+                {/* Content */}
+                <div className="flex flex-col gap-2">
+                  <h3 className="text-neutral-900 text-xl font-bold font-['Satoshi'] leading-7">
                     {feature.title}
                   </h3>
-                  <p className="text-neutral-700 text-sm md:text-base font-medium leading-relaxed">
+                  <p className="text-neutral-700 text-base font-medium font-['Satoshi'] leading-6">
                     {feature.description}
                   </p>
                 </div>
-              </article>
-            )
+              </div>
+            );
           })}
         </div>
       </div>
+    </div>
+  );
+};
 
-      {/* Right - Image */}
-      <div className="flex-1 relative rounded-2xl md:rounded-3xl overflow-hidden min-h-[400px] lg:min-h-[500px]">
-        <Image
-          src="/png/S41.jpg"
-          alt="Secure and safe group travel booking"
-          fill
-          className="object-cover"
-          quality={90}
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
-        
-        {/* Floating Badge */}
-        <div className="absolute bottom-6 left-6 right-6 p-5 bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-neutral-900 rounded-xl flex items-center justify-center">
-              <Lock size={24} className="text-white" aria-hidden="true" />
-            </div>
-            <div>
-              <p className="text-neutral-900 text-base font-bold">100% Secure</p>
-              <p className="text-neutral-600 text-sm font-medium">Your payments are protected</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  )
-}
-
-export default PaymentsSupportSection
+export default PaymentsSupportSection;

@@ -7,7 +7,8 @@ import WhoCanPartnerSection from './components/WhoCanPartnerSection'
 import HowItWorksSection from './components/HowItWorksSection'
 import { TrustSection, FinalCTASection } from './components/TrustAndCTASection'
 import Footer from '../(landing)/Footer/Footer'
-
+import PartnerFeatures from './components/PartnerFeatures'
+import PartnerGrowth from './components/PartnerGrowth'
 export default function PartnerWithUsPage() {
   return (
     <main className="flex flex-col items-center">
@@ -16,15 +17,14 @@ export default function PartnerWithUsPage() {
       </div>
       <div className="flex flex-col justify-center mx-[4%] md:mx-[6%] w-full mb-12">
         <WhyPartnerSection />
-        
+        <PartnerFeatures />
         <WhatWeOfferSection />
-        
+
         <WhoCanPartnerSection />
-        
         <HowItWorksSection />
-        
+        <PartnerGrowth />
         <TrustSection />
-        
+
         <FinalCTASection />
       </div>
 
