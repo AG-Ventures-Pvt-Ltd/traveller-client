@@ -25,7 +25,7 @@ export const REFERRAL_POLICY_CONTENT = {
     definitions: [
         {
             term: "Company",
-            definition: "refers to the travel brand operating the Program."
+            definition: "refers to Wondrr Trips operating the program."
         },
         {
             term: "User / Referrer",
