@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from 'react'
 import BackButton from "@/common/ui/BackButton"
-import { Gift, Users, Calendar, Award, Shield, AlertTriangle } from 'lucide-react'
 import { REFERRAL_POLICY_SECTIONS, REFERRAL_POLICY_CONTENT } from './constants'
 
 export default function ReferralPolicy() {
@@ -93,8 +92,6 @@ export default function ReferralPolicy() {
                             </div>
                         </div>
 
-                        <hr className="my-8" />
-
                         {/* Section 1 - Definitions */}
                         <section id="definitions" className="mb-12 scroll-mt-24">
                             <h2 className="text-2xl font-semibold mb-4">
@@ -110,8 +107,6 @@ export default function ReferralPolicy() {
                             </div>
                         </section>
 
-                        <hr className="my-8" />
-
                         {/* Section 2 - Eligibility */}
                         <section id="eligibility" className="mb-12 scroll-mt-24">
                             <h2 className="text-2xl font-semibold mb-4">
@@ -125,8 +120,6 @@ export default function ReferralPolicy() {
                             </ul>
                         </section>
 
-                        <hr className="my-8" />
-
                         {/* Section 3 - Referral Benefits */}
                         <section id="benefits" className="mb-12 scroll-mt-24">
                             <h2 className="text-2xl font-semibold mb-4">
@@ -139,8 +132,6 @@ export default function ReferralPolicy() {
                                 ))}
                             </ul>
                         </section>
-
-                        <hr className="my-8" />
 
                         {/* Section 4 - Success Criteria */}
                         <section id="criteria" className="mb-12 scroll-mt-24">
@@ -162,8 +153,6 @@ export default function ReferralPolicy() {
                             </ul>
                         </section>
 
-                        <hr className="my-8" />
-
                         {/* Section 5 - Time Window */}
                         <section id="timewindow" className="mb-12 scroll-mt-24">
                             <h2 className="text-2xl font-semibold mb-4">
@@ -179,8 +168,6 @@ export default function ReferralPolicy() {
                             </ul>
                         </section>
 
-                        <hr className="my-8" />
-
                         {/* Section 6 - Reward Structure */}
                         <section id="reward" className="mb-12 scroll-mt-24">
                             <h2 className="text-2xl font-semibold mb-4">
@@ -193,8 +180,6 @@ export default function ReferralPolicy() {
                                 ))}
                             </ul>
                         </section>
-
-                        <hr className="my-8" />
 
                         {/* Section 7 - Redemption */}
                         <section id="redemption" className="mb-12 scroll-mt-24">
@@ -211,8 +196,6 @@ export default function ReferralPolicy() {
                             </ul>
                         </section>
 
-                        <hr className="my-8" />
-
                         {/* Section 8 - Verification */}
                         <section id="verification" className="mb-12 scroll-mt-24">
                             <h2 className="text-2xl font-semibold mb-4">
@@ -225,8 +208,6 @@ export default function ReferralPolicy() {
                                 ))}
                             </ul>
                         </section>
-
-                        <hr className="my-8" />
 
                         {/* Section 9 - Processing */}
                         <section id="processing" className="mb-12 scroll-mt-24">
@@ -241,8 +222,6 @@ export default function ReferralPolicy() {
                             </ul>
                         </section>
 
-                        <hr className="my-8" />
-
                         {/* Section 10 - Transferability */}
                         <section id="transferability" className="mb-12 scroll-mt-24">
                             <h2 className="text-2xl font-semibold mb-4">
@@ -255,8 +234,6 @@ export default function ReferralPolicy() {
                                 ))}
                             </ul>
                         </section>
-
-                        <hr className="my-8" />
 
                         {/* Section 11 - Fraud */}
                         <section id="fraud" className="mb-12 scroll-mt-24">
@@ -273,8 +250,6 @@ export default function ReferralPolicy() {
                             </ul>
                         </section>
 
-                        <hr className="my-8" />
-
                         {/* Section 12 - Modification */}
                         <section id="modification" className="mb-12 scroll-mt-24">
                             <h2 className="text-2xl font-semibold mb-4">
@@ -287,8 +262,6 @@ export default function ReferralPolicy() {
                                 ))}
                             </ul>
                         </section>
-
-                        <hr className="my-8" />
 
                         {/* Footer Note */}
                         <p className="mb-6">

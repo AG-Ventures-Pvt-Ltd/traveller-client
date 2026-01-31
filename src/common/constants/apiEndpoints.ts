@@ -53,6 +53,6 @@ export const API_ENDPOINTS = {
     FEATURED_TRIPS: '/api/client/v1/landingpage/featuredTrips',
   },
   REFERRAL: {
-    GET_MY_REFERRAL_DATA: '/api/client/v1/referrals/my-code'
+    GET_MY_REFERRAL_DATA: '/api/client/v1/referrals/me'
   },
 };

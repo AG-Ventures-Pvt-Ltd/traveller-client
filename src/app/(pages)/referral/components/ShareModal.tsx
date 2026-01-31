@@ -1,7 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
-import { Share2 } from 'lucide-react';
+import React from 'react';
 
 interface ShareModalProps {
     referralCode: string;
@@ -11,8 +10,8 @@ interface ShareModalProps {
 
 const ShareModal: React.FC<ShareModalProps> = ({ referralCode, isOpen, onClose }) => {
     const handleShare = (platform: string) => {
-        const message = `Join me on Wondrr and use my referral code ${referralCode} to get amazing travel deals!`;
-        const url = `https://wondrr.in?ref=${referralCode}`;
+        const message = `Join me on Wondrr and use my referral code ${referralCode} to get 100% off on convenience fee when booking a trip!`;
+        const url = `https://www.wondrr.in`;
 
         switch (platform) {
             case 'whatsapp':
@@ -34,7 +33,7 @@ const ShareModal: React.FC<ShareModalProps> = ({ referralCode, isOpen, onClose }
                 );
                 break;
             case 'email':
-                window.location.href = `mailto:?subject=${encodeURIComponent('Join Wondrr with my referral code')}&body=${encodeURIComponent(message + '\n' + url)}`;
+                window.location.href = `mailto:?subject=${encodeURIComponent('Book now on Wondrr with my referral code')}&body=${encodeURIComponent(message + '\n' + url)}`;
                 break;
             default:
                 break;

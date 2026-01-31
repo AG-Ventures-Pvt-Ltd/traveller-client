@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import { Share2 } from 'lucide-react';
+import Link from 'next/link';
 
 interface CTASectionProps {
     onShareClick: () => void;
@@ -26,6 +27,11 @@ const CTASection: React.FC<CTASectionProps> = ({ onShareClick }) => {
                         Share Now
                     </span>
                 </button>
+                <p className="text-white/60 text-sm font-medium font-['Satoshi'] leading-5 text-center mt-2">
+                    <Link href="/referral-policy" className="underline hover:text-white/80 transition-colors">
+                        Terms and conditions
+                    </Link> apply
+                </p>
             </div>
         </section>
     );
