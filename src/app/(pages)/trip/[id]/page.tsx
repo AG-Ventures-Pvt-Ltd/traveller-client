@@ -32,7 +32,7 @@ export default function TripDetail() {
   const id = slug ? (slug.split('-').pop() || slug) : '';
   const [loadDetailed, setLoadDetailed] = useState(false);
 
-  const { data: basicData, isLoading: isBasicLoading } = useTripBasicDetails(id as string);
+  const { data: basicData, isLoading: isBasicLoading, error, isError } = useTripBasicDetails(id as string);
   const { data: detailedData } = useTripDetailedDetails(id as string, loadDetailed);
 
   useEffect(() => {
@@ -53,6 +53,10 @@ export default function TripDetail() {
   }, [tripData, slug, router, id]);
 
   if (isBasicLoading || !tripData) return <Loader />;
+
+  if (isError) {
+    throw new Error(error.message)
+  }
 
   return (
     <div className="min-h-screen">
