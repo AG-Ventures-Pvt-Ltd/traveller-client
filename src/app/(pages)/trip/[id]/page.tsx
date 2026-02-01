@@ -54,8 +54,8 @@ export default function TripDetail() {
 
   if (isBasicLoading || !tripData) return <Loader />;
 
-  if (isError) {
-    throw new Error(error.message)
+  if (error) {
+    throw Error(error.message)
   }
 
   return (
