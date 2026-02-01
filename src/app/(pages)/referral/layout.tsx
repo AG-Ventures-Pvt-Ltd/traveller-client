@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 };
 
 export default function ReferralLayout({
-    children,
+    children
 }: {
     children: React.ReactNode;
 }) {
