@@ -4,6 +4,29 @@ import { Providers } from "./providers";
 import Script from "next/script";
 import Navbar from '../(pages)/(landing)/Navbar/Navbar'
 import type { Metadata } from 'next';
+import localFont from 'next/font/local';
+
+const satoshi = localFont({
+  src: [
+    {
+      path: '../../../public/fonts/Satoshi-Regular.otf',
+      weight: '400',
+      style: 'normal',
+    },
+    {
+      path: '../../../public/fonts/Satoshi-Medium.otf',
+      weight: '500',
+      style: 'normal',
+    },
+    {
+      path: '../../../public/fonts/Satoshi-Bold.otf',
+      weight: '700',
+      style: 'normal',
+    },
+  ],
+  variable: '--font-sans',
+  display: 'swap',
+});
 
 interface RootLayoutProps {
   children: React.ReactNode;
@@ -19,7 +42,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
   const isEnvProd = process.env.NEXT_PUBLIC_ENV == 'PRODUCTION'
 
   return (
-    <html lang="en">
+    <html lang="en" className={satoshi.variable}>
       <head>
         <Script
           src="https://checkout.razorpay.com/v1/checkout.js"
