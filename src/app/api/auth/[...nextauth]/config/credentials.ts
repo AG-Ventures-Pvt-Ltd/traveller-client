@@ -39,7 +39,11 @@ export const credentialsProvider = CredentialsProvider({
       }
 
       try {
-        const res = await axios.post(process.env.NEXT_PUBLIC_API_URL + '/api/client/v1/user/login', userData);
+        const res = await axios.post(process.env.NEXT_PUBLIC_API_URL + '/api/client/v1/user/login', userData, {
+          headers: {
+            'x-internal-auth': process.env.INTERNAL_AUTH_SECRET || '',
+          },
+        });
 
         const user = res.data.data;
 

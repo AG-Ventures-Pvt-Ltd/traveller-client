@@ -60,6 +60,9 @@ export const authCallbacks: Pick<NextAuthOptions, 'callbacks'> = {
         try {
           const res = await axios.post(apiUrl + API_ENDPOINTS.USER.SOCIAL_LOGIN, user_data, {
             timeout: 10000, // 10 second timeout
+            headers: {
+              'x-internal-auth': process.env.INTERNAL_AUTH_SECRET || '',
+            },
           });
 
           const user = res.data.data;
