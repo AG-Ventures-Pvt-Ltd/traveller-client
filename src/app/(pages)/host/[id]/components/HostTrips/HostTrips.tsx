@@ -83,12 +83,8 @@ export function HostTrips({ hostUsername, onDataLoaded }: HostTripsProps) {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredTrips.map((trip) => (
-            <TripCard
-              key={trip.id}
-              trip={trip}
-              onViewDetails={handleViewDetails}
-            />
+          {filteredTrips.map((trip, index) => (
+            <TripCard key={trip.id || index} trip={trip} onViewDetails={handleViewDetails} />
           ))}
         </div>
       )}

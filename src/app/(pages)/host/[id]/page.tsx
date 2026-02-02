@@ -16,7 +16,6 @@ interface Tab {
 }
 
 export default function HostPage() {
-
   const params = useParams();
   const id = params.id as string;
   const [activeTab, setActiveTab] = useState<TabType>("trips");
@@ -32,8 +31,8 @@ export default function HostPage() {
   };
 
   const TABS: Tab[] = [
-    { id: "trips", label: "Trips", count: tripsCount },
-    { id: "reviews", label: "Reviews", count: reviewsCount },
+    { id: "trips", label: "Available Trips", count: tripsCount },
+    { id: "reviews", label: "Guest Reviews", count: reviewsCount },
   ];
 
   return (
@@ -42,31 +41,11 @@ export default function HostPage() {
         <div className="mb-4 sm:mb-6">
           <BackButton />
         </div>
+
         <div className="mb-8 sm:mb-12">
           <HostProfileCard />
         </div>
-        {/* <div className="mb-12">
-          <h2 className="text-neutral-900 text-3xl font-bold font-['Satoshi'] mb-6">
-            Achievements & Certifications
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {ACHIEVEMENTS.map((achievement) => (
-              <AchievementCard key={achievement.id} achievement={achievement} />
-            ))}
-          </div>
-        </div> */}
-        {/* <div className="mb-12">
-          <div className="px-9 pt-9 pb-6 bg-white rounded-3xl border-2 border-gray-200">
-            <h2 className="text-neutral-900 text-3xl font-bold font-['Satoshi'] mb-7">
-              Host Performance
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {PERFORMANCE_METRICS.map((metric) => (
-                <PerformanceMetric key={metric.id} metric={metric} />
-              ))}
-            </div>
-          </div>
-        </div> */}
+
         <div className="mb-6 sm:mb-8 border-b-2 border-gray-200">
           <div className="flex gap-2 sm:gap-4 overflow-x-auto scrollbar-hide">
             {TABS.map((tab) => (
@@ -75,9 +54,8 @@ export default function HostPage() {
                   variant={"text"}
                   color="primary"
                   onClick={() => setActiveTab(tab.id)}
-                  className={`!text-lg sm:!text-xl !font-bold !font-['Satoshi'] whitespace-nowrap ${
-                    activeTab === tab.id ? "!text-neutral-900" : "!text-neutral-700"
-                  }`}
+                  className={`!text-lg sm:!text-xl !font-bold !font-['Satoshi'] whitespace-nowrap ${activeTab === tab.id ? "!text-neutral-900" : "!text-neutral-700"
+                    }`}
                 >
                   {tab.label} ({tab.count})
                 </Button>
@@ -88,6 +66,7 @@ export default function HostPage() {
             ))}
           </div>
         </div>
+
         {activeTab === "trips" && (
           <HostTrips hostUsername={id} onDataLoaded={handleTripsDataLoaded} />
         )}
