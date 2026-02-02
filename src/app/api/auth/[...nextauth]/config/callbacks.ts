@@ -50,8 +50,17 @@ export const authCallbacks: Pick<NextAuthOptions, 'callbacks'> = {
           avatar: googleProfile.picture || undefined
         }
 
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+        
+        if (!apiUrl) {
+          console.error('[NextAuth] NEXT_PUBLIC_API_URL is not defined');
+          throw new Error("API URL not configured");
+        }
+
         try {
-          const res = await axios.post(process.env.NEXT_PUBLIC_API_URL + API_ENDPOINTS.USER.SOCIAL_LOGIN, user_data);
+          const res = await axios.post(apiUrl + API_ENDPOINTS.USER.SOCIAL_LOGIN, user_data, {
+            timeout: 10000, // 10 second timeout
+          });
 
           const user = res.data.data;
 
@@ -63,8 +72,18 @@ export const authCallbacks: Pick<NextAuthOptions, 'callbacks'> = {
 
         } catch (error) {
 
+          console.error('[NextAuth] Social login API error:', error);
+          
           if (axios.isAxiosError(error)) {
-            throw new Error(error.response?.data?.message || "Login failed");
+            const errorMessage = error.response?.data?.message || error.message || "Login failed";
+            console.error('[NextAuth] API Error Details:', {
+              status: error.response?.status,
+              statusText: error.response?.statusText,
+              data: error.response?.data,
+              url: error.config?.url,
+              apiUrl: apiUrl
+            });
+            throw new Error(errorMessage);
           }
           throw new Error("Unexpected error");
         }
