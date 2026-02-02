@@ -121,6 +121,8 @@ export default function TripDetail() {
               availableDates={tripData.tripBatches || []}
               basePrice={tripData.basePrice || 0}
               category={tripData.category}
+              tripSlug={id}
+              isBookmarked={tripData.isBookmarked || false}
             />
           </div>
         </div>

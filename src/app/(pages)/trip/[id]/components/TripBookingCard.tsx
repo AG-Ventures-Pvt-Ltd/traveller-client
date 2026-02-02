@@ -1,10 +1,13 @@
 import { useState } from "react";
 import Card from "@/common/ui/Card";
-import { CalendarIcon, MapPin, Users2, Bookmark, IndianRupee } from "lucide-react";
+import { CalendarIcon, MapPin, Users2, IndianRupee } from "lucide-react";
 import { format } from "date-fns";
 import { useRouter, useParams } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
+import { API_ENDPOINTS } from "@/common/constants/apiEndpoints";
 import { TripBookingCardProps } from '../types';
 import { formatDurationOnly } from "@/common/utils/dateUtils";
+import BookmarkButton from "@/common/components/atoms/BookmarkButton";
 
 export function TripBookingCard({
   availableDates,
@@ -12,6 +15,8 @@ export function TripBookingCard({
   duration = "4—5 hours",
   meetingPoint = "Desert Gate Café",
   category = "Walking / Jeep",
+  tripSlug = "",
+  isBookmarked = false,
 }: TripBookingCardProps) {
   const validAvailableDates = Array.isArray(availableDates) ? availableDates.map(d => ({
     ...d,
@@ -23,6 +28,7 @@ export function TripBookingCard({
   const router = useRouter();
   const params = useParams();
   const tripId = params.id as string;
+  const queryClient = useQueryClient();
 
   const selectedDateInfo = validAvailableDates.find(
     (d) => d.batchId === selectedBatchId
@@ -121,9 +127,16 @@ export function TripBookingCard({
             >
               Book this tour
             </button>
-            <button className="w-11 h-11 sm:w-12 sm:h-12 bg-neutral-900 rounded-full flex items-center justify-center transition-colors">
-              <Bookmark className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
-            </button>
+            <div className="w-11 h-11 sm:w-12 sm:h-12 [&>button]:!static [&>button]:!w-full [&>button]:!h-full [&>button]:!bg-neutral-900 [&>button]:!rounded-full [&>button]:!shadow-none [&>button]:hover:!bg-neutral-800">
+              <BookmarkButton
+                tripSlug={tripSlug}
+                isBookmarked={isBookmarked}
+                onSuccess={() => {
+                  queryClient.invalidateQueries({ queryKey: [API_ENDPOINTS.TRIPS.BASIC_DETAILS(tripSlug)] });
+                  queryClient.invalidateQueries({ queryKey: [API_ENDPOINTS.TRIPS.DETAILED_DETAILS(tripSlug)] });
+                }}
+              />
+            </div>
           </div>
         </div>
       </Card>

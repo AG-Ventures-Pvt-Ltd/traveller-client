@@ -65,8 +65,8 @@ export interface TripData {
   title: string;
   description: string;
   images?: string[];
-  category:string;
-  location:string;
+  category: string;
+  location: string;
   meetingPoint: string;
   endPoint: string;
   itinerary?: ItineraryDay[];
@@ -83,7 +83,9 @@ export interface TripData {
   faqs?: FAQ[];
   tripBatches?: AvailableDate[];
   basePrice?: number;
-  tags : string[];
+  tags: string[];
+  slug?: string;
+  isBookmarked?: boolean;
 }
 
 export interface TripImageGalleryProps {
@@ -99,6 +101,8 @@ export interface TripBookingCardProps {
   schedule?: string;
   difficulty?: string;
   languages?: string;
+  tripSlug?: string;
+  isBookmarked?: boolean;
 }
 
 export interface TripInclusionsProps {
@@ -134,7 +138,7 @@ export interface HostCardProps {
   rating: number;
   totalReviews: number;
   joinedDate?: number;
-  username : string;
+  username: string;
   description: string;
   responseTime?: string;
   languages?: string[];
