@@ -6,6 +6,7 @@ import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { User, Menu, X } from 'lucide-react'
 import { usePathname } from "next/navigation";
+import './navbar.css'
 
 
 const navItems = [
@@ -158,20 +159,6 @@ const Navbar = () => {
           )}
         </div>
       </div>
-
-      {/* Tailwind Animation Definition */}
-      <style>{`
-        @keyframes slideIn {
-          from {
-            opacity: 0;
-            transform: translateX(-10px);
-          }
-          to {
-            opacity: 1;
-            transform: translateX(0);
-          }
-        }
-      `}</style>
     </>
   )
 }
