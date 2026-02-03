@@ -61,7 +61,10 @@ export function Providers({ children }: { children: React.ReactNode }) {
     <ThemeProvider theme={theme}>
       <QueryClientProvider client={queryClient}>
         <Analytics/>
-        <SessionProvider>
+        <SessionProvider 
+          refetchInterval={0}
+          refetchOnWindowFocus={false}
+        >
           <ToastProvider>
             <ToastInitializer>
               {children}

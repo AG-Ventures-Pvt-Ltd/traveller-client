@@ -1,30 +1,48 @@
-'use client'
-
 import "./globals.css";
 import React from 'react';
 import { Providers } from "./providers";
 import Script from "next/script";
 import Navbar from '../(pages)/(landing)/Navbar/Navbar'
+import type { Metadata } from 'next';
+import localFont from 'next/font/local';
 
+const satoshi = localFont({
+  src: [
+    {
+      path: '../../../public/fonts/Satoshi-Regular.otf',
+      weight: '400',
+      style: 'normal',
+    },
+    {
+      path: '../../../public/fonts/Satoshi-Medium.otf',
+      weight: '500',
+      style: 'normal',
+    },
+    {
+      path: '../../../public/fonts/Satoshi-Bold.otf',
+      weight: '700',
+      style: 'normal',
+    },
+  ],
+  variable: '--font-sans',
+  display: 'swap',
+});
 
 interface RootLayoutProps {
   children: React.ReactNode;
 }
 
-export default function RootLayout({ children }: RootLayoutProps) {
+export const metadata: Metadata = {
+  title : "Find and Join Group Trips in India on Wondrr",
+  description : "Join India’s most trusted group trips with expertly planned tours across top destinations. Safe, social, and hassle-free group travel in India with fixed departures and experienced trip leaders."
+}
 
-  React.useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const stored = localStorage.getItem('theme');
-      const isDark = stored ? stored === 'dark' : true;
-      document.documentElement.classList.toggle('dark', isDark);
-    }
-  }, []);
+export default function RootLayout({ children }: RootLayoutProps) {
 
   const isEnvProd = process.env.NEXT_PUBLIC_ENV == 'PRODUCTION'
 
   return (
-    <html lang="en">
+    <html lang="en" className={satoshi.variable}>
       <head>
         <Script
           src="https://checkout.razorpay.com/v1/checkout.js"

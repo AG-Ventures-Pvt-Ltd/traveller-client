@@ -1,22 +1,13 @@
+'use client'
 
 import React, { useState } from 'react'
-import Button from '@/common/components/atoms/Button'
 import Logo from '@/common/components/atoms/Logo/Logo'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { User, Menu, X } from 'lucide-react'
-import { usePathname } from "next/navigation";
-import './navbar.css'
-
-
-const navItems = [
-  { title: 'Trips', route: "/trips" },
-  { title: 'About', route: "/about" },
-  { title: 'Partner', route: '/partner-with-us' },
-  { title: 'How We Work', route: '/how-we-work' }
-]
-
-const hiddenPaths = ['/auth', '/verify']
+import { usePathname } from "next/navigation"
+import './Navbar.module.css'
+import { navItems, authenticatedNavItems, hiddenPaths } from './constants'
 
 const Navbar = () => {
 
@@ -31,45 +22,40 @@ const Navbar = () => {
     return <></>
   }
 
-  const handleNavigation = (route) => {
+  const handleNavigation = (route: string) => {
     router.push(route);
-    setMobileMenuOpen(false); // Close menu after navigation
+    setMobileMenuOpen(false); 
   };
 
   return (
     <>
-      {/* Main Navbar */}
       <div className='px-2 md:px-9 py-5 bg-white/96 flex items-center border-b border-b-[#EDEDED] sticky top-0 z-50'>
         <div className='flex-1 flex items-center gap-2.5'>
           <div className='flex-1 flex flex-col items-start justify-center'>
             <Logo />
           </div>
-
           <div className='flex-1 flex justify-end items-center'>
             <div className='flex items-center gap-3 md:gap-12'>
-              {/* Desktop Navigation */}
               <div className='hidden md:flex items-center gap-12'>
                 {navItems.map((item) => (
                   <div
                     key={item.title}
                     onClick={() => handleNavigation(item.route)}
-                    className='flex flex-col items-start text-[#121212] font-bold cursor-pointer hover:text-gray-600 transition-colors'
+                    className='flex flex-col items-start text-[#121212] font-bold cursor-pointer hover:text-gray-600 transition-colors whitespace-nowrap'
                   >
                     {item.title}
                   </div>
                 ))}
-                {/* Refer & Win - Only for authenticated users */}
-                {status === 'authenticated' && (
+                {status === 'authenticated' && authenticatedNavItems.map((item) => (
                   <div
-                    onClick={() => handleNavigation('/referral')}
-                    className='flex flex-col items-start text-[#121212] font-bold cursor-pointer hover:text-gray-600 transition-colors'
+                    key={item.title}
+                    onClick={() => handleNavigation(item.route)}
+                    className='flex flex-col items-start text-[#121212] font-bold cursor-pointer hover:text-gray-600 transition-colors whitespace-nowrap'
                   >
-                    Refer & Win
+                    {item.title}
                   </div>
-                )}
+                ))}
               </div>
-
-              {/* Auth Section - Always Visible */}
               <div className='flex flex-col items-start'>
                 {status === 'loading' && (
                   <div className='p-2 bg-gray-200 rounded-full flex items-center gap-2.5 animate-pulse relative overflow-hidden'>
@@ -96,8 +82,6 @@ const Navbar = () => {
                   </button>
                 )}
               </div>
-
-              {/* Hamburger Menu Button */}
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                 className='md:hidden p-2 hover:bg-gray-100 rounded-lg transition-colors'
@@ -113,16 +97,12 @@ const Navbar = () => {
           </div>
         </div>
       </div>
-
-      {/* Mobile Menu Overlay */}
       {mobileMenuOpen && (
         <div
           className='md:hidden fixed inset-0 bg-black/50 z-40 top-[73px]'
           onClick={() => setMobileMenuOpen(false)}
         />
       )}
-
-      {/* Mobile Menu Dropdown */}
       <div
         className={`md:hidden fixed top-[73px] left-0 right-0 bg-white border-b border-[#EDEDED] shadow-lg z-40 transition-all duration-300 ease-in-out ${mobileMenuOpen
           ? 'max-h-[400px] opacity-100'
@@ -134,7 +114,7 @@ const Navbar = () => {
             <div
               key={item.title}
               onClick={() => handleNavigation(item.route)}
-              className={`px-6 py-4 text-[#121212] font-bold cursor-pointer hover:bg-gray-50 transition-colors border-b border-gray-100 ${mobileMenuOpen ? 'animate-[slideIn_0.3s_ease-out_forwards]' : 'opacity-0'
+              className={`px-6 py-4 text-[#121212] font-bold cursor-pointer hover:bg-gray-50 transition-colors border-b border-gray-100 whitespace-nowrap ${mobileMenuOpen ? 'animate-[slideIn_0.3s_ease-out_forwards]' : 'opacity-0'
                 }`}
               style={{
                 animationDelay: mobileMenuOpen ? `${index * 0.05}s` : '0s',
@@ -143,20 +123,19 @@ const Navbar = () => {
               {item.title}
             </div>
           ))}
-
-          {/* Refer & Win - Only for authenticated users */}
-          {status === 'authenticated' && (
+         {status === "authenticated" && authenticatedNavItems.map((item, index) => (
             <div
-              onClick={() => handleNavigation('/referral')}
-              className={`px-6 py-4 text-[#121212] font-bold cursor-pointer hover:bg-gray-50 transition-colors ${mobileMenuOpen ? 'animate-[slideIn_0.3s_ease-out_forwards]' : 'opacity-0'
+              key={item.title}
+              onClick={() => handleNavigation(item.route)}
+              className={`px-6 py-4 text-[#121212] font-bold cursor-pointer hover:bg-gray-50 transition-colors border-b border-gray-100 whitespace-nowrap ${mobileMenuOpen ? 'animate-[slideIn_0.3s_ease-out_forwards]' : 'opacity-0'
                 }`}
               style={{
-                animationDelay: mobileMenuOpen ? `${navItems.length * 0.05}s` : '0s',
+                animationDelay: mobileMenuOpen ? `${(navItems.length + index) * 0.05}s` : '0s',
               }}
             >
-              Refer & Win
+              {item.title}
             </div>
-          )}
+          ))}
         </div>
       </div>
     </>
