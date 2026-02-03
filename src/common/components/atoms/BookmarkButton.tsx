@@ -5,6 +5,7 @@ import { Heart, LucideIcon } from 'lucide-react'
 import usePostData from "@/services/usePostData";
 import { API_ENDPOINTS } from "@/common/constants/apiEndpoints";
 import { useQueryClient } from "@tanstack/react-query";
+import { notify } from '@/common/utils/notify';
 
 interface BookmarkButtonProps {
   tripSlug: string;
@@ -26,15 +27,12 @@ const BookmarkButton: React.FC<BookmarkButtonProps> = ({ tripSlug, isBookmarked,
     url: API_ENDPOINTS.BOOKMARKS.TOGGLE_BOOKMARK,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [API_ENDPOINTS.BOOKMARKS.GET_USER_BOOKMARKS] });
-      // We can't easily invalidate generic trip lists here without knowing which one, 
-      // but generic invalidation can be expensive. 
-      // The local state handles the immediate UI feedback.
       if (onSuccess) {
         onSuccess();
       }
     },
     onError: () => {
-      // Revert state on error
+      notify.error('Please login to add bookmark')
       setIsBookmarkedState(!isBookmarkedState);
     }
   });
@@ -44,7 +42,6 @@ const BookmarkButton: React.FC<BookmarkButtonProps> = ({ tripSlug, isBookmarked,
     setIsAnimating(true);
     setTimeout(() => setIsAnimating(false), 600);
 
-    // Optimistic update
     const newState = !isBookmarkedState;
     setIsBookmarkedState(newState);
 
