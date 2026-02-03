@@ -39,7 +39,7 @@ export function TripItinerary({ itinerary }: TripItineraryProps) {
   return (
     <div className="flex flex-col gap-4 sm:gap-6 my-6 sm:my-8">
       <h2 className="text-[#0F172B] tracking-tight font-bold text-lg sm:text-xl">Tour Schedule</h2>
-      
+
       <div className="flex flex-col gap-3">
         {itinerary.map((day) => {
           const isExpanded = expandedDays.includes(day.day);
@@ -49,11 +49,10 @@ export function TripItinerary({ itinerary }: TripItineraryProps) {
             <Card
               key={day.day}
               variant="fill"
-              className={`rounded-2xl overflow-hidden transition-all duration-300 ${
-                isExpanded 
-                  ? 'shadow-[0px_4px_6px_-4px_rgba(0,0,0,0.1),0px_2px_16px_-2px_rgba(0,0,0,0.1)]'
-                  : 'shadow-[0px_2px_4px_-2px_rgba(0,0,0,0.1)]'
-              }`}
+              className={`rounded-2xl overflow-hidden transition-all duration-300 border border-transparent hover:border-black ${isExpanded
+                ? 'shadow-[0px_4px_6px_-4px_rgba(0,0,0,0.1),0px_2px_16px_-2px_rgba(0,0,0,0.1)]'
+                : 'shadow-[0px_2px_4px_-2px_rgba(0,0,0,0.1)]'
+                }`}
             >
               <button
                 onClick={() => toggleDay(day.day)}
@@ -71,18 +70,16 @@ export function TripItinerary({ itinerary }: TripItineraryProps) {
                     </h3>
                   </div>
                 </div>
-                
+
                 <ChevronDown
-                  className={`w-5 h-5 sm:w-6 sm:h-6 text-[#0F172B] transition-transform duration-300 flex-shrink-0 ${
-                    isExpanded ? 'rotate-180' : 'rotate-0'
-                  }`}
+                  className={`w-5 h-5 sm:w-6 sm:h-6 text-[#0F172B] transition-transform duration-300 flex-shrink-0 ${isExpanded ? 'rotate-180' : 'rotate-0'
+                    }`}
                 />
               </button>
 
               <div
-                className={`overflow-hidden transition-all duration-300 ${
-                  isExpanded ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'
-                }`}
+                className={`overflow-hidden transition-all duration-300 ${isExpanded ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'
+                  }`}
               >
                 <div className="px-4 sm:px-6 pb-4 sm:pb-6 bg-white/40">
                   <div className="flex flex-col gap-3 sm:gap-4">
@@ -91,7 +88,7 @@ export function TripItinerary({ itinerary }: TripItineraryProps) {
                         {day.description}
                       </p>
                     )}
-                    
+
                     {normalizedActivities.length > 0 && (
                       <div className="flex flex-col gap-2">
                         <span className="text-xs sm:text-sm font-medium text-[#0F172B]">Activities</span>
