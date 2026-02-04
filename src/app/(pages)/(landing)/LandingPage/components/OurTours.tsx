@@ -35,7 +35,7 @@ const OurTours = () => {
   }
 
   return (
-    <section className="flex flex-col gap-6 sm:gap-8 px-4 sm:px-6 lg:px-9 py-12 sm:py-16 lg:py-24 w-full">
+    <section className="flex flex-col gap-6 sm:gap-8 px-4 sm:px-6 lg:px-9 py-12 sm:py-16 lg:py-24 w-full overflow-hidden">
       <div className="flex flex-col gap-4 sm:gap-6">
         <div className="px-3 sm:px-4 py-2 bg-neutral-50 rounded-full inline-flex items-center self-start">
           <span className="text-neutral-900 text-xs sm:text-sm font-medium">Our Trips</span>
@@ -51,12 +51,12 @@ const OurTours = () => {
           </ArrowButton>
         </div>
       </div>
-      <div className="flex flex-row gap-3 sm:gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x snap-mandatory flex-nowrap">
+      <div className="flex flex-row gap-3 sm:gap-4 overflow-x-scroll pb-4 scrollbar-hide snap-x snap-mandatory touch-pan-x -mx-4 sm:-mx-6 lg:-mx-9 px-4 sm:px-6 lg:px-9">
         {isLoading ? (
           Array.from({ length: 4 }).map((_, idx) => (
             <div
               key={idx}
-              className="relative p-4 sm:p-6 bg-neutral-100 rounded-2xl sm:rounded-3xl overflow-hidden min-h-[200px] sm:min-h-[400px] lg:min-h-[488px] min-w-[280px] sm:min-w-[320px] lg:min-w-[400px] w-[280px] sm:w-[320px] lg:w-[400px] flex-shrink-0 animate-pulse flex flex-col justify-between snap-start"
+              className="relative p-4 sm:p-6 bg-neutral-100 rounded-2xl sm:rounded-3xl overflow-hidden min-h-[200px] sm:min-h-[400px] lg:min-h-[488px] w-[calc(100vw-2rem)] sm:w-[calc(33.333%-1rem)] lg:w-[calc(33.333%-1.5rem)] flex-shrink-0 animate-pulse flex flex-col justify-between snap-start"
             >
               <div className="relative w-8 h-8 sm:w-10 sm:h-10 bg-neutral-200 rounded-full self-end" />
               <div className="relative space-y-2">
@@ -70,7 +70,7 @@ const OurTours = () => {
             <div
               key={trip.tripSlug}
               onClick={() => handleTripClick(trip.tripSlug)}
-              className="relative rounded-2xl sm:rounded-3xl overflow-hidden min-h-[200px] sm:min-h-[400px] lg:min-h-[488px] min-w-[280px] sm:min-w-[320px] lg:min-w-[400px] w-[280px] sm:w-[320px] lg:w-[400px] flex-shrink-0 flex flex-col cursor-pointer snap-start group"
+              className="relative rounded-2xl sm:rounded-3xl overflow-hidden min-h-[200px] sm:min-h-[400px] lg:min-h-[488px] w-[calc(100vw-2rem)] sm:w-[calc(33.333%-1rem)] lg:w-[calc(33.333%-1.5rem)] flex-shrink-0 flex flex-col cursor-pointer snap-start group"
             >
               <div className="absolute inset-0 transition-transform group-hover:scale-105">
                 <MyImage
