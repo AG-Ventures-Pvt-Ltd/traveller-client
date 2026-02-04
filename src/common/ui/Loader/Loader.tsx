@@ -1,18 +1,11 @@
 import './Loader.css'
+import CircularLoader from './CircularLoader';
 
 
 export default function Loader() {
-    return (
-      <div className='flex items-center justify-center h-[20rem]'>
-      <div className="relative w-[60px] h-[120px]">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-spin-smooth">
-          <div className="flex space-x-2">
-            <div className="w-[12px] h-[12px] bg-[#121212] rounded-full"></div>
-            <div className="w-[12px] h-[12px] bg-[#121212] rounded-full"></div>
-            <div className="w-[12px] h-[12px] bg-[#121212] rounded-full"></div>
-          </div>
-        </div>
-      </div>
-      </div>
-    );
-  }
+  return (
+    <div className='mt-[15%]'>
+      <CircularLoader />
+    </div>
+  );
+}

@@ -9,6 +9,8 @@ import { useGetData } from '@/services/useGetData';
 import BackButton from '@/common/ui/BackButton';
 import { SlidersHorizontal } from 'lucide-react';
 import Button from '@/common/components/atoms/Button';
+import CircularLoader from '@/common/ui/Loader/CircularLoader';
+
 
 interface Trip {
   title: string;
@@ -74,7 +76,6 @@ export default function Page() {
   useEffect(() => {
     const params = new URLSearchParams();
 
-    // New filter structure
     if (appliedFilters.tourTypes && appliedFilters.tourTypes.length > 0) {
       const lowercaseCategories = appliedFilters.tourTypes.map(category => category.toLowerCase());
       params.append('category', JSON.stringify(lowercaseCategories));
@@ -97,7 +98,7 @@ export default function Page() {
     setApiUrl(`api/client/v1/trips/search${queryString ? `?${queryString}` : ''}`);
   }, [appliedFilters, destination]);
 
-  const { data: tripsData, error } = useGetData<TripsResponse>(apiUrl || '', {
+  const { data: tripsData,isLoading : tripsLoading,  error } = useGetData<TripsResponse>(apiUrl || '', {
     queryKey: apiUrl ? [apiUrl] : ['trips-loading'],
     enabled: !!apiUrl,
   });
@@ -145,7 +146,6 @@ export default function Page() {
             </p>
           )}
         </div>
-        {/* Mobile Filter Button */}
         <div className='md:hidden'>
           <Button
             onClick={() => setIsFilterModalOpen(true)}
@@ -156,22 +156,18 @@ export default function Page() {
           </Button>
         </div>
       </div>
-
       <FilterModal
         isOpen={isFilterModalOpen}
         onClose={() => setIsFilterModalOpen(false)}
         onFilterChange={handleFilterChange}
         onApplyFilters={handleApplyFilters}
       />
-
       <div className='flex gap-6'>
-        {/* Desktop Filters */}
         <div className='hidden md:block flex-1 sticky top-[12%] self-start'>
           <TripFilters onFilterChange={handleFilterChange} onApplyFilters={handleApplyFilters} />
         </div>
-
-        {/* Trips List */}
         <div className='flex-1 md:flex-[3]'>
+          {tripsLoading && <CircularLoader/>}
           {tripsData && tripsData.trips?.length === 0 && (
             <div className='bg-gray-50 border border-gray-200 text-gray-700 px-6 py-8 rounded-lg text-center'>
               <p className='text-lg font-medium'>No trips found</p>
