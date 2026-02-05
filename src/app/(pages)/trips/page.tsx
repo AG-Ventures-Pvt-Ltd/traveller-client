@@ -2,9 +2,9 @@
 
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useState, useEffect, useCallback } from 'react';
-import TripSearchCard from './components/TripSearchCard';
 import TripFilters, { FilterValues } from './components/TripFilters';
 import FilterModal from './components/FilterModal';
+import TripList from './components/TripList';
 import { useGetData } from '@/services/useGetData';
 import BackButton from '@/common/ui/BackButton';
 import { SlidersHorizontal } from 'lucide-react';
@@ -30,7 +30,7 @@ interface Trip {
   category: string;
   difficulty: string;
   isFeatured: boolean;
-  isBookmarked:boolean;
+  isBookmarked: boolean;
   slug: string;
   tags?: string[];
 }
@@ -98,7 +98,7 @@ export default function Page() {
     setApiUrl(`api/client/v1/trips/search${queryString ? `?${queryString}` : ''}`);
   }, [appliedFilters, destination]);
 
-  const { data: tripsData,isLoading : tripsLoading,  error } = useGetData<TripsResponse>(apiUrl || '', {
+  const { data: tripsData, isLoading: tripsLoading, error } = useGetData<TripsResponse>(apiUrl || '', {
     queryKey: apiUrl ? [apiUrl] : ['trips-loading'],
     enabled: !!apiUrl,
   });
@@ -133,19 +133,9 @@ export default function Page() {
   }
 
   return (
-    <div className='flex flex-col py-2'>
-      <BackButton className='mb-3 mx-[1%]' />
+    <div className='flex flex-col py-2 mb-8'>
+      <BackButton className='ml-[1%]' />
       <div className='mb-4 mx-[1%] flex items-center justify-between'>
-        <div>
-          <h1 className='text-4xl font-bold text-gray-900'>
-            {destination ? `Search Results for ${destination}` : 'All Trips'}
-          </h1>
-          {tripsData && (
-            <p className='text font-semibold text-gray-600 mt-1'>
-              {tripsData.pagination?.total} {tripsData.pagination?.total === 1 ? 'trip' : 'trips'} found
-            </p>
-          )}
-        </div>
         <div className='md:hidden'>
           <Button
             onClick={() => setIsFilterModalOpen(true)}
@@ -162,47 +152,35 @@ export default function Page() {
         onFilterChange={handleFilterChange}
         onApplyFilters={handleApplyFilters}
       />
-      <div className='flex gap-6'>
+      <div className='flex gap-3'>
         <div className='hidden md:block flex-1 sticky top-[12%] self-start'>
           <TripFilters onFilterChange={handleFilterChange} onApplyFilters={handleApplyFilters} />
         </div>
         <div className='flex-1 md:flex-[3]'>
-          {tripsLoading && <CircularLoader/>}
+          {tripsLoading && <CircularLoader />}
           {tripsData && tripsData.trips?.length === 0 && (
             <div className='bg-gray-50 border border-gray-200 text-gray-700 px-6 py-8 rounded-lg text-center'>
               <p className='text-lg font-medium'>No trips found</p>
               <p className='text-sm text-gray-600 mt-2'>Try adjusting your filters to see more results</p>
             </div>
           )}
-          <div className='space-y-4'>
-            {tripsData?.trips?.map((trip) => {
-              const days = trip.startDate && trip.endDate
-                ? calculateDays(trip.startDate, trip.endDate)
-                : parseInt(trip.duration) || 0;
-              const nextDeparture = trip.startDate ? formatDate(trip.startDate) : undefined;
-
-              return (
-                <TripSearchCard
-                  key={trip.slug}
-                  tripSlug={trip.slug}
-                  imageUrl={trip.image}
-                  title={trip.title}
-                  location={trip.address}
-                  days={days}
-                  rating={trip.rating}
-                  reviewCount={trip.totalReviews}
-                  originalPrice={trip.price}
-                  price={trip.basePrice}
-                  category={trip.category}
-                  nextDeparture={nextDeparture}
-                  difficulty={trip.difficulty}
-                  totalSeats={trip.totalSeats}
-                  tags={trip.tags}   
-                  isBookmarked={trip.isBookmarked}               
-                  onViewDetails={() => handleBookNow(trip.slug)}
-                />
-              );
-            })}
+          <div>
+            <div>
+              <h1 className='text-4xl font-bold text-gray-900'>
+                {destination ? `Search Results for ${destination}` : 'All Trips'}
+              </h1>
+              {tripsData && (
+                <p className='text mb-3 font-semibold text-gray-600 mt-1'>
+                  {tripsData.pagination?.total} {tripsData.pagination?.total === 1 ? 'trip' : 'trips'} found
+                </p>
+              )}
+            </div>
+            {!tripsLoading && tripsData && <TripList
+              trips={tripsData.trips}
+              onBookNow={handleBookNow}
+              formatDate={formatDate}
+              calculateDays={calculateDays}
+            />}
           </div>
         </div>
       </div>

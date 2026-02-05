@@ -39,8 +39,8 @@ export const useTripDetailsStore = create<TripDetailsState>((set, get) => ({
     const isInitialLoad = !state.tripDetails;
     
     set({ 
-      isLoading: isInitialLoad, // Only show loading on initial load
-      isRefetching: !isInitialLoad, // Set refetching for background updates
+      isLoading: isInitialLoad, 
+      isRefetching: !isInitialLoad, 
       error: null,
     });
 
@@ -57,7 +57,6 @@ export const useTripDetailsStore = create<TripDetailsState>((set, get) => ({
       }
       const response = await baseAPI.get(apiUrl);
       
-      // Only update state on successful response
       set({ 
         tripDetails: response.data.data,
         isLoading: false,
@@ -93,7 +92,6 @@ export const useTripDetailsStore = create<TripDetailsState>((set, get) => ({
       return;
     }
     
-    // Background refetch without clearing existing data
     set({ isRefetching: true, error: null });
     
     try {

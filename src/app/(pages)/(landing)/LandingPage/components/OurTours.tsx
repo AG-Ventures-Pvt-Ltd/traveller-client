@@ -1,30 +1,14 @@
 'use client'
 import React from 'react'
-import { useGetData } from '@/services/useGetData'
-import { API_ENDPOINTS } from '@/common/constants/apiEndpoints'
 import { ArrowUpRight } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import MyImage from '@/common/ui/Image'
 import ArrowButton from '@/common/ui/Buttons/ArrowButton'
-
-interface Trip {
-  days: string
-  image: string
-  isBookmarked: boolean
-  location: string
-  price: number
-  title: string
-  tripSlug: string
-}
+import { useFeaturedTrips } from '@/common/hooks/useFeaturedTrips'
 
 const OurTours = () => {
   const router = useRouter()
-  const { data, isLoading } = useGetData<Trip[]>(
-    API_ENDPOINTS.LANDING_PAGE.FEATURED_TRIPS,
-    {
-      queryKey: [API_ENDPOINTS.LANDING_PAGE.FEATURED_TRIPS],
-    }
-  )
+  const { data, isLoading } = useFeaturedTrips()
 
   const handleTripClick = (tripSlug: string) => {
     router.push(`/trip/${tripSlug}`)

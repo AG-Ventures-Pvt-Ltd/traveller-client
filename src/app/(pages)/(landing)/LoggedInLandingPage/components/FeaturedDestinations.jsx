@@ -1,14 +1,13 @@
 import React from 'react';
 import DestinationCard from './DestinationCard';
 import TripSlider from '../../TripSlider/TripSlider';
-import { useGetData } from '@/services/useGetData';
-import { API_ENDPOINTS } from '@/common/constants/apiEndpoints';
+import { useFeaturedTrips } from '@/common/hooks/useFeaturedTrips';
 
 
 
 const FeaturedDestinations = () => {
   
-  const { data: featuredTrips, isLoading, error } = useGetData(API_ENDPOINTS.LANDING_PAGE.FEATURED_TRIPS);
+  const { data: featuredTrips, isLoading, error } = useFeaturedTrips();
 
   return (
     <div className="w-full flex flex-col gap-6 sm:gap-8">
