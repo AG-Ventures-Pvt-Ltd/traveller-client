@@ -29,7 +29,7 @@ const PaymentSummary: React.FC<PaymentSummaryProps> = ({ payment }) => {
               ? 'text-yellow-700' 
               : 'text-green-700'
           }`}>
-            {payment.status.charAt(0).toUpperCase() + payment.status.slice(1)}
+            {payment?.status?.charAt(0).toUpperCase() + payment.status?.slice(1)}
           </p>
         </div>
 
