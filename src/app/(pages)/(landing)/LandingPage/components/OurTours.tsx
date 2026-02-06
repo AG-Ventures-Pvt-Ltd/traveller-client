@@ -21,7 +21,7 @@ const OurTours = () => {
   }
 
   return (
-    <section className="flex flex-col gap-6 sm:gap-8 px-4 sm:px-6 lg:px-24 py-12 sm:py-16 lg:py-24 w-full">
+    <section className="flex flex-col gap-6 sm:gap-8 sm:px-6 lg:px-24 py-12 sm:py-16 lg:py-24 w-full">
       <div className="flex flex-col gap-4 sm:gap-6 pl-6 sm:pl-0">
         <div className="px-3 sm:px-4 py-2 bg-neutral-50 rounded-full inline-flex items-center self-start">
           <span className="text-neutral-900 text-xs sm:text-sm font-medium">Our Trips</span>
@@ -37,7 +37,7 @@ const OurTours = () => {
           </ArrowButton>
         </div>
       </div>
-      <div className="flex gap-2 sm:gap-3 lg:gap-4 overflow-x-auto scrollbar-hide snap-x snap-mandatory px-[6%] lg:px-0">
+      <div className="flex gap-2 sm:gap-3 lg:gap-4 overflow-x-auto scrollbar-hide snap-x snap-mandatory px-[4%] lg:px-0">
         {isLoading ? (
           Array.from({ length: 5 }).map((_, idx) => (
             <div
