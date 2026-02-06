@@ -11,7 +11,7 @@ export interface UploadResult {
 }
 
 export interface UseS3UploadReturn {
-  uploadImages: (files: File[]) => Promise<UploadResult[]>
+  uploadImages: (files: File[], key?: string) => Promise<UploadResult[]>
   isUploading: boolean
   progress: number
   error?: string

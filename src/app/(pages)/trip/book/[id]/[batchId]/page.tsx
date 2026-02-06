@@ -22,13 +22,13 @@ const Page = () => {
     };
 
     return (
-        <div className='px-[4%] sm:px-[6%] lg:px-[10%]'>
+        <div className='px-[4%] sm:px-[5%] lg:px-[2%] xl:px-[8%]'>
             <BackButton
                 onClick={handleBackToTrip}
                 className="flex items-center gap-3 my-4"
                 label='Back to Trip Details'
             />
-            <div className='flex flex-col mt-5 lg:flex-row gap-4 lg:gap-6 mb-8'>
+            <div className='flex flex-col-reverse mt-5 lg:flex-row gap-4 lg:gap-6 mb-8'>
                 <div className='flex-[2]'>
                     <TravelerDetailsForm 
                         guests={guests}

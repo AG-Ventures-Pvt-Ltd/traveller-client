@@ -19,7 +19,7 @@ interface EditProfileModalProps {
 }
 
 export function EditProfileModal({ open, onClose, profileData, onSave, isLoading = false }: EditProfileModalProps) {
-  // Create clean form data without placeholder text
+
   const getCleanFormData = (data: ProfileData): ProfileData => ({
     ...data,
     name: data.name === 'Not added yet' ? '' : data.name,
@@ -53,13 +53,11 @@ export function EditProfileModal({ open, onClose, profileData, onSave, isLoading
     setBirthDate(date);
   };
 
-  // Reset form when modal opens
   useEffect(() => {
     if (open) {
       const cleanData = getCleanFormData(profileData);
       setFormData(cleanData);
 
-      // Parse birth date string to Date object
       if (cleanData.birthDate) {
         const parsedDate = new Date(cleanData.birthDate);
         if (!isNaN(parsedDate.getTime())) {
@@ -81,7 +79,6 @@ export function EditProfileModal({ open, onClose, profileData, onSave, isLoading
     }
   }, [open, profileData]);
 
-  // Cleanup preview URL
   useEffect(() => {
     return () => {
       if (previewUrl) {
@@ -98,7 +95,6 @@ export function EditProfileModal({ open, onClose, profileData, onSave, isLoading
     const file = event.target.files?.[0];
     if (file) {
       setSelectedFile(file);
-      // Create preview URL
       const url = URL.createObjectURL(file);
       setPreviewUrl(url);
     }
@@ -107,22 +103,20 @@ export function EditProfileModal({ open, onClose, profileData, onSave, isLoading
   const handleSubmit = async () => {
     let avatarUrl = formData.avatar;
 
-    // Upload avatar if a new file was selected
     if (selectedFile) {
       try {
-        const uploadResults = await uploadImages([selectedFile]);
+        const key = 'user/avatar'
+        const uploadResults = await uploadImages([selectedFile], key);
         if (uploadResults[0]?.success) {
           avatarUrl = uploadResults[0].url;
         }
       } catch {
-        return; // Don't proceed with save if upload failed
+        return; 
       }
     }
 
-    // Format birth date for API
     const formattedBirthDate = birthDate ? birthDate.toISOString().split('T')[0] : '';
 
-    // Update form data with new avatar URL and formatted birth date
     const updatedData = {
       ...formData,
       avatar: avatarUrl,
