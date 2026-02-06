@@ -45,7 +45,7 @@ const Footer = () => {
     return (
         <footer className="flex flex-col gap-8 md:gap-12 pt-10 md:pt-16 pb-8 md:pb-8 w-full bg-neutral-900 border-t border-neutral-800">
             <div className="flex flex-col lg:flex-row justify-between gap-8 md:gap-16 px-5 md:px-9 max-w-[1520px] w-full mx-auto">
-                <div className="flex flex-col gap-4 md:gap-6 flex-1 max-w-full lg:max-w-sm">
+                <div className="flex flex-col gap-4 md:gap-6 flex-1 max-w-full lg:max-w-sm px-6 md:px-0">
                     <h3 className="text-2xl md:text-3xl font-black text-white">Wondrr</h3>
                     <p className="text-neutral-300 text-sm md:text-base font-medium">
                         {CONTENT.footer.tagline}
@@ -59,7 +59,7 @@ const Footer = () => {
                     </div>
                 </div>
 
-                <div className="flex flex-wrap gap-8 md:gap-12 lg:gap-16 flex-1 justify-start lg:justify-end">
+                <div className="flex flex-wrap gap-8 md:gap-12 lg:gap-16 flex-1 justify-between px-6 md:px-0 lg:justify-end">
                     {CONTENT.footer.sections.map((section) => (
                         <div key={section.title} className="flex flex-col gap-3 md:gap-4 min-w-[120px]">
                             <h4 className="text-white text-xs md:text-sm font-bold uppercase tracking-wide">

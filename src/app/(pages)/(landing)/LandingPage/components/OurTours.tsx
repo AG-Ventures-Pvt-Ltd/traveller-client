@@ -6,6 +6,7 @@ import { ArrowUpRight } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import MyImage from '@/common/ui/Image'
 import ArrowButton from '@/common/ui/Buttons/ArrowButton'
+import './OurTours.css'
 
 interface Trip {
   days: string
@@ -35,8 +36,8 @@ const OurTours = () => {
   }
 
   return (
-    <section className="flex flex-col gap-6 sm:gap-8 px-4 sm:px-6 lg:px-9 py-12 sm:py-16 lg:py-24 w-full">
-      <div className="flex flex-col gap-4 sm:gap-6">
+    <section className="flex flex-col gap-6 sm:gap-8 px-0 sm:px-6 lg:px-9 py-12 sm:py-16 lg:py-24 w-full">
+      <div className="flex flex-col gap-4 sm:gap-6 pl-6 sm:pl-0">
         <div className="px-3 sm:px-4 py-2 bg-neutral-50 rounded-full inline-flex items-center self-start">
           <span className="text-neutral-900 text-xs sm:text-sm font-medium">Our Trips</span>
         </div>
@@ -51,12 +52,12 @@ const OurTours = () => {
           </ArrowButton>
         </div>
       </div>
-      <div className="flex flex-row gap-3 sm:gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x snap-mandatory flex-nowrap">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-2 sm:gap-4 lg:gap-6 overflow-x-auto lg:overflow-visible pb-4 scrollbar-hide snap-x snap-mandatory flex-nowrap lg:flex-wrap px-2 sm:px-0">
         {isLoading ? (
-          Array.from({ length: 4 }).map((_, idx) => (
+          Array.from({ length: 3 }).map((_, idx) => (
             <div
               key={idx}
-              className="relative p-4 sm:p-6 bg-neutral-100 rounded-2xl sm:rounded-3xl overflow-hidden min-h-[200px] sm:min-h-[400px] lg:min-h-[488px] min-w-[280px] sm:min-w-[320px] lg:min-w-[400px] w-[280px] sm:w-[320px] lg:w-[400px] flex-shrink-0 animate-pulse flex flex-col justify-between snap-start"
+              className="relative p-4 sm:p-6 bg-neutral-100 rounded-2xl sm:rounded-3xl overflow-hidden min-h-[200px] sm:min-h-[400px] lg:min-h-[488px] w-[calc((100vw-24px)/2)] sm:min-w-[320px] lg:w-full flex-shrink-0 animate-pulse flex flex-col justify-between snap-start lg:snap-align-none"
             >
               <div className="relative w-8 h-8 sm:w-10 sm:h-10 bg-neutral-200 rounded-full self-end" />
               <div className="relative space-y-2">
@@ -66,47 +67,46 @@ const OurTours = () => {
             </div>
           ))
         ) : (
-          data?.map((trip) => (
-            <div
-              key={trip.tripSlug}
-              onClick={() => handleTripClick(trip.tripSlug)}
-              className="relative rounded-2xl sm:rounded-3xl overflow-hidden min-h-[200px] sm:min-h-[400px] lg:min-h-[488px] min-w-[280px] sm:min-w-[320px] lg:min-w-[400px] w-[280px] sm:w-[320px] lg:w-[400px] flex-shrink-0 flex flex-col cursor-pointer snap-start group"
-            >
-              <div className="absolute inset-0 transition-transform group-hover:scale-105">
-                <MyImage
-                  src={trip.image || 'https://placehold.co/400x488'}
-                  alt={trip.title}
-                  className="w-full h-full"
-                  style={{ objectFit: 'cover' }}
-                />
-              </div>
-              <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/65 rounded-2xl sm:rounded-3xl" />
-              <div className="relative p-4 sm:p-6 flex flex-col justify-between h-full">
-                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-white rounded-full flex items-center justify-center self-end hover:bg-neutral-100 hover:scale-110 transition-all">
-                  <ArrowUpRight size={14} className="sm:w-5 sm:h-5" />
+          <>
+            {data?.map((trip) => (
+              <div
+                key={trip.tripSlug}
+                onClick={() => handleTripClick(trip.tripSlug)}
+                className="relative rounded-2xl sm:rounded-3xl overflow-hidden min-h-[200px] sm:min-h-[400px] lg:min-h-[488px] w-[calc((100vw-24px)/2)] sm:min-w-[320px] lg:w-full flex-shrink-0 flex flex-col cursor-pointer snap-start lg:snap-align-none group"
+              >
+                <div className="absolute inset-0 transition-transform group-hover:scale-105">
+                  <MyImage
+                    src={trip.image || 'https://placehold.co/400x488'}
+                    alt={trip.title}
+                    className="w-full h-full"
+                    style={{ objectFit: 'cover' }}
+                  />
                 </div>
-                <div className='pt-26'>
-                  <h3 className="text-white text-base sm:text-lg font-bold">{trip.title}</h3>
-                  <div className="flex items-baseline gap-1">
-                    <span className="text-white/90 text-xs sm:text-sm font-medium">₹</span>
-                    <span className="text-white text-base sm:text-lg font-bold">{trip.price}</span>
-                    <span className="text-white/90 text-xs sm:text-sm font-medium">/ per person</span>
+                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/65 rounded-2xl sm:rounded-3xl" />
+                <div className="relative p-4 sm:p-6 flex flex-col justify-between h-full">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-white rounded-full flex items-center justify-center self-end hover:bg-neutral-100 hover:scale-110 transition-all">
+                    <ArrowUpRight size={14} className="sm:w-5 sm:h-5" />
+                  </div>
+                  <div className='pt-26 px-2'>
+                    <h3 className="text-white text-base sm:text-lg font-bold">{trip.title}</h3>
+                    <div className="flex items-baseline gap-1">
+                      <span className="text-white/90 text-xs sm:text-sm font-medium">₹</span>
+                      <span className="text-white text-base sm:text-lg font-bold">{trip.price}</span>
+                      <span className="text-white/90 text-xs sm:text-sm font-medium">/ per person</span>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          ))
+            ))}
+            {data && data.length < 3 && Array.from({ length: 3 - data.length }).map((_, idx) => (
+              <div
+                key={`empty-${idx}`}
+                className="hidden lg:block lg:min-h-[488px] lg:w-full opacity-0 pointer-events-none"
+              />
+            ))}
+          </>
         )}
       </div>
-      <style jsx global>{`
-        .scrollbar-hide::-webkit-scrollbar {
-          display: none;
-        }
-        .scrollbar-hide {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
-        }
-      `}</style>
     </section>
   )
 }
