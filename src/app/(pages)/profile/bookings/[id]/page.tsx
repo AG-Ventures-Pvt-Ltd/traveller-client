@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useParams } from 'next/navigation';
-import { CheckCircle2, FileText } from 'lucide-react';
+import { CheckCircle2 } from 'lucide-react';
 import { useGetData } from '@/services/useGetData';
 import { API_ENDPOINTS } from '@/common/constants/apiEndpoints';
 import TripDetailsCard from './components/TripDetailsCard';
@@ -11,7 +11,6 @@ import ContactSection from './components/ContactSection';
 import SectionHeader from './components/SectionHeader';
 import PaymentSummary from './components/PaymentSummary';
 import BackButton from '@/common/ui/BackButton';
-import { EmergencyContact } from '../../types';
 
 interface BookingDetails {
   bookingId: string;
@@ -26,17 +25,21 @@ interface BookingDetails {
     createdAt: string;
   };
   travelers: Array<{
-    firstName: string;
-    lastName: string;
+    fullName: string;
     email: string;
     phone: string;
   }>;
   payment: {
     tripPrice: number;
-    status : string;
+    status: string;
     paymentMethod: string;
     gatewayTransactionId:string;
   };
+}
+
+export interface EmergencyContact {
+  name: string;
+  contactNumber: string;
 }
 
 const BookingDetails = () => {
@@ -96,7 +99,7 @@ const BookingDetails = () => {
             <div className="bg-white rounded-3xl border-2 border-gray-200 p-6 sm:p-8 flex flex-col gap-6">
               <SectionHeader number="1" title="Traveler Information" />
               <div className="flex flex-col gap-6">
-                {bookingData.travelers.map((traveler, index) => (
+                {bookingData?.travelers?.map((traveler, index) => (
                   <TravelerCard
                     key={index}
                     traveler={traveler}
@@ -108,9 +111,9 @@ const BookingDetails = () => {
             </div>
             <div className="bg-white rounded-3xl border-2 border-gray-200 p-6 sm:p-8 flex flex-col gap-6">
               <SectionHeader number="2" title="Contact Information" />
-              <ContactSection contact={{ emergencyName: emergencyContact?.name || '', emergencyPhone: emergencyContact?.phone || '' }} />
+              <ContactSection contact={{ emergencyName: emergencyContact?.name || '', emergencyPhone: emergencyContact?.contactNumber || '' }} />
             </div>
-            <div className="bg-white rounded-3xl border-2 border-gray-200 p-6 sm:p-8 flex flex-col gap-4">
+            {/* <div className="bg-white rounded-3xl border-2 border-gray-200 p-6 sm:p-8 flex flex-col gap-4">
               <SectionHeader
                 icon={FileText}
                 title="Cancellation Policy"
@@ -119,7 +122,7 @@ const BookingDetails = () => {
               <p className="text-neutral-700 text-sm font-medium font-['Satoshi'] leading-relaxed">
                 Free cancellation up to 24 hours before the tour starts. After that, 50% refund until 12 hours before. No refund for cancellations within 12 hours of tour start time.
               </p>
-            </div>
+            </div> */}
           </div>
           <div className="lg:col-span-1">
             <div className="lg:sticky lg:top-26">

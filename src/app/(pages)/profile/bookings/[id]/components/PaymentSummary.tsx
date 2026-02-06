@@ -1,9 +1,9 @@
 import React from 'react';
-import { CreditCard } from 'lucide-react';
+import { CreditCard, IndianRupee } from 'lucide-react';
 
 interface PaymentDetails {
   tripPrice: number;
-  // total: number;
+  status: string;
   paymentMethod: string;
   gatewayTransactionId:string;
 }
@@ -18,25 +18,42 @@ const PaymentSummary: React.FC<PaymentSummaryProps> = ({ payment }) => {
       <h2 className="text-neutral-900 text-xl font-bold font-['Satoshi']">Payment Summary</h2>
       
       <div className="flex flex-col gap-4">
+        <div className={`mt-2 px-4 pt-3 pb-2 rounded-xl ${
+          payment.status === 'pending' || payment.status === 'failed' 
+            ? 'bg-yellow-50 border border-yellow-200' 
+            : 'bg-green-50 border border-green-200'
+        }`}>
+          <p className="text-neutral-700 text-xs font-medium font-['Satoshi']">Payment Status</p>
+          <p className={`text-sm font-bold font-['Satoshi'] mt-1 ${
+            payment.status === 'pending' || payment.status === 'failed' 
+              ? 'text-yellow-700' 
+              : 'text-green-700'
+          }`}>
+            {payment.status.charAt(0).toUpperCase() + payment.status.slice(1)}
+          </p>
+        </div>
 
-        {/* Total */}
-        {/* <div className="flex justify-between items-center">
-          <span className="text-neutral-900 text-base font-bold font-['Satoshi']">
-            Total
-          </span>
-          <span className="text-neutral-900 text-2xl font-bold font-['Satoshi'] flex items-center">
-            <IndianRupee className="w-5 h-5" />
-            {payment.total.toLocaleString()}
-          </span>
-        </div> */}
-
-        {/* Payment Method */}
         <div className="mt-2 px-4 pt-3 pb-2 bg-neutral-50 rounded-xl">
           <p className="text-neutral-700 text-xs font-medium font-['Satoshi']">Payment Method</p>
           <div className="flex items-center gap-2 mt-1">
             <CreditCard className="w-4 h-4 text-neutral-900" />
             <p className="text-neutral-900 text-sm font-bold font-['Satoshi']">{payment.paymentMethod}</p>
           </div>
+        </div>
+
+        {payment.status === 'completed' && (
+          <div className="mt-2 px-4 pt-3 pb-2 bg-neutral-50 rounded-xl">
+            <p className="text-neutral-700 text-xs font-medium font-['Satoshi']">Total Paid</p>
+            <div className="flex items-center gap-1 mt-1">
+              <IndianRupee className="w-4 h-4 text-neutral-900" />
+              <p className="text-neutral-900 text-sm font-bold font-['Satoshi']">{payment.tripPrice.toLocaleString()}</p>
+            </div>
+          </div>
+        )}
+
+        <div className="mt-2 px-4 pt-3 pb-2 bg-neutral-50 rounded-xl">
+          <p className="text-neutral-700 text-xs font-medium font-['Satoshi']">Payment ID</p>
+          <p className="text-neutral-900 text-sm font-bold font-['Satoshi'] mt-1 break-all">{payment.gatewayTransactionId}</p>
         </div>
       </div>
     </div>
