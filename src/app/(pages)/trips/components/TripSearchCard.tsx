@@ -128,7 +128,7 @@ const TripSearchCard: React.FC<TripSearchCardProps> = ({
                 <Button
                     color="primary"
                     onClick={onViewDetails}
-                    className="bg-neutral-900 hover:bg-neutral-800 text-white font-bold rounded-xl h-10 md:h-12 text-sm md:text-base px-6 md:w-full md:px-0"
+                    className="bg-neutral-900 hover:bg-neutral-800 text-white font-bold rounded-xl h-10 md:h-12 text-sm md:text-base px-6 md:w-full md:px-0 whitespace-nowrap"
                 >
                     View Details
                 </Button>
