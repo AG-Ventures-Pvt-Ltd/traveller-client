@@ -34,7 +34,7 @@ const HeroSection = () => {
                     <nav className="flex gap-3" aria-label="Tour features">
                         <div className="px-4 py-3 bg-white/10 rounded-full backdrop-blur-[5px] inline-flex justify-center items-center gap-1.5">
                             <ShieldCheck size={16} className="text-neutral-50/90" aria-hidden="true" />
-                            <span className="text-white text-sm font-medium">Private Trips</span>
+                            <span className="text-white text-sm font-medium">Group Trips</span>
                         </div>
                         <div className="px-4 py-3 bg-white/10 rounded-full backdrop-blur-[5px] inline-flex justify-center items-center gap-1.5">
                             <CarTaxiFront size={16} className="text-neutral-50/90" aria-hidden="true" />

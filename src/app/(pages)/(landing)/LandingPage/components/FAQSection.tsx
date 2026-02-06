@@ -32,7 +32,7 @@ const FAQSection: React.FC<FAQSectionProps> = ({ content }) => {
     const router = useRouter()
 
     return (
-        <section className="flex flex-col gap-6 md:gap-10 px-5 md:px-9 py-12 md:py-24 w-full" aria-labelledby="faq-heading">
+        <section className="flex flex-col gap-6 md:gap-10 px-5 md:px-40 py-12 md:py-24 w-full" aria-labelledby="faq-heading">
             <header className="flex flex-col md:flex-row gap-4">
                 <div className="px-4 py-2 bg-zinc-100 rounded-full inline-flex items-center self-start">
                     <span className="text-neutral-900 text-sm font-medium">FAQ</span>

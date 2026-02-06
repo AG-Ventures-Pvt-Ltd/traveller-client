@@ -25,12 +25,23 @@ const generateUniqueFilename = (originalFile: File): string => {
 
 const getPresignedUrl = async (
   fileName: string,
-  fileType: string
+  fileType: string,
+  key?: string
 ): Promise<PresignedUrlResponse> => {
   try {
+    let url = "/api/client/v1/s3upload/geturl";
+    const params = new URLSearchParams();
+    if (key) {
+      params.append('key', key);
+    }
+
+    const queryString = params.toString();
+    if (queryString) {
+      url += `?${queryString}`;
+    }
 
     const response = await baseAPI.post<{ data: PresignedUrlResponse }>(
-      "/api/client/v1/s3upload/geturl",
+      url,
       {
         fileName,
         fileType,
@@ -66,9 +77,6 @@ const uploadToS3 = async (
   }
 };
 
-/**
- * Get S3 path (everything after the domain)
- */
 const getS3Path = (presignedUrl: string): string => {
   const urlWithoutQuery = presignedUrl.split("?")[0];
   try {
@@ -81,19 +89,12 @@ const getS3Path = (presignedUrl: string): string => {
   }
 };
 
-/**
- * Custom hook for S3 image uploads
- */
 const useS3Upload = (): UseS3UploadReturn => {
   const [isUploading, setIsUploading] = useState(false);
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState<string | undefined>();
 
-  /**
-   * Upload single or multiple images to S3
-   * @param files - Array of files to upload (can be a single file in an array)
-   */
-  const uploadImages = async (files: File[]): Promise<UploadResult[]> => {
+  const uploadImages = async (files: File[], key?: string): Promise<UploadResult[]> => {
     if (!files || files.length === 0) {
       notify.error("No files provided for upload");
       return [];
@@ -116,7 +117,8 @@ const useS3Upload = (): UseS3UploadReturn => {
           // Get presigned URL from backend
           const { url: presignedUrl } = await getPresignedUrl(
             uniqueFilename,
-            file.type
+            file.type,
+            key
           );
 
           // Upload to S3

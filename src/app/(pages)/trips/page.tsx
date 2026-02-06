@@ -134,8 +134,8 @@ export default function Page() {
 
   return (
     <div className='flex flex-col py-2 mb-8'>
-      <BackButton className='ml-[1%]' />
       <div className='mb-4 mx-[1%] flex items-center justify-between'>
+      <BackButton className='ml-[1%]'/>
         <div className='md:hidden'>
           <Button
             onClick={() => setIsFilterModalOpen(true)}

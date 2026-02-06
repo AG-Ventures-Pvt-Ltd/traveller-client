@@ -56,7 +56,7 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({ tripId, batchId, guests = 1
   return (
     <Card variant='fill' className="w-full rounded-3xl p-4 sm:p-5 bg-white!">
       <div className='flex flex-col sm:flex-row gap-3 sm:gap-4'>
-        <div className="relative aspect-[2/2] rounded-2xl overflow-hidden w-full sm:w-[32%] h-32 sm:h-auto">
+        <div className="relative aspect-[2/2] rounded-2xl overflow-hidden w-full sm:w-[20%] lg:w-[32%] h-48 sm:h-auto">
           <MyImage
             src={batchDetails?.tripImage || ''}
             alt={'Cover Image'}
@@ -64,7 +64,7 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({ tripId, batchId, guests = 1
             className="h-full w-full"
           />
         </div>
-        <div className="flex-1 flex flex-col gap-1.5">
+        <div className="flex-1 flex flex-col justify-center gap-3">
           <h3 className="text-neutral-900 text-base sm:text-lg font-bold font-['Satoshi'] leading-tight">
             {batchDetails?.tripTitle}
           </h3>
