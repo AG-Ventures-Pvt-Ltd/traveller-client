@@ -79,11 +79,11 @@ const CONTENT = {
 
 const LandingPage = () => {
   return (
-    <main className="flex flex-col items-center">
+    <main className="flex flex-col items-center overflow-hidden">
       <div className="w-full px-[3%] md:px-[1%]">
         <HeroSection />
       </div>
-      <div className='flex flex-col justify-center mx-[4%] md:mx-[6%]'>
+      <div className='flex flex-col justify-center mx-0 md:mx-[6%] w-full overflow-hidden'>
         <ExploreSection content={CONTENT.hero} />
         <OurTours />
         <FAQSection content={CONTENT.faq} />

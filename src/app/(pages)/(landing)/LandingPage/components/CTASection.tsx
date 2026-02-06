@@ -20,7 +20,7 @@ const CTASection: React.FC<CTASectionProps> = ({ content }) => {
 
 
   return (
-    <section className="px-5 md:px-10 py-12 md:py-24 bg-neutral-50 rounded-2xl md:rounded-3xl flex flex-col lg:flex-row gap-8 md:gap-10 w-full" aria-labelledby="cta-heading">
+    <section className="px-5 md:px-40 py-12 md:py-24 bg-neutral-50 rounded-2xl md:rounded-3xl flex flex-col lg:flex-row gap-8 md:gap-10 w-full" aria-labelledby="cta-heading">
       <div className="flex flex-col justify-between flex-1 gap-6 md:gap-0">
         <header className="flex flex-col gap-4 md:gap-6">
           <div className="px-4 py-2 bg-zinc-100 rounded-full inline-flex items-center self-start">
