@@ -5,7 +5,7 @@ interface PaymentDetails {
   tripPrice: number;
   status: string;
   paymentMethod: string;
-  gatewayTransactionId:string;
+  gatewayOrderId: string;
 }
 
 interface PaymentSummaryProps {
@@ -53,7 +53,7 @@ const PaymentSummary: React.FC<PaymentSummaryProps> = ({ payment }) => {
 
         <div className="mt-2 px-4 pt-3 pb-2 bg-neutral-50 rounded-xl">
           <p className="text-neutral-700 text-xs font-medium font-['Satoshi']">Payment ID</p>
-          <p className="text-neutral-900 text-sm font-bold font-['Satoshi'] mt-1 break-all">{payment.gatewayTransactionId}</p>
+          <p className="text-neutral-900 text-sm font-bold font-['Satoshi'] mt-1 break-all">{payment.gatewayOrderId}</p>
         </div>
       </div>
     </div>

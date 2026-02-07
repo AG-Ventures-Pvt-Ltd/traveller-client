@@ -11,6 +11,7 @@ import ContactSection from './components/ContactSection';
 import SectionHeader from './components/SectionHeader';
 import PaymentSummary from './components/PaymentSummary';
 import BackButton from '@/common/ui/BackButton';
+import { usePayment } from '@/app/(pages)/trip/book/[id]/[batchId]/hooks/usePayment';
 
 interface BookingDetails {
   bookingId: string;
@@ -33,7 +34,7 @@ interface BookingDetails {
     tripPrice: number;
     status: string;
     paymentMethod: string;
-    gatewayTransactionId:string;
+    gatewayOrderId: string;
   };
 }
 
@@ -48,6 +49,43 @@ const BookingDetails = () => {
 
   const { data: bookingData, isLoading, error } = useGetData<BookingDetails>(API_ENDPOINTS.BOOKINGS.GET_BY_ID(id));
   const { data: emergencyContact } = useGetData<EmergencyContact>(API_ENDPOINTS.USER.GET_EMERGENCY_CONTACT);
+  const { openRazorpay } = usePayment();
+
+  const getStatusConfig = () => {
+    if (bookingData?.status === 'cancelled' && bookingData?.payment?.status === 'cancelled') {
+      return {
+        bgColor: 'bg-red-100',
+        textColor: 'text-red-700',
+        iconColor: 'text-red-700',
+        showRetryButton: false
+      };
+    } else if (bookingData?.status === 'pending' && bookingData?.payment?.status === 'pending') {
+      return {
+        bgColor: 'bg-yellow-100',
+        textColor: 'text-yellow-700',
+        iconColor: 'text-yellow-700',
+        showRetryButton: true
+      };
+    } else {
+      return {
+        bgColor: 'bg-green-100',
+        textColor: 'text-green-700',
+        iconColor: 'text-green-700',
+        showRetryButton: false
+      };
+    }
+  };
+
+  const statusConfig = getStatusConfig();
+
+  const handleRetry = () => {
+    if (bookingData?.payment?.gatewayOrderId) {
+      openRazorpay({
+        orderId: bookingData.payment.gatewayOrderId,
+        amount: bookingData.payment.tripPrice
+      });
+    }
+  };
 
   if (isLoading) {
     return (
@@ -84,11 +122,21 @@ const BookingDetails = () => {
               Booking ID: {bookingData.bookingId}
             </p>
           </div>
-          <div className="px-4 py-2 bg-green-100 rounded-xl flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4 text-green-700" />
-            <span className="text-green-700 text-sm font-bold font-['Satoshi']">
-              {bookingData.status}
-            </span>
+          <div className="flex items-center gap-3">
+            <div className={`px-4 py-2 ${statusConfig.bgColor} rounded-xl flex items-center gap-2`}>
+              <CheckCircle2 className={`w-4 h-4 ${statusConfig.iconColor}`} />
+              <span className={`text-sm font-bold font-['Satoshi'] ${statusConfig.textColor}`}>
+                {bookingData.status}
+              </span>
+            </div>
+            {statusConfig.showRetryButton && (
+              <button
+                onClick={handleRetry}
+                className="px-4 py-2 bg-black hover:bg-gray-800 text-white rounded-xl text-sm font-bold font-['Satoshi'] transition-colors"
+              >
+                Retry Payment
+              </button>
+            )}
           </div>
         </div>
         <div className="mb-6">
