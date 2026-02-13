@@ -10,6 +10,9 @@ export const useGetData = <T>(
   return useQuery<T>({
     queryKey: [url],
     queryFn: () => getData<T>(url),
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    staleTime: Infinity,
     ...options,
   });
 };
