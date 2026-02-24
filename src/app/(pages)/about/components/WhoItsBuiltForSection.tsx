@@ -17,7 +17,7 @@ const WhoItsBuiltForSection = () => {
           initial={{ opacity: 0, y: 28 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] as const }}
         >
           <h2 className="text-neutral-900 text-3xl sm:text-4xl lg:text-5xl font-bold font-['Satoshi'] leading-tight lg:leading-[52.80px]">
             {WHO_ITS_BUILT_FOR.title}
@@ -36,7 +36,7 @@ const WhoItsBuiltForSection = () => {
               initial={{ opacity: 0, x: index === 0 ? -32 : 32 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true, amount: 0.3 }}
-              transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1], delay: index * 0.12 }}
+              transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] as const, delay: index * 0.12 }}
             >
               <Image
                 className="w-full h-full rounded-3xl object-cover transition-transform duration-500 group-hover:scale-110"
@@ -58,7 +58,7 @@ const WhoItsBuiltForSection = () => {
             initial={{ opacity: 0, x: -32 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] as const }}
             whileHover={{ y: -4 }}
           >
             {/* Icon */}
@@ -85,7 +85,7 @@ const WhoItsBuiltForSection = () => {
                   initial={{ opacity: 0, x: -16 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
-                  transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1], delay: 0.1 + index * 0.07 }}
+                  transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] as const, delay: 0.1 + index * 0.07 }}
                 >
                   <span className="text-white mt-1">•</span>
                   <span>{feature}</span>
@@ -100,7 +100,7 @@ const WhoItsBuiltForSection = () => {
             initial={{ opacity: 0, x: 32 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
+            transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] as const, delay: 0.1 }}
             whileHover={{ y: -4 }}
           >
             {/* Icon */}
@@ -127,7 +127,7 @@ const WhoItsBuiltForSection = () => {
                   initial={{ opacity: 0, x: 16 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
-                  transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1], delay: 0.1 + index * 0.07 }}
+                  transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] as const, delay: 0.1 + index * 0.07 }}
                 >
                   <span className="text-neutral-900 mt-1">•</span>
                   <span>{feature}</span>

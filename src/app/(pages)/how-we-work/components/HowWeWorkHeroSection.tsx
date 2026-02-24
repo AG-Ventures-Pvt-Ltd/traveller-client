@@ -7,7 +7,7 @@ import { motion } from 'framer-motion'
 const fadeUp = (delay = 0) => ({
   initial: { opacity: 0, y: 32 },
   animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.75, ease: [0.22, 1, 0.36, 1], delay },
+  transition: { duration: 0.75, ease: [0.22, 1, 0.36, 1] as const, delay },
 })
 
 const HowWeWorkHeroSection = () => {
@@ -52,23 +52,23 @@ const HowWeWorkHeroSection = () => {
         <div className="max-w-[1520px] mx-auto w-full grid grid-cols-2 gap-16 items-center">
           {/* Left - Content */}
           <motion.header className="flex flex-col gap-8" initial="hidden" animate="visible" variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.15, delayChildren: 0.2 } } }}>
-            <motion.div className="inline-flex self-start" variants={{ hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0, transition: { duration: 0.65, ease: [0.22, 1, 0.36, 1] } } }}>
+            <motion.div className="inline-flex self-start" variants={{ hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0, transition: { duration: 0.65, ease: [0.22, 1, 0.36, 1] as const } } }}>
               <div className="px-5 py-2.5 bg-white/10 backdrop-blur-md rounded-full border border-white/20">
                 <span className="text-white text-sm font-semibold">How It Works</span>
               </div>
             </motion.div>
 
-            <motion.h1 className="text-white text-6xl lg:text-7xl font-medium leading-[1.1]" variants={{ hidden: { opacity: 0, y: 32 }, visible: { opacity: 1, y: 0, transition: { duration: 0.75, ease: [0.22, 1, 0.36, 1] } } }}>
+            <motion.h1 className="text-white text-6xl lg:text-7xl font-medium leading-[1.1]" variants={{ hidden: { opacity: 0, y: 32 }, visible: { opacity: 1, y: 0, transition: { duration: 0.75, ease: [0.22, 1, 0.36, 1] as const } } }}>
               How Booking a<br />Group Trip<br />
               <span className="text-neutral-400">Works</span>
             </motion.h1>
 
-            <motion.p className="text-neutral-300 text-xl font-medium leading-relaxed max-w-lg" variants={{ hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0, transition: { duration: 0.65, ease: [0.22, 1, 0.36, 1] } } }}>
+            <motion.p className="text-neutral-300 text-xl font-medium leading-relaxed max-w-lg" variants={{ hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0, transition: { duration: 0.65, ease: [0.22, 1, 0.36, 1] as const } } }}>
               Discover, compare, and book verified group trips across India in a few simple steps.
             </motion.p>
 
             {/* Info Cards */}
-            <motion.div className="flex gap-4 pt-4" variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } } }}>
+            <motion.div className="flex gap-4 pt-4" variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] as const } } }}>
               <div className="flex items-center gap-3 p-5 bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 flex-1">
                 <div className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center">
                   <MousePointerClick size={24} className="text-white" aria-hidden="true" />

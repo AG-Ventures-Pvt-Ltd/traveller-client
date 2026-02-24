@@ -39,7 +39,7 @@ const FAQSection: React.FC<FAQSectionProps> = ({ content }) => {
                 initial={{ opacity: 0, y: 32 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.3 }}
-                transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+                transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] as const }}
             >
                 <div className="px-4 py-2 bg-zinc-100 rounded-full inline-flex items-center self-start">
                     <span className="text-neutral-900 text-sm font-medium">FAQ</span>
@@ -59,7 +59,7 @@ const FAQSection: React.FC<FAQSectionProps> = ({ content }) => {
                                 initial={{ opacity: 0, y: 28 }}
                                 whileInView={{ opacity: 1, y: 0 }}
                                 viewport={{ once: true, amount: 0.2 }}
-                                transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1], delay: idx * 0.08 }}
+                                transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] as const, delay: idx * 0.08 }}
                                 className="p-4 md:p-6 bg-neutral-50 rounded-2xl md:rounded-3xl cursor-pointer hover:bg-neutral-100 transition-colors"
                                 onClick={() => toggleFaq(idx)}
                             >
@@ -86,7 +86,7 @@ const FAQSection: React.FC<FAQSectionProps> = ({ content }) => {
                                             initial={{ height: 0, opacity: 0 }}
                                             animate={{ height: 'auto', opacity: 1 }}
                                             exit={{ height: 0, opacity: 0 }}
-                                            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+                                            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] as const }}
                                             className="overflow-hidden"
                                         >
                                             <p className="text-neutral-700 text-sm md:text-base font-medium mt-3">
@@ -105,7 +105,7 @@ const FAQSection: React.FC<FAQSectionProps> = ({ content }) => {
                     initial={{ opacity: 0, x: -40 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true, amount: 0.2 }}
-                    transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+                    transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] as const }}
                 >
                     <article className="relative p-6 md:p-8 bg-cover bg-center rounded-2xl md:rounded-3xl overflow-hidden min-h-[300px] md:min-h-[450px] flex flex-col justify-end cursor-pointer group">
                         <Image

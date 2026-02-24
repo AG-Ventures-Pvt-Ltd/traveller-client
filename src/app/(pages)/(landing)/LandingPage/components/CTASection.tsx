@@ -25,7 +25,7 @@ const CTASection: React.FC<CTASectionProps> = ({ content }) => {
         initial={{ opacity: 0, x: -48 }}
         whileInView={{ opacity: 1, x: 0 }}
         viewport={{ once: true, amount: 0.25 }}
-        transition={{ duration: 0.85, ease: [0.22, 1, 0.36, 1] }}
+        transition={{ duration: 0.85, ease: [0.22, 1, 0.36, 1] as const }}
       >
         <header className="flex flex-col gap-4 md:gap-6">
           <motion.div
@@ -60,7 +60,7 @@ const CTASection: React.FC<CTASectionProps> = ({ content }) => {
         initial={{ opacity: 0, x: 48 }}
         whileInView={{ opacity: 1, x: 0 }}
         viewport={{ once: true, amount: 0.25 }}
-        transition={{ duration: 0.85, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
+        transition={{ duration: 0.85, ease: [0.22, 1, 0.36, 1] as const, delay: 0.1 }}
       >
         <motion.div
           className="rounded-2xl md:rounded-3xl overflow-hidden flex-1"

@@ -21,7 +21,7 @@ const PartnerGrowth = () => {
                     initial={{ opacity: 0, x: -48 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true, amount: 0.2 }}
-                    transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+                    transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] as const }}
                 >
                     {/* Badge */}
                     <div className="inline-flex items-center justify-center bg-neutral-50 rounded-full px-4 py-2 self-start">
@@ -76,7 +76,7 @@ const PartnerGrowth = () => {
                     initial={{ opacity: 0, x: 48 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true, amount: 0.2 }}
-                    transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
+                    transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] as const, delay: 0.1 }}
                 >
                     <div className="relative rounded-3xl overflow-hidden w-full max-w-[660px] aspect-[620/550] group">
                         <Image

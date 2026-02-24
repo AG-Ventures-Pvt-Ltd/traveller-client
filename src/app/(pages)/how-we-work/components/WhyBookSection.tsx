@@ -30,7 +30,7 @@ const WhyBookSection = () => {
         initial={{ opacity: 0, y: 28 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.3 }}
-        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] as const }}
       >
         <div className="px-4 py-2 bg-neutral-100 rounded-full inline-flex items-center self-center">
           <span className="text-neutral-900 text-sm font-medium">Why Choose Us</span>
@@ -53,7 +53,7 @@ const WhyBookSection = () => {
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.2 }}
-              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: index * 0.12 }}
+              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] as const, delay: index * 0.12 }}
               whileHover={{ y: -6, transition: { duration: 0.25 } }}
             >
               {/* Icon */}

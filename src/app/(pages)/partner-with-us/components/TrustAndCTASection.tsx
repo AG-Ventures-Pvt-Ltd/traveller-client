@@ -13,7 +13,7 @@ const TrustSection = () => {
         initial={{ opacity: 0, x: -40 }}
         whileInView={{ opacity: 1, x: 0 }}
         viewport={{ once: true, amount: 0.25 }}
-        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] as const }}
       >
         <header className="flex flex-col gap-4 md:gap-6">
           <div className="px-4 py-2 bg-neutral-50 rounded-full inline-flex items-center self-start gap-2">
@@ -38,7 +38,7 @@ const TrustSection = () => {
         initial={{ opacity: 0, x: 40 }}
         whileInView={{ opacity: 1, x: 0 }}
         viewport={{ once: true, amount: 0.25 }}
-        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
+        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] as const, delay: 0.1 }}
       >
         <Image
           src="/png/S23.jpg"
@@ -61,7 +61,7 @@ const FinalCTASection = () => {
         initial={{ opacity: 0, y: 32 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
+        transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] as const }}
       >
         <h2 id="final-cta-heading" className="text-3xl md:text-4xl lg:text-5xl font-medium leading-tight text-white">
           Ready to Grow Your<br className="hidden md:block" /> 
@@ -78,7 +78,7 @@ const FinalCTASection = () => {
         initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
+        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] as const, delay: 0.2 }}
       >
         <button 
           className="w-full sm:w-auto px-6 md:px-8 py-3 md:py-4 bg-white text-neutral-900 rounded-full font-bold hover:bg-neutral-100 hover:scale-105 transition-transform cursor-pointer text-sm md:text-base"

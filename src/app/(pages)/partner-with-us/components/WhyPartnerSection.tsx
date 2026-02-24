@@ -19,7 +19,7 @@ const WhyPartnerSection = () => {
         initial={{ opacity: 0, y: 28 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.3 }}
-        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] as const }}
       >
         <div className="px-4 py-2 bg-neutral-50 rounded-full inline-flex items-center self-start">
           <span className="text-neutral-900 text-sm font-medium">Why Partner</span>
@@ -40,7 +40,7 @@ const WhyPartnerSection = () => {
             initial={{ opacity: 0, y: 32 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1], delay: index * 0.1 }}
+            transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] as const, delay: index * 0.1 }}
           >
             <div className="w-6 h-6 md:w-8 md:h-8 bg-neutral-900 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
               <Check size={16} className="text-white" aria-hidden="true" />

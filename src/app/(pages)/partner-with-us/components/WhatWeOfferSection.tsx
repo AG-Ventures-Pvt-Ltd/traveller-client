@@ -39,7 +39,7 @@ const WhatWeOfferSection = () => {
             initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.3 }}
-            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] as const }}
         >
                 <div className="px-4 py-2 bg-neutral-50 rounded-full inline-flex items-center self-start">
                     <span className="text-neutral-900 text-sm font-medium">Benefits</span>
@@ -60,7 +60,7 @@ const WhatWeOfferSection = () => {
                             initial={{ opacity: 0, y: 36 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true, amount: 0.15 }}
-                            transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1], delay: index * 0.09 }}
+                            transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] as const, delay: index * 0.09 }}
                             whileHover={{ y: -5, transition: { duration: 0.25 } }}
                         >
                             <div className="w-12 h-12 md:w-14 md:h-14 bg-neutral-900 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">

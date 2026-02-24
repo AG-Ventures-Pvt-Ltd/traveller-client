@@ -39,7 +39,7 @@ const PartnersFlowSection = () => {
         initial={{ opacity: 0, y: 28 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.3 }}
-        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] as const }}
       >
         <div className="px-4 py-2 bg-zinc-100 rounded-full inline-flex items-center self-start">
           <span className="text-neutral-900 text-sm font-medium">For Trip Operators</span>
@@ -62,7 +62,7 @@ const PartnersFlowSection = () => {
               initial={{ opacity: 0, y: 36 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.2 }}
-              transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1], delay: index * 0.1 }}
+              transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] as const, delay: index * 0.1 }}
               whileHover={{ y: -4, transition: { duration: 0.25 } }}
             >
               {/* Step Number Badge */}

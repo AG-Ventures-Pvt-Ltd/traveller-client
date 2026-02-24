@@ -23,7 +23,7 @@ const inView = (direction: 'left' | 'right' | 'up' = 'up', delay = 0) => ({
   },
   whileInView: { opacity: 1, x: 0, y: 0 },
   viewport: { once: true, amount: 0.2 },
-  transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1], delay },
+  transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] as const, delay },
 })
 
 const ExploreSection: React.FC<ExploreSectionProps> = ({ content }) => {

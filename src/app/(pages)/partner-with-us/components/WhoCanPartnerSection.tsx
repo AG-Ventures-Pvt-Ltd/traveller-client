@@ -31,7 +31,7 @@ const WhoCanPartnerSection = () => {
         initial={{ opacity: 0, y: 28 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.3 }}
-        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] as const }}
       >
         <div className="px-4 py-2 bg-zinc-100 rounded-full inline-flex items-center self-start">
           <span className="text-neutral-900 text-sm font-medium">Eligibility</span>
@@ -54,7 +54,7 @@ const WhoCanPartnerSection = () => {
               initial={{ opacity: 0, x: index % 2 === 0 ? -32 : 32 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true, amount: 0.2 }}
-              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: index * 0.1 }}
+              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] as const, delay: index * 0.1 }}
             >
               <div className="w-14 h-14 md:w-16 md:h-16 bg-neutral-900 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
                 <IconComponent size={28} className="text-white" aria-hidden="true" />

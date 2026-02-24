@@ -29,7 +29,7 @@ const HowItWorksSection = () => {
         initial={{ opacity: 0, y: 28 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.3 }}
-        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] as const }}
       >
         <div className="px-4 py-2 bg-neutral-50 rounded-full inline-flex items-center self-start">
           <span className="text-neutral-900 text-sm font-medium">Process</span>
@@ -51,7 +51,7 @@ const HowItWorksSection = () => {
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.2 }}
-              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: index * 0.12 }}
+              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] as const, delay: index * 0.12 }}
               whileHover={{ y: -5, transition: { duration: 0.25 } }}
             >
               {/* Numbered Box */}

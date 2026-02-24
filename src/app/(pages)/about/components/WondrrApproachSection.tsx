@@ -14,7 +14,7 @@ const WondrrApproachSection = () => {
           initial={{ opacity: 0, y: 28 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] as const }}
         >
           <h2 className="text-neutral-900 text-3xl sm:text-4xl lg:text-5xl font-bold font-['Satoshi'] leading-tight lg:leading-[52.80px]">
             {WONDRR_APPROACH.title}
@@ -35,7 +35,7 @@ const WondrrApproachSection = () => {
                 initial={{ opacity: 0, y: 32 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.2 }}
-                transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1], delay: index * 0.1 }}
+                transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] as const, delay: index * 0.1 }}
                 whileHover={{ y: -6 }}
               >
                 {/* Icon */}
@@ -63,7 +63,7 @@ const WondrrApproachSection = () => {
           initial={{ opacity: 0, y: 32 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] as const }}
         >
           <Image 
             fill 

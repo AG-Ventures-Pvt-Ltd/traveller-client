@@ -10,7 +10,7 @@ const stagger = {
 }
 const fadeUp = (delay = 0) => ({
   hidden: { opacity: 0, y: 28 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.75, ease: [0.22, 1, 0.36, 1], delay } },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.75, ease: [0.22, 1, 0.36, 1] as const, delay } },
 })
 
 const AboutHeroSection = () => {
@@ -74,7 +74,7 @@ const AboutHeroSection = () => {
         className="flex-1 flex justify-center lg:justify-end items-start mt-6 lg:mt-0 w-full"
         initial={{ opacity: 0, x: 48 }}
         animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
+        transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] as const, delay: 0.2 }}
       >
         <div className="relative w-full max-w-sm sm:max-w-md lg:max-w-2xl h-64 sm:h-80 lg:h-120 overflow-hidden rounded-2xl sm:rounded-3xl group">
           <Image 

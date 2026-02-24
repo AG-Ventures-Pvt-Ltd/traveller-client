@@ -20,7 +20,7 @@ const FinalCTASection = () => {
                     initial={{ opacity: 0, scale: 0.6, rotate: -15 }}
                     whileInView={{ opacity: 1, scale: 1, rotate: 0 }}
                     viewport={{ once: true }}
-                    transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+                    transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] as const }}
                 >
                     <Compass size={40} className="text-white" aria-hidden="true" />
                 </motion.div>
@@ -29,7 +29,7 @@ const FinalCTASection = () => {
                     initial={{ opacity: 0, y: 32 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1], delay: 0.15 }}
+                    transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] as const, delay: 0.15 }}
                 >
                     <h2 id="final-cta-heading" className="text-3xl md:text-4xl lg:text-6xl font-medium leading-tight text-white">
                         Ready to Plan Your<br className="hidden md:block" />
@@ -45,7 +45,7 @@ const FinalCTASection = () => {
                     initial={{ opacity: 0, y: 24 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: 0.35 }}
+                    transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] as const, delay: 0.35 }}
                 >
                     <button
                         onClick={() => router.push('/trips')}

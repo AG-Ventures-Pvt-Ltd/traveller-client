@@ -20,7 +20,7 @@ const VisionSection = () => {
       >
         <motion.div
           className="flex items-center justify-center gap-4"
-          variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } } }}
+          variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] as const } } }}
         >
           <div className="h-8 sm:h-10 bg-white/10 rounded-full flex items-center px-3 sm:px-4 gap-2">
             <BadgeIcon className="text-white w-4 h-4 sm:w-5 sm:h-5" aria-hidden="true" />
@@ -33,7 +33,7 @@ const VisionSection = () => {
         {/* Title */}
         <motion.h2
           className="text-center text-white text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold font-['Satoshi'] leading-tight lg:leading-[61.60px]"
-          variants={{ hidden: { opacity: 0, y: 28 }, visible: { opacity: 1, y: 0, transition: { duration: 0.75, ease: [0.22, 1, 0.36, 1] } } }}
+          variants={{ hidden: { opacity: 0, y: 28 }, visible: { opacity: 1, y: 0, transition: { duration: 0.75, ease: [0.22, 1, 0.36, 1] as const } } }}
         >
           {VISION_SECTION.title.split('\n').map((line, i) => (
             <React.Fragment key={i}>
@@ -46,7 +46,7 @@ const VisionSection = () => {
         {/* Description */}
         <motion.p
           className="text-center text-white/80 text-base sm:text-lg lg:text-xl font-medium font-['Satoshi'] leading-6 sm:leading-7 lg:leading-8"
-          variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.65, ease: [0.22, 1, 0.36, 1] } } }}
+          variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.65, ease: [0.22, 1, 0.36, 1] as const } } }}
         >
           {VISION_SECTION.description}
         </motion.p>
@@ -54,7 +54,7 @@ const VisionSection = () => {
         {/* Commitment Card */}
         <motion.article
           className="bg-white/5 rounded-2xl sm:rounded-3xl outline-2 outline-offset-[-1.84px] outline-white/10 p-6 sm:p-8 lg:p-10 text-center"
-          variants={{ hidden: { opacity: 0, y: 32, scale: 0.97 }, visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] } } }}
+          variants={{ hidden: { opacity: 0, y: 32, scale: 0.97 }, visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] as const } } }}
         >
           <p className="text-white text-lg sm:text-xl lg:text-2xl font-bold font-['Satoshi'] leading-7 sm:leading-8 lg:leading-9">
             {VISION_SECTION.commitment.main.split('\n').map((line, i) => (
@@ -71,7 +71,7 @@ const VisionSection = () => {
         {/* CTA Buttons */}
         <motion.div
           className="flex flex-col sm:flex-row justify-center gap-4"
-          variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } } }}
+          variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] as const } } }}
         >
           <Button 
             className="bg-white! text-neutral-900! w-full sm:w-auto" 

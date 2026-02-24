@@ -95,7 +95,7 @@ const PartnerHeroSection = () => {
             {/* Badge */}
             <motion.div
               className="inline-flex self-start"
-              variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } } }}
+              variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] as const } } }}
             >
               <div className="px-5 py-2.5 bg-white/10 backdrop-blur-md rounded-full border border-white/20">
                 <span className="text-white text-sm font-semibold">Partnership Program</span>
@@ -104,7 +104,7 @@ const PartnerHeroSection = () => {
 
             <motion.header
               className="flex flex-col gap-6"
-              variants={{ hidden: { opacity: 0, y: 32 }, visible: { opacity: 1, y: 0, transition: { duration: 0.75, ease: [0.22, 1, 0.36, 1] } } }}
+              variants={{ hidden: { opacity: 0, y: 32 }, visible: { opacity: 1, y: 0, transition: { duration: 0.75, ease: [0.22, 1, 0.36, 1] as const } } }}
             >
               <h1 className="text-white text-6xl lg:text-6xl font-medium leading-[1.1]">
                 Partner With India’s<br />
@@ -159,7 +159,7 @@ const PartnerHeroSection = () => {
           className="w-[40%] relative rounded-r-3xl overflow-hidden"
           initial={{ opacity: 0, x: 48 }}
           animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: 0.15 }}
+          transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] as const, delay: 0.15 }}
         >
           {/* Main Image */}
           <div className="absolute inset-0">
@@ -179,7 +179,7 @@ const PartnerHeroSection = () => {
             className="absolute bottom-8 left-8 right-8 p-6 bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/20"
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1], delay: 0.7 }}
+            transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] as const, delay: 0.7 }}
           >
             <div className="flex items-center justify-between">
               <div>
