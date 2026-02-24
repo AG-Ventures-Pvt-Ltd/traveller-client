@@ -17,6 +17,7 @@
     "@vercel/analytics": "^1.6.1",
     "axios": "^1.11.0",
     "date-fns": "^4.1.0",
+    "framer-motion": "^12.34.3",
     "google-auth-library": "^10.5.0",
     "lexical": "^0.34.0",
     "lucide-react": "^0.542.0",

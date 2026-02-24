@@ -48,6 +48,8 @@ const Policy = () => {
           <li>Emergency contact details</li>
           <li>Special requests (dietary, medical, accessibility)</li>
           <li>Government ID details (as required by operators)</li>
+          <li>Demographic information such as postcode, preferences and interests (if provided)</li>
+          <li>Other information relevant to customer surveys and/or offers</li>
         </ul>
       </div>
 
@@ -126,6 +128,7 @@ const Policy = () => {
           <li>Respond to your inquiries</li>
           <li>Send important service announcements</li>
           <li>Marketing communications (with your consent)</li>
+          <li>Contact you by phone, fax, or mail for service-related purposes</li>
         </ul>
       </div>
 
@@ -135,6 +138,7 @@ const Policy = () => {
           <li>Understand how our website is used</li>
           <li>Improve user experience and features</li>
           <li>Conduct research and analysis</li>
+          <li>Conduct customer surveys and market research to improve our services</li>
         </ul>
       </div>
 
@@ -280,7 +284,7 @@ const Policy = () => {
 
       <h2 className="text-2xl font-bold mb-4">Marketing Communications</h2>
       <p className="mb-4">
-        With your consent, we may send you marketing emails about new trips, special offers, and updates.
+        With your consent, we may send you marketing emails about new trips, special offers, and updates. With your explicit consent, we may also send you promotional information about third parties which we think you may find interesting.
       </p>
       <p className="mb-6">
         <strong>You can opt out at any time by:</strong>

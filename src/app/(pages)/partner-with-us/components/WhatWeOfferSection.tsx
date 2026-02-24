@@ -1,6 +1,7 @@
 'use client'
 import React from 'react'
 import { Globe, Calendar, DollarSign, Megaphone, Headphones } from 'lucide-react'
+import { motion } from 'framer-motion'
 
 const WhatWeOfferSection = () => {
     const offerings = [
@@ -33,7 +34,13 @@ const WhatWeOfferSection = () => {
 
     return (
         <section className="flex flex-col gap-8 md:gap-12 px-5 md:px-9 py-12 md:py-24 w-full" aria-labelledby="what-we-offer-heading">
-            <header className="flex flex-col gap-4">
+            <motion.header
+            className="flex flex-col gap-4"
+            initial={{ opacity: 0, y: 28 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+        >
                 <div className="px-4 py-2 bg-neutral-50 rounded-full inline-flex items-center self-start">
                     <span className="text-neutral-900 text-sm font-medium">Benefits</span>
                 </div>
@@ -42,14 +49,19 @@ const WhatWeOfferSection = () => {
                     <span className="text-neutral-900">What You Get as a </span>
                     <span className="text-neutral-700">Travel Partner</span>
                 </h2>
-            </header>
+        </motion.header>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
                 {offerings.map((offering, index) => {
                     const IconComponent = offering.icon
                     return (
-                        <article
+                        <motion.article
                             key={index}
                             className="p-6 md:p-8 bg-neutral-50 rounded-2xl md:rounded-3xl flex flex-col gap-4 hover:bg-neutral-100 transition-colors group"
+                            initial={{ opacity: 0, y: 36 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true, amount: 0.15 }}
+                            transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1], delay: index * 0.09 }}
+                            whileHover={{ y: -5, transition: { duration: 0.25 } }}
                         >
                             <div className="w-12 h-12 md:w-14 md:h-14 bg-neutral-900 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
                                 <IconComponent size={24} className="text-white" aria-hidden="true" />
@@ -62,7 +74,7 @@ const WhatWeOfferSection = () => {
                                     {offering.description}
                                 </p>
                             </div>
-                        </article>
+                        </motion.article>
                     )
                 })}
             </div>

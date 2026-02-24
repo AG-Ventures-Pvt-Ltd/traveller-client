@@ -75,6 +75,7 @@ export default function BookingPolicy() {
                     <li>Payment gateway processing charges are non-refundable in all circumstances</li>
                     <li>For international transactions, currency conversion fees charged by your financial institution are your responsibility</li>
                     <li>Wondrr Trips reserves the right to correct pricing errors; in such cases, you will be offered the option to proceed at the correct price or receive a full refund</li>
+                    <li>Wondrr Trips shall be under no liability whatsoever in respect of any loss or damage arising directly or indirectly out of the decline of authorization for any Transaction, on Account of the Cardholder having exceeded the preset limit mutually agreed by us with our acquiring bank from time to time</li>
                 </ul>
 
                 <h2 className="text-2xl font-semibold mb-4">7. Platform Role & Limitation of Liability</h2>
@@ -200,15 +201,14 @@ export default function BookingPolicy() {
                 <h3 className="text-xl font-medium mb-2">14.1 Complaint and Grievance Process</h3>
                 <ul className="list-disc list-inside mb-4 space-y-1">
                     <li>Any complaints or issues should first be reported to Wondrr Trips customer support within 48 hours of experience completion</li>
-                    <li>Contact: support@wondrr.com | +91-XXXX-XXXXXX</li>
+                    <li>Contact: support@wondrr.com | +91-82177-28508</li>
                     <li>We will investigate and attempt resolution within 14 business days</li>
-                    <li>Grievance Officer: [Name] | [Email] | [Phone]</li>
                 </ul>
                 <h3 className="text-xl font-medium mb-2">13.2 Governing Law</h3>
                 <ul className="list-disc list-inside mb-4 space-y-1">
                     <li>These Terms & Conditions are governed by and construed in accordance with the laws of India</li>
-                    <li>Any disputes shall be subject to the exclusive jurisdiction of the courts in [Your City/State], India</li>
-                    <li>For disputes involving amounts exceeding ₹1,00,000, parties agree to binding arbitration in accordance with the Arbitration and Conciliation Act, 1996</li>
+                    {/* <li>Any disputes shall be subject to the exclusive jurisdiction of the courts in Delhi, India</li> */}
+                    {/* <li>For disputes involving amounts exceeding ₹1,00,000, parties agree to binding arbitration in accordance with the Arbitration and Conciliation Act, 1996</li> */}
                 </ul>
                 <h3 className="text-xl font-medium mb-2">13.3 Consumer Rights</h3>
                 <ul className="list-disc list-inside mb-6 space-y-1">
@@ -225,6 +225,7 @@ export default function BookingPolicy() {
                     <li>Engage in fraudulent payment activities</li>
                     <li>Harass, threaten, or abuse Partners, guides, or other participants</li>
                     <li>Violate any applicable laws or regulations during the experience</li>
+                    <li>Engage in unauthorized use of information provided by us, which shall give rise to a claim for damages and/or be a criminal offense</li>
                 </ul>
                 <p className="mb-6">Violation of these terms may result in booking cancellation without refund and account suspension.</p>
 
@@ -234,6 +235,11 @@ export default function BookingPolicy() {
                     <li>If any provision is found to be unenforceable or invalid, the remaining provisions shall remain in full force and effect</li>
                     <li>Wondrr Trips reserves the right to modify these terms at any time; material changes will be communicated via email at least 30 days before taking effect</li>
                     <li>Continued use of the platform after changes constitutes acceptance of modified terms</li>
+                    <li>The content of the pages of this website is subject to change without notice</li>
+                    <li>Our website contains material which is owned by or licensed to us, including but not limited to the design, layout, look, appearance, and graphics; reproduction is prohibited other than in accordance with the copyright notice, which forms part of these terms and conditions</li>
+                    <li>All trademarks reproduced on our website which are not the property of, or licensed to, the operator are acknowledged on the website</li>
+                    <li>From time to time our website may also include links to other websites; these links are provided for your convenience to provide further information</li>
+                    <li>You may not create a link to our website from another website or document without Wondrr Trips&apos; prior written consent</li>
                 </ul>
 
                 <div className="bg-gray-100 p-6 rounded-lg mb-6">

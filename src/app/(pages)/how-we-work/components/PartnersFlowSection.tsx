@@ -1,6 +1,7 @@
 'use client'
 import React from 'react'
 import { UserCheck, ListPlus, Users, Banknote, ChevronRight } from 'lucide-react'
+import { motion } from 'framer-motion'
 
 const PartnersFlowSection = () => {
   const steps = [
@@ -33,7 +34,13 @@ const PartnersFlowSection = () => {
   return (
     <section className="flex flex-col gap-8 md:gap-12 px-5 md:px-9 py-12 md:py-24 w-full bg-neutral-50 rounded-2xl md:rounded-3xl" aria-labelledby="partners-heading">
       {/* Section Header */}
-      <header className="flex flex-col gap-4 max-w-3xl">
+      <motion.header
+        className="flex flex-col gap-4 max-w-3xl"
+        initial={{ opacity: 0, y: 28 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.3 }}
+        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+      >
         <div className="px-4 py-2 bg-zinc-100 rounded-full inline-flex items-center self-start">
           <span className="text-neutral-900 text-sm font-medium">For Trip Operators</span>
         </div>
@@ -42,16 +49,21 @@ const PartnersFlowSection = () => {
           <span className="text-neutral-900">How Partners </span>
           <span className="text-neutral-700">List and Get Bookings</span>
         </h2>
-      </header>
+      </motion.header>
       
       {/* Steps - Mobile: Stack, Desktop: Horizontal Flow */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 md:gap-4">
         {steps.map((step, index) => {
           const IconComponent = step.icon
           return (
-            <article 
+            <motion.article 
               key={index}
               className="relative p-6 bg-white rounded-2xl md:rounded-3xl group hover:shadow-xl transition-all border border-neutral-100"
+              initial={{ opacity: 0, y: 36 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1], delay: index * 0.1 }}
+              whileHover={{ y: -4, transition: { duration: 0.25 } }}
             >
               {/* Step Number Badge */}
               <div className="absolute -top-3 -right-3 md:-top-4 md:-right-4">
@@ -83,7 +95,7 @@ const PartnersFlowSection = () => {
                   <ChevronRight className="w-8 h-8 text-neutral-300" />
                 </div>
               )}
-            </article>
+            </motion.article>
           )
         })}
       </div>

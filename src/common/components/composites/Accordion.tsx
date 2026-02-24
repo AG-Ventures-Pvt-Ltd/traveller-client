@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { ChevronDown, Pen, Check } from 'lucide-react';
 import Card from '@/common/ui/Card';
 
@@ -10,9 +10,10 @@ interface AccordionProps {
   icon?: React.ReactNode;
   number?: number | string;
   children?: React.ReactNode;
-  defaultOpen?: boolean;
+  open?: boolean;
   showEdit?: boolean;
   onEdit?: () => void;
+  onToggle?: (open: boolean) => void;
   disabled?: boolean;
   className?: string;
   isCompleted?: boolean;
@@ -24,25 +25,21 @@ const Accordion: React.FC<AccordionProps> = ({
   icon,
   number,
   children,
-  defaultOpen = false,
+  open = false,
   showEdit = false,
   onEdit,
+  onToggle,
   disabled = false,
   className = '',
   isCompleted = false,
 }) => {
-  const [isOpen, setIsOpen] = useState(defaultOpen);
-
-  // Update isOpen when defaultOpen changes
-  useEffect(() => {
-    setIsOpen(defaultOpen);
-  }, [defaultOpen]);
+  const isOpen = open;
 
   const toggleAccordion = () => {
-    if (!disabled) {
+    if (!disabled && onToggle) {
       // Only allow opening, not closing via header click
       if (!isOpen) {
-        setIsOpen(true);
+        onToggle(true);
       }
     }
   };

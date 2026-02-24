@@ -72,22 +72,31 @@ export function AddTravelerModal({
   }, [open, existingTraveler]);
 
   const handleChange = (field: keyof TravelerDetail, value: string) => {
+    if (field === 'phone') {
+      value = value.replace(/\D/g, '').slice(0, 10);
+    }
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
+  const isValidEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
   const handleSubmit = () => {
-    // Remove _id from payload as it's not needed in the request body
+    if (!formData.fullName || !formData.email || !isValidEmail(formData.email) || !formData.phone || formData.phone.length !== 10) {
+      return;
+    }
+    
     const { ...payload } = formData;
     
     if (existingTraveler) {
-      // Update existing traveler
       updateGuestUser(payload, {
         onSuccess: () => {
           onClose();
         },
       });
     } else {
-      // Create new traveler
       createGuestUser(payload, {
         onSuccess: () => {
           onClose();
@@ -96,7 +105,7 @@ export function AddTravelerModal({
     }
   };
 
-  const isFormValid = formData.fullName && formData.email && formData.phone;
+  const isFormValid = formData.fullName && formData.email && isValidEmail(formData.email) && formData.phone && formData.phone.length === 10;
 
   return (
     <Modal 
@@ -112,7 +121,6 @@ export function AddTravelerModal({
             value={formData.fullName}
             onChange={(e) => handleChange('fullName', e.target.value)}
           />
-
           <CustomInput
             label="Email"
             placeholder="Enter traveler email"
@@ -120,7 +128,6 @@ export function AddTravelerModal({
             value={formData.email}
             onChange={(e) => handleChange('email', e.target.value)}
           />
-
           <CustomInput
             label="Phone Number"
             placeholder="Enter traveler phone number"

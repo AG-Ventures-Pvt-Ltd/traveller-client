@@ -1,5 +1,6 @@
 'use client'
 import React from 'react'
+import { motion } from 'framer-motion'
 
 const HowItWorksSection = () => {
   const steps = [
@@ -23,7 +24,13 @@ const HowItWorksSection = () => {
   return (
     <section className="flex flex-col gap-8 md:gap-12 px-5 md:px-9 py-12 md:py-24 w-full" aria-labelledby="how-it-works-heading">
       {/* Section Header - Mobile & Desktop */}
-      <header className="flex flex-col gap-4">
+      <motion.header
+        className="flex flex-col gap-4"
+        initial={{ opacity: 0, y: 28 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.3 }}
+        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+      >
         <div className="px-4 py-2 bg-neutral-50 rounded-full inline-flex items-center self-start">
           <span className="text-neutral-900 text-sm font-medium">Process</span>
         </div>
@@ -32,15 +39,20 @@ const HowItWorksSection = () => {
           <span className="text-neutral-900">How the </span>
           <span className="text-neutral-700">Partnership Works</span>
         </h2>
-      </header>
+      </motion.header>
 
       {/* Steps Grid - Mobile & Desktop */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
         {steps.map((step, index) => {
           return (
-            <article
+            <motion.article
               key={index}
               className="relative p-6 md:p-8 bg-neutral-50 rounded-2xl md:rounded-3xl flex flex-col gap-6 hover:bg-neutral-100 transition-colors group"
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: index * 0.12 }}
+              whileHover={{ y: -5, transition: { duration: 0.25 } }}
             >
               {/* Numbered Box */}
               <div className="w-14 h-14 md:w-16 md:h-16 bg-neutral-900 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform z-10">
@@ -58,7 +70,7 @@ const HowItWorksSection = () => {
                   {step.description}
                 </p>
               </div>
-            </article>
+            </motion.article>
           )
         })}
       </div>

@@ -1,6 +1,7 @@
 'use client'
 import React from 'react'
 import { Search, FileCheck, CreditCard, Mail } from 'lucide-react'
+import { motion } from 'framer-motion'
 
 const TravelersFlowSection = () => {
   const steps = [
@@ -33,7 +34,13 @@ const TravelersFlowSection = () => {
   return (
     <section className="flex flex-col gap-8 md:gap-12 px-5 md:px-9 py-12 md:py-24 w-full" aria-labelledby="travelers-heading">
       {/* Section Header */}
-      <header className="flex flex-col gap-4 max-w-3xl">
+      <motion.header
+        className="flex flex-col gap-4 max-w-3xl"
+        initial={{ opacity: 0, y: 28 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.3 }}
+        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+      >
         <div className="px-4 py-2 bg-neutral-50 rounded-full inline-flex items-center self-start">
           <span className="text-neutral-900 text-sm font-medium">For Travelers</span>
         </div>
@@ -42,16 +49,21 @@ const TravelersFlowSection = () => {
           <span className="text-neutral-900">How Travelers </span>
           <span className="text-neutral-700">Book Group Trips</span>
         </h2>
-      </header>
+      </motion.header>
       
       {/* Steps Grid - Mobile: Vertical, Desktop: 2x2 Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
         {steps.map((step, index) => {
           const IconComponent = step.icon
           return (
-            <article 
+            <motion.article 
               key={index}
               className="relative p-6 md:p-8 bg-neutral-50 rounded-2xl md:rounded-3xl group hover:shadow-xl transition-all border border-neutral-100"
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: index * 0.1 }}
+              whileHover={{ y: -4, transition: { duration: 0.25 } }}
             >
               {/* Step Number */}
               <div className="absolute top-6 md:top-8 right-6 md:right-8">
@@ -74,7 +86,7 @@ const TravelersFlowSection = () => {
                   {step.description}
                 </p>
               </div>
-            </article>
+            </motion.article>
           )
         })}
       </div>

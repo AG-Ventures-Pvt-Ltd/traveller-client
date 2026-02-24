@@ -2,8 +2,19 @@
 import React from 'react'
 import Image from 'next/image'
 import { ArrowUpRight } from 'lucide-react'
+import { motion } from 'framer-motion'
+import { useRouter } from 'next/navigation'
+
+const PARTNER_CTA_URL = 'https://partner.wondrr.in'
+
+const fadeUp = (delay = 0) => ({
+  initial: { opacity: 0, y: 28 },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration: 0.75, ease: [0.22, 1, 0.36, 1] as const, delay },
+})
 
 const PartnerHeroSection = () => {
+  const router = useRouter()
   // const stats = [
   //   { value: "500+", label: "Active Travelers", icon: Users },
   //   { value: "50+", label: "Partner Trips", icon: TrendingUp },
@@ -57,6 +68,7 @@ const PartnerHeroSection = () => {
             <button 
               className="w-full px-7 py-4 bg-white text-neutral-900 rounded-full font-bold hover:bg-neutral-100 hover:scale-[1.02] transition-all cursor-pointer flex items-center justify-center gap-2 shadow-lg shadow-white/10"
               aria-label="Apply to partner with us"
+              onClick={() => router.push(PARTNER_CTA_URL)}
             >
               <span className="text-sm font-semibold">Start Your Partnership</span>
               <ArrowUpRight size={18} />
@@ -68,16 +80,32 @@ const PartnerHeroSection = () => {
       {/* Desktop Layout */}
       <div className="hidden md:flex min-h-[85vh] relative">
         {/* Left Side - Content (60%) */}
-        <div className="w-[60%] bg-neutral-900 rounded-l-3xl px-12 lg:px-16 py-16 flex flex-col justify-between">
-          <div className="flex flex-col gap-8 max-w-2xl">
+        <motion.div
+          className="w-[60%] bg-neutral-900 rounded-l-3xl px-12 lg:px-16 py-16 flex flex-col justify-between"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+        >
+          <motion.div
+            className="flex flex-col gap-8 max-w-2xl"
+            initial="hidden"
+            animate="visible"
+            variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.15, delayChildren: 0.25 } } }}
+          >
             {/* Badge */}
-            <div className="inline-flex self-start">
+            <motion.div
+              className="inline-flex self-start"
+              variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } } }}
+            >
               <div className="px-5 py-2.5 bg-white/10 backdrop-blur-md rounded-full border border-white/20">
                 <span className="text-white text-sm font-semibold">Partnership Program</span>
               </div>
-            </div>
+            </motion.div>
 
-            <header className="flex flex-col gap-6">
+            <motion.header
+              className="flex flex-col gap-6"
+              variants={{ hidden: { opacity: 0, y: 32 }, visible: { opacity: 1, y: 0, transition: { duration: 0.75, ease: [0.22, 1, 0.36, 1] } } }}
+            >
               <h1 className="text-white text-6xl lg:text-6xl font-medium leading-[1.1]">
                 Partner With India’s<br />
                 Growing Group Trips <br />
@@ -87,7 +115,7 @@ const PartnerHeroSection = () => {
               <p className="text-neutral-300 text-lg font-medium leading-relaxed max-w-xl">
                 Join India&apos;s fastest-growing marketplace for group travel. Connect with thousands of travelers, increase your bookings, and scale your operations effortlessly.
               </p>
-            </header>
+            </motion.header>
 
             {/* Stats Row */}
             {/* <div className="flex gap-6 pt-4">
@@ -106,24 +134,33 @@ const PartnerHeroSection = () => {
                 )
               })}
             </div> */}
-          </div>
+          </motion.div>
 
           {/* CTA Button */}
-          <div className="flex items-center gap-3">
+          <motion.div
+            className="flex items-center gap-3"
+            {...fadeUp(0.7)}
+          >
             <button 
               className="px-10 py-5 bg-white text-neutral-900 rounded-full font-bold hover:bg-neutral-100 hover:scale-105 transition-all cursor-pointer shadow-2xl shadow-white/20"
               aria-label="Apply to partner with us"
+              onClick={() => router.push(PARTNER_CTA_URL)}
             >
               Start Your Partnership
             </button>
             <div className="w-14 h-14 bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center border border-white/20 hover:bg-white/20 transition-colors cursor-pointer" aria-hidden="true">
               <ArrowUpRight size={24} className="text-white" />
             </div>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
 
         {/* Right Side - Image Collage (40%) */}
-        <div className="w-[40%] relative rounded-r-3xl overflow-hidden">
+        <motion.div
+          className="w-[40%] relative rounded-r-3xl overflow-hidden"
+          initial={{ opacity: 0, x: 48 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: 0.15 }}
+        >
           {/* Main Image */}
           <div className="absolute inset-0">
             <Image
@@ -138,7 +175,12 @@ const PartnerHeroSection = () => {
           </div>
 
           {/* Floating Card */}
-          <div className="absolute bottom-8 left-8 right-8 p-6 bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/20">
+          <motion.div
+            className="absolute bottom-8 left-8 right-8 p-6 bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/20"
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1], delay: 0.7 }}
+          >
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-neutral-900 text-lg font-bold">Ready to get started?</p>
@@ -148,8 +190,8 @@ const PartnerHeroSection = () => {
                 <ArrowUpRight size={20} className="text-white" />
               </div>
             </div>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </div>
     </section>
   )

@@ -27,8 +27,6 @@ export default function PartnerWithUsPage() {
 
         <FinalCTASection />
       </div>
-
-      {/* Footer */}
       <Footer />
     </main>
   )

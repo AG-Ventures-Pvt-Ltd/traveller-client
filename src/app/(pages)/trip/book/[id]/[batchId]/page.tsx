@@ -23,14 +23,19 @@ const Page = () => {
 
     return (
         <div className='px-[4%] sm:px-[5%] lg:px-[2%] xl:px-[8%]'>
-            <BackButton
-                onClick={handleBackToTrip}
-                className="flex items-center gap-3 my-4"
-                label='Back to Trip Details'
-            />
+            <div className='flex justify-between items-center my-4'>
+                <BackButton
+                    onClick={handleBackToTrip}
+                    className="flex items-center gap-3"
+                    label='Back to Trip Details'
+                />
+                <div>
+                    
+                </div>
+            </div>
             <div className='flex flex-col-reverse mt-5 lg:flex-row gap-4 lg:gap-6 mb-8'>
                 <div className='flex-[2]'>
-                    <TravelerDetailsForm 
+                    <TravelerDetailsForm
                         guests={guests}
                         onGuestsChange={setGuests}
                         tripId={(typeof id === 'string' ? id.split('-').at(-1) : id?.[0]?.split('-').at(-1)) as string}

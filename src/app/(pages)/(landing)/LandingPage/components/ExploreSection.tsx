@@ -4,6 +4,7 @@ import Image from 'next/image'
 import { ArrowUpRight } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import ArrowButton from '@/common/ui/Buttons/ArrowButton'
+import { motion } from 'framer-motion'
 
 interface ExploreSectionProps {
   content: {
@@ -14,6 +15,17 @@ interface ExploreSectionProps {
   }
 }
 
+const inView = (direction: 'left' | 'right' | 'up' = 'up', delay = 0) => ({
+  initial: {
+    opacity: 0,
+    x: direction === 'left' ? -48 : direction === 'right' ? 48 : 0,
+    y: direction === 'up' ? 40 : 0,
+  },
+  whileInView: { opacity: 1, x: 0, y: 0 },
+  viewport: { once: true, amount: 0.2 },
+  transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1], delay },
+})
+
 const ExploreSection: React.FC<ExploreSectionProps> = ({ content }) => {
   const router = useRouter()
 
@@ -22,18 +34,21 @@ const ExploreSection: React.FC<ExploreSectionProps> = ({ content }) => {
       {/* Mobile Layout */}
       <div className="md:hidden w-full max-w-[1520px] px-5 py-12 flex flex-col justify-center items-center gap-8">
         <header className="w-full flex flex-col justify-center items-start gap-6">
-          <div className="px-4 py-2 bg-neutral-50 rounded-full inline-flex justify-center items-center">
+          <motion.div
+            className="px-4 py-2 bg-neutral-50 rounded-full inline-flex justify-center items-center"
+            {...inView('up', 0)}
+          >
             <span className="text-neutral-900 text-sm font-medium">{content.badge}</span>
-          </div>
+          </motion.div>
           
-          <div className="w-full max-w-[500px] flex flex-col justify-start items-start">
+          <motion.div className="w-full max-w-[500px] flex flex-col justify-start items-start" {...inView('up', 0.1)}>
             <h2 className="text-xl font-medium leading-7">
               <span className="text-neutral-900">{content.title}<br /></span>
               <span className="text-neutral-700">{content.subtitle}</span>
             </h2>
-          </div>
+          </motion.div>
           
-          <div className="pt-px inline-flex justify-center items-center">
+          <motion.div className="pt-px inline-flex justify-center items-center" {...inView('up', 0.2)}>
             <button 
               className="px-7 py-3 bg-neutral-900 rounded-full hover:bg-neutral-800 hover:scale-105 transition-transform cursor-pointer"
               onClick={() => router.push('/trips')}
@@ -41,23 +56,25 @@ const ExploreSection: React.FC<ExploreSectionProps> = ({ content }) => {
             >
               <span className="text-white text-sm font-semibold">{content.cta}</span>
             </button>
-          </div>
+          </motion.div>
         </header>
         
         <div className="w-full flex flex-col justify-center items-start gap-2">
-          <article className="w-full h-72 p-6 relative rounded-3xl flex flex-col justify-center items-center overflow-hidden group">
+          <motion.article
+            className="w-full h-72 p-6 relative rounded-3xl flex flex-col justify-center items-center overflow-hidden group"
+            {...inView('up', 0.15)}
+          >
             <div className="absolute inset-0 overflow-hidden">
               <Image
                 src="/png/S22.jpg"
                 alt="Real moments from our guided tours showing travelers enjoying scenic spots"
                 width={353}
                 height={292}
-                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                 quality={90}
               />
               <div className="absolute inset-0 bg-gradient-to-b from-black/0 to-black/30 rounded-3xl" />
             </div>
-            
             <div className="w-full flex-1 flex flex-col justify-end items-start relative z-10">
               <div className="w-full inline-flex justify-between items-end gap-10">
                 <div className="flex-1">
@@ -65,41 +82,46 @@ const ExploreSection: React.FC<ExploreSectionProps> = ({ content }) => {
                     See real moments<br />from our trips.
                   </p>
                 </div>
-                <div className="w-10 h-10 bg-white rounded-full flex justify-center items-center" aria-hidden="true">
+                <motion.div
+                  className="w-10 h-10 bg-white rounded-full flex justify-center items-center"
+                  whileHover={{ scale: 1.15, rotate: 15 }}
+                  transition={{ type: 'spring', stiffness: 400 }}
+                  aria-hidden="true"
+                >
                   <ArrowUpRight className="w-4 h-4 text-neutral-900" />
-                </div>
+                </motion.div>
               </div>
             </div>
-          </article>
+          </motion.article>
           
-          <article className="w-full h-72 flex flex-col justify-start items-center gap-3">
+          <motion.article className="w-full h-72 flex flex-col justify-start items-center gap-3" {...inView('up', 0.25)}>
             <div className="w-full flex-1 p-6 relative rounded-3xl flex flex-col justify-start items-end overflow-hidden group">
               <div className="absolute inset-0 overflow-hidden">
                 <Image
                   src="/png/S23.jpg"
                   alt="Scenic nature path through golden landscapes and quiet valleys"
                   fill
-                  className="w-full h-full transition-transform duration-300 group-hover:scale-105 object-cover"
+                  className="w-full h-full transition-transform duration-500 group-hover:scale-110 object-cover"
                   quality={100}
                 />
                 <div className="absolute inset-0 bg-gradient-to-b from-black/30 to-black/0 rounded-3xl" />
               </div>
-              
-              
             </div>
-            
             <div className="w-full">
               <p className="text-neutral-700 text-lg font-medium leading-6">
                 From Himalayan valleys to desert trails, explore curated routes designed for unforgettable group travel experiences.
               </p>
             </div>
-          </article>
+          </motion.article>
         </div>
       </div>
 
       {/* Desktop Layout */}
       <div className="hidden md:flex items-center justify-between gap-16 px-9 py-24 w-full">
-        <header className="flex flex-col gap-6 flex-1">
+        <motion.header
+          className="flex flex-col gap-6 flex-1"
+          {...inView('left', 0)}
+        >
           <div className="px-4 py-2 bg-neutral-50 rounded-full inline-flex items-center self-start">
             <span className="text-neutral-900 text-sm font-medium">{content.badge}</span>
           </div>
@@ -111,9 +133,12 @@ const ExploreSection: React.FC<ExploreSectionProps> = ({ content }) => {
           <ArrowButton onClick={() => router.push('/trips')}>
             {content.cta}
           </ArrowButton>
-        </header>
+        </motion.header>
 
-        <div className="flex gap-3 flex-2">
+        <motion.div
+          className="flex gap-3 flex-2"
+          {...inView('right', 0.15)}
+        >
           <div className="flex flex-col gap-3 flex-[1]">
             <article className="relative p-6 bg-cover bg-center rounded-3xl overflow-hidden min-h-[292px] group">
               <Image
@@ -121,7 +146,7 @@ const ExploreSection: React.FC<ExploreSectionProps> = ({ content }) => {
                 alt="Real moments from our guided tours showing travelers enjoying scenic spots"
                 width={400}
                 height={488}
-                className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                 quality={90}
               />
               <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/32 rounded-3xl" />
@@ -130,9 +155,14 @@ const ExploreSection: React.FC<ExploreSectionProps> = ({ content }) => {
                 <p className="text-white text-lg font-bold">
                   See real moments<br />from our trips.
                 </p>
-                <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center self-end" aria-hidden="true">
+                <motion.div
+                  className="w-10 h-10 bg-white rounded-full flex items-center justify-center self-end"
+                  whileHover={{ scale: 1.15, rotate: 15 }}
+                  transition={{ type: 'spring', stiffness: 400 }}
+                  aria-hidden="true"
+                >
                   <ArrowUpRight />
-                </div>
+                </motion.div>
               </div>
             </article>
           </div>
@@ -143,7 +173,7 @@ const ExploreSection: React.FC<ExploreSectionProps> = ({ content }) => {
                 src="/png/S23.jpg"
                 alt="Scenic nature path through golden landscapes and quiet valleys"
                 fill
-                className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                 quality={90}
               />
               <div className="absolute inset-0 bg-gradient-to-b from-black/32 to-transparent rounded-3xl" />
@@ -155,7 +185,7 @@ const ExploreSection: React.FC<ExploreSectionProps> = ({ content }) => {
               </p>
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   )

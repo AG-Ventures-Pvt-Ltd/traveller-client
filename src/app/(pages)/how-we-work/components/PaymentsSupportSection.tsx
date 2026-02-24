@@ -1,5 +1,7 @@
+'use client'
 import React from 'react';
 import { CreditCard, DollarSign, Headphones } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 const PaymentsSupportSection = () => {
   const features = [
@@ -27,7 +29,13 @@ const PaymentsSupportSection = () => {
     <div className="bg-white py-16 md:py-24 px-6 md:px-12 lg:px-16">
       <div className="max-w-7xl mx-auto flex flex-col gap-12">
         {/* Header */}
-        <div className="flex flex-col gap-4">
+        <motion.div
+          className="flex flex-col gap-4"
+          initial={{ opacity: 0, y: 28 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+        >
           <div className="inline-flex items-center justify-center bg-neutral-50 rounded-full px-4 py-2 self-start">
             <span className="text-neutral-900 text-sm font-medium font-['Satoshi'] leading-5">
               Trust &amp; Safety
@@ -37,16 +45,21 @@ const PaymentsSupportSection = () => {
             <span className="text-neutral-900">Payments, Support </span>
             <span className="text-neutral-700">&amp; Safety</span>
           </h2>
-        </div>
+        </motion.div>
 
         {/* Features Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {features.map((feature, index) => {
             const IconComponent = feature.icon;
             return (
-              <div
+              <motion.div
                 key={index}
                 className="bg-neutral-50 rounded-2xl p-6 flex flex-col gap-4"
+                initial={{ opacity: 0, y: 36 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.2 }}
+                transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1], delay: index * 0.12 }}
+                whileHover={{ y: -4, transition: { duration: 0.25 } }}
               >
                 {/* Icon */}
                 <div className="size-14 bg-neutral-900 rounded-xl flex items-center justify-center flex-shrink-0">
@@ -62,7 +75,7 @@ const PaymentsSupportSection = () => {
                     {feature.description}
                   </p>
                 </div>
-              </div>
+              </motion.div>
             );
           })}
         </div>

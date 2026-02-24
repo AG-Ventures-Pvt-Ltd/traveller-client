@@ -1,6 +1,7 @@
 'use client'
 import React from 'react'
 import { LayoutGrid, ShieldCheck, FileText } from 'lucide-react'
+import { motion } from 'framer-motion'
 
 const WhyBookSection = () => {
   const benefits = [
@@ -24,7 +25,13 @@ const WhyBookSection = () => {
   return (
     <section className="flex flex-col gap-8 md:gap-12 px-5 md:px-9 py-12 md:py-24 w-full" aria-labelledby="why-book-heading">
       {/* Section Header */}
-      <header className="flex flex-col gap-4 text-center max-w-3xl mx-auto">
+      <motion.header
+        className="flex flex-col gap-4 text-center max-w-3xl mx-auto"
+        initial={{ opacity: 0, y: 28 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.3 }}
+        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+      >
         <div className="px-4 py-2 bg-neutral-100 rounded-full inline-flex items-center self-center">
           <span className="text-neutral-900 text-sm font-medium">Why Choose Us</span>
         </div>
@@ -33,16 +40,21 @@ const WhyBookSection = () => {
           <span className="text-neutral-900">Why Book Through </span>
           <span className="text-neutral-700">Our Platform</span>
         </h2>
-      </header>
+      </motion.header>
       
       {/* Benefits Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
         {benefits.map((benefit, index) => {
           const IconComponent = benefit.icon
           return (
-            <article 
+            <motion.article 
               key={index}
               className="p-8 bg-neutral-50 rounded-2xl md:rounded-3xl hover:shadow-xl transition-all group border border-neutral-100"
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: index * 0.12 }}
+              whileHover={{ y: -6, transition: { duration: 0.25 } }}
             >
               {/* Icon */}
               <div className="w-16 h-16 bg-neutral-900 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform mb-6">
@@ -58,7 +70,7 @@ const WhyBookSection = () => {
                   {benefit.description}
                 </p>
               </div>
-            </article>
+            </motion.article>
           )
         })}
       </div>

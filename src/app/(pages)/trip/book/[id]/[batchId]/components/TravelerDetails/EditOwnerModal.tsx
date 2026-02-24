@@ -37,13 +37,15 @@ export function EditOwnerModal({ open, onClose, owner, onSave, isLoading = false
   }, [open, owner]);
 
   const handleChange = (field: keyof typeof formData, value: string) => {
+    if (field === 'phone') {
+      // Allow only digits and limit to 10 characters
+      value = value.replace(/\D/g, '').slice(0, 10);
+    }
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleSubmit = () => {
-    if (!formData.fullName.trim() || !formData.phone.trim() 
-    // || !formData.governmentIdType.trim() || !formData.governmentIdNumber.trim()
-  ) {
+    if (!formData.fullName.trim() || !formData.phone.trim() || formData.phone.length !== 10) {
       return;
     }
 
@@ -51,8 +53,7 @@ export function EditOwnerModal({ open, onClose, owner, onSave, isLoading = false
     onClose();
   };
 
-  const isFormValid = formData.fullName.trim() && formData.phone.trim() 
-  // && formData.governmentIdType.trim() && formData.governmentIdNumber.trim();
+  const isFormValid = formData.fullName.trim() && formData.phone.trim() && formData.phone.length === 10;
 
   return (
     <Modal

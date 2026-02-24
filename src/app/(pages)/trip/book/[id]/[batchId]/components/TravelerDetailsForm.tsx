@@ -46,6 +46,8 @@ const TravelerDetailsForm: React.FC<TravelerDetailsFormProps> = ({
 
     const handleTravelerEdit = () => {
         setIsTravelerAccordionOpen(true);
+        setIsContactAccordionOpen(false);
+        setIsReviewAccordionOpen(false);
     };
 
     const handleContactNext = () => {
@@ -56,6 +58,8 @@ const TravelerDetailsForm: React.FC<TravelerDetailsFormProps> = ({
 
     const handleContactEdit = () => {
         setIsContactAccordionOpen(true);
+        setIsTravelerAccordionOpen(false);
+        setIsReviewAccordionOpen(false);
     };
 
     const handleCompleteBooking = async (referralCode?: string) => {
@@ -77,7 +81,16 @@ const TravelerDetailsForm: React.FC<TravelerDetailsFormProps> = ({
                 title="Traveller Details"
                 subtitle={`${totalSelectedTravelers} ${totalSelectedTravelers === 1 ? 'traveler' : 'travelers'} selected`}
                 number={1}
-                defaultOpen={isTravelerAccordionOpen}
+                open={isTravelerAccordionOpen}
+                onToggle={(newOpen) => {
+                  if (newOpen) {
+                    setIsTravelerAccordionOpen(true);
+                    setIsContactAccordionOpen(false);
+                    setIsReviewAccordionOpen(false);
+                  } else {
+                    setIsTravelerAccordionOpen(false);
+                  }
+                }}
                 showEdit={isTravelerFormSubmitted && !isTravelerAccordionOpen}
                 onEdit={handleTravelerEdit}
                 isCompleted={isTravelerFormSubmitted}
@@ -93,7 +106,16 @@ const TravelerDetailsForm: React.FC<TravelerDetailsFormProps> = ({
                 title="Contact Information"
                 subtitle="Emergency contact details"
                 number={2}
-                defaultOpen={isContactAccordionOpen}
+                open={isContactAccordionOpen}
+                onToggle={(newOpen) => {
+                  if (newOpen) {
+                    setIsContactAccordionOpen(true);
+                    setIsTravelerAccordionOpen(false);
+                    setIsReviewAccordionOpen(false);
+                  } else {
+                    setIsContactAccordionOpen(false);
+                  }
+                }}
                 showEdit={isContactFormSubmitted && !isContactAccordionOpen}
                 onEdit={handleContactEdit}
                 disabled={!isTravelerFormSubmitted}
@@ -110,7 +132,16 @@ const TravelerDetailsForm: React.FC<TravelerDetailsFormProps> = ({
                 title="Review and Pay"
                 subtitle="Complete your booking"
                 number={3}
-                defaultOpen={isReviewAccordionOpen}
+                open={isReviewAccordionOpen}
+                onToggle={(newOpen) => {
+                  if (newOpen) {
+                    setIsReviewAccordionOpen(true);
+                    setIsTravelerAccordionOpen(false);
+                    setIsContactAccordionOpen(false);
+                  } else {
+                    setIsReviewAccordionOpen(false);
+                  }
+                }}
                 disabled={!isContactFormSubmitted}
                 isCompleted={isReviewAccordionOpen}
                 className=""
