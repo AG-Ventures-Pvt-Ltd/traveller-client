@@ -41,9 +41,14 @@ const Navbar = () => {
                   <div
                     key={item.title}
                     onClick={() => handleNavigation(item.route)}
-                    className='flex flex-col items-start text-[#121212] font-bold cursor-pointer hover:text-gray-600 transition-colors whitespace-nowrap'
+                    className='flex items-center gap-1.5 text-[#121212] font-bold cursor-pointer hover:text-gray-600 transition-colors whitespace-nowrap'
                   >
                     {item.title}
+                    {item.isNew && (
+                      <span className='text-[12px] font-bold px-1.5 py-0.5 rounded-full bg-[#E8674A]/10 text-[#C4532A] leading-none'>
+                        New
+                      </span>
+                    )}
                   </div>
                 ))}
                 {status === 'authenticated' && authenticatedNavItems.map((item) => (
@@ -114,13 +119,18 @@ const Navbar = () => {
             <div
               key={item.title}
               onClick={() => handleNavigation(item.route)}
-              className={`px-6 py-4 text-[#121212] font-bold cursor-pointer hover:bg-gray-50 transition-colors border-b border-gray-100 whitespace-nowrap ${mobileMenuOpen ? 'animate-[slideIn_0.3s_ease-out_forwards]' : 'opacity-0'
+              className={`px-6 py-4 text-[#121212] font-bold cursor-pointer hover:bg-gray-50 transition-colors border-b border-gray-100 whitespace-nowrap flex items-center gap-2 ${mobileMenuOpen ? 'animate-[slideIn_0.3s_ease-out_forwards]' : 'opacity-0'
                 }`}
               style={{
                 animationDelay: mobileMenuOpen ? `${index * 0.05}s` : '0s',
               }}
             >
               {item.title}
+              {item.isNew && (
+                <span className='text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-[#E8674A]/10 text-[#C4532A] leading-none'>
+                  New
+                </span>
+              )}
             </div>
           ))}
          {status === "authenticated" && authenticatedNavItems.map((item, index) => (

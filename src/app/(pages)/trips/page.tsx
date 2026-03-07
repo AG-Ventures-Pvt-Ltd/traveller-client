@@ -31,6 +31,7 @@ interface Trip {
   difficulty: string;
   isFeatured: boolean;
   isBookmarked: boolean;
+  hostName: string;
   slug: string;
   tags?: string[];
 }

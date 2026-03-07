@@ -21,7 +21,7 @@ import Loader from "@/common/ui/Loader/Loader";
 import { TripData } from './types';
 import Card from "@/common/ui/Card";
 import BackButton from "@/common/ui/BackButton";
-import FeaturedDestinations from "../../(landing)/LoggedInLandingPage/components/FeaturedDestinations";
+// import FeaturedDestinations from "../../(landing)/LoggedInLandingPage/components/FeaturedDestinations";
 
 
 export default function TripDetail() {
@@ -133,9 +133,9 @@ export default function TripDetail() {
         </div>
       </div>
       <MobileBookingBar tripData={tripData} tripId={id} />
-      <div className="px-[5%] my-[5%]">
+      {/* <div className="px-[5%] my-[5%]">
         <FeaturedDestinations />
-      </div>
+      </div> */}
       <Footer />
     </div>
   );

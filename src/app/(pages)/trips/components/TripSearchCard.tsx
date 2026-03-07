@@ -1,6 +1,6 @@
 import React from 'react';
 import Button from '@/common/components/atoms/Button';
-import { Heart, MapPin, Users, Clock, Star, Calendar, IndianRupee } from 'lucide-react';
+import { Heart, MapPin, Users, Clock, Star, Calendar, IndianRupee, User } from 'lucide-react';
 import Card from '@/common/ui/Card';
 import MyImage from '@/common/ui/Image';
 import BookmarkButton from '@/common/components/atoms/BookmarkButton';
@@ -23,6 +23,7 @@ interface TripSearchCardProps {
     totalSeats?: number;
     difficulty?: string;
     isBookmarked:boolean;
+    hostName?: string;
     onViewDetails: () => void;
 }
 
@@ -42,6 +43,7 @@ const TripSearchCard: React.FC<TripSearchCardProps> = ({
     tags = [],
     totalSeats,
     isBookmarked,
+    hostName,
     onViewDetails,
 }) => {
     return (
@@ -73,6 +75,12 @@ const TripSearchCard: React.FC<TripSearchCardProps> = ({
                         <MapPin className="w-4 h-4 text-neutral-700" />
                         <span className="text-neutral-700 text-base font-medium">{location}</span>
                     </div>
+                    {hostName && (
+                        <div className="flex items-center gap-1.5">
+                            <User className="w-4 h-4 text-neutral-700" />
+                            <span className="text-neutral-700 text-base font-medium">Hosted by {hostName}</span>
+                        </div>
+                    )}
                 </div>
                 <div className="hidden md:flex items-center gap-2">
                     <div className="bg-neutral-900 rounded-full px-2.5 py-0.5 flex items-center gap-1">
@@ -81,7 +89,7 @@ const TripSearchCard: React.FC<TripSearchCardProps> = ({
                     </div>
                     <span className="text-neutral-700 text-sm font-medium">({reviewCount} reviews)</span>
                 </div>
-                {tags.length > 0 && (
+                {/* {tags.length > 0 && (
                     <div className="hidden md:flex flex-wrap gap-2.5">
                         {tags.slice(0, 3).map((tag, index) => (
                             <div key={index} className="bg-neutral-50 rounded-full px-3 py-1.5">
@@ -89,7 +97,7 @@ const TripSearchCard: React.FC<TripSearchCardProps> = ({
                             </div>
                         ))}
                     </div>
-                )}
+                )} */}
                 <div className="flex items-center flex-wrap gap-3 md:gap-5">
                     <div className="flex items-center gap-1.5">
                         <Clock className="w-4 h-4 text-neutral-700" />

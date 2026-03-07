@@ -19,6 +19,7 @@ interface Trip {
   category: string;
   difficulty: string;
   isFeatured: boolean;
+  hostName:string;
   isBookmarked: boolean;
   slug: string;
   tags?: string[];
@@ -62,6 +63,7 @@ const TripList: React.FC<TripListProps> = ({
             difficulty={trip.difficulty}
             totalSeats={trip.totalSeats}
             tags={trip.tags}
+            hostName={trip.hostName}
             isBookmarked={trip.isBookmarked}
             onViewDetails={() => onBookNow(trip.slug)}
           />
