@@ -256,7 +256,6 @@ const ReviewAndPay: React.FC<ReviewAndPayProps> = ({
             <a href="/booking-policy" className="text-neutral-900 underline">
               Cancellation Policy
             </a>
-            . I understand that this booking is non-refundable.
           </p>
         </div>
       </div>

@@ -6,8 +6,9 @@ export interface NavItem {
 export const navItems: NavItem[] = [
   { title: 'Trips', route: "/trips" },
   { title: 'About Us', route: "/about" },
-  { title: 'Partner With Us', route: '/partner-with-us' },
-  { title: 'How We Work', route: '/how-we-work' }
+  { title: "Girls Trip", route: "/girls-trips" },
+  // { title: 'Partner With Us', route: '/partner-with-us' },
+  // { title: 'How We Work', route: '/how-we-work' }
 ]
 
 export const authenticatedNavItems: NavItem[] = [

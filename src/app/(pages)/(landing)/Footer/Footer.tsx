@@ -13,17 +13,19 @@ const Footer = () => {
                     title: 'Explore',
                     links: [
                         { label: 'Trips', href: '/trips' },
-                        { label: 'About Us', href: '/about' }
+                        { label: 'All Girls Trips', href: '/girls-trips' }
                     ]
                 },
                 {
                     title: 'Company',
                     links: [
+                        { label: 'About Us', href: '/about' },
                         { label: 'Partner With Us', href: '/partner-with-us' },
+                        { label: 'How We Work', href: '/how-we-work' }
                     ]
                 },
                 {
-                    title: 'Support',
+                    title: 'Policies',
                     links: [
                         { label: 'Privacy Policy', href: '/privacy-policy' },
                         { label: 'Refund Policy', href: '/booking-policy' }
