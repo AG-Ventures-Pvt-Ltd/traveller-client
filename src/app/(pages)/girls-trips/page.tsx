@@ -154,15 +154,17 @@ export default function GirlsTripsPage() {
       <div className='py-2'>
         <div className='mb-4 mx-[1%] flex items-center justify-between'>
           <BackButton className='ml-[1%]' />
-          <div className='md:hidden'>
-            <Button
-              onClick={() => setIsFilterModalOpen(true)}
-              className="md:hidden flex items-center gap-2 bg-[#C4532A] hover:bg-[#A8461F] text-white font-bold rounded-xl px-4 h-12"
-            >
-              <SlidersHorizontal className="w-5 h-5" />
-              Filters
-            </Button>
-          </div>
+          {tripsData && tripsData.trips?.length > 0 && (
+            <div className='md:hidden'>
+              <Button
+                onClick={() => setIsFilterModalOpen(true)}
+                className="md:hidden flex items-center gap-2 bg-[#C4532A] hover:bg-[#A8461F] text-white font-bold rounded-xl px-4 h-12"
+              >
+                <SlidersHorizontal className="w-5 h-5" />
+                Filters
+              </Button>
+            </div>
+          )}
         </div>
         <FilterModal
           isOpen={isFilterModalOpen}
@@ -171,26 +173,27 @@ export default function GirlsTripsPage() {
           onApplyFilters={handleApplyFilters}
         />
         <div className='flex gap-3'>
-          <div className='hidden md:block flex-1 sticky top-[12%] self-start'>
-            <TripFilters onFilterChange={handleFilterChange} onApplyFilters={handleApplyFilters} />
-          </div>
-          <div className='flex-1 md:flex-[3]'>
+          {tripsData && tripsData.trips?.length > 0 && (
+            <div className='hidden md:block flex-1 sticky top-[12%] self-start'>
+              <TripFilters onFilterChange={handleFilterChange} onApplyFilters={handleApplyFilters} />
+            </div>
+          )}
+          <div className={`flex-1 ${tripsData && tripsData.trips?.length > 0 ? 'md:flex-[3]' : ''}`}>
             {tripsLoading && <CircularLoader />}
             <div>
               <div>
-                <h2 className='text-4xl font-bold text-[#3D1A0E]'>
-                  {destination ? `Search Results for ${destination}` : 'All Girls Trips'}
-                </h2>
-                {tripsData && (
+                {tripsData && tripsData.trips?.length > 0 && (
+                  <h2 className='text-4xl font-bold text-[#3D1A0E]'>
+                    {destination ? `Search Results for ${destination}` : 'All Girls Trips'}
+                  </h2>
+                )}
+                {tripsData && tripsData.trips?.length > 0 && (
                   <p className='text mb-3 font-semibold text-[#A0502E] mt-1'>
                     {tripsData.pagination?.total} {tripsData.pagination?.total === 1 ? 'trip' : 'trips'} found
                   </p>
                 )}
                 {tripsData && tripsData.trips?.length === 0 && (
-                  <div className='bg-[#FDF0EB] border border-[#E8C4B0] text-[#7A3520] px-6 py-8 rounded-lg text-center'>
-                    <p className='text-lg font-medium'>No trips found</p>
-                    <p className='text-sm text-[#A0502E] mt-2'>Try adjusting your filters to see more results</p>
-                  </div>
+                  <p className='text-center text-3xl md:text-5xl font-bold text-black mt-[10%]'>Coming Soon...</p>
                 )}
               </div>
               {!tripsLoading && tripsData && (
