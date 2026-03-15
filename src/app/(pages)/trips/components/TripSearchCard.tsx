@@ -126,7 +126,7 @@ const TripSearchCard: React.FC<TripSearchCardProps> = ({
                 </div>
                 {nextDeparture && (
                     <div className="hidden md:flex flex-col gap-1">
-                        <span className="text-neutral-900 text-xs font-bold">Next Departure</span>
+                        <span className="text-neutral-900 text-xs font-bold">Departs On</span>
                         <div className="flex items-center gap-1.5">
                             <Calendar className="w-3.5 h-3.5 text-neutral-700" />
                             <span className="text-neutral-700 text-sm font-medium">{nextDeparture}</span>

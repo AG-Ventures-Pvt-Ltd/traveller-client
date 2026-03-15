@@ -7,6 +7,12 @@ export interface HostProfile {
   stats: HostStats;
   rating: number;
   reviewCount: number;
+  totalReviews: number;
+  totalTrips: number;
+  upcomingBatches: number;
+  city?: string | null;
+  state?: string | null;
+  createdAt: string;
 }
 
 export interface HostStats {
@@ -101,5 +107,3 @@ export interface RatingDistribution {
   count: number;
   percentage: number;
 }
-
-export type TabType = "trips" | "reviews";

@@ -5,8 +5,8 @@ import { useGetData } from '@/services/useGetData'
 import { API_ENDPOINTS } from '@/common/constants/apiEndpoints'
 import { Bookmark } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import { TripCard } from '../../host/[id]/components/HostTrips/components/TripCard'
-import { Trip } from '../../host/[id]/types'
+import { TripCard } from '../../[id]/components/HostTrips/components/TripCard'
+import { Trip } from '../../[id]/types'
 
 
 interface BookmarkedTrip {

@@ -57,10 +57,12 @@ function ToastInitializer({ children }: { children: React.ReactNode }) {
 }
 
 export function Providers({ children }: { children: React.ReactNode }) {
+  const isProduction = process.env.NEXT_PUBLIC_ENV === 'PROD';
+
   return (
     <ThemeProvider theme={theme}>
       <QueryClientProvider client={queryClient}>
-        <Analytics/>
+        {isProduction && <Analytics/>}
         <SessionProvider 
           refetchInterval={0}
           refetchOnWindowFocus={false}

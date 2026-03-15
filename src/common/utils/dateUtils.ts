@@ -48,3 +48,21 @@ export const formatTimeTo12Hour = (timeString: string): string => {
   const displayHours = hours % 12 || 12; // Convert 0 to 12 for 12 AM
   return `${displayHours}:${minutes.toString().padStart(2, '0')} ${period}`;
 };
+
+export const calculateYearsFromDate = (dateString: string): number => {
+  const givenDate = new Date(dateString);
+  const today = new Date();
+
+  let years = today.getFullYear() - givenDate.getFullYear();
+  const monthDifference = today.getMonth() - givenDate.getMonth();
+
+  if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < givenDate.getDate())) {
+    years--;
+  }
+
+  if (years == 0) {
+    return 1
+  }
+  
+  return years;
+};
