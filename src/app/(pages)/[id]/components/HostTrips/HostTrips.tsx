@@ -1,55 +1,20 @@
 import { useState, useEffect, useMemo } from "react";
 import { Trip } from "../../types";
 import { useGetData } from "@/services/useGetData";
-import { API_ENDPOINTS } from "@/common/constants/apiEndpoints";
 import { TripCard } from "./components/TripCard";
 import { HostTripsSkeleton } from "./components/HostTripsSkeleton";
 import Button from "@/common/ui/Buttons/Button";
-import CustomSelect from "@/common/ui/CustomSelect";
+// import CustomSelect from "@/common/ui/CustomSelect";
 import { useRouter } from "next/navigation";
+import { FilterType, FILTERS, LOCATION_OPTIONS } from "./constants";
+import { buildTripsUrl } from "./utils";
 
 interface HostTripsProps {
   hostUsername: string;
 }
 
-type FilterType = 'active' | 'inactive';
-
-const ITEMS_PER_PAGE = 6;
-
-const FILTERS: { key: FilterType; label: string }[] = [
-  { key: 'active', label: 'Upcoming Trips' },
-  { key: 'inactive', label: 'Past Trips' },
-];
-
-const LOCATION_OPTIONS = [
-  { value: 'all', label: 'All Locations' },
-  { value: 'paris', label: 'Paris' },
-  { value: 'bali', label: 'Bali' },
-  { value: 'tokyo', label: 'Tokyo' },
-  { value: 'barcelona', label: 'Barcelona' },
-  { value: 'dubai', label: 'Dubai' },
-  { value: 'new-york', label: 'New York' },
-  { value: 'london', label: 'London' },
-  { value: 'sydney', label: 'Sydney' },
-];
-
-const buildTripsUrl = (hostUsername: string, filter: FilterType, page: number, location: string) => {
-  const params = new URLSearchParams();
-  params.append('page', page.toString());
-  params.append('limit', ITEMS_PER_PAGE.toString());
-
-  params.append('status', filter === 'active' ? 'active' : 'inactive');
-
-  if (location && location !== 'all') {
-    params.append('location', location);
-  }
-
-  const baseUrl = API_ENDPOINTS.TRIPS.HOST_TRIPS(hostUsername);
-  return `${baseUrl}?${params.toString()}`;
-};
-
 export function HostTrips({ hostUsername }: HostTripsProps) {
-  const [filter, setFilter] = useState<FilterType>('active');
+  const [filter, setFilter] = useState<FilterType>('upcoming');
   const [currentPage, setCurrentPage] = useState(1);
   const [location, setLocation] = useState('all');
   const [allTrips, setAllTrips] = useState<Trip[]>([]);
@@ -58,6 +23,10 @@ export function HostTrips({ hostUsername }: HostTripsProps) {
   const tripsUrl = buildTripsUrl(hostUsername, filter, currentPage, location);
   const { data: tripsData, isLoading, error } = useGetData<{
     trips: Trip[];
+    tripCounts?: {
+      active: number;
+      inactive: number;
+    };
     pagination?: {
       page: number;
       pageSize: number;
@@ -72,6 +41,10 @@ export function HostTrips({ hostUsername }: HostTripsProps) {
 
   const trips = useMemo(() => {
     return Array.isArray(tripsData) ? tripsData : tripsData?.trips || [];
+  }, [tripsData]);
+
+  const tripCounts = useMemo(() => {
+    return !Array.isArray(tripsData) ? tripsData?.tripCounts : undefined;
   }, [tripsData]);
 
   const pagination = useMemo(() => {
@@ -114,22 +87,13 @@ export function HostTrips({ hostUsername }: HostTripsProps) {
 
   const hasMoreTrips = pagination?.hasNext || false;
 
-  if (isLoading) {
+  // Show skeleton only on initial load, not on pagination
+  if (isLoading && allTrips.length === 0) {
     return <HostTripsSkeleton />;
   }
 
   if (error) {
     throw Error(error.message || 'Error Loading Trips');
-  }
-
-  if (trips.length === 0 && allTrips.length === 0) {
-    return (
-      <div className="flex items-center justify-center py-12">
-        <p className="text-neutral-600 text-lg">
-          No {filter} trips found {location !== 'all' ? `in ${location}` : ''}
-        </p>
-      </div>
-    )
   }
 
   return (
@@ -141,19 +105,22 @@ export function HostTrips({ hostUsername }: HostTripsProps) {
         </div>
         <div className="mt-4 flex flex-col gap-3 sm:mt-3 sm:flex-row sm:flex-wrap sm:items-center">
           <div className="flex flex-wrap gap-2 sm:gap-3">
-            {FILTERS.map(({ key, label }) => (
-              <Button
-                key={key}
-                variant={filter === key ? "contained" : "outlined"}
-                color="primary"
-                onClick={() => handleFilterChange(key)}
-                className="!px-2 sm:!px-4 !py-1 !rounded-3xl !font-bold !text-xs sm:!text-sm whitespace-nowrap"
-              >
-                {label}
-              </Button>
-            ))}
+            {FILTERS.map(({ key, label }) => {
+              const count = key === 'upcoming' ? tripCounts?.active || 0 : tripCounts?.inactive || 0;
+              return (
+                <Button
+                  key={key}
+                  variant={filter === key ? "contained" : "outlined"}
+                  color="primary"
+                  onClick={() => handleFilterChange(key)}
+                  className="!px-2 sm:!px-4 !py-1 !rounded-3xl !font-bold !text-xs sm:!text-sm whitespace-nowrap"
+                >
+                  {label} <span className="ml-1 text-xs sm:text-sm">({count})</span>
+                </Button>
+              );
+            })}
           </div>
-          <div className="w-full sm:w-56 md:w-64">
+          {/* <div className="w-full sm:w-56 md:w-64">
             <CustomSelect
               value={location}
               onChange={handleLocationChange}
@@ -161,7 +128,7 @@ export function HostTrips({ hostUsername }: HostTripsProps) {
               placeholder="Filter by location"
               id="location-filter"
             />
-          </div>
+          </div> */}
         </div>
       </div>
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 mb-8">
@@ -169,18 +136,37 @@ export function HostTrips({ hostUsername }: HostTripsProps) {
           <TripCard key={trip.id || index} trip={trip} onViewDetails={handleViewDetails} />
         ))}
       </div>
-      {hasMoreTrips && (
-        <div className="flex items-center justify-center gap-4 py-6">
-          <Button
-            variant="outlined"
-            color="primary"
-            onClick={handleShowMore}
-            disabled={isLoadingMore}
-            className="!px-6 sm:!px-8"
-          >
-            {isLoadingMore ? 'Loading...' : 'Show More'}
-          </Button>
+      {allTrips.length === 0 ? (
+        <div className="flex items-center justify-center min-h-96">
+          <p className="text-neutral-600 text-lg">
+            No {filter} trips found {location !== 'all' ? `in ${location}` : ''}
+          </p>
         </div>
+      ) : (
+        <>
+          {isLoadingMore && (
+            <div className="flex items-center justify-center gap-2 py-6">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-neutral-900 animate-bounce" style={{ animationDelay: '0s' }} />
+                <div className="w-2 h-2 rounded-full bg-neutral-900 animate-bounce" style={{ animationDelay: '0.2s' }} />
+                <div className="w-2 h-2 rounded-full bg-neutral-900 animate-bounce" style={{ animationDelay: '0.4s' }} />
+              </div>
+            </div>
+          )}
+          {hasMoreTrips && !isLoadingMore && (
+            <div className="flex items-center justify-center gap-4 py-6">
+              <Button
+                variant="outlined"
+                color="primary"
+                onClick={handleShowMore}
+                disabled={isLoadingMore}
+                className="!px-6 sm:!px-8"
+              >
+                {isLoadingMore ? 'Loading...' : 'Show More'}
+              </Button>
+            </div>
+          )}
+        </>
       )}
     </div>
   );

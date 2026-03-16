@@ -7,6 +7,14 @@ export const formatDate = (date: Date | string): string => {
   return `${month} ${day}, ${year}`;
 };
 
+export const formatDateSimple = (date: Date | string): string => {
+  const utcDate = new Date(date);
+  const istDate = new Date(utcDate.getTime() + (5.5 * 60 * 60 * 1000));
+  const month = istDate.toLocaleDateString('en-US', { month: 'long' });
+  const day = istDate.getDate();
+  return `${day} ${month}`;
+};
+
 export const formatDateTime = (date: Date | string): string => {
   return new Date(date).toLocaleString('en-US', {
     year: 'numeric',

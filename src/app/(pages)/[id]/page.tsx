@@ -18,7 +18,7 @@ export default function HostPage() {
           <BackButton />
         </div>
         <div className="flex flex-col gap-6 md:flex-row md:items-start md:gap-8">
-          <div className="w-full md:w-auto md:shrink-0">
+          <div className="w-full md:w-auto md:shrink-0 md:sticky md:top-[14%]">
             <HostProfileCard />
           </div>
           <div className="w-full min-w-0 flex-1">

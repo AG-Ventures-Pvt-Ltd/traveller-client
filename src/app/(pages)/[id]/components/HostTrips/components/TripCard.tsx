@@ -1,8 +1,9 @@
-import { MapPin, Star, Clock, IndianRupee } from "lucide-react";
+import { MapPin, Star, Clock, IndianRupee, Calendar } from "lucide-react";
 import { Trip } from "../../../types";
 import MyImage from "@/common/ui/Image";
 import Button from "@/common/ui/Buttons/Button";
 import BookmarkButton from "@/common/components/atoms/BookmarkButton";
+import { formatDateSimple } from "@/common/utils/dateUtils";
 
 interface TripCardProps {
   trip: Trip;
@@ -24,7 +25,7 @@ export function TripCard({ trip, onViewDetails }: TripCardProps) {
           </span>
         </div>
         <div>
-          <BookmarkButton tripSlug={trip.slug} isBookmarked={trip.isBookMarked}/>
+          <BookmarkButton tripSlug={trip.slug} isBookmarked={trip.isBookMarked} />
         </div>
       </div>
       <div className="pl-6 pt-6 flex flex-col gap-4 pb-6">
@@ -48,12 +49,22 @@ export function TripCard({ trip, onViewDetails }: TripCardProps) {
               {trip.rating}
             </span>
           </div>)}
-          {trip.duration && <div className="flex items-center gap-1.5">
-            <Clock className="w-4 h-4 text-neutral-700" strokeWidth={2} />
-            <span className="text-neutral-700 text-sm font-medium font-['Satoshi']">
-              {trip.duration}
-            </span>
-          </div>}
+          <div className="flex flex-col md:flex-row gap-4">
+            {trip.duration && <div className="flex items-center gap-1.5">
+              <Clock className="w-4 h-4 text-neutral-700" strokeWidth={2} />
+              <span className="text-neutral-700 text-sm font-medium font-['Satoshi']">
+                {trip.duration}
+              </span>
+            </div>}
+          </div>
+          {trip.batchDate && (
+            <div className="flex items-center gap-2">
+              <Calendar className="w-4 h-4 text-neutral-700" strokeWidth={2} />
+              <span className="text-neutral-700 text-sm font-medium font-['Satoshi']">
+                Departs on {formatDateSimple(trip.batchDate)}
+              </span>
+            </div>
+          )}
         </div>
         <div className="w-full h-px bg-gray-200" />
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pr-6">

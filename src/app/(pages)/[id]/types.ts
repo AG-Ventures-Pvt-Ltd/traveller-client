@@ -12,6 +12,10 @@ export interface HostProfile {
   upcomingBatches: number;
   city?: string | null;
   state?: string | null;
+  tripCounts?: {
+    active: number;
+    inactive: number;
+  };
   createdAt: string;
 }
 
@@ -49,6 +53,7 @@ export interface Trip {
   duration?:string;
   isBookMarked : boolean;
   isActive: boolean;
+  batchDate?: string;
 }
 
 export interface Review {

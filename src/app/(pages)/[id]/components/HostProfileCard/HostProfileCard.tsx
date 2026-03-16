@@ -1,4 +1,5 @@
 import { Star } from "lucide-react";
+import { useEffect } from "react";
 import { API_ENDPOINTS } from "@/common/constants/apiEndpoints";
 import { useParams } from "next/navigation";
 import { useGetData } from "@/services/useGetData";
@@ -7,6 +8,7 @@ import { HostSkeleton } from "./components/HostSkeleton";
 import Card from "@/common/ui/Card";
 // import { calculateYearsFromDate } from "@/common/utils/dateUtils";
 import HostAvatar from "./components/HostAvatar";
+import { useHostStore } from "../../store/hostStore";
 
 
 // const PERFORMANCE = [
@@ -28,8 +30,16 @@ export default function HostProfileCard() {
 
     const params = useParams();
     const id = params.id as string;
+    const setHostData = useHostStore((state) => state.setHostData);
 
     const { data: fetchedHost, isLoading, error } = useGetData<HostProfile>(API_ENDPOINTS.USER.HOST_PROFILE(id));
+
+    // Store host data in Zustand when fetched
+    useEffect(() => {
+        if (fetchedHost?.fullName) {
+            setHostData(id, fetchedHost.fullName);
+        }
+    }, [fetchedHost?.fullName, id, setHostData]);
 
     if (isLoading) {
         return <HostSkeleton />;
@@ -48,8 +58,6 @@ export default function HostProfileCard() {
         { label: "Total Reviews", value: fetchedHost.totalReviews?.toString() || "0", isReview: true },
     ];
 
-    fetchedHost.city = 'Delhi'
-    fetchedHost.state = 'India'
     const location = fetchedHost.city || fetchedHost.state ? `${fetchedHost.city || ''}${fetchedHost.city && fetchedHost.state ? ', ' : ''}${fetchedHost.state || ''}` : '';
 
     return (
@@ -60,7 +68,6 @@ export default function HostProfileCard() {
                     <div className="flex flex-col items-center  gap-1">
                         <h2 className="text-neutral-900 text-base font-bold font-['Satoshi'] leading-6">{fetchedHost.fullName}</h2>
                         <p className="text-neutral-900 text-xs font-bold font-['Satoshi']">{fetchedHost.yearsOfExperience} yrs exp</p>
-                        {/* {location !== 'Not specified' && <p className="text-neutral-600 text-xs font-medium font-['Satoshi']">{location}</p>} */}
                     </div>
                 </div>
                 <div className="flex flex-col gap-2">
@@ -85,11 +92,12 @@ export default function HostProfileCard() {
                 </div>
             </div>
 
-            <div className="h-px bg-gray-200 sm:hidden" />
+            
 
             {location !== '' &&
                 (
                     <div className="sm:hidden">
+                        <div className="h-px bg-gray-200 sm:hidden mb-4" />
                         <div className="flex items-center justify-between w-full">
                             <h3 className="text-neutral-900 text-sm font-bold font-['Satoshi']">Based In</h3>
                             <span className="text-neutral-600 text-sm font-medium font-['Satoshi']">
