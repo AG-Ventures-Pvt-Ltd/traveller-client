@@ -28,7 +28,7 @@ export function HostCard({
     <div className="flex flex-col gap-4 sm:gap-6 my-6 sm:my-8">
       <h2 className="text-lg sm:text-xl font-bold text-[#0F172B] tracking-tight">Your Host</h2>
 
-      <Card className="flex flex-col gap-3 sm:gap-4 p-4 sm:p-6" onClick={() => router.push(`/host/${username}`)}>
+      <Card className="flex flex-col gap-3 sm:gap-4 p-4 sm:p-6" onClick={() => router.push(`/${username}`)}>
         <div className="flex gap-3 sm:gap-4">
           <div className="w-12 h-12 sm:w-16 sm:h-16 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
             {avatar ? (
