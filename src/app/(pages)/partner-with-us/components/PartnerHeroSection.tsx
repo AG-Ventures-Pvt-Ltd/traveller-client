@@ -3,7 +3,7 @@ import React from 'react'
 import Image from 'next/image'
 import { ArrowUpRight } from 'lucide-react'
 import { motion } from 'framer-motion'
-import { useRouter } from 'next/navigation'
+// import { useRouter } from 'next/navigation'
 
 const PARTNER_CTA_URL = 'https://partner.wondrr.in'
 
@@ -14,7 +14,7 @@ const fadeUp = (delay = 0) => ({
 })
 
 const PartnerHeroSection = () => {
-  const router = useRouter()
+  // const router = useRouter()
   // const stats = [
   //   { value: "500+", label: "Active Travelers", icon: Users },
   //   { value: "50+", label: "Partner Trips", icon: TrendingUp },
@@ -34,7 +34,7 @@ const PartnerHeroSection = () => {
             priority
           />
           <div className="absolute inset-0 bg-gradient-to-b from-black/40 to-black/60" />
-                    <div className="absolute top-6 left-6">
+          <div className="absolute top-6 left-6">
             <div className="px-4 py-2 bg-white/20 backdrop-blur-md rounded-full border border-white/30">
               <span className="text-white text-xs font-semibold">Partnership Program</span>
             </div>
@@ -65,12 +65,13 @@ const PartnerHeroSection = () => {
           </header>
 
           <div className="mt-auto pt-6">
-            <button 
+            <button
               className="w-full px-7 py-4 bg-white text-neutral-900 rounded-full font-bold hover:bg-neutral-100 hover:scale-[1.02] transition-all cursor-pointer flex items-center justify-center gap-2 shadow-lg shadow-white/10"
               aria-label="Apply to partner with us"
-              onClick={() => router.push(PARTNER_CTA_URL)}
             >
-              <span className="text-sm font-semibold">Start Your Partnership</span>
+              <a href={PARTNER_CTA_URL} target="_blank" rel="noopener noreferrer" className='text-sm font-semibold'>
+                Start Your Partnership
+              </a>
               <ArrowUpRight size={18} />
             </button>
           </div>
@@ -111,7 +112,7 @@ const PartnerHeroSection = () => {
                 Growing Group Trips <br />
                 <span className="text-neutral-400">Marketplace</span>
               </h1>
-              
+
               <p className="text-neutral-300 text-lg font-medium leading-relaxed max-w-xl">
                 Join India&apos;s fastest-growing marketplace for group travel. Connect with thousands of travelers, increase your bookings, and scale your operations effortlessly.
               </p>
@@ -141,12 +142,13 @@ const PartnerHeroSection = () => {
             className="flex items-center gap-3"
             {...fadeUp(0.7)}
           >
-            <button 
+            <button
               className="px-10 py-5 bg-white text-neutral-900 rounded-full font-bold hover:bg-neutral-100 hover:scale-105 transition-all cursor-pointer shadow-2xl shadow-white/20"
               aria-label="Apply to partner with us"
-              onClick={() => router.push(PARTNER_CTA_URL)}
             >
-              Start Your Partnership
+              <a href={PARTNER_CTA_URL} target="_blank" rel="noopener noreferrer" className='text-sm font-semibold'>
+                Start Your Partnership
+              </a>
             </button>
             <div className="w-14 h-14 bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center border border-white/20 hover:bg-white/20 transition-colors cursor-pointer" aria-hidden="true">
               <ArrowUpRight size={24} className="text-white" />
