@@ -100,7 +100,7 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({ tripId, batchId, guests = 1
       <div className="flex flex-col gap-3">
         <div className="flex justify-between items-start">
           <span className="text-neutral-700 text-xs sm:text-sm font-medium font-['Satoshi'] flex items-center">
-            Tour (<IndianRupee size={12} className="sm:w-[14px] sm:h-[14px]" />{tripDetails.basePrice} × {guests})
+            Tour (<IndianRupee size={12} className="sm:w-[14px] sm:h-[14px]" />{tripDetails.basePrice} x {guests})
           </span>
           <span className="text-neutral-900 text-xs sm:text-sm font-bold font-['Satoshi'] flex items-center">
             <IndianRupee size={14} className="sm:w-[16px] sm:h-[16px]" />{tripDetails.grandTotalWithoutFee}

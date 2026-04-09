@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { TextField, TextFieldProps } from '@mui/material'
+import { TextField, TextFieldProps, SxProps, Theme } from '@mui/material'
 import { Upload } from 'lucide-react'
 
 interface CustomInputProps extends Omit<TextFieldProps, 'variant'> {
@@ -18,6 +18,7 @@ const CustomInput: React.FC<CustomInputProps> = ({
   accept,
   helperText,
   onChange,
+  sx: userSx,
   ...props
 }) => {
   const [fileName, setFileName] = useState<string>('')
@@ -30,6 +31,36 @@ const CustomInput: React.FC<CustomInputProps> = ({
     if (onChange) {
       onChange(e)
     }
+  }
+
+  const defaultSx: SxProps<Theme> = {
+    '& .MuiOutlinedInput-root': {
+      backgroundColor: '#FFF9F4',
+      borderRadius: '32px',
+      height: '56px',
+      '& fieldset': {
+        borderRadius: '14px',
+      },
+      '& .MuiOutlinedInput-notchedOutline': {
+        borderColor: 'rgba(0, 0, 0, 0.45)',
+        borderWidth: '1px',
+      },
+      '&:hover .MuiOutlinedInput-notchedOutline': {
+        borderColor: 'rgba(0, 0, 0, 0.6)',
+        borderWidth: '1px',
+      },
+      '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+        borderColor: 'black',
+        borderWidth: '1px',
+      },
+      '& .MuiInputBase-input': {
+        padding: '14px 16px',
+        color: 'rgba(0, 0, 0, 0.45)',
+        fontSize: '16px',
+        fontWeight: 400,
+        fontFamily: "'Rubik', sans-serif",
+      },
+    },
   }
 
   if (variant === 'file') {
@@ -45,7 +76,7 @@ const CustomInput: React.FC<CustomInputProps> = ({
             </span>
           )}
         </div>
-        <label className="flex items-center justify-center gap-2.5 py-6 bg-white rounded-xl border border-[#EDEDED] cursor-pointer hover:border-[#121212] transition-colors">
+        <label className="flex items-center justify-center gap-2.5 py-6 bg-white rounded-full border border-[#EDEDED] cursor-pointer hover:border-[#121212] transition-colors">
           <Upload className="w-5 h-5 text-[#404040]" strokeWidth={1.67} />
           <span className="text-[#404040] text-[14px] font-medium font-['Satoshi'] leading-[21px]">
             {fileName || props.placeholder || 'Click to upload file'}
@@ -81,11 +112,11 @@ const CustomInput: React.FC<CustomInputProps> = ({
           sx={{
             '& .MuiOutlinedInput-root': {
               backgroundColor: '#fafafa',
-              borderRadius: '12px !important',
+              borderRadius: '32px !important',
               '& .MuiOutlinedInput-notchedOutline': {
                 borderColor: '#e5e7eb',
                 borderWidth: '2px',
-                borderRadius: '12px !important',
+                borderRadius: '32px !important',
               },
               '&:hover .MuiOutlinedInput-notchedOutline': {
                 borderColor: '#e5e7eb',
@@ -98,7 +129,7 @@ const CustomInput: React.FC<CustomInputProps> = ({
               '& .MuiInputBase-input': {
                 padding: '14px 16px',
                 color: '#404040',
-                fontSize: '16px',
+                fontSize: '18px',
                 fontWeight: 500,
                 fontFamily: "'Satoshi', sans-serif",
               },
@@ -111,45 +142,27 @@ const CustomInput: React.FC<CustomInputProps> = ({
   }
 
   // Default input variant
+  const mergedSx: SxProps<Theme> = {
+    ...defaultSx,
+    ...(userSx || {}),
+  } as SxProps<Theme>
+
   const inputElement = (
     <TextField
       variant="outlined"
       fullWidth
       onChange={onChange}
-      sx={{
-        '& .MuiOutlinedInput-root': {
-          backgroundColor: '#fafafa',
-          borderRadius: '12px !important',
-          '& .MuiOutlinedInput-notchedOutline': {
-            borderColor: '#e5e7eb',
-            borderWidth: '2px',
-            borderRadius: '12px !important',
-          },
-          '&:hover .MuiOutlinedInput-notchedOutline': {
-            borderColor: '#e5e7eb',
-            borderWidth: '2px',
-          },
-          '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-            borderColor: '#171717',
-            borderWidth: '2px',
-          },
-          '& .MuiInputBase-input': {
-            padding: '14px 16px',
-            color: '#404040',
-            fontSize: '16px',
-            fontWeight: 500,
-            fontFamily: "'Satoshi', sans-serif",
-          },
-        },
-      }}
+      sx={mergedSx}
       {...props}
     />
   )
   return (
     <div className="flex flex-col gap-1">
-      <label className="text-primary text-sm font-bold">
-        {label} {required && <span className="text-red-500">*</span>}
-      </label>
+      {label && (
+        <label className="text-primary text-sm font-bold">
+          {label} {required && <span className="text-red-500">*</span>}
+        </label>
+      )}
       {inputElement}
     </div>
   )

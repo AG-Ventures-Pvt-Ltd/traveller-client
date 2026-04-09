@@ -17,4 +17,4 @@ export const authenticatedNavItems: NavItem[] = [
   { title: 'Refer & Win', route: '/referral' }
 ]
 
-export const hiddenPaths: string[] = ['/auth', '/verify']
+export const hiddenPaths: string[] = ['/auth', '/verify', '/welcome']

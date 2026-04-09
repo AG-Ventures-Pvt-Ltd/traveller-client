@@ -12,10 +12,10 @@ const GoogleSignInButton = ({ redirectTo }: GoogleSignInButtonProps) => {
   return (
     <Button
       type="button"
-      variant="outlined"
+      variant="contained"
       fullWidth
       onClick={handleGoogleSignIn}
-      className="!h-14 !bg-white !rounded-xl !border-2 !border-gray-200 !text-neutral-900 !normal-case !mb-6 hover:!bg-gray-50"
+      className="!h-14 !bg-black !rounded-2xl !border-0 !text-white !normal-case !mb-3 hover:!bg-neutral-900"
       startIcon={
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M18.1667 10.2273C18.1667 9.51819 18.1076 8.83637 17.9985 8.18182H10V12.05H14.6485C14.4515 13.1091 13.8864 14.0136 13.0379 14.6409V17.0409H15.7197C17.2197 15.6682 18.1667 13.6182 18.1667 10.2273Z" fill="#4285F4"/>
@@ -25,8 +25,8 @@ const GoogleSignInButton = ({ redirectTo }: GoogleSignInButtonProps) => {
         </svg>
       }
     >
-      <span className="text-base font-medium font-['Satoshi']">
-        Continue with Google
+      <span className="text-base font-medium font-['Rubik']">
+        Sign Up with Google
       </span>
     </Button>
   );

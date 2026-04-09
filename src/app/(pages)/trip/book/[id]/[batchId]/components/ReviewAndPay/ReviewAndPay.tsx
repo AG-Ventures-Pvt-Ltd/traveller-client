@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { CheckCircle2, OctagonAlert } from 'lucide-react';
 import AvailableCoupons from './components/AvailableCoupons';
 import { useBookingStore } from '../../store/useBookingStore';
@@ -249,13 +250,13 @@ const ReviewAndPay: React.FC<ReviewAndPayProps> = ({
           />
           <p className="text-neutral-700 text-sm font-medium font-['Satoshi'] leading-5">
             I agree to the{' '}
-            <a href="/booking-policy" className="text-neutral-900 underline">
+            <Link href="/booking-policy" className="text-neutral-900 underline">
               Terms and Conditions
-            </a>{' '}
+            </Link>{' '}
             and{' '}
-            <a href="/booking-policy" className="text-neutral-900 underline">
+            <Link href="/booking-policy" className="text-neutral-900 underline">
               Cancellation Policy
-            </a>
+            </Link>
           </p>
         </div>
       </div>

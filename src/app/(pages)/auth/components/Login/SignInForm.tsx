@@ -1,8 +1,10 @@
 'use client';
 
 import { Field } from 'react-final-form';
-import { Eye, EyeOff, Mail, Lock, KeyRound } from 'lucide-react';
+import { Eye, EyeOff } from 'lucide-react';
+import { EnvelopeIcon, KeyIcon } from '@phosphor-icons/react';
 import { useState } from 'react';
+import { InputAdornment } from '@mui/material';
 import { required } from '../../utils/validations';
 import CustomInput from '@/common/ui/CustomInput';
 import Button from '@/common/ui/Buttons/Button';
@@ -17,7 +19,7 @@ export default function SignInForm() {
   };
 
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex flex-col gap-3">
       <Field name="emailOrUsername" validate={required}>
         {({ input, meta }) => (
           <div className="flex flex-col">
@@ -25,18 +27,16 @@ export default function SignInForm() {
               <CustomInput
                 {...input}
                 type="email"
-                placeholder="Enter your email"
+                placeholder="Email Address"
                 error={meta.touched && !!meta.error}
                 helperText={meta.touched && meta.error}
-                label='Email Address'
-                InputProps={{
-                  startAdornment: (
-                    <Mail className="absolute left-4 text-neutral-700" size={20} />
-                  ),
-                }}
-                sx={{
-                  '& .MuiInputBase-input': {
-                    paddingLeft: '48px !important',
+                slotProps={{
+                  input: {
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <EnvelopeIcon className="text-black/45" size={18} weight="regular" />
+                      </InputAdornment>
+                    ),
                   },
                 }}
               />
@@ -51,29 +51,28 @@ export default function SignInForm() {
               <CustomInput
                 {...input}
                 type={showPassword ? "text" : "password"}
-                placeholder="Enter your password"
+                placeholder="Password"
                 error={meta.touched && !!meta.error}
                 helperText={meta.touched && meta.error}
-                label='Password'
-                InputProps={{
-                  startAdornment: (
-                    <Lock className="absolute left-4 text-neutral-700" size={20} />
-                  ),
-                  endAdornment: (
-                    <Button
-                      type="button"
-                      onClick={togglePasswordVisibility}
-                      variant="text"
-                      className="!absolute !right-0 !min-w-0 !p-2 !text-neutral-700 hover:!text-neutral-900"
-                    >
-                      {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                    </Button>
-                  ),
-                }}
-                sx={{
-                  '& .MuiInputBase-input': {
-                    paddingLeft: '48px !important',
-                    paddingRight: '48px !important',
+                slotProps={{
+                  input: {
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <KeyIcon className="text-black/45" size={18} weight="regular" />
+                      </InputAdornment>
+                    ),
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <Button
+                          type="button"
+                          onClick={togglePasswordVisibility}
+                          variant="text"
+                          className="!min-w-0 !p-2 !text-black/45 hover:!text-black"
+                        >
+                          {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                        </Button>
+                      </InputAdornment>
+                    ),
                   },
                 }}
               />
@@ -81,20 +80,20 @@ export default function SignInForm() {
           </div>
         )}
       </Field>
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center mt-2">
         <div className="flex justify-start items-center gap-2">
           <input
             type="checkbox"
             checked={rememberMe}
             onChange={(e) => setRememberMe(e.target.checked)}
-            className="w-4 h-4 rounded border-2 border-gray-300 text-neutral-900 focus:ring-neutral-900"
+            className="w-4 h-4 rounded border-2 border-gray-300 text-black focus:ring-black"
           />
-          <span className="text-neutral-700 text-sm font-medium font-['Satoshi'] leading-5">
+          <span className="text-black text-sm font-normal font-['Rubik'] leading-5">
             Remember me
           </span>
         </div>
-        <Link href="/forgot-password" className="flex items-center gap-1 text-neutral-900 text-sm font-medium font-['Satoshi'] leading-5 hover:underline">
-          <KeyRound size={14} />
+        <Link href="/forgot-password" className="flex items-center gap-1 text-[#5a4eff] text-sm font-normal font-['Rubik'] leading-5 hover:underline">
+          <KeyIcon size={14} weight="regular" />
           Forgot password?
         </Link>
       </div>

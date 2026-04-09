@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Form } from 'react-final-form';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { ArrowRight, HelpCircle, MessageCircle, Shield } from 'lucide-react';
+import { HelpCircle, MessageCircle, Shield } from 'lucide-react';
 import SignInForm from './components/Login/SignInForm';
 import SignUpForm from './components/Register/SignUpForm';
 import SideBanner from './components/SideBanner';
@@ -64,31 +64,23 @@ export default function Page() {
   };
 
   return (
-    <div className="flex">
+    <div className="flex bg-[#fff9f4] min-h-screen">
       <div className='md:w-1/2'>
       <SideBanner />
       </div>
-      <div className={`w-full md:w-1/2 flex flex-col justify-start items-center h-screen overflow-y-scroll px-[10%] sm:px-[14%] md:px-[4%] lg:px-[8%] xl:px-[12%] pt-12 pb-8`}>
-        <div className="flex flex-col gap-3 mb-8 w-full">
-          <h1 className="text-neutral-900 text-4xl font-bold font-['Satoshi']">
+      <div className={`w-full md:w-1/2 flex flex-col justify-center items-center h-screen overflow-y-scroll px-[10%] sm:px-[14%] md:px-[4%] lg:px-[8%] xl:px-[12%] py-8 bg-[#fff9f4]`}>
+        <div className="flex flex-col gap-2 mb-8 w-full text-center">
+          <h1 className="text-black text-3xl font-extrabold font-['Rubik']">
             {isLogin ? 'Welcome Back' : 'Create Account'}
           </h1>
-          <p className="text-neutral-700 text-base font-medium font-['Satoshi']">
-            {isLogin ? 'Continue your journey where you left off' : 'Start your adventure with us today'}
+          <p className="text-black text-sm font-medium font-['Rubik']">
+            {isLogin ? 'Happy to see you here again !' : 'You are a few steps away from travelling freeling in all over India'}
           </p>
-        </div>
-        <div className='w-full'>
-          <GoogleSignInButton redirectTo={redirectUrl || '/'}/>
-        </div>
-        <div className="flex justify-start items-center gap-4 mb-4">
-          <div className="flex-1 h-px bg-gray-200" />
-          <span className="text-neutral-700 text-sm font-medium font-['Satoshi'] leading-5">or</span>
-          <div className="flex-1 h-px bg-gray-200" />
         </div>
         <Form
           onSubmit={onSubmit}
           render={({ handleSubmit }) => (
-            <form onSubmit={handleSubmit} className="w-full flex flex-col gap-5">
+            <form onSubmit={handleSubmit} className="w-full flex flex-col gap-3">
               {isLogin ? (
                 <SignInForm />
               ) : (
@@ -105,43 +97,48 @@ export default function Page() {
                 type="submit"
                 fullWidth
                 disabled={!isLogin && !agreeToTerms}
-                className="!h-14 !bg-neutral-900 !rounded-xl !text-white !font-bold !text-base !normal-case hover:!bg-neutral-800 disabled:!opacity-50 disabled:!cursor-not-allowed"
-                endIcon={<ArrowRight size={20} />}
+                className="!h-14 !bg-[#eea0ff] !rounded-2xl !text-black !font-semibold !text-base !normal-case hover:!bg-[#e080ff] disabled:!opacity-50 disabled:!cursor-not-allowed font-['Rubik']"
               >
-                <span className="font-['Satoshi']">
-                  {isLogin ? 'Sign In' : 'Create Account'}
-                </span>
+                {isLogin ? 'Log In' : 'Create Account'}
               </Button>
-              <div className="flex justify-center items-center gap-2 mb-0">
-                <span className="text-neutral-700 text-base font-medium font-['Satoshi'] leading-6">
+              <div className="flex justify-start items-center gap-4 my-2">
+                <div className="flex-1 h-px bg-black/20" />
+                <span className="text-black text-sm font-light font-['Rubik'] leading-5">or</span>
+                <div className="flex-1 h-px bg-black/20" />
+              </div>
+              <div className='w-full flex flex-col gap-3'>
+                <GoogleSignInButton redirectTo={redirectUrl || '/'}/>
+              </div>
+              <div className="flex justify-center items-center gap-2 mt-4">
+                <span className="text-black text-sm font-normal font-['Rubik'] leading-6">
                   {isLogin ? "Don't have an account?" : 'Already have an account?'}
                 </span>
                 <Button
                   type="button"
                   onClick={toggleMode}
                   variant="text"
-                  className="!text-neutral-900 !text-base !font-bold !normal-case !p-0 !min-w-0 hover:!underline font-['Satoshi']"
+                  className="!text-[#5a4eff] !text-sm !font-normal !normal-case !p-0 !min-w-0 hover:!underline font-['Rubik']"
                 >
-                  {isLogin ? 'Sign Up' : 'Sign In'}
+                  {isLogin ? 'Sign Up' : 'Log In'}
                 </Button>
               </div>
             </form>
           )}
         />
-        <div className="flex justify-center items-center gap-6 pt-3 border-t border-gray-200">
-          <Link href="#" className="flex items-center gap-1 text-neutral-700 text-sm font-medium font-['Satoshi'] leading-5 hover:text-neutral-900">
+        {/* <div className="flex justify-center items-center gap-6 pt-3 border-t border-gray-200 mt-4">
+          <Link href="#" className="flex items-center gap-1 text-black text-xs font-normal font-['Rubik'] leading-5 hover:text-neutral-900">
             <HelpCircle size={16} />
             Help Center
           </Link>
-          <Link href="#" className="flex items-center gap-1 text-neutral-700 text-sm font-medium font-['Satoshi'] leading-5 hover:text-neutral-900">
+          <Link href="#" className="flex items-center gap-1 text-black text-xs font-normal font-['Rubik'] leading-5 hover:text-neutral-900">
             <MessageCircle size={16} />
             Contact Support
           </Link>
-          <Link href="/privacy-policy" className="flex items-center gap-1 text-neutral-700 text-sm font-medium font-['Satoshi'] leading-5 hover:text-neutral-900">
+          <Link href="/privacy-policy" className="flex items-center gap-1 text-black text-xs font-normal font-['Rubik'] leading-5 hover:text-neutral-900">
             <Shield size={16} />
             Privacy
           </Link>
-        </div>
+        </div> */}
       </div>
     </div>
   );
