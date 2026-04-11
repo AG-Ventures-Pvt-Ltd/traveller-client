@@ -127,7 +127,7 @@ const HomePage = () => {
 
                     {/* Sliding Carousel Section with Featured Trips */}
                     <SlidingCarouselSection
-                        title="Most Booked this Weekend"
+                        title="Most Booked Trips"
                         trips={transformedTrips}
                         isLoading={isTripsLoading}
                     />

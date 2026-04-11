@@ -4,6 +4,7 @@ import React from 'react';
 import { Providers } from "./providers";
 import Script from "next/script";
 import Navbar from '../(pages)/(landing)/Navbar/Navbar'
+import StickyNavigation from '@/common/components/composites/StickyNavigation';
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 
@@ -78,6 +79,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
         <Providers>
           <Navbar />
           {children}
+          <StickyNavigation />
         </Providers>
       </body>
     </html>
