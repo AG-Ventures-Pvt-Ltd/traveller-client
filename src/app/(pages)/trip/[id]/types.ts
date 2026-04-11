@@ -86,6 +86,8 @@ export interface TripData {
   tags: string[];
   slug?: string;
   isBookmarked?: boolean;
+  cancellationPolicy?: Array<{ days: string; refund: string }>;
+  refundPolicy?: { description: string; terms: string[] };
 }
 
 export interface TripImageGalleryProps {

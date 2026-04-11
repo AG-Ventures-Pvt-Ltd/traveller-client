@@ -10,6 +10,7 @@ import { HostCard } from "./components/HostCard";
 import { TripPolicies } from "./components/TripPolicies";
 import { TripAdditionalInfo } from "./components/TripAdditionalInfo";
 import MobileBookingBar from "./components/MobileBookingBar";
+import TripDetailMobile from "./components/TripDetailMobile";
 import { Separator } from "@/common/ui/separator";
 import Footer from "../../(landing)/Footer/Footer";
 import { useParams, useRouter } from 'next/navigation';
@@ -32,6 +33,7 @@ export default function TripDetail() {
   const router = useRouter();
   const id = slug ? (slug.split('-').pop() || slug) : '';
   const [loadDetailed, setLoadDetailed] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   const { data: basicData, isLoading: isBasicLoading, error } = useTripBasicDetails(id as string);
   const { data: detailedData } = useTripDetailedDetails(id as string, loadDetailed);
@@ -53,10 +55,23 @@ export default function TripDetail() {
     }
   }, [tripData, slug, router, id]);
 
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 1024);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   if (isBasicLoading || !tripData) return <Loader />;
 
   if (error) {
     throw Error(error.message)
+  }
+
+  if (isMobile) {
+    return <TripDetailMobile />;
   }
 
   return (

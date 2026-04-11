@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { useRouter } from 'next/navigation';
 import { StarIcon, SealCheckIcon } from '@phosphor-icons/react';
 import MyImage from '@/common/ui/Image';
 
@@ -28,12 +29,20 @@ const CarouselCard: React.FC<CarouselCardProps> = ({
   colorScheme = 'yellow',
   onClick
 }) => {
+  const router = useRouter();
   const bgColor = colorScheme === 'yellow' ? 'bg-[#FFD976]' : 'bg-[#E2F4A6]';
   const borderColor = colorScheme === 'yellow' ? 'border-[#FFD976]' : 'border-[#E2F4A6]';
 
+  const handleCardClick = () => {
+    // Create slug from title and id
+    const slug = `${title.toLowerCase().replace(/\s+/g, '-')}-${id}`;
+    router.push(`/trip/${slug}`);
+    onClick?.();
+  };
+
   return (
     <div
-      onClick={onClick}
+      onClick={handleCardClick}
       className={`w-full h-full ${bgColor} rounded-3xl overflow-hidden border-10 ${borderColor} cursor-pointer hover:shadow-lg transition-shadow flex flex-col`}
     >
       <div className="relative h-32 overflow-hidden rounded-3xl">
