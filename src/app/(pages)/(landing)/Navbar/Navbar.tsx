@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Logo from '@/common/components/atoms/Logo/Logo'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
@@ -15,10 +15,25 @@ const Navbar = () => {
   const router = useRouter();
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const [isHydrated, setIsHydrated] = useState(false);
+
+  useEffect(() => {
+    setIsHydrated(true);
+    
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const hideNav = hiddenPaths.some(path => pathname.startsWith(path));
 
-  if (hideNav) {
+  // Hide navbar on mobile devices
+  if (!isHydrated || isMobile || hideNav) {
     return <></>
   }
 

@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useRouter } from 'next/navigation';
-import { Users, Bike, Footprints } from 'lucide-react';
+import { MaskHappyIcon, MotorcycleIcon, ConfettiIcon, UsersFourIcon, LightningIcon, PersonSimpleHikeIcon } from '@phosphor-icons/react';
 import Button from '@/common/components/atoms/Button';
 
 const WelcomePage: React.FC = () => {
@@ -15,151 +15,158 @@ const WelcomePage: React.FC = () => {
   return (
     <div className="min-h-screen bg-[#fff9f4] overflow-hidden flex flex-col md:hidden">
       {/* Header */}
-      <div className="pt-6 pb-4 text-center">
+      <div className="flex-1 pt-6 pb-4 text-center flex items-end justify-center">
         <h1 className="text-5xl font-black text-black tracking-tight">Wondrr</h1>
       </div>
 
       {/* Circular Elements Section */}
-      <div className="flex-1 relative w-full max-w-sm mx-auto px-4 py-8">
+      <div className="flex-7 relative w-full max-w-sm mx-auto px-8 ">
         {/* Bike Trips Circle - Left */}
         <div className="absolute left-0 top-20">
-          <div className="relative w-40 h-40">
+          <div className="relative w-40 h-40 z-10">
             {/* Circle with text around it */}
             <svg
               className="w-full h-full absolute inset-0"
               viewBox="0 0 160 160"
               xmlns="http://www.w3.org/2000/svg"
             >
-              {/* Lime circle */}
-              <circle cx="80" cy="80" r="75" fill="#d4fc79" stroke="#000" strokeWidth="1" opacity="0.9" />
-
-              {/* Text path for circular text */}
+              <circle cx="80" cy="80" r="60" fill="#E2F4A6" />
               <defs>
-                <path id="circlePath" d="M 30, 80 A 50, 50 0 1,1 130, 80" fill="none" />
+                <path id="circlePath" d="M 40,80 A 40,40 0 1,1 120,80" fill="none" />
               </defs>
-              <text fill="#1a1a1a" fontSize="14" fontWeight="600" letterSpacing="-0.5">
+              <defs>
+                <path id="bottomPath" d="M 120,80 A 40,40 0 1,1 40,80" fill="none" />
+              </defs>
+              <text fill="#1a1a1a" fontSize="16" fontWeight="500" letterSpacing="-0.5">
                 <textPath href="#circlePath" startOffset="50%" textAnchor="middle">
-                  Trips Cool l Food utter
+                  Fun is cool
+                </textPath>
+              </text>
+              <text fill="#1a1a1a" fontSize="16" fontWeight="500" letterSpacing="-0.5">
+                <textPath href="#bottomPath" startOffset="50%" textAnchor="middle">
+                  Fun is cool
                 </textPath>
               </text>
             </svg>
 
             {/* Motorcycle Icon - centered */}
             <div className="absolute inset-0 flex items-center justify-center">
-              <Bike size={40} className="text-gray-900" />
+              <MaskHappyIcon size={36} className="text-gray-900" weight='thin' />
             </div>
           </div>
 
           {/* Bike Trips Tag - positioned below circle */}
-          <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 -translate-y-full">
-            <div className="bg-white border-2 border-black rounded-full px-4 py-2 flex items-center gap-2 transform -rotate-12">
-              <Bike size={18} className="text-gray-900" />
-              <span className="font-semibold text-sm text-gray-900">Bike trips</span>
+          <div className="absolute top-32 left-1/2 transform -translate-x-22">
+            <div className="bg-white border-2 border-black rounded-full px-3 py-1 flex items-center gap-4 transform rotate-12 whitespace-nowrap">
+              <MotorcycleIcon size={32} className="text-gray-900" weight='thin' />
+              <span className="font-medium text-lg text-gray-900">Bike trips</span>
             </div>
           </div>
         </div>
 
         {/* Hiking Circle - Bottom Center */}
-        <div className="absolute left-1/2 transform -translate-x-1/2 bottom-20">
-          <div className="relative w-40 h-40">
+        <div className="absolute left-3/4 transform -translate-x-1/2 bottom-0">
+          <div className="relative w-40 h-40 z-10">
             {/* Yellow circle */}
             <svg
               className="w-full h-full absolute inset-0"
               viewBox="0 0 160 160"
               xmlns="http://www.w3.org/2000/svg"
             >
-              <circle cx="80" cy="80" r="75" fill="#fbbf24" stroke="#000" strokeWidth="1" opacity="0.9" />
-
+              <circle cx="80" cy="80" r="45" fill="#FFD976" />
               <defs>
-                <path id="circlePath2" d="M 30, 80 A 50, 50 0 1,1 130, 80" fill="none" />
+                <path id="circlePath2" d="M 50,80 A 30,30 0 1,1 110,80" fill="none" />
+                <path id="bottomPath2" d="M 110,80 A 30,30 0 1,1 50,80" fill="none" />
               </defs>
-              <text fill="#1a1a1a" fontSize="14" fontWeight="600" letterSpacing="-0.5">
-                <textPath href="#circlePath2" startOffset="50%" textAnchor="middle">
-                  Thrill e are small
+              <text fill="#1a1a1a" fontSize="12" fontWeight="500" letterSpacing="-0.5">
+                <textPath href="#circlePath2" startOffset="60%" textAnchor="middle">
+                  Thrill all over
+                </textPath>
+              </text>
+              <text fill="#1a1a1a" fontSize="12" fontWeight="500" letterSpacing="-0.5">
+                <textPath href="#bottomPath2" startOffset="60%" textAnchor="middle">
+                  Thrill all over
                 </textPath>
               </text>
             </svg>
-
-            {/* Footprints Icon - centered */}
             <div className="absolute inset-0 flex items-center justify-center">
-              <Footprints size={40} className="text-gray-900" />
+              <LightningIcon size={24} className="text-gray-900" />
             </div>
           </div>
-
-          {/* Hiking Tag */}
-          <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 translate-y-0">
-            <div className="bg-white border-2 border-black rounded-full px-4 py-2 flex items-center gap-2 transform -rotate-6">
-              <Footprints size={18} className="text-gray-900" />
-              <span className="font-semibold text-sm text-gray-900">Hiking</span>
+          <div className="absolute top-3 left-24 transform -rotate-8 -translate-x-22 translate-y-0">
+            <div className="bg-white border-2 border-black rounded-full px-2 py-1 flex items-center gap-2 transform -rotate-6">
+              <PersonSimpleHikeIcon size={24} className="text-gray-900" weight='thin' />
+              <span className="font-medium text-md text-gray-900">Hiking</span>
             </div>
           </div>
         </div>
 
         {/* Group Trips Circle - Right Top */}
-        <div className="absolute right-0 top-0">
-          <div className="relative w-40 h-40">
-            {/* Cyan circle */}
+        <div className="absolute right-0 top-0 ">
+          <div className="relative w-40 h-40 z-10">
             <svg
               className="w-full h-full absolute inset-0"
               viewBox="0 0 160 160"
               xmlns="http://www.w3.org/2000/svg"
             >
-              <circle cx="80" cy="80" r="75" fill="#67e8f9" stroke="#000" strokeWidth="1" opacity="0.9" />
-
+              <circle cx="80" cy="80" r="60" fill="#A8FFF8" />
               <defs>
-                <path id="circlePath3" d="M 30, 80 A 50, 50 0 1,1 130, 80" fill="none" />
+                <path id="circlePath3" d="M 40,80 A 40,40 0 1,1 120,80" fill="none" />
+                <path id="bottomPath" d="M 120,80 A 40,40 0 1,1 40,80" fill="none" />
               </defs>
-              <text fill="#1a1a1a" fontSize="14" fontWeight="600" letterSpacing="-0.5">
-                <textPath href="#circlePath3" startOffset="50%" textAnchor="middle">
-                  Hobbies seabord all
+              <text fill="#1a1a1a" fontSize="16" fontWeight="500" letterSpacing="-0.5">
+                <textPath href="#circlePath3" startOffset="70%" textAnchor="middle">
+                  Happiness
+                </textPath>
+              </text>
+              <text fill="#1a1a1a" fontSize="16" fontWeight="500" letterSpacing="-0.5">
+                <textPath href="#bottomPath" startOffset="70%" textAnchor="middle">
+                  Happiness
                 </textPath>
               </text>
             </svg>
-
-            {/* Users Icon - centered */}
             <div className="absolute inset-0 flex items-center justify-center">
-              <Users size={40} className="text-gray-900" />
+              <ConfettiIcon size={40} className="text-gray-900" weight='thin' />
             </div>
           </div>
-
-          {/* Group Trips Tag */}
-          <div className="absolute -bottom-4 right-0 transform translate-x-2">
-            <div className="bg-white border-2 border-black rounded-full px-4 py-2 flex items-center gap-2 transform rotate-2">
-              <Users size={18} className="text-gray-900" />
-              <span className="font-semibold text-sm text-gray-900">Group Trips</span>
+          <div className="absolute -bottom-4 right-0 -rotate-10 transform translate-x-2">
+            <div className="bg-white border-2 border-black rounded-full px-3 py-1 flex items-center gap-3 transform rotate-2 whitespace-nowrap">
+              <UsersFourIcon size={32} className="text-gray-900" weight='thin' />
+              <span className="font-medium text-md text-gray-900">Group Trips</span>
             </div>
           </div>
         </div>
       </div>
 
       {/* Content Section */}
-      <div className="flex flex-col items-center gap-4 px-6 py-6 text-center">
-        <h2 className="text-2xl font-[1000] text-black">Travel Hassle Free</h2>
-        <p className="text-base text-gray-900 font-medium leading-relaxed">
-          Find your next adventure in minutes
-        </p>
-      </div>
+      <div className='flex-2 flex flex-col gap-20 '>
+        <div className="flex flex-col items-center gap-2 px-6 text-center">
+          <h2 className="text-2xl font-[1000] text-black">Travel Hassle Free</h2>
+          <p className="text-lg text-gray-900 font-medium leading-relaxed">
+            Find your next adventure in minutes
+          </p>
+        </div>
 
-      {/* CTA Button */}
-      <div className="px-6 pb-8">
-        <Button
-          onClick={handleGetStarted}
-          className="!w-full !py-4 !px-6 !rounded-2xl !text-base !font-semibold"
-          style={{
-            background: '#e588f7',
-            color: '#000',
-            fontWeight: 700,
-            fontSize: '1rem',
-            padding: '16px 24px',
-            borderRadius: '16px',
-            width: '100%',
-            border: 'none',
-          }}
-        >
-          Get Started
-        </Button>
+        {/* CTA Button */}
+        <div className="px-6 pb-8">
+          <Button
+            onClick={handleGetStarted}
+            className="!w-full !py-4 !px-6 !rounded-2xl !text-base !font-semibold"
+            style={{
+              background: '#e588f7',
+              color: '#000',
+              fontWeight: 700,
+              fontSize: '1rem',
+              padding: '16px 24px',
+              borderRadius: '16px',
+              width: '100%',
+              border: 'none',
+            }}
+          >
+            Get Started
+          </Button>
+        </div>
       </div>
-
       {/* Desktop Layout */}
       <div className="hidden md:flex items-center justify-center min-h-screen px-8 py-12 relative overflow-hidden">
         {/* Logo - Top Left */}
@@ -211,99 +218,6 @@ const WelcomePage: React.FC = () => {
               >
                 Learn More
               </Button>
-            </div>
-          </div>
-
-          {/* Right Side - Floating Badges */}
-          <div className="relative h-96 flex items-center justify-center">
-            {/* Bike Trips Circle */}
-            <div className="absolute left-0 top-16">
-              <div className="relative w-48 h-48">
-                <svg
-                  className="w-full h-full absolute inset-0"
-                  viewBox="0 0 160 160"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <circle cx="80" cy="80" r="75" fill="#d4fc79" stroke="#000" strokeWidth="1" opacity="0.9" />
-                  <defs>
-                    <path id="cpDesk1" d="M 30, 80 A 50, 50 0 1,1 130, 80" fill="none" />
-                  </defs>
-                  <text fill="#1a1a1a" fontSize="12" fontWeight="600">
-                    <textPath href="#cpDesk1" startOffset="50%" textAnchor="middle">
-                      Trips Cool l Food utter
-                    </textPath>
-                  </text>
-                </svg>
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <Bike size={48} className="text-gray-900" />
-                </div>
-              </div>
-              <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 -translate-y-full">
-                <div className="bg-white border-2 border-black rounded-full px-5 py-3 flex items-center gap-2 transform -rotate-12">
-                  <Bike size={20} className="text-gray-900" />
-                  <span className="font-semibold text-gray-900">Bike trips</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Hiking Circle */}
-            <div className="absolute left-1/2 transform -translate-x-1/2 bottom-8">
-              <div className="relative w-48 h-48">
-                <svg
-                  className="w-full h-full absolute inset-0"
-                  viewBox="0 0 160 160"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <circle cx="80" cy="80" r="75" fill="#fbbf24" stroke="#000" strokeWidth="1" opacity="0.9" />
-                  <defs>
-                    <path id="cpDesk2" d="M 30, 80 A 50, 50 0 1,1 130, 80" fill="none" />
-                  </defs>
-                  <text fill="#1a1a1a" fontSize="12" fontWeight="600">
-                    <textPath href="#cpDesk2" startOffset="50%" textAnchor="middle">
-                      Thrill e are small
-                    </textPath>
-                  </text>
-                </svg>
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <Footprints size={48} className="text-gray-900" />
-                </div>
-              </div>
-              <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                <div className="bg-white border-2 border-black rounded-full px-5 py-3 flex items-center gap-2 transform -rotate-6">
-                  <Footprints size={20} className="text-gray-900" />
-                  <span className="font-semibold text-gray-900">Hiking</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Group Trips Circle */}
-            <div className="absolute right-0 top-0">
-              <div className="relative w-48 h-48">
-                <svg
-                  className="w-full h-full absolute inset-0"
-                  viewBox="0 0 160 160"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <circle cx="80" cy="80" r="75" fill="#67e8f9" stroke="#000" strokeWidth="1" opacity="0.9" />
-                  <defs>
-                    <path id="cpDesk3" d="M 30, 80 A 50, 50 0 1,1 130, 80" fill="none" />
-                  </defs>
-                  <text fill="#1a1a1a" fontSize="12" fontWeight="600">
-                    <textPath href="#cpDesk3" startOffset="50%" textAnchor="middle">
-                      Hobbies seabord all
-                    </textPath>
-                  </text>
-                </svg>
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <Users size={48} className="text-gray-900" />
-                </div>
-              </div>
-              <div className="absolute -bottom-4 right-0 transform translate-x-2">
-                <div className="bg-white border-2 border-black rounded-full px-5 py-3 flex items-center gap-2 transform rotate-2">
-                  <Users size={20} className="text-gray-900" />
-                  <span className="font-semibold text-gray-900">Group Trips</span>
-                </div>
-              </div>
             </div>
           </div>
         </div>

@@ -39,7 +39,6 @@ export const credentialsProvider = CredentialsProvider({
       }
 
       try {
-        console.log(process.env.INTERNAL_AUTH_SECRET)
         const res = await axios.post(process.env.NEXT_PUBLIC_API_URL + '/api/client/v1/user/login', userData, {
           headers: {
             'x-internal-auth': process.env.INTERNAL_AUTH_SECRET || 'MySuperSecretKey',

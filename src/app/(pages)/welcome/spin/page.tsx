@@ -9,13 +9,13 @@ interface Segment {
   id: number;
   label: string;
   color: string;
-  probability: number; // 0-100, percentage chance
+  probability: number; 
 }
 
 interface SpinData {
-  reward: string;
-  date: string;
+  rewardAmount: number;
   timestamp: number;
+  claimed?: boolean;
 }
 
 const SpinWheelPage: React.FC = () => {
@@ -27,13 +27,13 @@ const SpinWheelPage: React.FC = () => {
   const [spinCount, setSpinCount] = useState(0);
   const [hasSpun, setHasSpun] = useState(false);
   const [spinData, setSpinData] = useState<SpinData | null>(null);
+  const [isClaimed, setIsClaimed] = useState(false);
 
   const segments: Segment[] = [
-    { id: 1, label: '200', color: '#d4fc79', probability: 9 }, // Lime - 20%
-    { id: 2, label: '400', color: '#fbbf24', probability: 10 }, // Yellow - 20%
-    { id: 3, label: '600', color: '#f472b6', probability: 40 }, // Pink - 20%
-    { id: 4, label: '800', color: '#60a5fa', probability: 40 }, // Blue - 20%
-    { id: 5, label: '1000', color: '#a78bfa', probability: 1 }, // Purple - 20%
+    { id: 1, label: '₹200', color: '#d4fc79', probability: 25 }, // Lime - Cash
+    { id: 2, label: '₹300', color: '#fbbf24', probability: 25 }, // Yellow - Cash
+    { id: 3, label: '₹400', color: '#f472b6', probability: 25 }, // Pink - Cash
+    { id: 4, label: '₹500', color: '#60a5fa', probability: 25 }, // Blue - Cash
   ];
 
   const segmentAngle = 360 / segments.length; // 72 degrees per segment
@@ -42,14 +42,14 @@ const SpinWheelPage: React.FC = () => {
   const getRandomSegmentByProbability = (): Segment => {
     const random = Math.random() * 100;
     let cumulativeProbability = 0;
-    
+
     for (const segment of segments) {
       cumulativeProbability += segment.probability;
       if (random <= cumulativeProbability) {
         return segment;
       }
     }
-    
+
     // Fallback to last segment (shouldn't reach here)
     return segments[segments.length - 1];
   };
@@ -57,8 +57,9 @@ const SpinWheelPage: React.FC = () => {
   // Convert segment to rotation angle
   const getRotationForSegment = (segment: Segment): number => {
     const segmentIndex = segments.findIndex(s => s.id === segment.id);
-    const segmentCenter = (segmentIndex * segmentAngle) + (segmentAngle / 2);
-    return segmentCenter;
+    const segmentCenterSVG = segmentIndex * segmentAngle + segmentAngle / 2 - 90;
+    // Negate it so that center rotates to the top (0°)
+    return ((-90 - segmentCenterSVG) % 360 + 360) % 360;
   };
 
   // Check localStorage on mount
@@ -69,6 +70,11 @@ const SpinWheelPage: React.FC = () => {
         const data = JSON.parse(storedSpinData) as SpinData;
         setSpinData(data);
         setHasSpun(true);
+        
+        // Check if already claimed
+        if (data.claimed) {
+          setIsClaimed(true);
+        }
       } catch {
         // Silently fail if localStorage data is corrupted
       }
@@ -86,14 +92,8 @@ const SpinWheelPage: React.FC = () => {
     // Select segment based on probability weights
     const selectedSegment = getRandomSegmentByProbability();
     const targetRotation = getRotationForSegment(selectedSegment);
-
-    // Random number of rotations (5-8 full rotations for more excitement)
-    const fullRotations = 5 + Math.random() * 3;
-    
-    // Total rotation: full rotations + target landing position
-    const totalRotation = fullRotations * 360 + targetRotation;
-    
-    // Set rotation for animation
+    const fullRotations = (5 + Math.floor(Math.random() * 4)) * 360;
+    const totalRotation = fullRotations + targetRotation;
     setRotation(totalRotation);
 
     // After animation completes, show the result
@@ -103,11 +103,10 @@ const SpinWheelPage: React.FC = () => {
       setShowConfetti(true);
 
       // Store spin data in localStorage
-      const now = new Date();
+      const rewardAmount = parseInt(selectedSegment.label.replace('₹', ''));
       const spinDataToStore: SpinData = {
-        reward: selectedSegment.label,
-        date: now.toLocaleDateString(),
-        timestamp: now.getTime(),
+        rewardAmount,
+        timestamp: new Date().getTime(),
       };
       localStorage.setItem('spinWheelData', JSON.stringify(spinDataToStore));
       setSpinData(spinDataToStore);
@@ -116,7 +115,7 @@ const SpinWheelPage: React.FC = () => {
   };
 
   const handleClaimReward = () => {
-    router.push('/auth?mode=signup&reward=' + selectedReward);
+    router.push('/auth?mode=signup&reward=' + selectedReward?.replace('₹', ''));
   };
 
   return (
@@ -207,14 +206,14 @@ const SpinWheelPage: React.FC = () => {
             <div className="text-6xl mb-6">🎉</div>
 
             <p className="text-gray-500 font-['Rubik'] text-lg mb-4">Congratulations!</p>
-            
+
             <div className="bg-gradient-to-r from-[#d4fc79] to-[#a78bfa] rounded-2xl py-8 mb-6 border-4 border-black">
-              <p className="text-6xl font-black text-black mb-2">₹{selectedReward}</p>
-              <p className="text-black font-['Rubik'] font-semibold">Cash Prize!</p>
+              <p className="text-6xl font-black text-black mb-2">{selectedReward}</p>
+              <p className="text-black font-['Rubik'] font-semibold">Reward!</p>
             </div>
 
-            <p className="text-gray-600 font-['Rubik'] mb-2">You&apos;ve won ₹{selectedReward}!</p>
-            <p className="text-gray-500 font-['Rubik'] text-sm mb-6">Sign up now to claim your cash prize</p>
+            <p className="text-gray-600 font-['Rubik'] mb-2">You&apos;ve won {selectedReward}!</p>
+            <p className="text-gray-500 font-['Rubik'] text-sm mb-6">Sign up now to claim your reward</p>
 
             <Button
               onClick={handleClaimReward}
@@ -228,11 +227,16 @@ const SpinWheelPage: React.FC = () => {
 
       <h1 className="text-4xl font-black text-black mb-2 text-center">Spin & Win!</h1>
       <p className="text-gray-600 text-center mb-12 font-['Rubik'] text-lg">
-        {hasSpun ? 'Thank you for spinning! You won ₹' + spinData?.reward : 'One spin, one chance to win cash!'}
+        {isClaimed 
+          ? '✅ You have already claimed this bonus!' 
+          : hasSpun 
+            ? 'Thank you for spinning! You won ₹' + spinData?.rewardAmount 
+            : 'One spin, one chance to win cash!'}
       </p>
 
       {/* Wheel Container */}
-      <div className="relative w-80 h-80 mb-12">
+      {!isClaimed ? (
+      <div className="relative w-[480px] h-[480px] mb-12">
         {/* Lock overlay if already spun */}
         {hasSpun && (
           <div className="absolute inset-0 bg-black/30 rounded-full z-40 flex items-center justify-center backdrop-blur-sm">
@@ -245,7 +249,7 @@ const SpinWheelPage: React.FC = () => {
 
         {/* Pointer/Arrow at top */}
         <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-10">
-          <div 
+          <div
             style={{
               borderLeft: '12px solid transparent',
               borderRight: '12px solid transparent',
@@ -260,9 +264,9 @@ const SpinWheelPage: React.FC = () => {
         {/* Wheel SVG */}
         <motion.svg
           key={spinCount}
-          width="320"
-          height="320"
-          viewBox="0 0 320 320"
+          width="480"
+          height="480"
+          viewBox="0 0 480 480"
           animate={{ rotate: rotation }}
           transition={{
             duration: 4,
@@ -277,24 +281,24 @@ const SpinWheelPage: React.FC = () => {
             const startAngle = (index * segmentAngle - 90) * (Math.PI / 180);
             const endAngle = ((index + 1) * segmentAngle - 90) * (Math.PI / 180);
 
-            const x1 = 160 + 120 * Math.cos(startAngle);
-            const y1 = 160 + 120 * Math.sin(startAngle);
-            const x2 = 160 + 120 * Math.cos(endAngle);
-            const y2 = 160 + 120 * Math.sin(endAngle);
+            const x1 = 240 + 180 * Math.cos(startAngle);
+            const y1 = 240 + 180 * Math.sin(startAngle);
+            const x2 = 240 + 180 * Math.cos(endAngle);
+            const y2 = 240 + 180 * Math.sin(endAngle);
 
             const largeArc = segmentAngle > 180 ? 1 : 0;
 
             const pathData = [
-              `M 160 160`,
+              `M 240 240`,
               `L ${x1} ${y1}`,
-              `A 120 120 0 ${largeArc} 1 ${x2} ${y2}`,
+              `A 180 180 0 ${largeArc} 1 ${x2} ${y2}`,
               'Z',
             ].join(' ');
 
             // Calculate text position (middle of segment, closer to edge)
             const textAngle = (index * segmentAngle + segmentAngle / 2 - 90) * (Math.PI / 180);
-            const textX = 160 + 85 * Math.cos(textAngle);
-            const textY = 160 + 85 * Math.sin(textAngle);
+            const textX = 240 + 127.5 * Math.cos(textAngle);
+            const textY = 240 + 127.5 * Math.sin(textAngle);
             const textRotation = (index * segmentAngle + segmentAngle / 2);
 
             return (
@@ -307,50 +311,66 @@ const SpinWheelPage: React.FC = () => {
                   strokeWidth="3"
                   filter="drop-shadow(2px 2px 4px rgba(0,0,0,0.1))"
                 />
-                
+
                 {/* Segment Label */}
                 <text
                   x={textX}
                   y={textY}
                   textAnchor="middle"
                   dominantBaseline="middle"
-                  fontSize="32"
+                  fontSize={segment.label.includes('\n') ? '20' : '40'}
                   fontWeight="900"
                   fill="#000"
                   transform={`rotate(${textRotation} ${textX} ${textY})`}
                   fontFamily="'Rubik', sans-serif"
                   filter="drop-shadow(1px 1px 2px rgba(255,255,255,0.5))"
                 >
-                  {segment.label}
+                  {segment.label.split('\n').map((line, idx) => (
+                    <tspan key={idx} x={textX} dy={idx === 0 ? 0 : 18}>
+                      {line}
+                    </tspan>
+                  ))}
                 </text>
               </g>
             );
           })}
 
           {/* Center Circle with gradient */}
-          <circle cx="160" cy="160" r="28" fill="#000" stroke="#fff9f4" strokeWidth="3" filter="drop-shadow(0 4px 8px rgba(0,0,0,0.2))" />
-          <circle cx="160" cy="160" r="20" fill="#eea0ff" />
-          <circle cx="160" cy="160" r="10" fill="#000" />
+          <circle cx="240" cy="240" r="28" fill="#000" stroke="#fff9f4" strokeWidth="3" filter="drop-shadow(0 4px 8px rgba(0,0,0,0.2))" />
+          <circle cx="240" cy="240" r="20" fill="#eea0ff" />
+          <circle cx="240" cy="240" r="10" fill="#000" />
         </motion.svg>
       </div>
+      ) : (
+        <div className="relative w-[480px] h-[480px] mb-12 flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-50 rounded-3xl border-4 border-blue-200">
+          <div className="text-center">
+            <div className="text-7xl mb-6">🎉</div>
+            <p className="text-2xl font-bold text-neutral-900 font-['Satoshi'] mb-2">Bonus Already Claimed!</p>
+            <p className="text-neutral-600 font-['Satoshi']">Thank you for claiming your ₹{spinData?.rewardAmount} reward</p>
+          </div>
+        </div>
+      )}
 
       {/* Spin Button */}
+{!isClaimed && (
       <Button
         onClick={handleSpin}
         disabled={isSpinning || hasSpun}
-        className={`!h-16 !bg-[#eea0ff] !rounded-2xl !text-black !font-bold !text-lg !normal-case hover:!bg-[#e080ff] disabled:!opacity-60 disabled:!cursor-not-allowed font-['Rubik'] px-16 mb-8 transform transition-all ${
-          isSpinning ? 'scale-95' : 'scale-100'
-        }`}
+        className={`!h-16 !bg-[#eea0ff] !rounded-2xl !text-black !font-bold !text-lg !normal-case hover:!bg-[#e080ff] disabled:!opacity-60 disabled:!cursor-not-allowed font-['Rubik'] px-16 mb-8 transform transition-all ${isSpinning ? 'scale-95' : 'scale-100'
+          }`}
       >
         {isSpinning ? '⚡ SPINNING ⚡' : hasSpun ? '✅ Already Spun' : '🎡 SPIN NOW 🎡'}
       </Button>
+      )}
 
       {/* Instructions */}
-      <div className="mt-12 text-center text-sm text-gray-600 font-['Rubik'] max-w-sm">
-        <p className="mb-2">🎯 One spin per user</p>
-        <p className="mb-2">💰 Win cash prizes up to ₹500</p>
-        <p>📱 Sign up to claim your reward!</p>
+      {!isClaimed && (
+      <div className="mt-12 text-center text-base text-gray-800 font-['Rubik'] max-w-sm font-bold">
+        <p className="mb-2">One spin per user</p>
+        <p className="mb-2">Win rewards up to ₹500</p>
+        <p>Sign up to claim your reward!</p>
       </div>
+      )}
     </div>
   );
 };

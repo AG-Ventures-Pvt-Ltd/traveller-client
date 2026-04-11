@@ -26,7 +26,10 @@ const usePostData = <T = unknown>(
     onError: (error: Error, variables: MutationPayload, context: unknown) => {
         const axiosError = error as { response?: { data?: { message?: string } } };
         const errorMessage = axiosError?.response?.data?.message || error?.message || "Something went wrong!";
-        notify.error(errorMessage);
+
+        if (!axiosError?.response?.data?.message) {
+          notify.error(errorMessage);
+        }
         logError({
             error: errorMessage,
             location: "traveller-client/src/services/usePostData.ts",

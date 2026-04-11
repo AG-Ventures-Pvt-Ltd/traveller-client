@@ -1,0 +1,48 @@
+// Dummy trip data for carousel
+export const dummyTrips = [
+  {
+    id: 1,
+    image: '/development/user/avatar/J5Owm0Sz.png',
+    title: 'Manali Mania',
+    provider: 'Cliffsseas Travels',
+    duration: '3N•2D',
+    price: 10999,
+    rating: 4.6,
+  },
+  {
+    id: 2,
+    image: '/development/user/avatar/J5Owm0Sz.png',
+    title: 'Meghalaya Magic',
+    provider: 'OBS Experiences',
+    duration: '3N•2D',
+    price: 10999,
+    rating: 4.2,
+  },
+  {
+    id: 3,
+    image: '/development/user/avatar/J5Owm0Sz.png',
+    title: 'Kerala Getaway',
+    provider: 'Exotic Travels',
+    duration: '4N•3D',
+    price: 12999,
+    rating: 4.8,
+  },
+  {
+    id: 4,
+    image: '/development/user/avatar/J5Owm0Sz.png',
+    title: 'Goa Beach Bliss',
+    provider: 'Sun & Sand Tours',
+    duration: '3N•2D',
+    price: 8999,
+    rating: 4.5,
+  },
+  {
+    id: 5,
+    image: '/development/user/avatar/J5Owm0Sz.png',
+    title: 'Leh Ladakh Adventure',
+    provider: 'Mountain Explorers',
+    duration: '5N•4D',
+    price: 14999,
+    rating: 4.9,
+  },
+];

@@ -5,7 +5,7 @@ interface Trip {
   days: string;
   image: string;
   isBookmarked: boolean;
-  location: string;
+  hostName: string;
   price: number;
   title: string;
   tripSlug: string;

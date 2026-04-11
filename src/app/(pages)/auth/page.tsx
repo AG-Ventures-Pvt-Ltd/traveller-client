@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { Form } from 'react-final-form';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { HelpCircle, MessageCircle, Shield } from 'lucide-react';
 import SignInForm from './components/Login/SignInForm';
 import SignUpForm from './components/Register/SignUpForm';
 import SideBanner from './components/SideBanner';
@@ -13,16 +12,16 @@ import usePostData from '@/services/usePostData';
 import { API_ENDPOINTS } from '@/common/constants/apiEndpoints';
 import { notify } from '@/common/utils/notify';
 import Button from '@/common/ui/Buttons/Button';
-import Link from 'next/link';
 import GoogleSignInButton from './components/GoogleSignInButton';
 
 export default function Page() {
-  const [isLogin, setIsLogin] = useState(true);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [agreeToTerms, setAgreeToTerms] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirectUrl = searchParams.get('redirectUrl');
+  const mode = searchParams.get('mode');
+  const [isLogin, setIsLogin] = useState(mode === 'signup' ? false : true);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [agreeToTerms, setAgreeToTerms] = useState(false);
   const registerMutation = usePostData({ url: API_ENDPOINTS.USER.REGISTER });
 
   const onSubmit = async (values: LoginValues | SignupValues) => {
