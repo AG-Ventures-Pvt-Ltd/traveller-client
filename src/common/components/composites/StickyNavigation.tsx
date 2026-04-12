@@ -1,18 +1,26 @@
 'use client';
 
 import React from 'react';
-import { House, PaperPlaneTilt, User } from '@phosphor-icons/react';
+import { House, PaperPlaneTilt, UserCircleIcon } from '@phosphor-icons/react';
 import { useRouter, usePathname } from 'next/navigation';
 
 interface StickyNavigationProps {
   showProfile?: boolean;
 }
 
+const HIDDEN_ROUTES = ['/trip', '/wallet', '/auth', '/verify'];
+
 const StickyNavigation: React.FC<StickyNavigationProps> = ({
   showProfile = true,
 }) => {
   const router = useRouter();
   const pathname = usePathname();
+
+  // Don't show navigation on hidden routes
+  const isHiddenRoute = HIDDEN_ROUTES.some(route => pathname.startsWith(route));
+  if (isHiddenRoute) {
+    return null;
+  }
 
   const isActive = (path: string) => {
     if (path === '/' && pathname === '/') return true;
@@ -45,7 +53,7 @@ const StickyNavigation: React.FC<StickyNavigationProps> = ({
           }`}
           aria-label="Home"
         >
-          <House size={20} weight="fill" />
+          <House size={20} weight="thin" />
         </button>
 
         {/* Share Button */}
@@ -58,7 +66,7 @@ const StickyNavigation: React.FC<StickyNavigationProps> = ({
           }`}
           aria-label="Trips"
         >
-          <PaperPlaneTilt size={20} weight="fill" />
+          <PaperPlaneTilt size={20} weight="thin" />
         </button>
 
         {/* Profile Button */}
@@ -72,7 +80,7 @@ const StickyNavigation: React.FC<StickyNavigationProps> = ({
             }`}
             aria-label="Profile"
           >
-            <User size={20} weight="fill" />
+            <UserCircleIcon size={22} weight="thin" />
           </button>
         )}
       </div>

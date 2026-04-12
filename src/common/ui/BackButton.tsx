@@ -1,6 +1,7 @@
 import React from 'react';
-import { ArrowLeft } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { ArrowLeftIcon } from '@phosphor-icons/react';
+
 
 interface BackButtonProps {
   label?: string;
@@ -15,7 +16,7 @@ const BackButton: React.FC<BackButtonProps> = ({
   to,
   onClick,
   className = '',
-  iconSize = 20
+  iconSize = 24
 }) => {
   const router = useRouter();
 
@@ -34,8 +35,8 @@ const BackButton: React.FC<BackButtonProps> = ({
       className={`flex items-center gap-4 text-maintext rounded-lg cursor-pointer w-fit hover:opacity-70 transition-opacity ${className}`}
       onClick={handleClick}
     >
-      <div className='bg-neutral-900 text-white p-1 md:p-2 rounded-full'>
-        <ArrowLeft size={iconSize} />
+      <div className='bg-[#EEA0FF] text-black p-2 md:p-2 rounded-full'>
+        <ArrowLeftIcon size={iconSize} weight='regular' />
       </div>
       <span className="font-bold">{label}</span>
     </div>

@@ -405,7 +405,7 @@ export default function TripDetailMobile() {
                                                         : 'border-black bg-white hover:bg-yellow-50'
                                                     }`}
                                             >
-                                                <p className="text-xs text-gray-600">{month}</p>
+                                                <p className="text-sm ">{month}</p>
                                                 <p className="text-sm font-medium">{day}</p>
                                                 <p className="text-xs font-medium text-gray-900 mt-1">₹{price.toLocaleString()}</p>
                                             </div>

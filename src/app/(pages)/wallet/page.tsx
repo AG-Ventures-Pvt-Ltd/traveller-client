@@ -1,19 +1,29 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowLeftIcon, WalletIcon } from '@phosphor-icons/react';
+import Image from 'next/image';
+import { InfoIcon, CaretDown } from '@phosphor-icons/react';
 import { useGetData } from '@/services/useGetData';
 import { useSession } from 'next-auth/react';
 import usePostData from '@/services/usePostData';
+import BackButton from '@/common/ui/BackButton';
 
 interface WalletData {
   balance: number;
 }
 
+interface FAQItem {
+  id: number;
+  question: string;
+  answer: string;
+}
+
 const WalletPage = () => {
   const router = useRouter();
   const { data: session } = useSession();
+  const [expandedFAQ, setExpandedFAQ] = useState<number | null>(null);
+  
   const { data: walletData, isLoading, error } = useGetData<WalletData>(
     '/api/client/v1/wallet/balance',
     {
@@ -22,8 +32,30 @@ const WalletPage = () => {
   );
   const { mutate: updateWallet, isPending: isUpdatingWallet } = usePostData({ 
     url: '/api/client/v1/wallet/update',
-    retry: (failureCount, error) => (error as any)?.response?.status !== 409 
+    retry: (failureCount, error) => {
+      const axiosError = error as { response?: { status: number } };
+      return axiosError?.response?.status !== 409;
+    }
   });
+
+  // FAQ items
+  const faqItems: FAQItem[] = [
+    {
+      id: 1,
+      question: 'How to add money to wondrr cash?',
+      answer: 'You can add money to your Wondrr Cash wallet through various payment methods available in your account settings. Visit the wallet section and select your preferred payment method.'
+    },
+    {
+      id: 2,
+      question: 'Is my money safe in here?',
+      answer: 'Yes, your wallet balance is completely safe. All transactions are encrypted and secured with industry-standard security protocols. Your funds are protected at all times.'
+    },
+    {
+      id: 3,
+      question: 'Can I withdraw the amount I have won through wondrr?',
+      answer: 'Wondrr Cash rewards can only be used for booking trips on our platform. They cannot be withdrawn to your bank account. However, they provide great value for your upcoming travel plans!'
+    }
+  ];
 
   // Check spinWheelData and update wallet on mount
   useEffect(() => {
@@ -50,105 +82,121 @@ const WalletPage = () => {
                 };
                 localStorage.setItem('spinWheelData', JSON.stringify(updatedData));
               },
-              onError: (error) => {
-                console.error('Failed to update wallet:', error);
+              onError: () => {
+                // Handle wallet update error silently
               },
             }
           );
         }
-      } catch (error) {
-        console.error('Failed to parse spinWheelData:', error);
+      } catch {
+        // Handle JSON parse error silently
       }
     }
   }, [session?.user?.id, updateWallet]);
 
+  const handleProfileClick = () => {
+    router.push('/profile');
+  };
+
   return (
-    <div className="w-full min-h-screen bg-white px-4 sm:px-6 lg:px-9 py-6 sm:py-8 lg:py-10">
-      <div className="max-w-[1440px] mx-auto">
-        {/* Header with back button */}
-        <div className="flex items-center gap-4 mb-8">
+    <div className="w-full min-h-screen bg-[#fff9f4]">
+      {/* Sticky Floating Header */}
+      <div className="fixed top-0 left-0 right-0 z-50 bg-[#fff9f4]">
+        <div className=" px-4 py-4 flex items-center justify-between">
+          <BackButton label=''/>
           <button
-            onClick={() => router.back()}
-            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
-            aria-label="Go back"
+            onClick={handleProfileClick}
+            className="flex items-center justify-center w-14 h-14 rounded-full bg-gray-300 hover:opacity-80 transition-opacity flex-shrink-0 overflow-hidden relative"
+            aria-label="Go to profile"
           >
-            <ArrowLeftIcon size={24} className="w-6 h-6 text-neutral-700" weight="regular" />
+            {session?.user?.avatar ? (
+              <Image 
+                src={session.user.avatar} 
+                alt="Profile" 
+                fill
+                className="object-cover"
+              />
+            ) : (
+              <span className="text-sm font-semibold text-white">
+                {session?.user?.fullName?.charAt(0)?.toUpperCase() || 'U'}
+              </span>
+            )}
           </button>
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold font-['Satoshi'] text-neutral-900">
-            Wondrr Wallet
-          </h1>
         </div>
-        {/* Wallet Balance Card */}
-        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-3xl p-8 sm:p-10 lg:p-12 border-2 border-blue-100">
-          <div className="flex items-start gap-4 mb-8">
-            <div className="p-4 bg-blue-500 rounded-full flex items-center justify-center">
-              <WalletIcon size={32} className="w-8 h-8 text-white" weight="fill" />
-            </div>
-            <div>
-              <p className="text-neutral-700 text-sm sm:text-base font-medium font-['Satoshi'] mb-2">
-                Total Wallet Balance
-              </p>
-              {isLoading ? (
-                <div className="h-12 w-48 bg-blue-200 rounded-lg animate-pulse" />
-              ) : error ? (
-                <p className="text-red-600 text-lg font-bold font-['Satoshi']">
-                  Failed to load balance
-                </p>
-              ) : (
-                <div className="flex items-baseline gap-3">
-                  <span className="text-5xl sm:text-6xl font-bold font-['Satoshi'] text-neutral-900">
-                    {walletData?.balance?.toLocaleString('en-IN') || '0'}
-                  </span>
-                  <span className="text-neutral-700 text-base font-medium font-['Satoshi']">
-                    Wondrr Cash
-                  </span>
-                  {isUpdatingWallet && (
-                    <div className="ml-2 w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
-                  )}
-                </div>
-              )}
-            </div>
+      </div>
+
+      <div className="mt-32 px-4 pb-8">
+        <div className="max-w-[393px] mx-auto">
+          {/* Balance Section */}
+          <div className="text-center mb-8">
+            <p className="text-sm text-black font-normal mb-2">balance</p>
+            
+            {isLoading ? (
+              <div className="h-16 w-48 bg-gray-200 rounded-lg animate-pulse mx-auto" />
+            ) : error ? (
+              <p className="text-red-600 text-lg font-bold">Failed to load balance</p>
+            ) : (
+              <div className="flex items-center justify-center gap-2">
+                <span className="text-7xl font-bold text-black">
+                  ₹{walletData?.balance?.toLocaleString('en-IN') || '0'}
+                </span>
+                {isUpdatingWallet && (
+                  <div className="w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
+                )}
+              </div>
+            )}
+            
+            <p className="text-2xl px-8 text-black font-normal mt-6">
+              you can use wondrr cash to save while booking trips !
+            </p>
           </div>
 
-          {/* Quick Info */}
-          <div className="pt-8 border-t border-blue-200">
-            <p className="text-neutral-600 text-sm sm:text-base font-medium font-['Satoshi'] mb-4">
-              Use your wallet balance to book trips and enjoy discounts on your travels.
+          {/* Info Banner */}
+          <div className="flex gap-3 items-start bg-[#FFC107] rounded-2xl p-3 mb-8">
+            <InfoIcon 
+              size={16} 
+              className="w-4 h-4 text-black flex-shrink-0 mt-0.5" 
+              weight="thin"
+            />
+            <p className="text-sm text-black font-normal">
+              Rewards are only valid till 90 days from the date of addition.
             </p>
-            <div className="flex flex-col gap-3">
-              <div className="flex items-start gap-3">
-                <div className="w-1.5 h-1.5 rounded-full bg-orange-500 mt-2 flex-shrink-0"></div>
-                <p className="text-neutral-600 text-xs sm:text-sm font-medium font-['Satoshi']">
-                  Cannot be withdrawn to your bank account
-                </p>
-              </div>
-              <div className="flex items-start gap-3">
-                <div className="w-1.5 h-1.5 rounded-full bg-orange-500 mt-2 flex-shrink-0"></div>
-                <p className="text-neutral-600 text-xs sm:text-sm font-medium font-['Satoshi']">
-                  Valid for 90 days from the date of addition
-                </p>
-              </div>
-            </div>
           </div>
-        </div>
 
-        {/* Additional Info Section */}
-        <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 gap-6">
-          <div className="bg-gray-50 rounded-2xl p-6 sm:p-8">
-            <h3 className="text-neutral-900 text-lg sm:text-xl font-bold font-['Satoshi'] mb-3">
-              How to Add Money
-            </h3>
-            <p className="text-neutral-700 text-sm sm:text-base font-medium font-['Satoshi']">
-              Add funds to your wallet through various payment methods available in your account settings.
-            </p>
-          </div>
-          <div className="bg-gray-50 rounded-2xl p-6 sm:p-8">
-            <h3 className="text-neutral-900 text-lg sm:text-xl font-bold font-['Satoshi'] mb-3">
-              Security
-            </h3>
-            <p className="text-neutral-700 text-sm sm:text-base font-medium font-['Satoshi']">
-              Your wallet balance is secure and encrypted. Only you can access your wallet.
-            </p>
+          {/* FAQ Section */}
+          <div className="space-y-3">
+            {faqItems.map((item) => (
+              <div
+                key={item.id}
+                className="border border-[#d9d9d9] rounded-xl overflow-hidden transition-all duration-300"
+              >
+                {/* FAQ Header */}
+                <button
+                  onClick={() => setExpandedFAQ(expandedFAQ === item.id ? null : item.id)}
+                  className="w-full flex items-center justify-between p-4 hover:bg-gray-50 transition-colors"
+                >
+                  <p className="text-sm text-black font-normal text-left">
+                    {item.question}
+                  </p>
+                  <CaretDown 
+                    size={16} 
+                    className={`w-4 h-4 text-black flex-shrink-0 transition-transform duration-300 ${
+                      expandedFAQ === item.id ? 'rotate-180' : ''
+                    }`}
+                    weight="thin"
+                  />
+                </button>
+
+                {/* FAQ Content */}
+                {expandedFAQ === item.id && (
+                  <div className="border-t border-[#d9d9d9] bg-gray-50 p-4">
+                    <p className="text-sm text-gray-700 font-normal">
+                      {item.answer}
+                    </p>
+                  </div>
+                )}
+              </div>
+            ))}
           </div>
         </div>
       </div>
