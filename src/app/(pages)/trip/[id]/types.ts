@@ -3,6 +3,11 @@ export interface Activity {
   description: string;
 }
 
+export interface TripHighlight {
+  title: string;
+  image: string;
+}
+
 export interface ItineraryDay {
   day: number;
   title: string;
@@ -31,6 +36,8 @@ export interface FAQ {
 export interface AvailableDate {
   startDate: Date | string;
   endDate?: Date | string;
+  startDateTime: Date | string;
+  endDateTime: Date | string;
   price: number;
   seatsAvailable: number;
   totalSeats: number;
@@ -65,6 +72,7 @@ export interface TripData {
   title: string;
   description: string;
   images?: string[];
+  highlights?: TripHighlight[];
   category: string;
   location: string;
   meetingPoint: string;
@@ -83,11 +91,32 @@ export interface TripData {
   faqs?: FAQ[];
   tripBatches?: AvailableDate[];
   basePrice?: number;
-  tags: string[];
+  tags?: string[];
   slug?: string;
   isBookmarked?: boolean;
-  cancellationPolicy?: Array<{ days: string; refund: string }>;
+  bestTimeToVisit?: string;
+  cancellationPolicy?: { refundTiers?: Array<{ daysBeforeCancellation: string; refundPercentage: string }> };
   refundPolicy?: { description: string; terms: string[] };
+  pricing : {
+    pricings: Array<{
+      label: string;
+      description: string;
+      pricePerPerson: number;
+    }>
+  }
+  pricings?: Array<{
+    label: string;
+    description: string;
+    pricePerPerson: number;
+  }>;
+}
+
+export interface TripMetadata {
+  title: string;
+  numberOfDays: number;
+  location: string;
+  hostName: string;
+  image: string;
 }
 
 export interface TripImageGalleryProps {

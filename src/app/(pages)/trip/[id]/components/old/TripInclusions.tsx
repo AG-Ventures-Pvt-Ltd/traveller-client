@@ -1,5 +1,5 @@
 import { Check, X } from "lucide-react";
-import { TripInclusionsProps } from '../types';
+import { TripInclusionsProps } from '../../types';
 
 export function TripInclusions({ inclusions, exclusions }: TripInclusionsProps) {
   const validInclusions = Array.isArray(inclusions) ? inclusions : [];

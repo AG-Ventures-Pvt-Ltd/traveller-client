@@ -1,5 +1,5 @@
 import { FileText, ShieldCheck } from "lucide-react";
-import { TripPoliciesProps } from '../types';
+import { TripPoliciesProps } from '../../types';
 import Card from "@/common/ui/Card";
 
 

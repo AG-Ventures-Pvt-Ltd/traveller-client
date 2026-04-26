@@ -1,13 +1,13 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Image from 'next/image';
 import { InfoIcon, CaretDown } from '@phosphor-icons/react';
 import { useGetData } from '@/services/useGetData';
 import { useSession } from 'next-auth/react';
 import usePostData from '@/services/usePostData';
 import BackButton from '@/common/ui/BackButton';
+import MyImage from '@/common/ui/Image';
 
 interface WalletData {
   balance: number;
@@ -57,43 +57,6 @@ const WalletPage = () => {
     }
   ];
 
-  // Check spinWheelData and update wallet on mount
-  useEffect(() => {
-    const spinWheelData = localStorage.getItem('spinWheelData');
-    if (spinWheelData && session?.user?.id) {
-      try {
-        const data = JSON.parse(spinWheelData);
-        
-        // Only make API call if not already claimed
-        if (!data.claimed) {
-          const payload = {
-            rewardAmount: data.rewardAmount,
-            timestamp: data.timestamp,
-          };
-          
-          updateWallet(
-            payload,
-            {
-              onSuccess: () => {
-                // Mark as claimed and update localStorage
-                const updatedData = {
-                  ...data,
-                  claimed: true,
-                };
-                localStorage.setItem('spinWheelData', JSON.stringify(updatedData));
-              },
-              onError: () => {
-                // Handle wallet update error silently
-              },
-            }
-          );
-        }
-      } catch {
-        // Handle JSON parse error silently
-      }
-    }
-  }, [session?.user?.id, updateWallet]);
-
   const handleProfileClick = () => {
     router.push('/profile');
   };
@@ -101,7 +64,7 @@ const WalletPage = () => {
   return (
     <div className="w-full min-h-screen bg-[#fff9f4]">
       {/* Sticky Floating Header */}
-      <div className="fixed top-0 left-0 right-0 z-50 bg-[#fff9f4]">
+      <div className="fixed top-0 left-0 right-0 z-50">
         <div className=" px-4 py-4 flex items-center justify-between">
           <BackButton label=''/>
           <button
@@ -110,11 +73,12 @@ const WalletPage = () => {
             aria-label="Go to profile"
           >
             {session?.user?.avatar ? (
-              <Image 
+              <MyImage 
                 src={session.user.avatar} 
                 alt="Profile" 
-                fill
-                className="object-cover"
+                width={0}
+                height={0}
+                className='w-full h-full'
               />
             ) : (
               <span className="text-sm font-semibold text-white">
@@ -125,9 +89,8 @@ const WalletPage = () => {
         </div>
       </div>
 
-      <div className="mt-32 px-4 pb-8">
+      <div className="pt-32 px-4 pb-8">
         <div className="max-w-[393px] mx-auto">
-          {/* Balance Section */}
           <div className="text-center mb-8">
             <p className="text-sm text-black font-normal mb-2">balance</p>
             

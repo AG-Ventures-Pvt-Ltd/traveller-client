@@ -4,7 +4,7 @@
 @theme {
   --color-maintext: #121212;
   --color-subtext: #404040;
-  --color-background: #FAFAFA;
+  --color-background: #FFF9F4;
   --color-outline: #EDEDED;
   --color-primary: #171717 ;
   --color-primary-bg : #F0F7FE;
@@ -35,5 +35,14 @@ body {
 
 .animate-slideUp {
   animation: slideUp 0.3s ease-out;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 

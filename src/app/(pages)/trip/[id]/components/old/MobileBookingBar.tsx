@@ -1,7 +1,7 @@
 import React, { useState, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { TripData } from '../types';
-import { ChevronUp, ChevronDown, CalendarIcon, MapPin, Users2, IndianRupee } from 'lucide-react';
+import { TripData } from '../../types';
+import { ChevronUp, ChevronDown, CalendarIcon, MapPin, Users2, IndianRupee, Bike, Car, Bus } from 'lucide-react';
 import { format } from 'date-fns';
 import { formatDurationOnly } from '@/common/utils/dateUtils';
 import BookmarkButton from '@/common/components/atoms/BookmarkButton';
@@ -14,6 +14,7 @@ interface MobileBookingBarProps {
 }
 
 const MobileBookingBar: React.FC<MobileBookingBarProps> = ({ tripData, tripId }) => {
+
     const router = useRouter();
     const queryClient = useQueryClient();
     const [isExpanded, setIsExpanded] = useState(false);
@@ -29,6 +30,21 @@ const MobileBookingBar: React.FC<MobileBookingBarProps> = ({ tripData, tripId })
 
     const [selectedBatchId, setSelectedBatchId] = useState<string | undefined>(validAvailableDates[0]?.batchId);
 
+    const pricingList = Array.isArray(tripData.pricing) ? tripData.pricing : (tripData.pricings || []);
+    const defaultPricingIndex = pricingList.length > 0
+        ? pricingList.reduce((minIdx, p, idx, arr) => p.pricePerPerson < arr[minIdx].pricePerPerson ? idx : minIdx, 0)
+        : null;
+    const [selectedPricingIndex, setSelectedPricingIndex] = useState<number | null>(defaultPricingIndex);
+    const [isTravelOptionsOpen, setIsTravelOptionsOpen] = useState(false);
+    const [viewDetailsIndex, setViewDetailsIndex] = useState<number | null>(null);
+
+    const getTravelIcon = (label: string) => {
+        const l = label.toLowerCase();
+        if (l.includes('motorcycle') || l.includes('bike') || l.includes('rider')) return Bike;
+        if (l.includes('bus') || l.includes('van') || l.includes('seated')) return Bus;
+        return Car;
+    };
+
     const selectedDateInfo = validAvailableDates.find(
         (d) => d.batchId === selectedBatchId
     );
@@ -41,6 +57,10 @@ const MobileBookingBar: React.FC<MobileBookingBarProps> = ({ tripData, tripId })
         : '4—5 hours';
 
     const selectedMeetingPoint = selectedDateInfo?.meetingPoint || 'Meeting point TBD';
+
+    const displayPrice = selectedPricingIndex !== null && pricingList.length > 0
+        ? pricingList[selectedPricingIndex].pricePerPerson
+        : selectedDateInfo?.price || tripData.basePrice || 0;
 
     const handleBookNow = () => {
         const batchToBook = selectedBatchId || validAvailableDates[0]?.batchId;
@@ -168,6 +188,60 @@ const MobileBookingBar: React.FC<MobileBookingBarProps> = ({ tripData, tripId })
                                     ))}
                                 </div>
                             </div>
+                            {/* Travel Options */}
+                            {pricingList.length > 0 && (
+                                <div className="border border-[#d9d9d9] rounded-2xl overflow-hidden">
+                                    <button
+                                        className="w-full flex justify-between items-center px-4 py-4"
+                                        onClick={() => setIsTravelOptionsOpen(!isTravelOptionsOpen)}
+                                    >
+                                        <span className="text-sm font-medium text-black">Travel Options</span>
+                                        <ChevronDown
+                                            className={`w-4 h-4 text-gray-500 transition-transform duration-200 ${isTravelOptionsOpen ? 'rotate-180' : ''}`}
+                                        />
+                                    </button>
+                                    {isTravelOptionsOpen && (
+                                        <div className="flex flex-col gap-3 px-3 pb-3">
+                                            {pricingList.map((pricing, index) => {
+                                                const Icon = getTravelIcon(pricing.label);
+                                                const isSelected = selectedPricingIndex === index;
+                                                return (
+                                                    <div
+                                                        key={index}
+                                                        onClick={() => { setSelectedPricingIndex(index); setViewDetailsIndex(null); }}
+                                                        className={`relative border rounded-xl p-4 cursor-pointer transition-colors ${
+                                                            isSelected
+                                                                ? 'border-[#d9d9d9] bg-[#f4bfff]'
+                                                                : 'border-[#d9d9d9] bg-white'
+                                                        }`}
+                                                    >
+                                                        {/* Price Badge */}
+                                                        <div className="absolute -top-3 right-4 bg-[#ffd976] px-3 py-0.5 rounded-xl">
+                                                            <span className="text-xs font-normal text-black">₹{pricing.pricePerPerson.toLocaleString()}</span>
+                                                        </div>
+                                                        <div className="flex items-center gap-3">
+                                                            <Icon className="w-6 h-6 text-black flex-shrink-0" />
+                                                            <span className="text-xs font-normal text-black flex-1">{pricing.label}</span>
+                                                            {pricing.description && (
+                                                                <button
+                                                                    onClick={(e) => { e.stopPropagation(); setViewDetailsIndex(viewDetailsIndex === index ? null : index); }}
+                                                                    className="text-xs text-[#5a4eff] underline whitespace-nowrap"
+                                                                >
+                                                                    View Details
+                                                                </button>
+                                                            )}
+                                                        </div>
+                                                        {viewDetailsIndex === index && pricing.description && (
+                                                            <p className="text-xs text-gray-600 mt-2 pt-2 border-t border-gray-200">{pricing.description}</p>
+                                                        )}
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+
                             <div className="flex gap-3 items-center">
                                 <span className="text-sm font-semibold">Seats Available</span>
                                 <span className="text-[#ff0202] font-bold">
@@ -176,7 +250,7 @@ const MobileBookingBar: React.FC<MobileBookingBarProps> = ({ tripData, tripId })
                             </div>
                             <div className="flex items-end gap-2">
                                 <span className="font-bold text-2xl flex items-center">
-                                    <IndianRupee size={18} strokeWidth={3} />{selectedDateInfo?.price || tripData.basePrice || 0}
+                                    <IndianRupee size={18} strokeWidth={3} />{displayPrice}
                                 </span>
                                 <span className="text-base text-[#45556C]">/ per person</span>
                             </div>
@@ -207,7 +281,7 @@ const MobileBookingBar: React.FC<MobileBookingBarProps> = ({ tripData, tripId })
                             <div className='flex gap-6 items-center'>
                                 <div className="flex-1 h-14 flex flex-col justify-center">
                                     <div className="text-neutral-900 text-2xl font-bold leading-5">
-                                        ₹{tripData.tripBatches?.[0]?.price || tripData.basePrice || 0}
+                                        ₹{displayPrice}
                                     </div>
                                     <div className="text-neutral-700 text-xs font-medium pl-3">
                                         /per person

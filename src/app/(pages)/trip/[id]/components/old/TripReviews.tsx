@@ -1,5 +1,5 @@
 import { Star } from "lucide-react";
-import { TripReviewsProps } from '../types';
+import { TripReviewsProps } from '../../types';
 import MyImage from "@/common/ui/Image";
 
 

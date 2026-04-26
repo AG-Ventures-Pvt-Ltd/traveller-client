@@ -1,4 +1,4 @@
-import { TripAdditionalInfoProps } from '../types';
+import { TripAdditionalInfoProps } from '../../types';
 
 export function TripAdditionalInfo({ info }: TripAdditionalInfoProps) {
   return (

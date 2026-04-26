@@ -8,6 +8,10 @@ import { ToastProvider, useToast } from '@/common/utils/ToastContext';
 import { setToastHandler } from '@/common/utils/notify';
 import { useEffect } from 'react';
 import { Analytics } from "@vercel/analytics/next"
+import { DeviceProvider } from "@/common/context/DeviceContext";
+
+
+
 
 const theme = createTheme({
   palette: {
@@ -61,19 +65,21 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
   return (
     <ThemeProvider theme={theme}>
-      <QueryClientProvider client={queryClient}>
-        {isProduction && <Analytics/>}
-        <SessionProvider 
-          refetchInterval={0}
-          refetchOnWindowFocus={false}
-        >
-          <ToastProvider>
-            <ToastInitializer>
-              {children}
-            </ToastInitializer>
-          </ToastProvider>
-        </SessionProvider>
-      </QueryClientProvider>
+      <DeviceProvider>
+        <QueryClientProvider client={queryClient}>
+          {isProduction && <Analytics />}
+          <SessionProvider
+            refetchInterval={0}
+            refetchOnWindowFocus={false}
+          >
+            <ToastProvider>
+              <ToastInitializer>
+                {children}
+              </ToastInitializer>
+            </ToastProvider>
+          </SessionProvider>
+        </QueryClientProvider>
+      </DeviceProvider>
     </ThemeProvider>
   );
 }

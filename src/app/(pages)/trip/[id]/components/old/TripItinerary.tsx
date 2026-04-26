@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
-import { TripItineraryProps, Activity } from '../types';
+import { TripItineraryProps, Activity } from '../../types';
 import Card from "@/common/ui/Card";
 
 

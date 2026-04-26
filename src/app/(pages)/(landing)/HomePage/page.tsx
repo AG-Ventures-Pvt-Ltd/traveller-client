@@ -27,41 +27,41 @@ const HomePage = () => {
       });
     
       // Check spinWheelData and update wallet on mount
-      useEffect(() => {
-        const spinWheelData = localStorage.getItem('spinWheelData');
-        if (spinWheelData && session?.user?.id) {
-          try {
-            const data = JSON.parse(spinWheelData);
+      // useEffect(() => {
+      //   const spinWheelData = localStorage.getItem('spinWheelData');
+      //   if (spinWheelData && session?.user?.id) {
+      //     try {
+      //       const data = JSON.parse(spinWheelData);
             
-            // Only make API call if not already claimed
-            if (!data.claimed) {
-              const payload = {
-                rewardAmount: data.rewardAmount,
-                timestamp: data.timestamp,
-              };
+      //       // Only make API call if not already claimed
+      //       if (!data.claimed) {
+      //         const payload = {
+      //           rewardAmount: data.rewardAmount,
+      //           timestamp: data.timestamp,
+      //         };
               
-              updateWallet(
-                payload,
-                {
-                  onSuccess: () => {
-                    // Mark as claimed and update localStorage
-                    const updatedData = {
-                      ...data,
-                      claimed: true,
-                    };
-                    localStorage.setItem('spinWheelData', JSON.stringify(updatedData));
-                  },
-                  onError: (error) => {
-                    console.error('Failed to update wallet:', error);
-                  },
-                }
-              );
-            }
-          } catch (error) {
-            console.error('Failed to parse spinWheelData:', error);
-          }
-        }
-      }, [session?.user?.id, updateWallet]);
+      //         updateWallet(
+      //           payload,
+      //           {
+      //             onSuccess: () => {
+      //               // Mark as claimed and update localStorage
+      //               const updatedData = {
+      //                 ...data,
+      //                 claimed: true,
+      //               };
+      //               localStorage.setItem('spinWheelData', JSON.stringify(updatedData));
+      //             },
+      //             onError: (error) => {
+      //               console.error('Failed to update wallet:', error);
+      //             },
+      //           }
+      //         );
+      //       }
+      //     } catch (error) {
+      //       console.error('Failed to parse spinWheelData:', error);
+      //     }
+      //   }
+      // }, [session?.user?.id, updateWallet]);
 
     // Extract firstName from fullName
     const fullName = session?.user?.fullName || '';

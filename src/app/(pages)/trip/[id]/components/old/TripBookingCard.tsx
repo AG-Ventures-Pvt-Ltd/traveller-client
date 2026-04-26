@@ -5,7 +5,7 @@ import { format } from "date-fns";
 import { useRouter, useParams } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 import { API_ENDPOINTS } from "@/common/constants/apiEndpoints";
-import { TripBookingCardProps } from '../types';
+import { TripBookingCardProps } from '../../types';
 import { formatDurationOnly } from "@/common/utils/dateUtils";
 import BookmarkButton from "@/common/components/atoms/BookmarkButton";
 
@@ -20,7 +20,9 @@ export function TripBookingCard({
 }: TripBookingCardProps) {
   const validAvailableDates = Array.isArray(availableDates) ? availableDates.map(d => ({
     ...d,
-    startDate: d.startDate instanceof Date ? d.startDate : new Date(d.startDate)
+    startDate: d.startDate instanceof Date ? d.startDate : new Date(d.startDate),
+    startDateTime: d.startDateTime instanceof Date ? d.startDateTime : new Date(d.startDateTime),
+    endDateTime: d.endDateTime instanceof Date ? d.endDateTime : new Date(d.endDateTime)
   })) : [];
   const validBasePrice = typeof basePrice === 'number' ? basePrice : 0;
 
@@ -91,10 +93,10 @@ export function TripBookingCard({
                 >
                   <div className="flex flex-col items-center gap-0.5">
                     <span className="text-[10px] sm:text-xs font-semibold">
-                      {format(date.startDate, 'EEE')}
+                      {format(date.startDateTime, 'EEE')}
                     </span>
                     <span className="text-xs sm:text-sm font-semibold">
-                      {format(date.startDate, 'MMM dd')}
+                      {format(date.endDateTime, 'MMM dd')}
                     </span>
                   </div>
                 </button>

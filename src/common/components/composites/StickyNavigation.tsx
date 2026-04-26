@@ -8,7 +8,7 @@ interface StickyNavigationProps {
   showProfile?: boolean;
 }
 
-const HIDDEN_ROUTES = ['/trip', '/wallet', '/auth', '/verify'];
+const HIDDEN_ROUTES = ['/trip/', '/wallet', '/auth', '/verify'];
 
 const StickyNavigation: React.FC<StickyNavigationProps> = ({
   showProfile = true,
@@ -16,8 +16,8 @@ const StickyNavigation: React.FC<StickyNavigationProps> = ({
   const router = useRouter();
   const pathname = usePathname();
 
-  // Don't show navigation on hidden routes
   const isHiddenRoute = HIDDEN_ROUTES.some(route => pathname.startsWith(route));
+
   if (isHiddenRoute) {
     return null;
   }

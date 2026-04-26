@@ -1,6 +1,6 @@
 import { Star } from "lucide-react";
 import MyImage from "@/common/ui/Image";
-import { HostCardProps } from '../types';
+import { HostCardProps } from '../../types';
 import Card from "@/common/ui/Card";
 import { useRouter } from "next/navigation";
 

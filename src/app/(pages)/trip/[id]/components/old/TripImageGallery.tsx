@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { TripImageGalleryProps } from '../types';
+import { TripImageGalleryProps } from '../../types';
 import MyImage from "@/common/ui/Image";
 
 export function TripImageGallery({ images }: TripImageGalleryProps) {
