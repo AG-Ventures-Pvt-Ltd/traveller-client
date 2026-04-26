@@ -5,7 +5,8 @@ export const API_ENDPOINTS = {
     FEATURED_TRIPS: (limit: string) => `/api/client/v1/trips/featured?limit=${limit}`,
     HOST_TRIPS: (hostUsername: string) => `/api/client/v1/trips/user/${hostUsername}`,
     BATCH_DETAILS: (batchId: string) => `/api/client/v1/trips/host/trip/batch/${batchId}`,
-    GET_METADATA : (id : string) => `/api/client/v1/trips/${id}/metadata`
+    GET_METADATA : (id : string) => `/api/client/v1/trips/${id}/metadata`,
+    GET_SLUGS_FOR_SITEMAP :`/api/client/v1/trips/sitemap`
   },
   BOOKINGS: {
     START: "/api/client/v1/bookings/start",

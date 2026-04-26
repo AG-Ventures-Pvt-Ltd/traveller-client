@@ -6,8 +6,7 @@
     "dev": "PORT=8005 next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint",
-    "postbuild": "next-sitemap"
+    "lint": "eslint"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
