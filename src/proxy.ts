@@ -2,7 +2,6 @@ import { NextResponse, NextRequest } from 'next/server'
 import { getToken } from 'next-auth/jwt'
 
 const protectedRoutes = [
-  '/trip/book',
   '/profile',
   '/referral',
   '/referral-policy',

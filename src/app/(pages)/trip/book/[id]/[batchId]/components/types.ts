@@ -65,16 +65,67 @@ export interface BookingFlowParams {
     referralCode?: string;
 }
 
+// Add-on item stored in booking
+export interface AddOnItem {
+    label: string;
+    category: string;
+    pricePerPerson: number;
+    description?: string;
+}
+
+// Meeting point stored in booking
+export interface MeetingPointItem {
+    locationId: string;
+    city: string;
+    state: string;
+    pickupPrice: number;
+}
+
+// Travel option / pricing tier stored in booking
+export interface TravelOptionItem {
+    label: string;
+    pricePerPerson: number;
+    description?: string;
+}
+
+// Personal details stored in booking
+export interface PersonalDetailsItem {
+    fullName: string;
+    email: string;
+    phone: string;
+    travelerId?: string;
+}
+
 // Store interfaces
 export interface BookingStore {
-    totalAmount: number;
+    // Reservation step
+    guests: number;
+    selectedBatchId: string;
+    selectedMeetingPoint: MeetingPointItem | null;
+    selectedAddOn: AddOnItem | null;
+    selectedAddOnIdx: number | null;
+    selectedTravelOption: TravelOptionItem | null;
+    selectedTravelIdx: number | null;
+    foodPreference: 'veg' | 'non-veg' | null;
     couponCode: string;
-    roomSharing: number | null;
     referralCode: string;
-    setTotalAmount: (amount: number) => void;
+    roomSharing: number | null;
+    // Personal step
+    personalDetails: PersonalDetailsItem | null;
+    // Pricing
+    totalAmount: number;
+    // Setters
+    setGuests: (guests: number) => void;
+    setSelectedBatchId: (batchId: string) => void;
+    setSelectedMeetingPoint: (point: MeetingPointItem | null, idx: number) => void;
+    setSelectedAddOn: (addOn: AddOnItem | null, idx: number | null) => void;
+    setSelectedTravelOption: (option: TravelOptionItem | null, idx: number | null) => void;
+    setFoodPreference: (pref: 'veg' | 'non-veg' | null) => void;
     setCouponCode: (code: string) => void;
-    setRoomSharing: (sharing: number | null) => void;
     setReferralCode: (code: string) => void;
+    setRoomSharing: (sharing: number | null) => void;
+    setPersonalDetails: (details: PersonalDetailsItem) => void;
+    setTotalAmount: (amount: number) => void;
 }
 
 export interface TripDetailsState {

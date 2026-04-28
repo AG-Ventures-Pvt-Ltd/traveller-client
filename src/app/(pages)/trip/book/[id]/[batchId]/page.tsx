@@ -5,6 +5,8 @@ import BackButton from '@/common/ui/BackButton';
 import { useRouter, useSearchParams, useParams } from 'next/navigation';
 import OrderSummary from './components/OrderSummary/OrderSummary';
 import TravelerDetailsForm from './components/TravelerDetailsForm';
+import { useDevice } from '@/common/hooks/useDevice';
+import BookingPage from '../components/mobile/BookingPage';
 
 
 const Page = () => {
@@ -16,10 +18,15 @@ const Page = () => {
     const [guests, setGuests] = useState(initialGuests);
 
     const router = useRouter();
+    const { isMobile } = useDevice();
 
     const handleBackToTrip = () => {
         router.push(`/trip/${id}`);
     };
+
+    if (isMobile) {
+        return <BookingPage/>
+    }
 
     return (
         <div className='px-[4%] sm:px-[5%] lg:px-[2%] xl:px-[8%]'>

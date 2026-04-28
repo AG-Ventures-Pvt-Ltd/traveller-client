@@ -1,80 +1,72 @@
-import React from 'react';
-import { ArrowRight, Home, Loader2, Mail, CalendarCheck, AlertCircle } from 'lucide-react';
-import Button from '@/common/ui/Buttons/Button';
-import { NextStep, ContactFooter } from './index';
+'use client';
 
-interface BookingDetails {
-  tripTitle: string;
-  bookingId: string;
-  startDate: string;
-  startTime: string;
-  numberOfPeople: string;
-  meetingPoint: string;
-  userEmail: string;
-}
+import React from 'react';
+import { InfoIcon } from '@phosphor-icons/react';
+import BookingStatusIcon from './BookingStatusIcon';
+import PaymentDetailsCard from './PaymentDetailsCard';
+import type { BookingDetails } from '../types';
 
 interface PendingStateProps {
-  bookingDetails: BookingDetails;
-  handleViewBookings: () => void;
-  handleGoHome: () => void;
+    bookingDetails: BookingDetails | undefined;
+    handleViewBookings: () => void;
+    handleGoHome: () => void;
 }
 
-export default function PendingState({ bookingDetails, handleViewBookings, handleGoHome }: PendingStateProps) {
-  return (
-    <div className="min-h-screen bg-white flex items-center justify-center py-9 px-4">
-      <div className="max-w-[900px] w-full flex flex-col items-center gap-8">
-        <div className="w-20 h-20 md:w-28 md:h-28 bg-amber-100 rounded-full flex items-center justify-center">
-          <AlertCircle className="w-10 h-10 md:w-14 md:h-14 text-amber-600" strokeWidth={2.5} />
-        </div>
-        <div className="flex flex-col items-center gap-4 text-center">
-          <h1 className="text-4xl md:text-6xl font-bold text-neutral-900">Payment Pending</h1>
-          <p className="text-lg md:text-xl font-medium text-neutral-700">
-            Your booking is being processed
-          </p>
-        </div>
+export default function PendingState({ bookingDetails, handleViewBookings }: PendingStateProps) {
+    const paymentDate = new Date().toLocaleDateString('en-GB', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+    });
 
-        <div className="w-full bg-background rounded-3xl border-2 border-outline px-6 md:px-10 py-6 md:py-10 flex flex-col gap-6">
-          <div className="flex flex-col gap-1.5 pb-7 border-b-2 border-outline">
-            <h2 className="text-3xl font-bold text-neutral-900">{bookingDetails.tripTitle}</h2>
-            <div className="flex gap-2 text-base">
-              <span className="font-medium text-neutral-700">Booking ID:</span>
-              <span className="font-bold text-neutral-900">{bookingDetails.bookingId}</span>
+    const rows = [
+        { label: 'Transaction ID', value: bookingDetails?.bookingId || '—' },
+        { label: 'Date', value: paymentDate },
+        { label: 'Payment Type', value: 'UPI' },
+        { label: 'Total Amount', value: '—' },
+        { label: 'Status', value: 'Pending', valueClassName: 'text-[#FF9800]' },
+    ];
+
+    return (
+        <div className="min-h-screen bg-[#fff9f4] flex flex-col pb-28">
+            {/* Main content */}
+            <div className="flex flex-col items-center gap-5 px-5 pt-14">
+                {/* Status icon */}
+                <BookingStatusIcon status="pending" />
+
+                {/* Title + subtitle */}
+                <div className="flex flex-col items-center gap-3 text-center">
+                    <h1 className="text-[20px] font-semibold text-black tracking-tight">
+                        Payment Pending
+                    </h1>
+                    <p className="text-[14px] text-black leading-5 tracking-tight">
+                        Your booking is being processed. This may take a few minutes.
+                    </p>
+                </div>
+
+                {/* Payment details card */}
+                <div className="w-full mt-2">
+                    <PaymentDetailsCard rows={rows} />
+                </div>
+
+                {/* Info banner */}
+                <div className="w-full flex items-start gap-2.5 bg-[#ffc107]/45 rounded-xl px-3 py-3.5">
+                    <InfoIcon size={16} weight="fill" className="text-black flex-shrink-0 mt-0.5" />
+                    <p className="text-[12px] text-black leading-[1.5] tracking-tight">
+                        You&apos;ll receive a confirmation email once your payment is verified. You can also check your booking status in your profile.
+                    </p>
+                </div>
             </div>
-          </div>
-          <h3 className="text-2xl font-bold text-neutral-900">What&apos;s Happening?</h3>
-          <div className="flex flex-col gap-5">
-            <NextStep
-              icon={Loader2}
-              iconBg="bg-primary"
-              title="Payment Verification"
-              description="We're verifying your payment with the bank. This usually takes a few minutes."
-            />
-            <NextStep
-              icon={Mail}
-              iconBg="bg-primary"
-              title="Email Notification"
-              description="You'll receive a confirmation email once your payment is verified and booking is confirmed."
-            />
-            <NextStep
-              icon={CalendarCheck}
-              iconBg="bg-primary"
-              title="Track Your Booking"
-              description="You can check the status of your booking anytime from your profile page."
-            />
-          </div>
-        </div>
 
-        <div className="w-full flex flex-col md:flex-row gap-4">
-          <Button variant="contained" color="primary" endIcon={<ArrowRight />} onClick={handleViewBookings} className="h-12 md:h-16 rounded-xl flex-1 text-lg md:text-xl!">
-            View My Bookings
-          </Button>
-          <Button variant="outlined" color="primary" startIcon={<Home />} onClick={handleGoHome} className="h-12 md:h-16 rounded-xl flex-1 text-lg md:text-xl!">
-            Back to Home
-          </Button>
+            {/* Fixed bottom CTA */}
+            <div className="fixed bottom-0 left-0 right-0 px-5 py-6 bg-[#fff9f4]">
+                <button
+                    onClick={handleViewBookings}
+                    className="w-full h-[51px] bg-[#ffc107] rounded-xl text-[14px] font-medium text-black tracking-tight active:opacity-80 transition-opacity"
+                >
+                    View My Bookings
+                </button>
+            </div>
         </div>
-
-        <ContactFooter />
-      </div>
-    </div>
-  );
+    );
 }

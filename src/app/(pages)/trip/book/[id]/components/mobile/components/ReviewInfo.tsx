@@ -1,69 +1,72 @@
 'use client';
 
-import React, { useEffect } from 'react';
-import { Users, Calendar, BadgeAlert } from 'lucide-react';
-import BackButton from '@/common/ui/BackButton';
+import React, { useEffect, useRef } from 'react';
+import { UsersThreeIcon, CalendarIcon, MapPinLineIcon, CarIcon, ForkKnifeIcon, TagIcon } from '@phosphor-icons/react';
 import MyImage from '@/common/ui/Image';
 import { useGetData } from '@/services/useGetData';
 import { API_ENDPOINTS } from '@/common/constants/apiEndpoints';
-import { useTripDetailsStore } from '../../store/useTripDetailsStore';
-import { useBookingStore } from '../../store/useBookingStore';
-import { EmergencyContact } from '../types';
+import { useTripDetailsStore } from '../../../[batchId]/store/useTripDetailsStore';
+import { useBookingStore } from '../../../[batchId]/store/useBookingStore';
+import { useBookingNavStore } from '../../../[batchId]/store/useBookingNavStore';
 
 interface BatchDetails {
     tripImage: string;
-    tripTitle: string;
+    title: string;
     tripLocation: string;
     hostName?: string;
     availableSeats: number;
-    startDate: string;
-    startTime: string;
+    startDateTime: string;
 }
 
 interface ReviewInfoProps {
     tripId: string;
     batchId: string;
-    guests: number;
-    emergencyContact: EmergencyContact;
-    selectedPricingLabel?: string;
-    onBack?: () => void;
     onContinue: () => void;
-    isProcessing?: boolean;
 }
 
 export default function ReviewInfo({
     tripId,
     batchId,
-    guests,
-    emergencyContact,
-    selectedPricingLabel,
-    onBack,
     onContinue,
-    isProcessing = false,
 }: ReviewInfoProps) {
     const actualTripId = tripId ? (tripId.split('-').pop() || tripId) : '';
 
-    const couponCode = useBookingStore((state) => state.couponCode);
-    const roomSharing = useBookingStore((state) => state.roomSharing);
-    const referralCode = useBookingStore((state) => state.referralCode);
+    const {
+        guests,
+        selectedBatchId,
+        selectedMeetingPoint,
+        selectedAddOn,
+        selectedTravelOption,
+        foodPreference,
+        couponCode,
+        referralCode,
+        roomSharing,
+        personalDetails,
+    } = useBookingStore();
+
+    const resolvedBatchId = selectedBatchId || batchId;
 
     const { tripDetails, fetchTripDetails } = useTripDetailsStore();
 
     const { data: batchDetails } = useGetData<BatchDetails>(
-        batchId ? API_ENDPOINTS.TRIPS.BATCH_DETAILS(batchId) : ''
+        resolvedBatchId ? API_ENDPOINTS.TRIPS.BATCH_DETAILS(resolvedBatchId) : ''
     );
 
     useEffect(() => {
-        if (actualTripId && batchId && guests > 0) {
-            fetchTripDetails(actualTripId, batchId, guests, couponCode, roomSharing, referralCode);
+        if (actualTripId && resolvedBatchId && guests > 0) {
+            fetchTripDetails(actualTripId, resolvedBatchId, guests, couponCode, roomSharing, referralCode);
         }
-    }, [actualTripId, batchId, guests, couponCode, roomSharing, referralCode, fetchTripDetails]);
+    }, [actualTripId, resolvedBatchId, guests, couponCode, roomSharing, referralCode, fetchTripDetails]);
 
-    const isEmergencyContactSaved =
-        !!(emergencyContact.name?.trim() && emergencyContact.contactNumber?.trim());
+    const { setContinueAction } = useBookingNavStore();
+    const continueRef = useRef(onContinue);
+    continueRef.current = onContinue;
+    useEffect(() => {
+        setContinueAction(() => continueRef.current());
+    }, [setContinueAction]);
 
-    const formattedDate = batchDetails?.startDate
-        ? new Date(batchDetails.startDate).toLocaleDateString('en-GB', {
+    const formattedDate = batchDetails?.startDateTime
+        ? new Date(batchDetails.startDateTime).toLocaleDateString('en-GB', {
               day: '2-digit',
               month: '2-digit',
               year: 'numeric',
@@ -71,25 +74,20 @@ export default function ReviewInfo({
         : '';
 
     return (
-        <div className="flex flex-col min-h-screen bg-stone-50">
-            {/* Header */}
-            <div className="px-5 pt-14 pb-4">
-                <BackButton label="Review information" onClick={onBack} className="gap-4" />
-            </div>
-
+        <div className="px-4 pb-4">
             {/* Card */}
             <div className="mx-5 rounded-2xl border border-zinc-300 overflow-hidden flex flex-col">
                 {/* Trip Header */}
                 <div className="flex items-start justify-between gap-3 px-4 pt-5 pb-4">
                     <div className="flex flex-col gap-1.5 flex-1 min-w-0">
                         <h2 className="text-black text-xl font-semibold leading-snug">
-                            {batchDetails?.tripTitle || '—'}
+                            {batchDetails?.title || '—'}
                         </h2>
                         <div className="flex items-center gap-1">
                             <span className="text-black text-xs">
                                 by{' '}
                                 <span className="font-semibold">
-                                    {batchDetails?.hostName || batchDetails?.tripLocation || '—'}
+                                    {batchDetails?.hostName || '—'}
                                 </span>
                             </span>
                         </div>
@@ -97,7 +95,7 @@ export default function ReviewInfo({
                     <div className="w-24 h-24 flex-shrink-0 rounded-xl overflow-hidden">
                         <MyImage
                             src={batchDetails?.tripImage || ''}
-                            alt={batchDetails?.tripTitle || 'Trip image'}
+                            alt={batchDetails?.title || 'Trip image'}
                             className="w-full h-full"
                             objectFit="cover"
                             fill={false}
@@ -109,9 +107,10 @@ export default function ReviewInfo({
 
                 {/* Trip Meta */}
                 <div className="flex flex-col gap-3 px-4 py-4">
+                    {/* Guests */}
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2.5">
-                            <Users className="w-6 h-6 text-black flex-shrink-0" strokeWidth={1.5} />
+                            <UsersThreeIcon size={24} weight="light" className="text-black flex-shrink-0" />
                             <span className="text-black text-xs">
                                 {guests} Traveler{guests > 1 ? 's' : ''}
                             </span>
@@ -123,36 +122,68 @@ export default function ReviewInfo({
                         )}
                     </div>
 
-                    {selectedPricingLabel && (
+                    {/* Departure date */}
+                    <div className="flex items-center gap-2.5">
+                        <CalendarIcon size={24} weight="light" className="text-black flex-shrink-0" />
+                        <span className="text-black text-xs">{formattedDate || '—'}</span>
+                    </div>
+
+                    {/* Meeting point */}
+                    {selectedMeetingPoint && (
                         <div className="flex items-center gap-2.5">
-                            <span className="w-6 h-6 flex items-center justify-center text-black text-xs flex-shrink-0">🛏</span>
-                            <span className="text-black text-xs">{selectedPricingLabel}</span>
+                            <MapPinLineIcon size={24} weight="light" className="text-black flex-shrink-0" />
+                            <span className="text-black text-xs">
+                                {selectedMeetingPoint.city || selectedMeetingPoint.locationId}
+                            </span>
                         </div>
                     )}
 
-                    <div className="flex items-center gap-2.5">
-                        <Calendar className="w-6 h-6 text-black flex-shrink-0" strokeWidth={1.5} />
-                        <span className="text-black text-xs">{formattedDate}</span>
-                    </div>
-
-                    <div className="flex items-center justify-between">
+                    {/* Travel option */}
+                    {selectedTravelOption && (
                         <div className="flex items-center gap-2.5">
-                            <BadgeAlert
-                                className={`w-6 h-6 flex-shrink-0 ${isEmergencyContactSaved ? 'text-green-600' : 'text-red-500'}`}
-                                strokeWidth={1.5}
-                            />
-                            <span className={`text-xs ${isEmergencyContactSaved ? 'text-black' : 'text-red-500'}`}>
-                                {isEmergencyContactSaved
-                                    ? emergencyContact.name
-                                    : 'Emergency contact not saved'}
+                            <CarIcon size={24} weight="light" className="text-black flex-shrink-0" />
+                            <span className="text-black text-xs">{selectedTravelOption.label}</span>
+                        </div>
+                    )}
+
+                    {/* Add-on */}
+                    {selectedAddOn && (
+                        <div className="flex items-center gap-2.5">
+                            <span className="w-6 h-6 flex items-center justify-center text-black text-xs flex-shrink-0">🛏</span>
+                            <span className="text-black text-xs">
+                                {selectedAddOn.label}
                             </span>
                         </div>
-                        {!isEmergencyContactSaved && (
-                            <span className="text-blue-500 text-xs underline cursor-pointer" onClick={onBack}>
-                                fill now
+                    )}
+
+                    {/* Food preference */}
+                    {foodPreference && (
+                        <div className="flex items-center gap-2.5">
+                            <ForkKnifeIcon size={24} weight="light" className="text-black flex-shrink-0" />
+                            <span className="text-black text-xs capitalize">{foodPreference} meal</span>
+                        </div>
+                    )}
+
+                    {/* Coupon / Referral applied */}
+                    {(couponCode || referralCode) && (
+                        <div className="flex items-center gap-2.5">
+                            <TagIcon size={24} weight="light" className="text-black flex-shrink-0" />
+                            <span className="text-black text-xs">
+                                {couponCode && <span className="text-green-600 font-medium">{couponCode}</span>}
+                                {couponCode && referralCode && <span className="text-zinc-400"> · </span>}
+                                {referralCode && <span className="text-green-600 font-medium">{referralCode}</span>}
                             </span>
-                        )}
-                    </div>
+                        </div>
+                    )}
+
+                    {/* Personal details */}
+                    {personalDetails && (
+                        <div className="flex flex-col gap-0.5 pt-1 border-t border-zinc-200">
+                            <span className="text-zinc-500 text-xs">Traveler</span>
+                            <span className="text-black text-xs font-medium">{personalDetails.fullName}</span>
+                            <span className="text-zinc-500 text-xs">{personalDetails.email} · {personalDetails.phone}</span>
+                        </div>
+                    )}
                 </div>
 
                 <div className="mx-4 border-t border-zinc-300" />
@@ -207,20 +238,6 @@ export default function ReviewInfo({
                         </div>
                     </div>
                 )}
-            </div>
-
-            {/* Spacer */}
-            <div className="flex-1" />
-
-            {/* Continue Button */}
-            <div className="px-5 py-7 bg-stone-50">
-                <button
-                    onClick={onContinue}
-                    disabled={isProcessing}
-                    className="w-full py-4 bg-fuchsia-300 rounded-xl text-black text-base font-normal text-center active:opacity-80 transition-opacity disabled:opacity-60"
-                >
-                    {isProcessing ? 'Processing...' : 'Continue to booking Summary'}
-                </button>
             </div>
         </div>
     );

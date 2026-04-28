@@ -25,6 +25,7 @@ import { NAV_SECTION_IDS } from './constants';
 import { NavSection, SectionRefs } from './types';
 import { UsersThreeIcon, MapPinIcon } from '@phosphor-icons/react';
 import { getSeatsDisplay } from '@/common/utils/seatsDisplay';
+import { StarIcon } from '@phosphor-icons/react';
 
 
 export default function TripDetailMobile() {
@@ -145,8 +146,7 @@ export default function TripDetailMobile() {
 
     const handleBookNow = () => {
         if (selectedBatch !== null && sortedBatches[selectedBatch]) {
-            const batchId = sortedBatches[selectedBatch].batchId;
-            router.push(`/trip/book/${generatedSlug}/${batchId}`);
+            router.push(`/trip/book/${generatedSlug}`);
         }
     };
 
@@ -189,16 +189,19 @@ export default function TripDetailMobile() {
                 />
 
                 <div className='px-6'>
-                    <p className='font-bold text-2xl'>{basicData?.title}</p>
+                    <div className='flex justify-between'>
+                        <p className='font-bold text-2xl'>{basicData?.title}</p>
+                        <div className='bg-[#616161] text-white flex items-center my-0 px-2 rounded-xl'>
+                            <StarIcon weight='fill' className='text-[#FFC107] mr-1' />
+                            <span className='font-bold'>{detailedData?.rating}<span className='font-normal'> ({detailedData?.totalReviews})</span></span>
+                        </div>
+                    </div>
                     <div className='flex gap-6 items-center pt-1'>
-                        {/* <MapPinIcon size={20}/>
-                        <p>Delhi</p>
-                        <span>----</span> */}
                         <div className='flex gap-2 items-center'>
-                            <MapPinIcon size={20} weight='thin'/>
+                            <MapPinIcon size={20} weight='thin' />
                             <p className=''>{basicData?.location?.split(',')[0]}</p>
                         </div>
-                        <p className='flex gap-2 items-center'><UsersThreeIcon size={22} weight='thin'/> <span className='text-md'>{seatsDisplay}</span></p>
+                        <p className='flex gap-2 items-center'><UsersThreeIcon size={22} weight='thin' /> <span className='text-md'>{seatsDisplay}</span></p>
                     </div>
                 </div>
                 <div className="p-4 pb-32">
@@ -209,15 +212,6 @@ export default function TripDetailMobile() {
                             expanded={expandedOverview}
                             onToggle={() => setExpandedOverview(!expandedOverview)}
                         />
-
-                        {tripData?.host && (
-                            <HostedBy
-                                host={tripData.host}
-                                onPress={() => router.push(`/${tripData.host!.username}`)}
-                            />
-                        )}
-
-
                         <div className="space-y-4">
                             {sortedBatches.length > 0 && (
                                 <BatchSelection
@@ -245,7 +239,7 @@ export default function TripDetailMobile() {
                         </div>
                     )}
                     {tripData.itinerary && tripData.itinerary.length > 0 && (
-                        <div ref={itineraryRef} className="scroll-mt-24">
+                        <div ref={itineraryRef} className="scroll-mt-24 mb-6">
                             <ItinerarySection
                                 itinerary={tripData.itinerary}
                                 selectedDay={selectedDay}
@@ -263,7 +257,12 @@ export default function TripDetailMobile() {
                             />
                         </div>
                     )}
-
+                    {tripData?.host && (
+                            <HostedBy
+                                host={tripData.host}
+                                onPress={() => router.push(`/${tripData.host!.username}`)}
+                            />
+                        )}
                     {((tripData.inclusions && tripData.inclusions.length > 0) || (tripData.exclusions && tripData.exclusions.length > 0)) && (
                         <div ref={inclusionsRef} className="scroll-mt-24">
                             <InclusionsSection
