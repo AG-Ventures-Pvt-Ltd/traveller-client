@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Modal from '@/common/ui/Modal';
 import CustomInput from '@/common/ui/CustomInput';
-import Button from '@/common/ui/Buttons/Button';
+import Button from '@/common/components/atoms/Button';
 import usePostData from '@/services/usePostData';
 import { API_ENDPOINTS } from '@/common/constants/apiEndpoints';
 
@@ -72,19 +72,23 @@ export function AddEmergencyContactModal({
       showButtons={false}
     >
       <div className="flex flex-col gap-4">
-          <CustomInput
-            label="Full Name"
-            placeholder="Enter contact name"
-            value={formData.name}
-            onChange={(e) => handleChange('name', e.target.value)}
-          />
+          <div className="flex flex-col gap-2">
+            <label className="text-sm font-medium text-gray-700">Full Name</label>
+            <CustomInput
+              placeholder="Enter contact name"
+              value={formData.name}
+              onChange={(e) => handleChange('name', e.target.value)}
+            />
+          </div>
 
-          <CustomInput
-            label="Phone Number"
-            placeholder="+966 555 123 4567"
-            value={formData.contactNumber}
-            onChange={(e) => handleChange('contactNumber', e.target.value)}
-          />
+          <div className="flex flex-col gap-2">
+            <label className="text-sm font-medium text-gray-700">Phone Number</label>
+            <CustomInput
+              placeholder="+966 555 123 4567"
+              value={formData.contactNumber}
+              onChange={(e) => handleChange('contactNumber', e.target.value)}
+            />
+          </div>
         </div>
 
         <div className="flex gap-3 mt-4">

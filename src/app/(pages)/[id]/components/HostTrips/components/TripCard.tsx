@@ -1,7 +1,7 @@
 import { MapPin, Star, Clock, IndianRupee, Calendar } from "lucide-react";
 import { Trip } from "../../../types";
 import MyImage from "@/common/ui/Image";
-import Button from "@/common/ui/Buttons/Button";
+import Button from "@/common/components/atoms/Button";
 import BookmarkButton from "@/common/components/atoms/BookmarkButton";
 import { formatDateSimple } from "@/common/utils/dateUtils";
 

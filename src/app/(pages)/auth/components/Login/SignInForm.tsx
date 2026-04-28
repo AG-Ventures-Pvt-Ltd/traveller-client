@@ -29,16 +29,6 @@ export default function SignInForm() {
                 type="email"
                 placeholder="Email Address"
                 error={meta.touched && !!meta.error}
-                helperText={meta.touched && meta.error}
-                slotProps={{
-                  input: {
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <EnvelopeIcon className="text-black/45" size={18} weight="regular" />
-                      </InputAdornment>
-                    ),
-                  },
-                }}
               />
             </div>
           </div>
@@ -53,28 +43,6 @@ export default function SignInForm() {
                 type={showPassword ? "text" : "password"}
                 placeholder="Password"
                 error={meta.touched && !!meta.error}
-                helperText={meta.touched && meta.error}
-                slotProps={{
-                  input: {
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <KeyIcon className="text-black/45" size={18} weight="regular" />
-                      </InputAdornment>
-                    ),
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <Button
-                          type="button"
-                          onClick={togglePasswordVisibility}
-                          variant="text"
-                          className="!min-w-0 !p-2 !text-black/45 hover:!text-black"
-                        >
-                          {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                        </Button>
-                      </InputAdornment>
-                    ),
-                  },
-                }}
               />
             </div>
           </div>

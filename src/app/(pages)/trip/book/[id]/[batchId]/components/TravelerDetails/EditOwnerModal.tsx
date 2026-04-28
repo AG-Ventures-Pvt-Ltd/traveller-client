@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Modal from '@/common/ui/Modal';
 import CustomInput from '@/common/ui/CustomInput';
 // import CustomSelect from '@/common/ui/CustomSelect';
-import Button from '@/common/ui/Buttons/Button';
+import Button from '@/common/components/atoms/Button';
 import { ExistingTraveler } from '../types';
 // import { governmentIdOptions } from '@/app/(pages)/profile/constants';
 
@@ -68,23 +68,23 @@ export function EditOwnerModal({ open, onClose, owner, onSave, isLoading = false
         <p className="text-neutral-600 text-sm">
           Please complete your details to proceed with the booking.
         </p>
-        <CustomInput
-          label="Full Name"
-          value={formData.fullName}
-          onChange={(e) => handleChange('fullName', e.target.value)}
-          placeholder="Enter your full name"
-          fullWidth
-          required
-        />
-        <CustomInput
-          label="Mobile Number"
-          type="tel"
-          value={formData.phone}
-          onChange={(e) => handleChange('phone', e.target.value)}
-          placeholder="Enter your mobile number"
-          fullWidth
-          required
-        />
+        <div className="flex flex-col gap-2">
+          <label className="text-sm font-medium text-gray-700">Full Name</label>
+          <CustomInput
+            value={formData.fullName}
+            onChange={(e) => handleChange('fullName', e.target.value)}
+            placeholder="Enter your full name"
+          />
+        </div>
+        <div className="flex flex-col gap-2">
+          <label className="text-sm font-medium text-gray-700">Mobile Number</label>
+          <CustomInput
+            type="tel"
+            value={formData.phone}
+            onChange={(e) => handleChange('phone', e.target.value)}
+            placeholder="Enter your mobile number"
+          />
+        </div>
         {/* <CustomSelect
           label="Government ID Type"
           value={formData.governmentIdType}

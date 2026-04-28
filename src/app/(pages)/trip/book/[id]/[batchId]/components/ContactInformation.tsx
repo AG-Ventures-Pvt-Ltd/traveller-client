@@ -85,12 +85,16 @@ const ContactInformation: React.FC<ContactInformationProps> = ({
           Emergency contact
         </h3>
         <div className="flex flex-col gap-4">
-          <CustomInput
-            label="Name"
-            placeholder="Emergency contact name"
-            value={emergencyContact.name}
-            onChange={(e) => handleInputChange('name', e.target.value)}
-          />
+          <div className="flex flex-col gap-1">
+            <label className="text-neutral-900 text-sm font-bold">
+              Name
+            </label>
+            <CustomInput
+              placeholder="Emergency contact name"
+              value={emergencyContact.name}
+              onChange={(e) => handleInputChange('name', e.target.value)}
+            />
+          </div>
           <div className="flex flex-col gap-1">
             <label className="text-neutral-900 text-sm font-bold">
               Phone number

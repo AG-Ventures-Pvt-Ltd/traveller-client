@@ -34,16 +34,6 @@ export default function SignUpForm({ agreeToTerms, setAgreeToTerms }: SignUpForm
                   {...input}
                   placeholder="Full Name"
                   error={meta.touched && !!meta.error}
-                  helperText={meta.touched && meta.error}
-                  slotProps={{
-                    input: {
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <UserIcon className="text-black/45" size={18} weight="regular" />
-                        </InputAdornment>
-                      ),
-                    },
-                  }}
                 />
               </div>
             </div>
@@ -57,16 +47,6 @@ export default function SignUpForm({ agreeToTerms, setAgreeToTerms }: SignUpForm
                   {...input}
                   placeholder="Username"
                   error={meta.touched && !!meta.error}
-                  helperText={meta.touched && meta.error}
-                  slotProps={{
-                    input: {
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <UserIcon className="text-black/45" size={18} weight="regular" />
-                        </InputAdornment>
-                      ),
-                    },
-                  }}
                 />
               </div>
             </div>
@@ -81,16 +61,6 @@ export default function SignUpForm({ agreeToTerms, setAgreeToTerms }: SignUpForm
                   type="email"
                   placeholder="Email Address"
                   error={meta.touched && !!meta.error}
-                  helperText={meta.touched && meta.error}
-                  slotProps={{
-                    input: {
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <EnvelopeIcon className="text-black/45" size={18} weight="regular" />
-                        </InputAdornment>
-                      ),
-                    },
-                  }}
                 />
               </div>
             </div>
@@ -105,16 +75,6 @@ export default function SignUpForm({ agreeToTerms, setAgreeToTerms }: SignUpForm
                   type="tel"
                   placeholder="Mobile Number"
                   error={meta.touched && !!meta.error}
-                  helperText={meta.touched && meta.error}
-                  slotProps={{
-                    input: {
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <PhoneIcon className="text-black/45" size={18} weight="regular" />
-                        </InputAdornment>
-                      ),
-                    },
-                  }}
                 />
               </div>
             </div>
@@ -129,28 +89,6 @@ export default function SignUpForm({ agreeToTerms, setAgreeToTerms }: SignUpForm
                   type={showPassword ? "text" : "password"}
                   placeholder="Password"
                   error={meta.touched && !!meta.error}
-                  helperText={meta.touched && meta.error}
-                  slotProps={{
-                    input: {
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <KeyIcon className="text-black/45" size={18} weight="regular" />
-                        </InputAdornment>
-                      ),
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <Button
-                            type="button"
-                            onClick={togglePasswordVisibility}
-                            variant="text"
-                            className="!min-w-0 !p-2 !text-black/45 hover:!text-black"
-                          >
-                            {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                          </Button>
-                        </InputAdornment>
-                      ),
-                    },
-                  }}
                 />
               </div>
             </div>
@@ -165,28 +103,6 @@ export default function SignUpForm({ agreeToTerms, setAgreeToTerms }: SignUpForm
                   type={showConfirmPassword ? "text" : "password"}
                   placeholder="Confirm Password"
                   error={meta.touched && !!meta.error}
-                  helperText={meta.touched && meta.error}
-                  slotProps={{
-                    input: {
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <KeyIcon className="text-black/45" size={18} weight="regular" />
-                        </InputAdornment>
-                      ),
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <Button
-                            type="button"
-                            onClick={toggleConfirmPasswordVisibility}
-                            variant="text"
-                            className="!min-w-0 !p-2 !text-black/45 hover:!text-black"
-                          >
-                            {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                          </Button>
-                        </InputAdornment>
-                      ),
-                    },
-                  }}
                 />
               </div>
             </div>

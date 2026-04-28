@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/common/ui/dialog";
-import Button from "@/common/ui/Buttons/Button";
+import Button from "@/common/components/atoms/Button";
 import { Label } from "@/common/ui/label";
 import { Select, MenuItem, FormControl } from "@mui/material";
 import { Plus, Send } from "lucide-react";
@@ -119,14 +119,9 @@ export function CreateTicketDialog({ open, onOpenChange, onSuccess }: CreateTick
               Description <span className="text-red-500">*</span>
             </Label>
             <CustomInput
-              
-              id="description"
               placeholder="Please provide as much detail as possible about your issue..."
               value={formData.description}
               onChange={(e) => handleChange("description", e.target.value)}
-              required
-              rows={8}
-              className="border-gray-300 focus:border-[#008EF4] focus:ring-[#008EF4] resize-none"
             />
             <p className="text-xs text-gray-500">
               Include any relevant booking IDs, transaction numbers, or error messages

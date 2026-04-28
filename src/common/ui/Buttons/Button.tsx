@@ -1,7 +1,6 @@
-'use client' 
+'use client'
 
 import React from 'react'
-import { Button as MuiButton } from '@mui/material'
 
 type ButtonProps = {
   className?: string;
@@ -10,43 +9,39 @@ type ButtonProps = {
   style?: React.CSSProperties;
   disabled?: boolean;
   type?: "reset" | "button" | "submit" | undefined;
-  variant?: 'contained' | 'outlined' | 'text';
-  color?: 'primary' | 'secondary' | 'error' | 'warning' | 'info' | 'success';
+  variant?: 'primary' | 'yellow' | 'purple';
   fullWidth?: boolean;
-  startIcon?: React.ReactNode;
-  endIcon?: React.ReactNode;
 };
 
-const Button: React.FC<ButtonProps> = ({ 
-  className = '', 
-  children, 
-  onClick = () => {}, 
-  style = {}, 
-  disabled = false, 
+const Button: React.FC<ButtonProps> = ({
+  className = '',
+  children,
+  onClick = () => {},
+  style = {},
+  disabled = false,
   type = undefined,
-  variant = 'contained',
-  color = 'primary',
+  variant = 'primary',
   fullWidth = false,
-  startIcon,
-  endIcon
 }) => {
+  const baseClass = `py-4 rounded-xl text-base font-normal text-center active:opacity-80 transition-opacity ${fullWidth ? 'w-full' : ''} ${className}`;
+
+  const variantClass = variant === 'yellow'
+    ? 'bg-yellow-400 text-black'
+    : variant === 'purple'
+    ? 'bg-[#EEA0FF] text-black'
+    : 'bg-blue-500 text-white';
 
   return (
-    <MuiButton
-      className={`py-2! ${className}`}
+    <button
+      className={`${baseClass} ${variantClass}`}
       onClick={onClick}
       style={style}
       disabled={disabled}
       type={type}
-      variant={variant}
-      color={color}
-      fullWidth={fullWidth}
-      startIcon={startIcon}
-      endIcon={endIcon}
     >
       {children}
-    </MuiButton>
+    </button>
   );
 };
 
-export default Button
+export default Button;

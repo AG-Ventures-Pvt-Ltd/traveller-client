@@ -3,7 +3,7 @@ import { Trip } from "../../types";
 import { useGetData } from "@/services/useGetData";
 import { TripCard } from "./components/TripCard";
 import { HostTripsSkeleton } from "./components/HostTripsSkeleton";
-import Button from "@/common/ui/Buttons/Button";
+import Button from "@/common/components/atoms/Button";
 // import CustomSelect from "@/common/ui/CustomSelect";
 import { useRouter } from "next/navigation";
 import { FilterType, FILTERS, LOCATION_OPTIONS } from "./constants";

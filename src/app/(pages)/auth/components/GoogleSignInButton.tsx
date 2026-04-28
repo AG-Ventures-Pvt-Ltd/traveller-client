@@ -1,7 +1,7 @@
 'use client';
 
 import { signIn } from 'next-auth/react';
-import Button from '@/common/ui/Buttons/Button';
+import Button from '@/common/components/atoms/Button';
 import { GoogleSignInButtonProps } from '../types';
 
 const GoogleSignInButton = ({ redirectTo }: GoogleSignInButtonProps) => {

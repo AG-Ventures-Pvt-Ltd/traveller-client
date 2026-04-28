@@ -6,7 +6,7 @@ import { useGetData } from '@/services/useGetData';
 import usePostData from '@/services/usePostData';
 import { API_ENDPOINTS } from '@/common/constants/apiEndpoints';
 import Modal from '@/common/ui/Modal';
-import Button from '@/common/ui/Buttons/Button';
+import Button from '@/common/components/atoms/Button';
 import { useRouter, useSearchParams } from 'next/navigation';
 import {
   ProfileCard,

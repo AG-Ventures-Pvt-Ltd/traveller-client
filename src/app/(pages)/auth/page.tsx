@@ -11,7 +11,7 @@ import { LoginValues, SignupValues } from './types';
 import usePostData from '@/services/usePostData';
 import { API_ENDPOINTS } from '@/common/constants/apiEndpoints';
 import { notify } from '@/common/utils/notify';
-import Button from '@/common/ui/Buttons/Button';
+import Button from '@/common/components/atoms/Button';
 import GoogleSignInButton from './components/GoogleSignInButton';
 
 export default function Page() {

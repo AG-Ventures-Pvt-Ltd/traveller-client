@@ -5,7 +5,7 @@ import Modal from '@/common/ui/Modal';
 import CustomInput from '@/common/ui/CustomInput';
 import CustomSelect from '@/common/ui/CustomSelect';
 import { DatePicker } from '@/common/ui/DatePicker';
-import Button from '@/common/ui/Buttons/Button';
+import Button from '@/common/components/atoms/Button';
 import { ProfileData } from '../../types';
 import useS3Upload from '@/common/hooks/useS3Upload';
 import MyImage from '@/common/ui/Image';
@@ -139,21 +139,23 @@ export function EditProfileModal({ open, onClose, profileData, onSave, isLoading
       <div className="flex flex-col gap-5 max-w-[528px]">
         {/* Phone Number */}
         {/* Username */}
-        <CustomInput
-          label="Username"
-          value={formData.username}
-          onChange={(e) => handleChange('username', e.target.value)}
-          placeholder="Enter your username"
-          fullWidth
-        />
+        <div className="flex flex-col gap-2">
+          <label className="text-sm font-medium text-gray-700">Username</label>
+          <CustomInput
+            value={formData.username}
+            onChange={(e) => handleChange('username', e.target.value)}
+            placeholder="Enter your username"
+          />
+        </div>
 
-        <CustomInput
-          label="Mobile Number"
-          type="tel"
-          value={formData.phone}
-          onChange={(e) => handleChange('phone', e.target.value)}
-          fullWidth
-        />
+        <div className="flex flex-col gap-2">
+          <label className="text-sm font-medium text-gray-700">Mobile Number</label>
+          <CustomInput
+            type="tel"
+            value={formData.phone}
+            onChange={(e) => handleChange('phone', e.target.value)}
+          />
+        </div>
         {/* Government ID Type */}
         <CustomSelect
           label="Government ID Type"
@@ -170,13 +172,14 @@ export function EditProfileModal({ open, onClose, profileData, onSave, isLoading
         />
 
         {/* Government ID Number */}
-        <CustomInput
-          label="Government ID Number"
-          value={formData.governmentIdNumber || ''}
-          onChange={(e) => handleChange('governmentIdNumber', e.target.value)}
-          placeholder="Enter your ID number"
-          fullWidth
-        />
+        <div className="flex flex-col gap-2">
+          <label className="text-sm font-medium text-gray-700">Government ID Number</label>
+          <CustomInput
+            value={formData.governmentIdNumber || ''}
+            onChange={(e) => handleChange('governmentIdNumber', e.target.value)}
+            placeholder="Enter your ID number"
+          />
+        </div>
         <DatePicker
           label="Date of Birth"
           value={birthDate}
@@ -185,36 +188,39 @@ export function EditProfileModal({ open, onClose, profileData, onSave, isLoading
           showYearNavigation={true}
         />
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="flex flex-col gap-2">
+            <label className="text-sm font-medium text-gray-700">Address</label>
+            <CustomInput
+              value={addressComponents.address}
+              onChange={(e) => handleAddressChange('address', e.target.value)}
+              placeholder="Street address"
+            />
+          </div>
+          <div className="flex flex-col gap-2">
+            <label className="text-sm font-medium text-gray-700">City</label>
+            <CustomInput
+              value={addressComponents.city}
+              onChange={(e) => handleAddressChange('city', e.target.value)}
+              placeholder="City"
+            />
+          </div>
+          <div className="flex flex-col gap-2">
+            <label className="text-sm font-medium text-gray-700">State</label>
+            <CustomInput
+              value={addressComponents.state}
+              onChange={(e) => handleAddressChange('state', e.target.value)}
+              placeholder="State"
+            />
+          </div>
+        </div>
+        <div className="flex flex-col gap-2">
+          <label className="text-sm font-medium text-gray-700">Bio</label>
           <CustomInput
-            label="Address"
-            value={addressComponents.address}
-            onChange={(e) => handleAddressChange('address', e.target.value)}
-            placeholder="Street address"
-            fullWidth
-          />
-          <CustomInput
-            label="City"
-            value={addressComponents.city}
-            onChange={(e) => handleAddressChange('city', e.target.value)}
-            placeholder="City"
-            fullWidth
-          />
-          <CustomInput
-            label="State"
-            value={addressComponents.state}
-            onChange={(e) => handleAddressChange('state', e.target.value)}
-            placeholder="State"
-            fullWidth
+            value={formData.bio}
+            onChange={(e) => handleChange('bio', e.target.value)}
+            placeholder="Tell us about yourself"
           />
         </div>
-        <CustomInput
-          label="Bio"
-          variant="textarea"
-          value={formData.bio}
-          onChange={(e) => handleChange('bio', e.target.value)}
-          rows={4}
-          fullWidth
-        />
         <div className="flex flex-col gap-3">
           <label className="text-neutral-900 text-sm font-bold font-['Satoshi']">
             Profile Picture

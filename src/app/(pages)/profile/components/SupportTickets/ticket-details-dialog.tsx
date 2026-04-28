@@ -2,7 +2,7 @@
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/common/ui/dialog";
 import { Badge } from "@/common/ui/badge";
-import Button from "@/common/ui/Buttons/Button";
+import Button from "@/common/components/atoms/Button";
 import { Separator } from "@/common/ui/separator";
 import { MessageSquare, Clock, User, Tag } from "lucide-react";
 import { formatDateTime } from "@/common/utils/dateUtils";

@@ -41,12 +41,14 @@ const ContactDetails: React.FC<ContactDetailsProps> = ({
       </div>
       <div className="flex gap-4">
         <div className="flex-1">
-          <CustomInput
-            label="Full name"
-            placeholder="Enter full name"
-            value={data.fullName}
-            onChange={(e) => handleInputChange('fullName', e.target.value)}
-          />
+          <div className="flex flex-col gap-1">
+            <label className="text-[#121212] text-sm font-medium">Full name</label>
+            <CustomInput
+              placeholder="Enter full name"
+              value={data.fullName}
+              onChange={(e) => handleInputChange('fullName', e.target.value)}
+            />
+          </div>
         </div>
         <div className="flex-1">
           <CustomSelect
@@ -61,13 +63,15 @@ const ContactDetails: React.FC<ContactDetailsProps> = ({
       </div>
       <div className="flex gap-4">
         <div className="flex-1">
-          <CustomInput
-            label="Email address"
-            type="email"
-            placeholder="email@example.com"
-            value={data.email}
-            onChange={(e) => handleInputChange('email', e.target.value)}
-          />
+          <div className="flex flex-col gap-1">
+            <label className="text-[#121212] text-sm font-medium">Email address</label>
+            <CustomInput
+              type="email"
+              placeholder="email@example.com"
+              value={data.email}
+              onChange={(e) => handleInputChange('email', e.target.value)}
+            />
+          </div>
           {isPrimary && (
             <p className="text-[#404040] text-[13px] font-medium font-['Satoshi'] leading-[19.5px] mt-1">
               We&apos;ll send booking confirmation here
@@ -111,13 +115,14 @@ const ContactDetails: React.FC<ContactDetailsProps> = ({
           />
         </div>
         <div className="flex-1">
-          <CustomInput
-            label="Government ID Number"
-            placeholder="Enter ID number"
-            value={data.governmentIdNumber || ''}
-            onChange={(e) => handleInputChange('governmentIdNumber', e.target.value)}
-            required={true}
-          />
+          <div className="flex flex-col gap-1">
+            <label className="text-[#121212] text-sm font-medium">Government ID Number</label>
+            <CustomInput
+              placeholder="Enter ID number"
+              value={data.governmentIdNumber || ''}
+              onChange={(e) => handleInputChange('governmentIdNumber', e.target.value)}
+            />
+          </div>
         </div>
       </div>
     </div>

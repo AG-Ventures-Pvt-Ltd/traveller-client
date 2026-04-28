@@ -22,6 +22,9 @@ const OurTours = () => {
   const router = useRouter()
   const { data, isLoading } = useFeaturedTrips()
 
+  // Flatten all trips from all carousels
+  const allTrips = data?.flatMap(carousel => carousel.trips) || []
+
   const handleTripClick = (tripSlug: string) => {
     router.push(`/trip/${tripSlug}`)
   }
@@ -74,7 +77,7 @@ const OurTours = () => {
           ))
         ) : (
           <>
-            {data?.map((trip, i) => (
+            {allTrips?.map((trip, i) => (
               <motion.div
                 key={trip.tripSlug}
                 custom={i}

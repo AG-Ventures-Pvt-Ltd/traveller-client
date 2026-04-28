@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Modal from '@/common/ui/Modal';
-import Button from '@/common/ui/Buttons/Button';
+import Button from '@/common/components/atoms/Button';
 
 interface AddReviewModalProps {
   open: boolean;

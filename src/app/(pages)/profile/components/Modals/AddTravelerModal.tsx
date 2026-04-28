@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Modal from '@/common/ui/Modal';
 import CustomInput from '@/common/ui/CustomInput';
-import Button from '@/common/ui/Buttons/Button';
+import Button from '@/common/components/atoms/Button';
 import usePostData from '@/services/usePostData';
 import { API_ENDPOINTS } from '@/common/constants/apiEndpoints';
 
@@ -115,26 +115,32 @@ export function AddTravelerModal({
       showButtons={false}
     >
       <div className="flex flex-col gap-4">
-          <CustomInput
-            label="Full Name"
-            placeholder="Enter traveler full name"
-            value={formData.fullName}
-            onChange={(e) => handleChange('fullName', e.target.value)}
-          />
-          <CustomInput
-            label="Email"
-            placeholder="Enter traveler email"
-            type="email"
-            value={formData.email}
-            onChange={(e) => handleChange('email', e.target.value)}
-          />
-          <CustomInput
-            label="Phone Number"
-            placeholder="Enter traveler phone number"
-            value={formData.phone}
-            type='tel'
-            onChange={(e) => handleChange('phone', e.target.value)}
-          />
+          <div className="flex flex-col gap-2">
+            <label className="text-sm font-medium text-gray-700">Full Name</label>
+            <CustomInput
+              placeholder="Enter traveler full name"
+              value={formData.fullName}
+              onChange={(e) => handleChange('fullName', e.target.value)}
+            />
+          </div>
+          <div className="flex flex-col gap-2">
+            <label className="text-sm font-medium text-gray-700">Email</label>
+            <CustomInput
+              placeholder="Enter traveler email"
+              type="email"
+              value={formData.email}
+              onChange={(e) => handleChange('email', e.target.value)}
+            />
+          </div>
+          <div className="flex flex-col gap-2">
+            <label className="text-sm font-medium text-gray-700">Phone Number</label>
+            <CustomInput
+              placeholder="Enter traveler phone number"
+              value={formData.phone}
+              type='tel'
+              onChange={(e) => handleChange('phone', e.target.value)}
+            />
+          </div>
 
           {/* <CustomInput
             label="Government ID Type"
