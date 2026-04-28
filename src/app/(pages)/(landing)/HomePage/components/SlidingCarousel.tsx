@@ -1,43 +1,50 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { ArrowLeft, ArrowRight } from '@phosphor-icons/react';
 import CarouselCard from './CarouselCard';
+import { SlidingCarouselProps } from '../types';
 
-interface Trip {
-  id: string | number;
-  image: string;
-  title: string;
-  provider: string;
-  duration: string;
-  price: number;
-  rating: number;
-}
-
-interface SlidingCarouselProps {
-  trips: Trip[];
-  isLoading?: boolean;
-  onCardClick?: (trip: Trip) => void;
-}
+// Color pairs per carousel index (even vs odd carousel)
+// Each pair: [firstItemColor, secondItemColor] cycling through items
+const COLOR_PAIRS: Array<['yellow' | 'green' | 'purple', 'yellow' | 'green' | 'purple']> = [
+  ['yellow', 'green'],   // even carousels: #FFD976, #E2F4A6
+  ['purple', 'yellow'],  // odd carousels:  #EEA0FF, #FFD976
+];
 
 const SlidingCarousel: React.FC<SlidingCarouselProps> = ({
   trips,
   isLoading = false,
-  onCardClick
+  onCardClick,
+  carouselIndex = 0,
 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
+  const [containerWidth, setContainerWidth] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const totalCards = trips.length;
-  // Adjust maxIndex to prevent trailing space - ensure last card is fully visible without overflow
-  const maxIndex = Math.max(0, totalCards - 1);
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const observer = new ResizeObserver(([entry]) => {
+      setContainerWidth(entry.contentRect.width);
+    });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
-  // Card dimensions
+  const totalCards = trips.length;
   const cardWidth = 200;
   const gap = 12;
+
+  const visibleCards = containerWidth > 0 ? Math.max(1, Math.floor((containerWidth + gap) / (cardWidth + gap))) : 1;
+  const maxIndex = Math.max(0, totalCards - visibleCards);
+
+  const trackWidth = totalCards * (cardWidth + gap) - gap;
+  const maxTranslate = Math.max(0, trackWidth - containerWidth);
+  const translateX = Math.min(currentIndex * (cardWidth + gap), maxTranslate);
 
   const handlePrev = () => {
     setCurrentIndex((prev) => Math.max(0, prev - 1));
@@ -57,7 +64,7 @@ const SlidingCarousel: React.FC<SlidingCarouselProps> = ({
     if (!isDragging) return;
     const x = e.pageX - (containerRef.current?.offsetLeft || 0);
     const walk = (startX - x) / (cardWidth + gap);
-    const newIndex = scrollLeft + walk;
+    const newIndex = Math.round(scrollLeft + walk);
     setCurrentIndex(Math.max(0, Math.min(maxIndex, newIndex)));
   };
 
@@ -132,17 +139,20 @@ const SlidingCarousel: React.FC<SlidingCarouselProps> = ({
         onTouchEnd={handleTouchEnd}
       >
         <div
-          className="flex transition-transform duration-300 ease-out gap-3 sm:gap-3"
+          className="flex gap-3 sm:gap-3"
           style={{
-            transform: `translateX(-${currentIndex * (cardWidth + gap)}px)`,
+            transform: `translateX(-${translateX}px)`,
+            width: `${trackWidth}px`,
+            transition: isDragging ? 'none' : 'transform 0.3s ease',
           }}
+
         >
           {trips.map((trip, index) => (
-            <div key={trip.id} className="sm:w-64 flex-shrink-0" style={{ width: `${cardWidth}px` }}>
+            <div key={trip.id} className="flex-shrink-0" style={{ width: `${cardWidth}px` }}>
               <CarouselCard
                 {...trip}
-                colorScheme={index % 2 === 0 ? 'yellow' : 'green'}
-                onClick={() => onCardClick?.(trip)}
+                colorScheme={COLOR_PAIRS[carouselIndex % 2][index % 2]}
+                onClick={() => onCardClick?.()}
               />
             </div>
           ))}

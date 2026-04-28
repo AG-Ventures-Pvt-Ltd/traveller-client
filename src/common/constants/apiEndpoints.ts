@@ -1,6 +1,7 @@
 export const API_ENDPOINTS = {
   TRIPS: {
     BASIC_DETAILS: (id: string) => `api/client/v1/trips/details/${id}/basic`,
+    BOOKING_OPTIONS: (slug: string) => `/api/client/v1/trips/${slug}/booking-options`,
     DETAILED_DETAILS: (id: string) => `api/client/v1/trips/details/${id}/detailed`,
     FEATURED_TRIPS: (limit: string) => `/api/client/v1/trips/featured?limit=${limit}`,
     HOST_TRIPS: (hostUsername: string) => `/api/client/v1/trips/user/${hostUsername}`,
@@ -37,6 +38,7 @@ export const API_ENDPOINTS = {
     VERIFY_EMAIL: () => `/api/client/v1/user/verifyOTP`,
     SOCIAL_LOGIN: "/api/client/v1/user/social_login",
     HOST_PROFILE: (id: string) => `/api/client/v1/user/host/profile/${id}`,
+    HOST_IDS_FOR_SITEMAP : `/api/client/v1/user/host/sitemap`,
     ME: "/api/client/v1/user/me",
     MY_TRIPS: "/api/client/v1/user/me/trips",
     UPDATE: "/api/client/v1/user/me/update",

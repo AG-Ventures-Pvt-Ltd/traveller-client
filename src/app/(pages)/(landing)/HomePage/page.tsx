@@ -1,30 +1,26 @@
 'use client';
 
-import React, { useMemo, useEffect } from 'react';
+import React, { useMemo } from 'react';
 import LocationSelector from './components/LocationSelector';
 import SuggestionBanner from './components/SuggestionBanner';
-import StatisticsBanner from './components/StatisticsBanner';
 import SlidingCarouselSection from './components/SlidingCarouselSection';
+import HomePageSkeleton from './components/HomePageSkeleton';
 import { useFeaturedTrips } from '@/common/hooks/useFeaturedTrips';
 import Footer from '../Footer/Footer';
 import { useSession } from 'next-auth/react';
-import usePostData from '@/services/usePostData';
 
 
 
 const HomePage = () => {
-    const handleSearch = (value: string) => {
-        // Handle search functionality here
-        // console.log('Search:', value);
-    };
+    const handleSearch = (value: string) => {};  // eslint-disable-line @typescript-eslint/no-unused-vars
 
     const { data: session } = useSession();
     const { data: featuredTripsData, isLoading: isTripsLoading } = useFeaturedTrips();
       
-      const { mutate: updateWallet } = usePostData({ 
-        url: '/api/client/v1/wallet/update',
-        retry: (failureCount, error) => (error as any)?.response?.status !== 409
-      });
+    //   const { mutate: updateWallet } = usePostData({ 
+    //     url: '/api/client/v1/wallet/update',
+    //     retry: (failureCount, error) => (error as any)?.response?.status !== 409
+    //   });
     
       // Check spinWheelData and update wallet on mount
       // useEffect(() => {
@@ -69,33 +65,33 @@ const HomePage = () => {
     const customImage = session?.user?.avatar;
     const suggestion = `${firstName}'s next escape ?`;
 
-    // Transform featured trips data to carousel format with random ratings
-    const transformedTrips = useMemo(() => {
+    // Transform carousels data sorted by priority
+    const sortedCarousels = useMemo(() => {
         if (!featuredTripsData) return [];
-        
-        const parseDays = (daysString: string): string => {
-            // Parse "4 Days / 3 Nights" format to "4N . 3D"
-            const match = daysString.match(/(\d+)\s*Days?\s*\/\s*(\d+)\s*Nights?/i);
-            if (match) {
-                return `${match[1]}N • ${match[2]}D`;
-            }
-            return daysString;
-        };
-        
-        return featuredTripsData.map((trip) => ({
-            id: trip.tripSlug,
-            image: trip.image,
-            title: trip.title,
-            provider: trip.hostName,
-            duration: parseDays(trip.days),
-            price: trip.price,
-            rating: Math.random() * 1 + 4, // Random rating between 4 and 5
-        }));
+
+        return [...featuredTripsData]
+            .sort((a, b) => a.priority - b.priority)
+            .map((carousel) => ({
+                id: carousel._id,
+                title: carousel.title,
+                trips: carousel.trips.map((trip) => ({
+                    id: trip.tripSlug,
+                    image: trip.image,
+                    title: trip.title,
+                    provider: trip.hostName,
+                    duration: trip.days,
+                    price: trip.price,
+                    rating: Math.random() * 1 + 4,
+                })),
+            }));
     }, [featuredTripsData]);
 
     return (
         <>
-            <div className="w-full bg-white px-4 sm:px-6 lg:px-9 pt-6 sm:pt-8 lg:pt-10 pb-12 sm:pb-16 lg:pb-24">
+            {isTripsLoading ? (
+                <HomePageSkeleton />
+            ) : (
+            <div className="w-full bg-[#FFF9F4] px-4 sm:px-6 lg:px-9 pt-6 sm:pt-8 lg:pt-10 pb-12 sm:pb-16 lg:pb-24">
                 <div className="max-w-[1440px] mx-auto flex flex-col gap-8 sm:gap-10 lg:gap-12">
                     <LocationSelector location="Delhi" avatar={customImage} />
                     <div className='flex flex-col gap-2'>
@@ -109,30 +105,18 @@ const HomePage = () => {
                             duration="last month"
                         /> */}
                     </div>
-                    {/* First Carousel - Most Booked This Weekend */}
-                    {/* <CarouselSection
-                        title="Most Booked This Weekend"
-                        description="Explore popular destinations trending right now"
-                        trips={mostBookedTrips}
-                        isLoading={isMostBookedLoading}
-                    />
-
-                    {/* Second Carousel - Top Rated by Travelers */}
-                    {/* <CarouselSection
-                        title="Top Rated by Travelers"
-                        description="Discover destinations loved by our community"
-                        trips={topRatedTrips}
-                        isLoading={isTopRatedLoading}
-                    /> */}
-
-                    {/* Sliding Carousel Section with Featured Trips */}
-                    <SlidingCarouselSection
-                        title="Most Booked Trips"
-                        trips={transformedTrips}
-                        isLoading={isTripsLoading}
-                    />
+                    {sortedCarousels.map((carousel, index) => (
+                        <SlidingCarouselSection
+                            key={carousel.id}
+                            title={carousel.title}
+                            trips={carousel.trips}
+                            isLoading={isTripsLoading}
+                            carouselIndex={index}
+                        />
+                    ))}
                 </div>
             </div>
+            )}
             <Footer />
         </>
     );

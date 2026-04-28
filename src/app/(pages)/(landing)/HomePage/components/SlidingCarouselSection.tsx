@@ -3,34 +3,18 @@
 import React from 'react';
 // import { useRouter } from 'next/navigation';
 import SlidingCarousel from './SlidingCarousel';
-
-interface Trip {
-  id: string | number;
-  image: string;
-  title: string;
-  provider: string;
-  duration: string;
-  price: number;
-  rating: number;
-}
-
-interface SlidingCarouselSectionProps {
-  title: string;
-  description?: string;
-  trips: Trip[];
-  isLoading?: boolean;
-}
+import { SlidingCarouselSectionProps } from '../types';
 
 const SlidingCarouselSection: React.FC<SlidingCarouselSectionProps> = ({
   title,
   description,
   trips,
-  isLoading = false
+  isLoading = false,
+  carouselIndex = 0,
 }) => {
 
-  const handleCardClick = (trip: Trip) => {
+  const handleCardClick = () => {
     // Navigate to trip details or perform action
-    console.log('Card clicked:', trip);
   };
 
   return (
@@ -49,6 +33,7 @@ const SlidingCarouselSection: React.FC<SlidingCarouselSectionProps> = ({
         trips={trips}
         isLoading={isLoading}
         onCardClick={handleCardClick}
+        carouselIndex={carouselIndex}
       />
     </div>
   );

@@ -3,10 +3,12 @@
 
 import { useSession } from 'next-auth/react';
 import { useState, useEffect } from 'react';
+import dynamic from 'next/dynamic';
 import Loader from '@/common/ui/Loader/Loader';
-import LandingPage from './(landing)/LandingPage/LandingPage';
-import LoggedInLandingPage from './(landing)/LoggedInLandingPage/LoggedInLandingPage'
-import HomePage from './(landing)/HomePage/page';
+
+const LandingPage = dynamic(() => import('./(landing)/LandingPage/LandingPage'), { loading: () => <Loader /> });
+const LoggedInLandingPage = dynamic(() => import('./(landing)/LoggedInLandingPage/LoggedInLandingPage'), { loading: () => <Loader /> });
+const HomePage = dynamic(() => import('./(landing)/HomePage/page'), { ssr: false });
 
 
 export const Landing = () => {

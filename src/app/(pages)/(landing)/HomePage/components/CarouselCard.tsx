@@ -4,19 +4,7 @@ import React from 'react';
 import { useRouter } from 'next/navigation';
 import { StarIcon, SealCheckIcon } from '@phosphor-icons/react';
 import MyImage from '@/common/ui/Image';
-
-
-interface CarouselCardProps {
-  id: string | number;
-  image: string;
-  title: string;
-  provider: string;
-  duration: string;
-  price: number;
-  rating: number;
-  colorScheme?: 'yellow' | 'green';
-  onClick?: () => void;
-}
+import { CarouselCardProps } from '../types';
 
 const CarouselCard: React.FC<CarouselCardProps> = ({
   id,
@@ -30,8 +18,14 @@ const CarouselCard: React.FC<CarouselCardProps> = ({
   onClick
 }) => {
   const router = useRouter();
-  const bgColor = colorScheme === 'yellow' ? 'bg-[#FFD976]' : 'bg-[#E2F4A6]';
-  const borderColor = colorScheme === 'yellow' ? 'border-[#FFD976]' : 'border-[#E2F4A6]';
+  const bgColor =
+    colorScheme === 'yellow' ? 'bg-[#FFD976]' :
+    colorScheme === 'green'  ? 'bg-[#E2F4A6]' :
+                               'bg-[#EEA0FF]';
+  const borderColor =
+    colorScheme === 'yellow' ? 'border-[#FFD976]' :
+    colorScheme === 'green'  ? 'border-[#E2F4A6]' :
+                               'border-[#EEA0FF]';
 
   const handleCardClick = () => {
     // Create slug from title and id
