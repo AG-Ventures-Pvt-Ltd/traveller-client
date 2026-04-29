@@ -5,14 +5,12 @@ import { usePayment } from './usePayment';
 import { BookingFlowParams } from '../components/types';
 import { useSession } from 'next-auth/react';
 import usePostData from '@/services/usePostData';
-import { useBookingStore } from '../store/useBookingStore';
 
 
 export const useBookingFlow = () => {
     const [isProcessing, setIsProcessing] = useState(false);
     const { openRazorpay } = usePayment();
     const { data: session } = useSession();
-    const roomSharing = useBookingStore((state) => state.roomSharing);
 
     const bookingContextRef = useRef<{
         batchId: string;
@@ -66,14 +64,12 @@ export const useBookingFlow = () => {
                 batchId: string;
                 numberOfPeople: number;
                 bookingId: string;
-                roomSharing?: number | null;
                 couponCode?: string;
                 referralCode?: string;
             } = {
                 batchId: context.batchId,
                 numberOfPeople: context.numberOfPeople,
                 bookingId,
-                ...(roomSharing !== null && { roomSharing }),
                 ...(context.couponCode && { couponCode: context.couponCode }),
                 ...(context.referralCode && { referralCode: context.referralCode }),
             };
@@ -114,7 +110,6 @@ export const useBookingFlow = () => {
             additionalGuests,
             hasSelf,
             ...(couponCode && { couponCode }),
-            ...(roomSharing !== null && { roomSharing }),
             ...(referralCode && { referralCode }),
         });
     };

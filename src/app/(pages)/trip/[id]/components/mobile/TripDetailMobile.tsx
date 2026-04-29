@@ -146,7 +146,8 @@ export default function TripDetailMobile() {
 
     const handleBookNow = () => {
         if (selectedBatch !== null && sortedBatches[selectedBatch]) {
-            router.push(`/trip/book/${generatedSlug}`);
+            const batchId = sortedBatches[selectedBatch].batchId;
+            router.push(`/trip/book/${generatedSlug}?batchId=${batchId}`);
         }
     };
 

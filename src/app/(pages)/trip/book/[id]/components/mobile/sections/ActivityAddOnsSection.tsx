@@ -4,7 +4,7 @@ import { CheckIcon, CurrencyInrIcon } from '@phosphor-icons/react';
 import CollapsibleCard from '@/common/ui/CollapsibleCard';
 import type { AddOn } from './types';
 
-interface StayOptionsSectionProps {
+interface ActivityAddOnsSectionProps {
     addOns: AddOn[];
     selectedAddOnIdx: number | null;
     onSelect: (idx: number | null) => void;
@@ -12,16 +12,15 @@ interface StayOptionsSectionProps {
     onToggle?: () => void;
 }
 
-export default function StayOptionsSection({ addOns, selectedAddOnIdx, onSelect, isOpen, onToggle }: StayOptionsSectionProps) {
-    const roomUpgradeAddOns = addOns.filter(addOn => addOn.category === 'room_upgrade');
+export default function ActivityAddOnsSection({ addOns, selectedAddOnIdx, onSelect, isOpen, onToggle }: ActivityAddOnsSectionProps) {
+    const filteredAddOns = addOns.filter(addOn => addOn.category === 'extra_activity');
 
-    if (roomUpgradeAddOns.length === 0) return null;
+    if (filteredAddOns.length === 0) return null;
 
     return (
-        <CollapsibleCard title="Stay Options" overflow="visible" isOpen={isOpen} onToggle={onToggle}>
+        <CollapsibleCard title="Activity Add Ons" overflow="visible" isOpen={isOpen} onToggle={onToggle}>
             <div className="flex flex-col gap-5 px-4 pb-4">
-                {roomUpgradeAddOns.map((addOn, filteredIdx) => {
-                    // Find the original index in the full addOns array
+                {filteredAddOns.map((addOn) => {
                     const originalIdx = addOns.findIndex(originalAddOn => originalAddOn === addOn);
                     const isSelected = selectedAddOnIdx === originalIdx;
                     return (

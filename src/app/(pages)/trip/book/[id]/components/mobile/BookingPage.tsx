@@ -5,12 +5,15 @@ import { useParams, useSearchParams, useRouter } from 'next/navigation';
 import { useBookingNavStore } from '../../[batchId]/store/useBookingNavStore';
 import BookingFormPage, { BookingFormData } from './components/BookingFormPage';
 import ReviewInfo from './components/ReviewInfo';
+import AllCouponsPage from './components/AllCouponsPage';
+import type { Coupon } from './sections/types';
 
-type Step = 'reservation' | 'review';
+type Step = 'reservation' | 'review' | 'coupons';
 
 const STEP_CONFIG: Record<Step, { headerLabel: string; buttonLabel: string }> = {
     reservation: { headerLabel: 'Book your trip', buttonLabel: 'Continue to Review' },
     review: { headerLabel: 'Review information', buttonLabel: 'Confirm & Pay' },
+    coupons: { headerLabel: 'All coupons', buttonLabel: 'Done' },
 };
 
 export default function BookingPage() {
@@ -25,6 +28,7 @@ export default function BookingPage() {
     const { setHeaderLabel, setButtonLabel, setBackAction } = useBookingNavStore();
 
     const bookingDataRef = useRef<BookingFormData | null>(null);
+    const couponsRef = useRef<Coupon[]>([]);
 
     const goToStep = (nextStep: Step) => {
         const p = new URLSearchParams(searchParams.toString());
@@ -43,12 +47,19 @@ export default function BookingPage() {
             setBackAction(() => router.push(`/trip/${tripId}`));
         } else if (step === 'review') {
             setBackAction(() => goToStep('reservation'));
+        } else if (step === 'coupons') {
+            setBackAction(() => goToStep('reservation'));
         }
     }, [step]); // eslint-disable-line react-hooks/exhaustive-deps
 
     const handleBookingContinue = (data: BookingFormData) => {
         bookingDataRef.current = data;
         goToStep('review');
+    };
+
+    const handleViewCoupons = (coupons: Coupon[]) => {
+        couponsRef.current = coupons;
+        goToStep('coupons');
     };
 
     const handlePayment = () => {
@@ -62,6 +73,16 @@ export default function BookingPage() {
                 tripId={tripId.split('-').pop() || ''}
                 batchId={batchId}
                 onContinue={handleBookingContinue}
+                onViewCoupons={handleViewCoupons}
+            />
+        );
+    }
+
+    if (step === 'coupons') {
+        return (
+            <AllCouponsPage
+                coupons={couponsRef.current}
+                onDone={() => goToStep('reservation')}
             />
         );
     }
@@ -75,12 +96,6 @@ export default function BookingPage() {
             />
         );
     }
-
-    // if (step == 'discount_coupons') {
-    //     return (
-    //         <
-    //     )
-    // }
 
     return null;
 }

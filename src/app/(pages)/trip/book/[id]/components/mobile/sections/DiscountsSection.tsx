@@ -44,12 +44,12 @@ export default function DiscountsSection({
                 >
                     view all coupons {coupons && coupons.length > 0 ? `(${coupons.length})` : ''} &gt;
                 </button>
-                <CustomInput
+                {/* <CustomInput
                     icon={SealPercentIcon}
                     placeholder="Redeem a referral code"
                     value={referralInput}
                     onChange={e => onReferralChange(e.target.value)}
-                />
+                /> */}
                 <Button variant="purple" fullWidth onClick={onApply}>
                     Apply
                 </Button>

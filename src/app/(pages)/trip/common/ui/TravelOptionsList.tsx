@@ -32,11 +32,15 @@ export default function TravelOptionsList({
     onToggleInfo,
     showCheckOnSelect,
 }: TravelOptionsListProps) {
+
+    const isSingleItem = items.length === 1;
+    const effectiveSelectedIndex = isSingleItem ? 0 : selectedIndex;
+
     return (
         <div className="flex flex-col gap-5">
             {items.map((item, index) => {
                 const Icon = item.icon;
-                const isSelected = selectedIndex === index;
+                const isSelected = effectiveSelectedIndex === index;
                 const hasBadge = item.badgeLabel !== undefined || item.pricePerPerson !== undefined;
                 return (
                     <div key={index} className="relative">
@@ -50,18 +54,20 @@ export default function TravelOptionsList({
                             </div>
                         )}
                         <div
-                            onClick={() => onSelect(index)}
-                            className={`flex flex-col justify-center rounded-xl border border-[#D9D9D9] px-4 py-3 cursor-pointer transition-colors ${isSelected ? 'bg-[#F4BFFF]' : ''}`}
+                            onClick={() => !isSingleItem && onSelect(index)}
+                            className={`flex flex-col justify-center rounded-xl border border-[#D9D9D9] px-4 py-3 transition-colors ${
+                                isSelected ? 'bg-[#F4BFFF]' : ''
+                            } ${isSingleItem ? 'cursor-default' : 'cursor-pointer'}`}
                         >
                             <div className="flex items-center gap-3">
                                 {Icon && <Icon size={22} weight="regular" className="flex-shrink-0" />}
-                                <span className="text-black text-sm flex-1">{item.label}</span>
+                                <span className="text-black text-xs flex-1">{item.label}</span>
                                 {onToggleInfo && item.description && (
                                     <button
                                         onClick={(e) => { e.stopPropagation(); onToggleInfo(index); }}
                                         className={`text-sm underline flex-shrink-0 ${isSelected ? 'text-indigo-500' : 'text-blue-500'}`}
                                     >
-                                        View Details
+                                        {expandedIndex === index ? 'Collapse' : 'View Details'}
                                     </button>
                                 )}
                                 {showCheckOnSelect && isSelected && (
@@ -69,7 +75,7 @@ export default function TravelOptionsList({
                                 )}
                             </div>
                             {expandedIndex === index && item.description && (
-                                <p className="text-xs text-gray-700 mt-1">{item.description}</p>
+                                <p className="text-xs font-normal mt-1">{item.description}</p>
                             )}
                         </div>
                     </div>

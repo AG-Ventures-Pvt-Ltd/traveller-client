@@ -36,11 +36,13 @@ export default function ReviewInfo({
         selectedBatchId,
         selectedMeetingPoint,
         selectedAddOn,
+        selectedExtraAddOn,
+        selectedTransportAddOn,
+        selectedActivityAddOn,
         selectedTravelOption,
         foodPreference,
         couponCode,
         referralCode,
-        roomSharing,
         personalDetails,
     } = useBookingStore();
 
@@ -54,9 +56,40 @@ export default function ReviewInfo({
 
     useEffect(() => {
         if (actualTripId && resolvedBatchId && guests > 0) {
-            fetchTripDetails(actualTripId, resolvedBatchId, guests, couponCode, roomSharing, referralCode);
+            const addOnIds = [
+                selectedAddOn?._id,
+                selectedExtraAddOn?._id,
+                selectedTransportAddOn?._id,
+                selectedActivityAddOn?._id,
+            ].filter((id): id is string => Boolean(id));
+
+            fetchTripDetails(
+                actualTripId,
+                resolvedBatchId,
+                guests,
+                couponCode,
+                referralCode,
+                personalDetails?.email,
+                selectedMeetingPoint?.locationId,
+                addOnIds,
+                selectedTravelOption?._id,
+            );
         }
-    }, [actualTripId, resolvedBatchId, guests, couponCode, roomSharing, referralCode, fetchTripDetails]);
+    }, [
+        actualTripId,
+        resolvedBatchId,
+        guests,
+        couponCode,
+        referralCode,
+        personalDetails?.email,
+        selectedMeetingPoint?.locationId,
+        selectedAddOn?._id,
+        selectedExtraAddOn?._id,
+        selectedTransportAddOn?._id,
+        selectedActivityAddOn?._id,
+        selectedTravelOption?._id,
+        fetchTripDetails,
+    ]);
 
     const { setContinueAction } = useBookingNavStore();
     const continueRef = useRef(onContinue);
@@ -191,14 +224,21 @@ export default function ReviewInfo({
                 {/* Pricing Breakdown */}
                 {tripDetails && (
                     <div className="flex flex-col gap-2.5 px-4 py-4">
-                        <div className="flex justify-between items-center">
-                            <span className="text-zinc-600 text-xs">Tour price</span>
-                            <span className="text-black text-xs">₹{tripDetails.grandTotalWithoutFee}</span>
-                        </div>
+                        {(tripDetails.priceBreakdown ?? []).map((item) => (
+                            <div key={item._id} className="flex justify-between items-center">
+                                <span className="text-zinc-600 text-xs">
+                                    {item.label}
+                                    {item.quantity > 1 && (
+                                        <span className="text-zinc-400"> ×{item.quantity}</span>
+                                    )}
+                                </span>
+                                <span className="text-black text-xs">₹{item.total.toLocaleString('en-IN')}</span>
+                            </div>
+                        ))}
 
                         <div className="flex justify-between items-center">
                             <span className="text-zinc-600 text-xs">Convenience fee</span>
-                            <span className="text-black text-xs">₹{tripDetails.serviceFee}</span>
+                            <span className="text-black text-xs">₹{tripDetails.serviceFee.toLocaleString('en-IN')}</span>
                         </div>
 
                         {(tripDetails.roomSharingCostTotal ?? 0) > 0 && (

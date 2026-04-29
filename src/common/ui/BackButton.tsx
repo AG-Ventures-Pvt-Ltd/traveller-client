@@ -36,7 +36,7 @@ const BackButton: React.FC<BackButtonProps> = ({
       onClick={handleClick}
     >
       <div className='bg-[#EEA0FF] text-black p-2 md:p-2 rounded-full'>
-        <ArrowLeftIcon size={iconSize} weight='regular' />
+        <ArrowLeftIcon size={iconSize} weight='thin' />
       </div>
       <span className="font-bold">{label}</span>
     </div>

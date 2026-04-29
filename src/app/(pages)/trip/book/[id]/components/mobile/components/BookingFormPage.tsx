@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { MapPinLineIcon, InfoIcon } from '@phosphor-icons/react';
 import TravelOptionsList from '@/app/(pages)/trip/common/ui/TravelOptionsList';
 import CollapsibleCard from '@/common/ui/CollapsibleCard';
 import { useGetData } from '@/services/useGetData';
@@ -13,6 +12,9 @@ import { validators } from '@/common/utils/formValidators';
 import TripOverviewCard from '../sections/TripOverviewCard';
 import TravelerDetailsCard from '../sections/TravelerDetailsCard';
 import StayOptionsSection from '../sections/StayOptionsSection';
+import ExtraAddOnsSection from '../sections/ExtraAddOnsSection';
+import TransportOptionsSection from '../sections/TransportOptionsSection';
+import ActivityAddOnsSection from '../sections/ActivityAddOnsSection';
 import FoodPreferenceSection from '../sections/FoodPreferenceSection';
 import DiscountsSection from '../sections/DiscountsSection';
 import type {
@@ -20,6 +22,7 @@ import type {
     BatchDetails,
     FormErrors,
     BookingFormData,
+    Coupon,
 } from '../sections/types';
 
 export type { BookingFormData };
@@ -28,53 +31,71 @@ interface BookingFormPageProps {
     tripId: string;
     batchId: string;
     onContinue: (data: BookingFormData) => void;
+    onViewCoupons?: (coupons: Coupon[]) => void;
 }
 
-export default function BookingFormPage({ tripId, batchId, onContinue }: BookingFormPageProps) {
+export default function BookingFormPage({ tripId, batchId, onContinue, onViewCoupons }: BookingFormPageProps) {
     const searchParams = useSearchParams();
     const travelOptionParam = searchParams.get('travelOption');
 
     const {
         guests: storeGuests,
         selectedBatchId: storeBatchId,
+        selectedMeetingPoint: storeMeetingPoint,
         selectedAddOnIdx: storeAddOnIdx,
+        selectedExtraAddOnIdx: storeExtraAddOnIdx,
+        selectedTransportAddOnIdx: storeTransportAddOnIdx,
+        selectedActivityAddOnIdx: storeActivityAddOnIdx,
         selectedTravelIdx: storeTravelIdx,
         foodPreference: storeFoodPref,
         couponCode: storeCoupon,
         referralCode: storeReferral,
         personalDetails,
+        storedTripId,
         setGuests,
         setSelectedBatchId,
         setSelectedMeetingPoint,
         setSelectedAddOn,
+        setSelectedExtraAddOn,
+        setSelectedTransportAddOn,
+        setSelectedActivityAddOn,
         setSelectedTravelOption,
         setFoodPreference,
         setCouponCode,
         setReferralCode,
         setPersonalDetails,
+        setStoredTripId,
+        reset: resetBookingStore,
     } = useBookingStore();
 
+    // Determine if persisted state belongs to the current trip
+    const isSameTrip = !!storedTripId && storedTripId === tripId;
+
     // Reservation state
-    const [guests, setLocalGuests] = useState(storeGuests || 1);
-    const [selectedBatchId, setLocalBatchId] = useState(storeBatchId || batchId || '');
+    const [guests, setLocalGuests] = useState(isSameTrip ? (storeGuests || 1) : 1);
+    const [selectedBatchId, setLocalBatchId] = useState(isSameTrip ? (storeBatchId || batchId || '') : (batchId || ''));
     const [selectedMeetingPointIdx, setLocalMeetingPointIdx] = useState(0);
-    const [selectedAddOnIdx, setLocalAddOnIdx] = useState<number | null>(storeAddOnIdx ?? null);
-    const [selectedTravelIdx, setLocalTravelIdx] = useState<number | null>(storeTravelIdx ?? null);
+    const [selectedAddOnIdx, setLocalAddOnIdx] = useState<number | null>(isSameTrip ? (storeAddOnIdx ?? null) : null);
+    const [selectedExtraAddOnIdx, setLocalExtraAddOnIdx] = useState<number | null>(isSameTrip ? (storeExtraAddOnIdx ?? null) : null);
+    const [selectedTransportAddOnIdx, setLocalTransportAddOnIdx] = useState<number | null>(isSameTrip ? (storeTransportAddOnIdx ?? null) : null);
+    const [selectedActivityAddOnIdx, setLocalActivityAddOnIdx] = useState<number | null>(isSameTrip ? (storeActivityAddOnIdx ?? null) : null);
+    const [selectedTravelIdx, setLocalTravelIdx] = useState<number | null>(isSameTrip ? (storeTravelIdx ?? null) : null);
     const [travelInfoIdx, setTravelInfoIdx] = useState<number | null>(null);
-    const [foodPreference, setLocalFoodPref] = useState<'veg' | 'non-veg' | null>(storeFoodPref ?? null);
-    const [couponInput, setCouponInput] = useState(storeCoupon || '');
-    const [referralInput, setReferralInput] = useState(storeReferral || '');
+    const [foodPreference, setLocalFoodPref] = useState<'veg' | 'non-veg' | null>(isSameTrip ? (storeFoodPref ?? null) : null);
+    const [couponInput, setCouponInput] = useState(isSameTrip ? (storeCoupon || '') : '');
+    const [referralInput, setReferralInput] = useState(isSameTrip ? (storeReferral || '') : '');
 
     // Personal details state
-    const [fullName, setFullName] = useState(personalDetails?.fullName || '');
-    const [email, setEmail] = useState(personalDetails?.email || '');
-    const [phone, setPhone] = useState(personalDetails?.phone || '');
+    const [fullName, setFullName] = useState(isSameTrip ? (personalDetails?.fullName || '') : '');
+    const [email, setEmail] = useState(isSameTrip ? (personalDetails?.email || '') : '');
+    const [phone, setPhone] = useState(isSameTrip ? (personalDetails?.phone || '') : '');
     const [errors, setErrors] = useState<FormErrors>({});
     const [touched, setTouched] = useState<Record<string, boolean>>({});
 
     // Open sections state — initialize from store values for returning users
     const [openSections, setOpenSections] = useState<Set<string>>(() => {
         const sections = new Set<string>(['travel']);
+        if (!isSameTrip) return sections;
         if (storeTravelIdx !== null) sections.add('meeting');
         if (storeAddOnIdx !== null) sections.add('stay');
         if (storeAddOnIdx !== null || storeBatchId) sections.add('traveler');
@@ -109,6 +130,42 @@ export default function BookingFormPage({ tripId, batchId, onContinue }: Booking
     const selectedBatch = batches.find(b => b._id === selectedBatchId) || batches[0];
     const meetingPoints = selectedBatch?.meetingPoints || [];
 
+    // On mount: scope persisted state to the current trip; reset store if visiting a different trip
+    const hasRegisteredTrip = useRef(false);
+    useEffect(() => {
+        if (hasRegisteredTrip.current) return;
+        hasRegisteredTrip.current = true;
+        if (!isSameTrip) {
+            resetBookingStore();
+            setLocalGuests(1);
+            setLocalBatchId(batchId || '');
+            setLocalMeetingPointIdx(0);
+            setLocalAddOnIdx(null);
+            setLocalExtraAddOnIdx(null);
+            setLocalTransportAddOnIdx(null);
+            setLocalActivityAddOnIdx(null);
+            setLocalTravelIdx(null);
+            setLocalFoodPref(null);
+            setCouponInput('');
+            setReferralInput('');
+            setFullName('');
+            setEmail('');
+            setPhone('');
+        }
+        setStoredTripId(tripId);
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+    // Restore selectedMeetingPointIdx from persisted selectedMeetingPoint (runs once after data loads)
+    const hasRestoredMeetingPoint = useRef(false);
+    useEffect(() => {
+        if (hasRestoredMeetingPoint.current || meetingPoints.length === 0) return;
+        if (isSameTrip && storeMeetingPoint) {
+            const idx = meetingPoints.findIndex(p => p.locationId === storeMeetingPoint.locationId);
+            if (idx !== -1) setLocalMeetingPointIdx(idx);
+        }
+        hasRestoredMeetingPoint.current = true;
+    }, [meetingPoints.length]); // eslint-disable-line react-hooks/exhaustive-deps
+
     // Initialize defaults once data loads
     useEffect(() => {
         if (batches.length === 0) return;
@@ -118,13 +175,18 @@ export default function BookingFormPage({ tripId, batchId, onContinue }: Booking
             setSelectedBatchId(defaultBatch._id);
         }
         if (selectedTravelIdx === null) {
-            let idx = 0;
-            if (travelOptionParam !== null) {
+            let idx: number | null = null;
+            if (pricingTiers.length === 1) {
+                // Auto-select the single option
+                idx = 0;
+            } else if (travelOptionParam !== null) {
                 const parsed = parseInt(travelOptionParam, 10);
                 idx = !isNaN(parsed) && parsed < pricingTiers.length ? parsed : 0;
+            } else {
+                idx = 0;
             }
             setLocalTravelIdx(idx);
-            if (pricingTiers[idx]) setSelectedTravelOption(pricingTiers[idx], idx);
+            if (idx !== null && pricingTiers[idx]) setSelectedTravelOption(pricingTiers[idx], idx);
         }
     }, [batches.length, pricingTiers.length]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -135,13 +197,31 @@ export default function BookingFormPage({ tripId, batchId, onContinue }: Booking
         if (meetingPoints.length > 0) {
             setSelectedMeetingPoint(meetingPoints[selectedMeetingPointIdx] ?? null, selectedMeetingPointIdx);
         }
-    }, [selectedMeetingPointIdx, meetingPoints.length]); // eslint-disable-line react-hooks/exhaustive-deps
+    }, [selectedMeetingPointIdx, meetingPoints.length, selectedBatchId]); // eslint-disable-line react-hooks/exhaustive-deps
     useEffect(() => {
         setSelectedAddOn(
             selectedAddOnIdx !== null && addOns[selectedAddOnIdx] ? addOns[selectedAddOnIdx] : null,
             selectedAddOnIdx
         );
     }, [selectedAddOnIdx, addOns.length]); // eslint-disable-line react-hooks/exhaustive-deps
+    useEffect(() => {
+        setSelectedExtraAddOn(
+            selectedExtraAddOnIdx !== null && addOns[selectedExtraAddOnIdx] ? addOns[selectedExtraAddOnIdx] : null,
+            selectedExtraAddOnIdx
+        );
+    }, [selectedExtraAddOnIdx, addOns.length]); // eslint-disable-line react-hooks/exhaustive-deps
+    useEffect(() => {
+        setSelectedTransportAddOn(
+            selectedTransportAddOnIdx !== null && addOns[selectedTransportAddOnIdx] ? addOns[selectedTransportAddOnIdx] : null,
+            selectedTransportAddOnIdx
+        );
+    }, [selectedTransportAddOnIdx, addOns.length]); // eslint-disable-line react-hooks/exhaustive-deps
+    useEffect(() => {
+        setSelectedActivityAddOn(
+            selectedActivityAddOnIdx !== null && addOns[selectedActivityAddOnIdx] ? addOns[selectedActivityAddOnIdx] : null,
+            selectedActivityAddOnIdx
+        );
+    }, [selectedActivityAddOnIdx, addOns.length]); // eslint-disable-line react-hooks/exhaustive-deps
     useEffect(() => {
         if (selectedTravelIdx !== null && pricingTiers[selectedTravelIdx]) {
             setSelectedTravelOption(pricingTiers[selectedTravelIdx], selectedTravelIdx);
@@ -190,7 +270,6 @@ export default function BookingFormPage({ tripId, batchId, onContinue }: Booking
         onContinue({
             guests,
             selectedBatchId: selectedBatchId || batchId,
-            roomSharing: selectedAddOnIdx,
             travelOptionIndex: selectedTravelIdx,
             foodPreference,
             fullName,
@@ -212,75 +291,14 @@ export default function BookingFormPage({ tripId, batchId, onContinue }: Booking
             <TripOverviewCard
                 batchDetails={batchDetails}
                 selectedBatch={selectedBatch}
-                nights={batchDetails?.nights}
-            />
-
-            {/* Travel Options */}
-            {pricingTiers.length > 0 && (
-                <CollapsibleCard
-                    title="Travel Options"
-                    overflow="visible"
-                    isOpen={openSections.has('travel')}
-                    onToggle={() => toggleSection('travel')}
-                >
-                    <div className="px-4 pb-4">
-                        <TravelOptionsList
-                            items={pricingTiers}
-                            selectedIndex={selectedTravelIdx}
-                            expandedIndex={travelInfoIdx}
-                            onSelect={(idx) => {
-                                const newIdx = selectedTravelIdx === idx ? null : idx;
-                                setLocalTravelIdx(newIdx);
-                                if (newIdx !== null) openSection('meeting');
-                            }}
-                            onToggleInfo={(idx) => setTravelInfoIdx(travelInfoIdx === idx ? null : idx)}
-                        />
-                    </div>
-                </CollapsibleCard>
-            )}
-
-            {/* Meeting Point */}
-            <CollapsibleCard
-                title="Meeting Point"
-                overflow="visible"
-                isOpen={openSections.has('meeting')}
-                onToggle={() => toggleSection('meeting')}
-            >
-                <div className="px-4 pb-4">
-                    {meetingPoints.length === 0 ? (
-                        <span className="text-xs text-zinc-400 px-1">No meeting points for this batch</span>
-                    ) : (
-                        <TravelOptionsList
-                            items={meetingPoints.map(p => ({
-                                label: p?.city || p.locationId,
-                                icon: MapPinLineIcon,
-                                badgeLabel: p.pickupPrice > 0 ? `+₹${p.pickupPrice.toLocaleString()}` : undefined,
-                            }))}
-                            selectedIndex={selectedMeetingPointIdx}
-                            onSelect={(idx) => {
-                                setLocalMeetingPointIdx(idx);
-                                if (addOns.length > 0) openSection('stay');
-                                else openSection('traveler');
-                            }}
-                            showCheckOnSelect
-                        />
-                    )}
-                    <div className="flex items-center gap-2 mt-4 px-1">
-                        <InfoIcon size={18} className="text-zinc-500 flex-shrink-0" />
-                        <span className="text-xs text-zinc-500">Location info will be shared after booking</span>
-                    </div>
-                </div>
-            </CollapsibleCard>
-
-            {/* Stay Options */}
-            <StayOptionsSection
-                addOns={addOns}
-                selectedAddOnIdx={selectedAddOnIdx}
-                isOpen={openSections.has('stay')}
-                onToggle={() => toggleSection('stay')}
-                onSelect={(idx) => {
-                    setLocalAddOnIdx(idx);
-                    openSection('traveler');
+                guests={guests}
+                onGuestsChange={setLocalGuests}
+                meetingPoints={meetingPoints}
+                selectedMeetingPointIdx={selectedMeetingPointIdx}
+                onMeetingPointChange={(idx) => {
+                    setLocalMeetingPointIdx(idx);
+                    if (addOns.length > 0) openSection('stay');
+                    else openSection('traveler');
                 }}
             />
 
@@ -301,7 +319,83 @@ export default function BookingFormPage({ tripId, batchId, onContinue }: Booking
                 onToggle={() => toggleSection('traveler')}
             />
 
+            {/* Travel Options */}
+            {pricingTiers.length > 0 && (
+                <CollapsibleCard
+                    title="Package Options"
+                    overflow="visible"
+                    isOpen={openSections.has('travel')}
+                    onToggle={() => toggleSection('travel')}
+                >
+                    <div className="px-4 pb-4">
+                        <TravelOptionsList
+                            items={pricingTiers}
+                            selectedIndex={selectedTravelIdx}
+                            expandedIndex={travelInfoIdx}
+                            onSelect={(idx) => {
+                                if (pricingTiers.length === 1) {
+                                    // Don't allow deselection for single item
+                                    return;
+                                }
+                                const newIdx = selectedTravelIdx === idx ? null : idx;
+                                setLocalTravelIdx(newIdx);
+                                if (newIdx !== null) openSection('meeting');
+                            }}
+                            onToggleInfo={(idx) => setTravelInfoIdx(travelInfoIdx === idx ? null : idx)}
+                        />
+                    </div>
+                </CollapsibleCard>
+            )}
+
+            {/* Stay Options */}
+            <StayOptionsSection
+                addOns={addOns}
+                selectedAddOnIdx={selectedAddOnIdx}
+                isOpen={openSections.has('stay')}
+                onToggle={() => toggleSection('stay')}
+                onSelect={(idx) => {
+                    setLocalAddOnIdx(idx);
+                    openSection('traveler');
+                }}
+            />
+
+            {/* Extra Add Ons */}
+
+            {/* Transport Options */}
+            <TransportOptionsSection
+                addOns={addOns}
+                selectedAddOnIdx={selectedTransportAddOnIdx}
+                isOpen={openSections.has('transport')}
+                onToggle={() => toggleSection('transport')}
+                onSelect={(idx) => {
+                    setLocalTransportAddOnIdx(idx);
+                    openSection('traveler');
+                }}
+            />
+
+            {/* Activity Add Ons */}
+            <ActivityAddOnsSection
+                addOns={addOns}
+                selectedAddOnIdx={selectedActivityAddOnIdx}
+                isOpen={openSections.has('activity')}
+                onToggle={() => toggleSection('activity')}
+                onSelect={(idx) => {
+                    setLocalActivityAddOnIdx(idx);
+                    openSection('traveler');
+                }}
+            />
+
             {/* Food Preference */}
+            <ExtraAddOnsSection
+                addOns={addOns}
+                selectedAddOnIdx={selectedExtraAddOnIdx}
+                isOpen={openSections.has('extraAddOns')}
+                onToggle={() => toggleSection('extraAddOns')}
+                onSelect={(idx) => {
+                    setLocalExtraAddOnIdx(idx);
+                    openSection('traveler');
+                }}
+            />
             <FoodPreferenceSection
                 value={foodPreference}
                 isOpen={openSections.has('food')}
@@ -319,6 +413,7 @@ export default function BookingFormPage({ tripId, batchId, onContinue }: Booking
                 coupons={bookingOptions?.coupons}
                 onCouponChange={setCouponInput}
                 onReferralChange={setReferralInput}
+                onViewCoupons={onViewCoupons ? () => onViewCoupons(bookingOptions?.coupons ?? []) : undefined}
                 isOpen={openSections.has('discounts')}
                 onToggle={() => toggleSection('discounts')}
                 onApply={() => {

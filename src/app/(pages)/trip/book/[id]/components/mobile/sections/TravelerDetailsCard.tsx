@@ -38,29 +38,6 @@ export default function TravelerDetailsCard({
 }: TravelerDetailsCardProps) {
     return (
         <CollapsibleCard title="Traveler Details" isOpen={isOpen} onToggle={onToggle}>
-
-            {/* Number of Pax */}
-            <div className="flex items-center justify-between px-4 pb-4">
-                <p className="text-sm text-black">Number of Pax</p>
-                <div className="flex items-center gap-4">
-                    <button
-                        onClick={() => onGuestsChange(Math.max(1, guests - 1))}
-                        className="w-9 h-9 rounded-full bg-[#EEA0FF] flex items-center justify-center active:opacity-70"
-                    >
-                        <MinusIcon size={18} weight="bold" />
-                    </button>
-                    <span className="text-2xl font-normal">{String(guests).padStart(2, '0')}</span>
-                    <button
-                        onClick={() => onGuestsChange(guests + 1)}
-                        className="w-9 h-9 rounded-full bg-[#EEA0FF] flex items-center justify-center active:opacity-70"
-                    >
-                        <PlusIcon size={18} weight="bold" />
-                    </button>
-                </div>
-            </div>
-
-            <div className="mx-4 border-t border-[#D9D9D9] mb-3" />
-
             {/* Personal Info Fields */}
             <div className="flex flex-col gap-1.5 px-4 pb-5">
                 <CustomInput

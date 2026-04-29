@@ -12,6 +12,9 @@ interface CustomSelectProps {
   id?: string
   disabled?: boolean
   label?: string
+  size?: 'default' | 'compact'
+  dropdownMaxHeight?: number
+  dropdownWidth?: number | string
 }
 
 const CustomSelect: React.FC<CustomSelectProps> = ({
@@ -24,6 +27,9 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
   id,
   disabled = false,
   label,
+  size = 'default',
+  dropdownMaxHeight = 200,
+  dropdownWidth,
 }) => {
   const handleChange = (event: SelectChangeEvent<string>) => {
     onChange(event.target.value)
@@ -47,8 +53,8 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
           borderRadius: '12px',
           color: '#404040',
           '& .MuiSelect-select': {
-            padding: '14px',
-            fontSize: '16px',
+            padding: size === 'compact' ? '8px 12px' : '14px',
+            fontSize: size === 'compact' ? '14px' : '16px',
             fontWeight: 500,
             fontFamily: "'Satoshi', sans-serif",
             backgroundColor: '#fafafa',
@@ -66,6 +72,37 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
           '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
             borderColor: '#171717',
             borderWidth: '2px',
+          },
+        }}
+        MenuProps={{
+          PaperProps: {
+            sx: {
+              maxHeight: dropdownMaxHeight,
+              width: dropdownWidth,
+              marginTop: '4px',
+              borderRadius: '12px',
+              border: '2px solid #e5e7eb',
+              boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
+            },
+          },
+          MenuListProps: {
+            sx: {
+              maxHeight: dropdownMaxHeight,
+              '& .MuiMenuItem-root': {
+                fontSize: size === 'compact' ? '14px' : '16px',
+                fontFamily: "'Satoshi', sans-serif",
+                padding: size === 'compact' ? '8px 12px' : '12px 16px',
+                '&:hover': {
+                  backgroundColor: '#f3f4f6',
+                },
+                '&.Mui-selected': {
+                  backgroundColor: '#e0f2fe',
+                  '&:hover': {
+                    backgroundColor: '#bae6fd',
+                  },
+                },
+              },
+            },
           },
         }}
       >

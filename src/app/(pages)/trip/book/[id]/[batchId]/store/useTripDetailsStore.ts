@@ -13,15 +13,19 @@ const initialState = {
   currentBatchId: '',
   currentGuests: 1,
   currentCouponCode: '',
-  currentRoomSharing: null,
   currentReferralCode: '',
+  currentEmail: '',
+  currentMeetingPointId: '',
+  currentAddOnIds: '',
+  currentTravelOptionId: '',
 };
 
 export const useTripDetailsStore = create<TripDetailsState>((set, get) => ({
   ...initialState,
 
-  fetchTripDetails: async (tripId: string, batchId: string, guests: number, couponCode: string = '', roomSharing: number | null = null, referralCode: string = '') => {
+  fetchTripDetails: async (tripId: string, batchId: string, guests: number, couponCode: string = '', referralCode: string = '', email: string = '', meetingPointId: string = '', addOnIds: string[] = [], travelOptionId: string = '') => {
     const state = get();
+    const addOnIdsStr = addOnIds.join(',');
     
     if (
       state.tripDetails &&
@@ -29,8 +33,11 @@ export const useTripDetailsStore = create<TripDetailsState>((set, get) => ({
       state.currentBatchId === batchId &&
       state.currentGuests === guests &&
       state.currentCouponCode === couponCode &&
-      state.currentRoomSharing === roomSharing &&
       state.currentReferralCode === referralCode &&
+      state.currentEmail === email &&
+      state.currentMeetingPointId === meetingPointId &&
+      state.currentAddOnIds === addOnIdsStr &&
+      state.currentTravelOptionId === travelOptionId &&
       !state.error
     ) {
       return;
@@ -49,11 +56,20 @@ export const useTripDetailsStore = create<TripDetailsState>((set, get) => ({
       if (couponCode) {
         apiUrl += `&couponCode=${encodeURIComponent(couponCode)}`;
       }
-      if (roomSharing !== null) {
-        apiUrl += `&roomSharing=${roomSharing}`;
-      }
       if (referralCode) {
         apiUrl += `&referralCode=${encodeURIComponent(referralCode)}`;
+      }
+      if (email) {
+        apiUrl += `&email=${encodeURIComponent(email)}`;
+      }
+      if (meetingPointId) {
+        apiUrl += `&meetingPointId=${encodeURIComponent(meetingPointId)}`;
+      }
+      if (addOnIds.length > 0) {
+        apiUrl += `&addOnIds=${addOnIds.map(encodeURIComponent).join(',')}`;
+      }
+      if (travelOptionId) {
+        apiUrl += `&travelOptionId=${encodeURIComponent(travelOptionId)}`;
       }
       const response = await baseAPI.get(apiUrl);
       
@@ -66,8 +82,11 @@ export const useTripDetailsStore = create<TripDetailsState>((set, get) => ({
         currentBatchId: batchId,
         currentGuests: guests,
         currentCouponCode: couponCode,
-        currentRoomSharing: roomSharing,
         currentReferralCode: referralCode,
+        currentEmail: email,
+        currentMeetingPointId: meetingPointId,
+        currentAddOnIds: addOnIdsStr,
+        currentTravelOptionId: travelOptionId,
       });
     } catch (error) {
       const axiosError = error as { response?: { data?: { message?: string } } };
@@ -86,7 +105,7 @@ export const useTripDetailsStore = create<TripDetailsState>((set, get) => ({
   },
 
   refetch: async () => {
-    const { currentTripId, currentBatchId, currentGuests, currentCouponCode, currentRoomSharing, currentReferralCode } = get();
+    const { currentTripId, currentBatchId, currentGuests, currentCouponCode, currentReferralCode, currentEmail, currentMeetingPointId, currentAddOnIds, currentTravelOptionId } = get();
     
     if (!currentTripId || !currentBatchId) {
       return;
@@ -99,11 +118,20 @@ export const useTripDetailsStore = create<TripDetailsState>((set, get) => ({
       if (currentCouponCode) {
         apiUrl += `&couponCode=${encodeURIComponent(currentCouponCode)}`;
       }
-      if (currentRoomSharing !== null) {
-        apiUrl += `&roomSharing=${currentRoomSharing}`;
-      }
       if (currentReferralCode) {
         apiUrl += `&referralCode=${encodeURIComponent(currentReferralCode)}`;
+      }
+      if (currentEmail) {
+        apiUrl += `&email=${encodeURIComponent(currentEmail)}`;
+      }
+      if (currentMeetingPointId) {
+        apiUrl += `&meetingPointId=${encodeURIComponent(currentMeetingPointId)}`;
+      }
+      if (currentAddOnIds) {
+        apiUrl += `&addOnIds=${currentAddOnIds}`;
+      }
+      if (currentTravelOptionId) {
+        apiUrl += `&travelOptionId=${encodeURIComponent(currentTravelOptionId)}`;
       }
       const response = await baseAPI.get(apiUrl);
       

@@ -1,4 +1,5 @@
 export interface BatchMeetingPoint {
+    _id?: string;
     locationId: string;
     city: string;
     state: string;
@@ -13,12 +14,14 @@ export interface Batch {
 }
 
 export interface PricingTier {
+    _id?: string;
     label: string;
     pricePerPerson: number;
     description?: string;
 }
 
 export interface AddOn {
+    _id?: string;
     label: string;
     category: string;
     pricePerPerson: number;
@@ -47,7 +50,7 @@ export interface BatchDetails {
     availableSeats: number;
     startDateTime: string;
     endDateTime?: string;
-    nights?: number;
+    duration?: number;
 }
 
 export interface FormErrors {
@@ -59,7 +62,6 @@ export interface FormErrors {
 export interface BookingFormData {
     guests: number;
     selectedBatchId: string;
-    roomSharing: number | null;
     travelOptionIndex: number | null;
     foodPreference: 'veg' | 'non-veg' | null;
     fullName: string;

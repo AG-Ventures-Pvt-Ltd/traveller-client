@@ -1,9 +1,15 @@
-import type { Batch, BatchDetails } from './types';
+import { InfoIcon } from '@phosphor-icons/react';
+import CustomSelect from '@/common/ui/CustomSelect';
+import type { Batch, BatchDetails, BatchMeetingPoint } from './types';
 
 interface TripOverviewCardProps {
     batchDetails: BatchDetails | undefined;
     selectedBatch: Batch | undefined;
-    nights: number | undefined;
+    guests: number;
+    onGuestsChange: (guests: number) => void;
+    meetingPoints: BatchMeetingPoint[];
+    selectedMeetingPointIdx: number;
+    onMeetingPointChange: (idx: number) => void;
 }
 
 function formatDate(date: Date) {
@@ -14,7 +20,15 @@ function formatDay(date: Date) {
     return date.toLocaleDateString('en-GB', { weekday: 'long' });
 }
 
-export default function TripOverviewCard({ batchDetails, selectedBatch, nights }: TripOverviewCardProps) {
+export default function TripOverviewCard({
+    batchDetails,
+    selectedBatch,
+    guests,
+    onGuestsChange,
+    meetingPoints,
+    selectedMeetingPointIdx,
+    onMeetingPointChange,
+}: TripOverviewCardProps) {
     const startDate = selectedBatch?.startDateTime
         ? new Date(selectedBatch.startDateTime)
         : batchDetails?.startDateTime
@@ -22,11 +36,17 @@ export default function TripOverviewCard({ batchDetails, selectedBatch, nights }
             : null;
     const endDate = batchDetails?.endDateTime ? new Date(batchDetails.endDateTime) : null;
 
+    const selectedPoint = meetingPoints[selectedMeetingPointIdx] ?? null;
+    const hasExtraPrice = selectedPoint && selectedPoint.pickupPrice > 0;
+
     return (
-        <div className="border border-[#D9D9D9] rounded-2xl px-[18px] pt-5 pb-4">
-            <p className="text-[16px] font-semibold text-black tracking-[-0.48px] leading-snug mb-4">
+        <div className="border border-[#D9D9D9] rounded-2xl px-[18px] pt-5 pb-4 flex flex-col gap-5">
+            {/* Title */}
+            <p className="text-[16px] font-semibold text-black tracking-[-0.48px] leading-snug">
                 {batchDetails?.title || '—'}
             </p>
+
+            {/* Date range */}
             <div className="flex items-center justify-between">
                 <div className="flex flex-col gap-0.5">
                     <p className="text-xs font-medium text-black tracking-[-0.36px]">
@@ -36,9 +56,9 @@ export default function TripOverviewCard({ batchDetails, selectedBatch, nights }
                         {startDate ? formatDay(startDate) : ''}
                     </p>
                 </div>
-                <div className={`bg-[#FFD976] rounded-full px-2.5 py-1 ${nights == null ? 'opacity-0 pointer-events-none' : ''}`}>
+                <div className={`bg-[#FFD976] rounded-full px-2.5 py-1`}>
                     <p className="text-xs text-black tracking-[-0.36px]">
-                        {nights != null ? `${nights}N/${nights + 1}D` : '—'}
+                        {batchDetails?.duration ? batchDetails?.duration : '—'}
                     </p>
                 </div>
                 <div className="flex flex-col gap-0.5 items-end">
@@ -50,6 +70,71 @@ export default function TripOverviewCard({ batchDetails, selectedBatch, nights }
                     </p>
                 </div>
             </div>
+
+            {/* No. of Pax */}
+            <div className="flex items-center gap-2">
+                <p className="text-xs text-black tracking-[-0.36px] whitespace-nowrap">No. of Pax :</p>
+                <div className="flex items-center gap-2.5">
+                    <button
+                        type="button"
+                        onClick={() => onGuestsChange(Math.max(1, guests - 1))}
+                        className="w-8 h-8 rounded-full bg-[#448AFF] text-white flex items-center justify-center text-lg font-medium leading-none select-none"
+                        aria-label="Decrease guests"
+                    >
+                        −
+                    </button>
+                    <p className="text-[19px] font-medium text-black tracking-[-0.58px] w-7 text-center">
+                        {String(guests).padStart(2, '0')}
+                    </p>
+                    <button
+                        type="button"
+                        onClick={() => onGuestsChange(guests + 1)}
+                        className="w-8 h-8 rounded-full bg-[#448AFF] text-white flex items-center justify-center text-lg font-medium leading-none select-none"
+                        aria-label="Increase guests"
+                    >
+                        +
+                    </button>
+                </div>
+            </div>
+
+            {/* Depart from */}
+            {meetingPoints.length > 0 && (
+                <div className="flex flex-col gap-2">
+                    <div className="flex items-center gap-2 flex-wrap">
+                        <p className="text-xs text-black tracking-[-0.36px] whitespace-nowrap">Depart from :</p>
+                        <div className="flex items-center gap-2">
+                            <div className="relative">
+                                <CustomSelect
+                                    value={selectedMeetingPointIdx.toString()}
+                                    onChange={(value) => onMeetingPointChange(Number(value))}
+                                    options={meetingPoints.map((point, idx) => ({
+                                        value: idx.toString(),
+                                        label: point.city || point.locationId,
+                                    }))}
+                                    className="w-32"
+                                    id="meeting-point-select"
+                                    size="compact"
+                                    dropdownMaxHeight={100}
+                                    dropdownWidth={100}
+                                />
+                            </div>
+                            {hasExtraPrice && (
+                                <p className="text-xs font-medium text-[#F44336] tracking-[-0.36px] whitespace-nowrap">
+                                    +₹{selectedPoint.pickupPrice.toLocaleString('en-IN')}
+                                </p>
+                            )}
+                        </div>
+                    </div>
+                    {hasExtraPrice && (
+                        <div className="flex items-center gap-3">
+                            <InfoIcon size={18} className="text-zinc-500 flex-shrink-0" />
+                            <p className="text-xs text-black tracking-[-0.36px]">
+                                Extra price may apply based on departure location
+                            </p>
+                        </div>
+                    )}
+                </div>
+            )}
         </div>
     );
 }

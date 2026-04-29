@@ -10,6 +10,8 @@ import BackButton from '@/common/ui/BackButton';
 import { SlidersHorizontal } from 'lucide-react';
 import Button from '@/common/components/atoms/Button';
 import CircularLoader from '@/common/ui/Loader/CircularLoader';
+import { useDevice } from '@/common/hooks/useDevice';
+import TripListsMobile from './components/mobile/TripListsMobile'
 
 
 interface Trip {
@@ -74,6 +76,9 @@ export default function Page() {
   const [apiUrl, setApiUrl] = useState<string | null>(null);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
 
+
+  const { isMobile } = useDevice()
+
   useEffect(() => {
     const params = new URLSearchParams();
 
@@ -101,7 +106,7 @@ export default function Page() {
 
   const { data: tripsData, isLoading: tripsLoading, error } = useGetData<TripsResponse>(apiUrl || '', {
     queryKey: apiUrl ? [apiUrl] : ['trips-loading'],
-    enabled: !!apiUrl,
+    enabled: !!apiUrl && !isMobile,
   });
 
   const handleFilterChange = useCallback((newFilters: FilterValues) => {
@@ -131,6 +136,10 @@ export default function Page() {
 
   if (error) {
     throw Error(error.message || 'Error Loading Trips')
+  }
+
+  if (isMobile) {
+    return <TripListsMobile/>
   }
 
   return (
