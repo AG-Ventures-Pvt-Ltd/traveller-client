@@ -29,7 +29,6 @@ const ReviewAndPay: React.FC<ReviewAndPayProps> = ({
   const [selectedSharing, setSelectedSharing] = useState<number | null>(null);
 
   const setCouponCode = useBookingStore((state) => state.setCouponCode);
-  const setRoomSharing = useBookingStore((state) => state.setRoomSharing);
   const setReferralCode = useBookingStore((state) => state.setReferralCode);
   const { tripDetails, error, fetchTripDetails, currentGuests, currentCouponCode } = useTripDetailsStore();
   const params = useParams();
@@ -68,13 +67,13 @@ const ReviewAndPay: React.FC<ReviewAndPayProps> = ({
     setPromoCode('');
     setIsPromoApplied(false);
     setCouponCode('');
-    fetchTripDetails(tripId, batchId, currentGuests, '', selectedSharing);
+    fetchTripDetails(tripId, batchId, currentGuests, '');
   };
 
   const handleApplyPromo = () => {
     if (promoCode.trim()) {
       setCouponCode(promoCode.trim());
-      fetchTripDetails(tripId, batchId, currentGuests, promoCode.trim(), selectedSharing);
+      fetchTripDetails(tripId, batchId, currentGuests, promoCode.trim());
     }
   };
 
@@ -93,9 +92,8 @@ const ReviewAndPay: React.FC<ReviewAndPayProps> = ({
   const handleSharingSelect = async (value: number) => {
     const newValue = selectedSharing === value ? null : value;
     setSelectedSharing(newValue);
-    setRoomSharing(newValue);
     // Refetch trip details with new room sharing
-    await fetchTripDetails(tripId, batchId, currentGuests, currentCouponCode, newValue);
+    await fetchTripDetails(tripId, batchId, currentGuests, currentCouponCode);
   };
 
   return (

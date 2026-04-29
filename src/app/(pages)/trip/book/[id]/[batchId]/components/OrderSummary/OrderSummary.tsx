@@ -24,7 +24,6 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({ tripId, batchId, guests = 1
 
   const setTotalAmount = useBookingStore((state) => state.setTotalAmount);
   const couponCode = useBookingStore((state) => state.couponCode);
-  const roomSharing = useBookingStore((state) => state.roomSharing);
   const referralCode = useBookingStore((state) => state.referralCode);
 
   const { tripDetails, isLoading, fetchTripDetails } = useTripDetailsStore();
@@ -33,9 +32,9 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({ tripId, batchId, guests = 1
 
   useEffect(() => {
     if (actualTripId && batchId && guests > 0) {
-      fetchTripDetails(actualTripId, batchId, guests, couponCode, roomSharing, referralCode);
+      fetchTripDetails(actualTripId, batchId, guests, couponCode, referralCode);
     }
-  }, [actualTripId, batchId, guests, couponCode, roomSharing, referralCode, fetchTripDetails]);
+  }, [actualTripId, batchId, guests, couponCode, referralCode, fetchTripDetails]);
 
   const grandTotal = tripDetails ? tripDetails.grandTotal : 0;
 
