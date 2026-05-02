@@ -23,7 +23,6 @@ import BookingBar from './components/BookingBar';
 import { sortBatchesByDate } from './utils';
 import { NAV_SECTION_IDS } from './constants';
 import { NavSection, SectionRefs } from './types';
-import { UsersThreeIcon, MapPinIcon } from '@phosphor-icons/react';
 import { getSeatsDisplay } from '@/common/utils/seatsDisplay';
 import { StarIcon } from '@phosphor-icons/react';
 
@@ -197,24 +196,11 @@ export default function TripDetailMobile() {
                             <span className='font-bold'>{detailedData?.rating}<span className='font-normal'> ({detailedData?.totalReviews})</span></span>
                         </div>
                     </div>
-                    <div className='flex gap-6 items-center pt-1'>
-                        <div className='flex gap-2 items-center'>
-                            <MapPinIcon size={20} weight='thin' />
-                            <p className=''>{basicData?.location?.split(',')[0]}</p>
-                        </div>
-                        <p className='flex gap-2 items-center'><UsersThreeIcon size={22} weight='thin' /> <span className='text-md'>{seatsDisplay}</span></p>
-                    </div>
                 </div>
                 <div className="p-4 pb-32">
 
                     <div ref={overviewRef} className="space-y-6 scroll-mt-24">
-                        <OverviewSection
-                            description={tripData.description}
-                            expanded={expandedOverview}
-                            onToggle={() => setExpandedOverview(!expandedOverview)}
-                        />
-                        <div className="space-y-4">
-                            {sortedBatches.length > 0 && (
+                    {sortedBatches.length > 0 && (
                                 <BatchSelection
                                     batches={sortedBatches}
                                     selectedBatch={selectedBatch}
@@ -222,6 +208,14 @@ export default function TripDetailMobile() {
                                     bestTimeToVisit={basicData?.bestTimeToVisit}
                                 />
                             )}
+                        <OverviewSection
+                            description={{ destination : basicData?.location?.split(',')[0] || '', seats : seatsDisplay ,  }}
+                            expanded={expandedOverview}
+                            onToggle={() => setExpandedOverview(!expandedOverview)}
+                        />
+                        
+                        <div className="space-y-4">
+                            
 
                             {pricingList.length > 1 && (
                                 <TravelOptions
@@ -250,20 +244,27 @@ export default function TripDetailMobile() {
                                 onDaySelect={(index) => {
                                     setSelectedDay(index);
                                     setExpandedDays(prev => ({ ...prev, [index]: true }));
-                                    setTimeout(() => {
-                                        dayRefs.current[index]?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                                    }, 100);
+                                    requestAnimationFrame(() => {
+                                        requestAnimationFrame(() => {
+                                            const el = dayRefs.current[index];
+                                            const stickyHeight = 176;
+                                            if (el) {
+                                                const top = el.getBoundingClientRect().top + window.scrollY - stickyHeight - 16;
+                                                window.scrollTo({ top, behavior: 'smooth' });
+                                            }
+                                        });
+                                    });
                                 }}
                                 onDayToggle={(index) => setExpandedDays(prev => ({ ...prev, [index]: !prev[index] }))}
                             />
                         </div>
                     )}
                     {tripData?.host && (
-                            <HostedBy
-                                host={tripData.host}
-                                onPress={() => router.push(`/${tripData.host!.username}`)}
-                            />
-                        )}
+                        <HostedBy
+                            host={tripData.host}
+                            onPress={() => router.push(`/${tripData.host!.username}`)}
+                        />
+                    )}
                     {((tripData.inclusions && tripData.inclusions.length > 0) || (tripData.exclusions && tripData.exclusions.length > 0)) && (
                         <div ref={inclusionsRef} className="scroll-mt-24">
                             <InclusionsSection

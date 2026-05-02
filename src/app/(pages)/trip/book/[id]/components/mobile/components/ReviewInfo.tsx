@@ -1,13 +1,14 @@
 'use client';
 
 import React, { useEffect, useRef } from 'react';
-import { UsersThreeIcon, CalendarIcon, MapPinLineIcon, CarIcon, ForkKnifeIcon, TagIcon } from '@phosphor-icons/react';
+import { UserListIcon, MapPinLineIcon, CarIcon, ForkKnifeIcon, TagIcon, CalendarCheckIcon, UsersIcon } from '@phosphor-icons/react';
 import MyImage from '@/common/ui/Image';
 import { useGetData } from '@/services/useGetData';
 import { API_ENDPOINTS } from '@/common/constants/apiEndpoints';
 import { useTripDetailsStore } from '../../../[batchId]/store/useTripDetailsStore';
 import { useBookingStore } from '../../../[batchId]/store/useBookingStore';
 import { useBookingNavStore } from '../../../[batchId]/store/useBookingNavStore';
+import { ReviewSkeleton } from '../BookingStepSkeletons';
 
 interface BatchDetails {
     tripImage: string;
@@ -48,7 +49,7 @@ export default function ReviewInfo({
 
     const resolvedBatchId = selectedBatchId || batchId;
 
-    const { tripDetails, fetchTripDetails } = useTripDetailsStore();
+    const { tripDetails, isLoading, fetchTripDetails } = useTripDetailsStore();
 
     const { data: batchDetails } = useGetData<BatchDetails>(
         resolvedBatchId ? API_ENDPOINTS.TRIPS.BATCH_DETAILS(resolvedBatchId) : ''
@@ -106,10 +107,31 @@ export default function ReviewInfo({
           })
         : '';
 
+    if (isLoading && !tripDetails) {
+        return <ReviewSkeleton />;
+    }
+
     return (
-        <div className="px-4 pb-4">
-            {/* Card */}
-            <div className="mx-5 rounded-2xl border border-zinc-300 overflow-hidden flex flex-col">
+        <div className="px-4 pb-4 flex flex-col gap-4">
+
+            {/* Traveler card — Figma design */}
+            {personalDetails && (
+                <div className="border border-[#D9D9D9] rounded-[16px] flex items-center gap-[26px] px-[19px] py-[21px]">
+                    <UserListIcon size={24} weight="thin" className="text-black flex-shrink-0" />
+                    <div className="flex flex-col gap-[7px] text-black">
+                        <p className="font-medium text-[16px] tracking-[-0.48px] leading-normal">
+                            {personalDetails.fullName}
+                        </p>
+                        <div className="flex flex-col gap-[3px] text-[13px] tracking-[-0.39px]">
+                            <p>{personalDetails.email}</p>
+                            <p>+91 {personalDetails.phone}</p>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Summary card */}
+            <div className="rounded-2xl border border-zinc-300 overflow-hidden flex flex-col">
                 {/* Trip Header */}
                 <div className="flex items-start justify-between gap-3 px-4 pt-5 pb-4">
                     <div className="flex flex-col gap-1.5 flex-1 min-w-0">
@@ -143,28 +165,17 @@ export default function ReviewInfo({
                     {/* Guests */}
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2.5">
-                            <UsersThreeIcon size={24} weight="light" className="text-black flex-shrink-0" />
+                            <UsersIcon size={24} weight="thin" className="text-black flex-shrink-0" />
                             <span className="text-black text-xs">
                                 {guests} Traveler{guests > 1 ? 's' : ''}
                             </span>
                         </div>
-                        {(batchDetails?.availableSeats ?? 0) > 0 && (
-                            <span className="text-blue-500 text-xs underline">
-                                {batchDetails?.availableSeats} more seats left
-                            </span>
-                        )}
-                    </div>
-
-                    {/* Departure date */}
-                    <div className="flex items-center gap-2.5">
-                        <CalendarIcon size={24} weight="light" className="text-black flex-shrink-0" />
-                        <span className="text-black text-xs">{formattedDate || '—'}</span>
                     </div>
 
                     {/* Meeting point */}
                     {selectedMeetingPoint && (
                         <div className="flex items-center gap-2.5">
-                            <MapPinLineIcon size={24} weight="light" className="text-black flex-shrink-0" />
+                            <MapPinLineIcon size={24} weight="thin" className="text-black flex-shrink-0" />
                             <span className="text-black text-xs">
                                 {selectedMeetingPoint.city || selectedMeetingPoint.locationId}
                             </span>
@@ -174,7 +185,7 @@ export default function ReviewInfo({
                     {/* Travel option */}
                     {selectedTravelOption && (
                         <div className="flex items-center gap-2.5">
-                            <CarIcon size={24} weight="light" className="text-black flex-shrink-0" />
+                            <CarIcon size={24} weight="thin" className="text-black flex-shrink-0" />
                             <span className="text-black text-xs">{selectedTravelOption.label}</span>
                         </div>
                     )}
@@ -192,29 +203,26 @@ export default function ReviewInfo({
                     {/* Food preference */}
                     {foodPreference && (
                         <div className="flex items-center gap-2.5">
-                            <ForkKnifeIcon size={24} weight="light" className="text-black flex-shrink-0" />
+                            <ForkKnifeIcon size={24} weight="thin" className="text-black flex-shrink-0" />
                             <span className="text-black text-xs capitalize">{foodPreference} meal</span>
                         </div>
                     )}
 
+                    {/* Departure date */}
+                    <div className="flex items-center gap-2.5">
+                        <CalendarCheckIcon size={24} weight="thin" className="text-black flex-shrink-0" />
+                        <span className="text-black text-xs">{formattedDate || '—'}</span>
+                    </div>
+
                     {/* Coupon / Referral applied */}
                     {(couponCode || referralCode) && (
                         <div className="flex items-center gap-2.5">
-                            <TagIcon size={24} weight="light" className="text-black flex-shrink-0" />
+                            <TagIcon size={24} weight="thin" className="text-black flex-shrink-0" />
                             <span className="text-black text-xs">
                                 {couponCode && <span className="text-green-600 font-medium">{couponCode}</span>}
                                 {couponCode && referralCode && <span className="text-zinc-400"> · </span>}
                                 {referralCode && <span className="text-green-600 font-medium">{referralCode}</span>}
                             </span>
-                        </div>
-                    )}
-
-                    {/* Personal details */}
-                    {personalDetails && (
-                        <div className="flex flex-col gap-0.5 pt-1 border-t border-zinc-200">
-                            <span className="text-zinc-500 text-xs">Traveler</span>
-                            <span className="text-black text-xs font-medium">{personalDetails.fullName}</span>
-                            <span className="text-zinc-500 text-xs">{personalDetails.email} · {personalDetails.phone}</span>
                         </div>
                     )}
                 </div>

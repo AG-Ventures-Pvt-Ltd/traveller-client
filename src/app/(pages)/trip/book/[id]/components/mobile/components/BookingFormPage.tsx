@@ -17,6 +17,7 @@ import TransportOptionsSection from '../sections/TransportOptionsSection';
 import ActivityAddOnsSection from '../sections/ActivityAddOnsSection';
 import FoodPreferenceSection from '../sections/FoodPreferenceSection';
 import DiscountsSection from '../sections/DiscountsSection';
+import { ReservationSkeleton } from '../BookingStepSkeletons';
 import type {
     BookingOptionsResponse,
     BatchDetails,
@@ -115,7 +116,7 @@ export default function BookingFormPage({ tripId, batchId, onContinue, onViewCou
         });
 
     // Data fetching
-    const { data: bookingOptions } = useGetData<BookingOptionsResponse>(
+    const { data: bookingOptions, isLoading: isBookingOptionsLoading } = useGetData<BookingOptionsResponse>(
         tripId ? API_ENDPOINTS.TRIPS.BOOKING_OPTIONS(tripId) : ''
     );
 
@@ -283,6 +284,10 @@ export default function BookingFormPage({ tripId, batchId, onContinue, onViewCou
     useEffect(() => {
         setContinueAction(() => submitRef.current());
     }, [setContinueAction]);
+
+    if (isBookingOptionsLoading && !bookingOptions) {
+        return <ReservationSkeleton />;
+    }
 
     return (
         <div className="px-4 pb-4 flex flex-col gap-4">

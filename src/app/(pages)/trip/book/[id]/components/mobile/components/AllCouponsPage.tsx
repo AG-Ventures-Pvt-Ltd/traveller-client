@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { SealPercentIcon } from '@phosphor-icons/react';
 import { useBookingStore } from '../../../[batchId]/store/useBookingStore';
 import { useBookingNavStore } from '../../../[batchId]/store/useBookingNavStore';
+import { CouponsSkeleton } from '../BookingStepSkeletons';
 import type { Coupon } from '../sections/types';
 
 interface AllCouponsPageProps {
@@ -42,6 +43,10 @@ export default function AllCouponsPage({ coupons, onDone }: AllCouponsPageProps)
     useEffect(() => {
         setContinueAction(() => handleDoneRef.current());
     }, [setContinueAction]);
+
+    if (coupons.length === 0) {
+        return <CouponsSkeleton />;
+    }
 
     return (
         <div className="px-4 pb-4 flex flex-col gap-4">

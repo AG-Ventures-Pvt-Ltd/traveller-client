@@ -4,7 +4,6 @@
 
 import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { SlidersHorizontal } from 'lucide-react';
 import BackButton from '@/common/ui/BackButton';
 import FilterModal from '../FilterModal';
 import { FilterValues } from '../TripFilters';
@@ -168,7 +167,7 @@ const TripListsMobile = () => {
 
     return (
         <div className="min-h-screen bg-[#FFF9F4] px-4 pt-4 pb-8">
-            <BackButton label='Back to Home'/>
+            <BackButton label='Back to Home' />
             <div className="flex items-center justify-between my-3">
                 <h1 className="text-4xl font-bold text-black mb-1">
                     {destination ? `Results for ${destination}` : 'All Trips'}
@@ -214,17 +213,18 @@ const TripListsMobile = () => {
                         const colorScheme = (['yellow', 'purple', 'green'] as const)[index % 3];
 
                         return (
-                            <CarouselCard
-                                key={`${trip.slug}-${index}`}
-                                id={trip.slug}
-                                image={trip.image}
-                                title={trip.title}
-                                provider={trip.hostName}
-                                duration={trip.days}
-                                price={trip.price}
-                                rating={trip.rating}
-                                colorScheme={colorScheme}
-                            />
+                            <div key={`${trip.slug}-${index}`} className=''>
+                                <CarouselCard
+                                    id={trip.slug}
+                                    image={trip.image}
+                                    title={trip.title}
+                                    provider={trip.hostName}
+                                    duration={trip.days}
+                                    price={trip.price}
+                                    rating={trip.rating}
+                                    colorScheme={colorScheme}
+                                />
+                            </div>
                         );
                     })}
                 </div>

@@ -8,7 +8,7 @@ interface StickyNavigationProps {
   showProfile?: boolean;
 }
 
-const HIDDEN_ROUTES = ['/trip/', '/wallet', '/auth', '/verify'];
+const HIDDEN_ROUTES = ['/trip/', '/wallet', '/auth', '/verify', '/profile/'];
 
 const StickyNavigation: React.FC<StickyNavigationProps> = ({
   showProfile = true,

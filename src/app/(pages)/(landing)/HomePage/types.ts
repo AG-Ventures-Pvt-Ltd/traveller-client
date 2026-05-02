@@ -35,6 +35,7 @@ export interface CarouselCardProps {
   price: number;
   rating: number;
   colorScheme?: 'yellow' | 'green' | 'purple';
+  className?:string;
   onClick?: () => void;
 }
 

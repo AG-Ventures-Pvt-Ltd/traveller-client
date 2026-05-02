@@ -37,7 +37,7 @@ export interface HostedByProps {
 }
 
 export interface OverviewSectionProps {
-    description: string;
+    description: Record<string, string>;
     expanded: boolean;
     onToggle: () => void;
 }

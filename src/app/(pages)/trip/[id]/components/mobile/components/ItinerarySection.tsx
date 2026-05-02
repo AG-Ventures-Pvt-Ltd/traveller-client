@@ -27,7 +27,7 @@ export default function ItinerarySection({
     };
     return (
         <div className="bg-[#e2f4a6] border border-[#d9d9d9] rounded-[16px] scroll-mt-24 mt-6">
-            <div className="bg-[#e2f4a6] rounded-[16px] sticky top-18 z-15 p-4">
+            <div className="bg-[#e2f4a6] rounded-[16px] sticky top-8 z-15 p-4">
                 <p className="text-md font-medium text-black mb-3">Trip Itinerary</p>
                 <div className="flex gap-3 overflow-x-auto bg-white p-3 rounded-xl scrollbar-hide">
                     {itinerary.map((_, dayIndex: number) => {
@@ -56,7 +56,7 @@ export default function ItinerarySection({
                 {itinerary.map((day: ItineraryDay, dayIndex: number) => (
                     <div
                         key={dayIndex}
-                        className="relative scroll-mt-24"
+                        className="relative scroll-mt-40"
                         ref={(el) => { dayRefs.current[dayIndex] = el; }}
                     >
                         {/* Dotted line connecting to next item */}

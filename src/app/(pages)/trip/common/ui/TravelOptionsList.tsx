@@ -1,7 +1,7 @@
 'use client';
 
+import SelectableItem from '@/common/components/atoms/SelectableItem';
 import type { ElementType } from 'react';
-import { CheckIcon, CurrencyInrIcon } from '@phosphor-icons/react';
 
 export interface TravelOptionItem {
     label: string;
@@ -30,7 +30,6 @@ export default function TravelOptionsList({
     expandedIndex,
     onSelect,
     onToggleInfo,
-    showCheckOnSelect,
 }: TravelOptionsListProps) {
 
     const isSingleItem = items.length === 1;
@@ -39,45 +38,35 @@ export default function TravelOptionsList({
     return (
         <div className="flex flex-col gap-5">
             {items.map((item, index) => {
-                const Icon = item.icon;
                 const isSelected = effectiveSelectedIndex === index;
                 const hasBadge = item.badgeLabel !== undefined || item.pricePerPerson !== undefined;
+
                 return (
-                    <div key={index} className="relative">
-                        {hasBadge && (
-                            <div className="absolute -top-3 right-4 bg-[#FFD976] rounded-xl px-3 py-0.5 text-xs text-black z-10 whitespace-nowrap flex items-center font-medium">
-                                {item.badgeLabel !== undefined ? (
-                                    item.badgeLabel
-                                ) : (
-                                    <><CurrencyInrIcon weight="bold" />{item.pricePerPerson!.toLocaleString()}</>
-                                )}
-                            </div>
-                        )}
-                        <div
+                    <div key={index}>
+                        <SelectableItem
+                            isSelected={isSelected}
                             onClick={() => !isSingleItem && onSelect(index)}
-                            className={`flex flex-col justify-center rounded-xl border border-[#D9D9D9] px-4 py-3 transition-colors ${
-                                isSelected ? 'bg-[#F4BFFF]' : ''
-                            } ${isSingleItem ? 'cursor-default' : 'cursor-pointer'}`}
-                        >
-                            <div className="flex items-center gap-3">
-                                {Icon && <Icon size={22} weight="regular" className="flex-shrink-0" />}
-                                <span className="text-black text-xs flex-1">{item.label}</span>
-                                {onToggleInfo && item.description && (
-                                    <button
-                                        onClick={(e) => { e.stopPropagation(); onToggleInfo(index); }}
-                                        className={`text-sm underline flex-shrink-0 ${isSelected ? 'text-indigo-500' : 'text-blue-500'}`}
-                                    >
-                                        {expandedIndex === index ? 'Collapse' : 'View Details'}
-                                    </button>
-                                )}
-                                {showCheckOnSelect && isSelected && (
-                                    <CheckIcon size={20} weight="bold" className="text-black flex-shrink-0" />
-                                )}
-                            </div>
-                            {expandedIndex === index && item.description && (
-                                <p className="text-xs font-normal mt-1">{item.description}</p>
-                            )}
-                        </div>
+                            label={item.label}
+                            icon={item.icon}
+                            price={item.pricePerPerson}
+                            badgeLabel={item.badgeLabel}
+                            showPriceBadge={hasBadge}
+                            showPlusInPrice={false}
+                            showCheckIcon={!onToggleInfo || !item.description}
+                            autoDetectIcon={!item.icon}
+                            expandableText={
+                                onToggleInfo && item.description
+                                    ? {
+                                        label: expandedIndex === index ? 'Collapse' : 'View Details',
+                                        onClick: (e) => {
+                                            e.stopPropagation();
+                                            onToggleInfo(index);
+                                        },
+                                    }
+                                    : undefined
+                            }
+                            description={expandedIndex === index ? item.description : ""}
+                        />
                     </div>
                 );
             })}

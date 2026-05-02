@@ -1,9 +1,12 @@
 'use client'
 
+import { useState } from 'react';
 import { AvailableDate } from '../../../types';
 import { BatchSelectionProps } from '../types';
-import { formatDate } from '../utils';
 import DepartureDatesList from '@/app/(pages)/trip/common/ui/DepartureDatesList';
+import MobileModal from '@/common/ui/MobileModal';
+import TripCalendar from '@/common/ui/TripCalendar';
+import { CalendarDotsIcon } from '@phosphor-icons/react';
 
 export default function BatchSelection({ batches, selectedBatch, onSelect, bestTimeToVisit }: BatchSelectionProps) {
     const items = batches.map((batch: AvailableDate) => ({
@@ -20,9 +23,16 @@ export default function BatchSelection({ batches, selectedBatch, onSelect, bestT
         if (index !== -1) onSelect(index);
     };
 
+    const [showCalendarModal, setShowCalendarModal] = useState(false)
+
     return (
         <div className="border border-[#d9d9d9] rounded-[16px] p-4">
-            <p className="text-md font-medium text-black mb-3">Available Departure Dates</p>
+            <div className='flex justify-between items-start mb-4'>
+                <p className="text-xs font-medium text-black mb-3">Choose your Departure Dates</p>
+                <div className='flex items-center gap-1 border border-[#D9D9D9] px-2 py-1 rounded-lg text-xs' onClick={() => setShowCalendarModal(true)}>
+                    <CalendarDotsIcon size={16} /> Later Month
+                </div>
+            </div>
             <DepartureDatesList
                 items={items}
                 selectedId={selectedId}
@@ -30,8 +40,23 @@ export default function BatchSelection({ batches, selectedBatch, onSelect, bestT
                 className="-mx-4 px-4"
             />
             {bestTimeToVisit && (
-                <h2 className='text-center font-normal pt-6'>Best Time To Visit <span className='text-red-500 font-medium'>{bestTimeToVisit}</span></h2>
+                <h2 className='text-center font-normal pt-2'>Best Time To Visit <span className='text-red-500 font-medium'>{bestTimeToVisit}</span></h2>
             )}
+
+            <MobileModal
+                isOpen={showCalendarModal}
+                onClose={() => setShowCalendarModal(false)}
+                title="Select Departure Date"
+            >
+                <TripCalendar
+                    batches={batches}
+                    selectedBatchId={selectedId}
+                    onSelectBatch={(batchId) => {
+                        handleSelect(batchId);
+                        setShowCalendarModal(false);
+                    }}
+                />
+            </MobileModal>
         </div>
     );
 }

@@ -22,6 +22,9 @@ import {
   BookmarksTab,
 } from './components';
 import { ProfileData, Tab, FilterOption } from './types';
+import { useDevice } from '@/common/hooks/useDevice';
+import MobileProfilePage from './components/mobile/MobileProfilePage'
+
 
 interface TravelerDetail {
   _id?: string;
@@ -66,6 +69,8 @@ export default function Page() {
   const { mutate: deleteGuestUser, isPending: isDeletingGuestUser } = usePostData({
     url: deleteUrl,
   });
+
+  const { isMobile } = useDevice()
 
   useEffect(() => {
     if (travelerToDelete?._id) {
@@ -229,6 +234,10 @@ export default function Page() {
 
   if (error) {
     throw Error(error.message || 'Error Loading User Profile')
+  }
+
+  if (isMobile) {
+    return <MobileProfilePage/>
   }
 
   return (

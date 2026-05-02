@@ -14,10 +14,13 @@ const CarouselCard: React.FC<CarouselCardProps> = ({
   duration,
   price,
   rating,
+  className,
   colorScheme = 'yellow',
   onClick
 }) => {
+
   const router = useRouter();
+  
   const bgColor =
     colorScheme === 'yellow' ? 'bg-[#FFD976]' :
     colorScheme === 'green'  ? 'bg-[#E2F4A6]' :
@@ -37,7 +40,7 @@ const CarouselCard: React.FC<CarouselCardProps> = ({
   return (
     <div
       onClick={handleCardClick}
-      className={`w-full h-full ${bgColor} rounded-3xl overflow-hidden border-10 ${borderColor} cursor-pointer hover:shadow-lg transition-shadow flex flex-col`}
+      className={`w-full h-full ${bgColor} rounded-3xl overflow-hidden border-10 ${borderColor} cursor-pointer hover:shadow-lg transition-shadow flex flex-col ${className}`}
     >
       <div className="relative h-32 overflow-hidden rounded-3xl">
         <MyImage
