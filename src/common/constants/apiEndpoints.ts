@@ -19,7 +19,10 @@ export const API_ENDPOINTS = {
     START: "/api/client/v1/payments/start",
   },
   DISCOUNTS: {
-    GET_AVAILABLE: (tripId: string) => `/api/client/v1/discounts/${tripId}`,
+    GET_AVAILABLE: (tripId: string, email?: string) => {
+      const baseUrl = `/api/client/v1/discounts/${tripId}`;
+      return email ? `${baseUrl}?email=${encodeURIComponent(email)}` : baseUrl;
+    },
   },
   SUPPORT: {
     CREATE_TICKET: "/api/client/v1/support/tickets/create",

@@ -73,7 +73,7 @@ export default function TripOverviewCard() {
                         −
                     </button>
                     <p className="text-[19px] font-medium text-black tracking-[-0.58px] w-7 text-center">
-                        {String(guests).padStart(2, '0')}
+                        {String(guests || 1)}
                     </p>
                     <button
                         type="button"

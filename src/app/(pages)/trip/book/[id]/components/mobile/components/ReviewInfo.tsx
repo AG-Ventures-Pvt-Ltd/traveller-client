@@ -1,148 +1,137 @@
 'use client';
 
-import React, { useEffect } from 'react';
-import { UserListIcon, MapPinLineIcon, CarIcon, ForkKnifeIcon, TagIcon, CalendarCheckIcon, UsersIcon } from '@phosphor-icons/react';
+import { useEffect } from 'react';
+import { UserListIcon, CalendarCheckIcon, UsersIcon, CrossIcon, ForkKnifeIcon } from '@phosphor-icons/react';
 import MyImage from '@/common/ui/Image';
 import { useGetData } from '@/services/useGetData';
 import { API_ENDPOINTS } from '@/common/constants/apiEndpoints';
-import { useTripDetailsStore } from '../../../[batchId]/store/useTripDetailsStore';
-import { useBookingStore } from '../../../[batchId]/store/useBookingStore';
 import { useBookingNavStore } from '../../../[batchId]/store/useBookingNavStore';
 import { ReviewSkeleton } from '../BookingStepSkeletons';
 import { usePayment } from '../../../[batchId]/hooks/usePayment';
 import { useSearchParams } from 'next/navigation';
 
-interface BatchDetails {
-    tripImage: string;
-    title: string;
-    tripLocation: string;
-    hostName?: string;
-    availableSeats: number;
-    startDateTime: string;
+
+interface BookingData {
+    user: {
+        fullName: string;
+        email: string;
+        phoneNumber: string;
+    };
+    trip: {
+        title: string;
+        hostName?: string;
+        tripImage?: string;
+        startDateTime: string;
+    };
+    booking: {
+        numberOfPeople: number;
+        mealPreference?: string;
+        pricingTierSnapshot: {
+            label: string;
+            pricePerPerson: number;
+        };
+        addOns?: Array<{
+            _id: string;
+            label: string;
+            pricePerPerson: number;
+            quantity: number;
+        }>;
+        discounts?: Array<{
+            type: string;
+            label: string;
+            amount: number;
+            _id: string;
+        }>;
+        pricingSnapshot: {
+            grandTotal: number;
+        };
+    };
 }
 
-interface ReviewInfoProps {
-    tripId: string;
-    batchId: string;
-}
+const bookingDetailsMap = [
+    {
+        key: 'travelers',
+        icon: UsersIcon,
+        getValue: (data: BookingData) => `${data.booking.numberOfPeople} Traveler${data.booking.numberOfPeople > 1 ? 's' : ''}`,
+        condition: () => true,
+    },
+    {
+        key: 'mealPreference',
+        icon: ForkKnifeIcon,
+        getValue: (data: BookingData) => `${data.booking.mealPreference} meal`,
+        condition: (data: BookingData) => !!data.booking.mealPreference,
+        className: 'capitalize',
+    },
+    {
+        key: 'departureDate',
+        icon: CalendarCheckIcon,
+        getValue: (data: BookingData, formattedDate: string) => formattedDate || '—',
+        condition: () => true,
+    },
+];
 
-export default function ReviewInfo({
-    tripId,
-    batchId,
-}: ReviewInfoProps) {
+const discountMap = (discounts: BookingData['booking']['discounts']) => {
+    return (discounts ?? []).map((discount) => ({
+        key: discount._id,
+        label: `${discount.type === 'coupon' ? 'Coupon' : discount.type} ${discount.label}`,
+        amount: discount.amount,
+        isDiscount: true,
+    }));
+};
 
-    const actualTripId = tripId ? (tripId.split('-').pop() || tripId) : '';
 
-    const {
-        guests,
-        selectedBatchId,
-        selectedMeetingPoint,
-        selectedAddOn,
-        selectedExtraAddOn,
-        selectedTransportAddOn,
-        selectedActivityAddOn,
-        selectedTravelOption,
-        foodPreference,
-        couponCode,
-        referralCode,
-        personalDetails,
-    } = useBookingStore();
-
-    const resolvedBatchId = selectedBatchId || batchId;
-
-    const { tripDetails, isLoading, fetchTripDetails } = useTripDetailsStore();
-
-    const { data: batchDetails } = useGetData<BatchDetails>(
-        resolvedBatchId ? API_ENDPOINTS.TRIPS.BATCH_DETAILS(resolvedBatchId) : ''
-    );
-
-    useEffect(() => {
-        if (actualTripId && resolvedBatchId && guests > 0) {
-            const addOnIds = [
-                selectedAddOn?._id,
-                selectedExtraAddOn?._id,
-                selectedTransportAddOn?._id,
-                selectedActivityAddOn?._id,
-            ].filter((id): id is string => Boolean(id));
-
-            fetchTripDetails(
-                actualTripId,
-                resolvedBatchId,
-                guests,
-                couponCode,
-                referralCode,
-                personalDetails?.email,
-                selectedMeetingPoint?.locationId,
-                addOnIds,
-                selectedTravelOption?._id,
-            );
-        }
-    }, [
-        actualTripId,
-        resolvedBatchId,
-        guests,
-        couponCode,
-        referralCode,
-        personalDetails?.email,
-        selectedMeetingPoint?.locationId,
-        selectedAddOn?._id,
-        selectedExtraAddOn?._id,
-        selectedTransportAddOn?._id,
-        selectedActivityAddOn?._id,
-        selectedTravelOption?._id,
-        fetchTripDetails,
-    ]);
+export default function ReviewInfo() {
 
     const { setContinueAction } = useBookingNavStore();
-    
+
     useEffect(() => {
-        setContinueAction(() => {});
+        setContinueAction(() => { });
     }, [setContinueAction]);
 
-    const formattedDate = batchDetails?.startDateTime
-        ? new Date(batchDetails.startDateTime).toLocaleDateString('en-GB', {
-              day: '2-digit',
-              month: '2-digit',
-              year: 'numeric',
-          })
-        : '';
 
     const searchParams = useSearchParams();
-        
+
     const bookingIdFromQuery = searchParams.get('bookingId');
     const existingBookingId = bookingIdFromQuery;
-    
+
+    const { data: bookingData, isLoading: isbookingDataLoading } = useGetData<BookingData>(existingBookingId ? API_ENDPOINTS.BOOKINGS.GET_BY_ID(existingBookingId) : "")
+
+    const formattedDate = bookingData?.trip.startDateTime
+        ? new Date(bookingData?.trip.startDateTime).toLocaleDateString('en-GB', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+        })
+        : '';
+
     const { startPayment } = usePayment()
 
     useEffect(() => {
-        
+
         if (existingBookingId) {
-            setContinueAction(() => startPayment({ bookingId : existingBookingId }))
+            setContinueAction(() => startPayment({ bookingId: existingBookingId }))
         }
-    },[])
-    
-    if (isLoading && !tripDetails) {
+    }, [])
+
+    if (isbookingDataLoading || !bookingData) {
         return <ReviewSkeleton />;
     }
 
     return (
         <div className="px-4 pb-4 flex flex-col gap-4">
 
-            {/* Traveler card — Figma design */}
-            {personalDetails && (
-                <div className="border border-[#D9D9D9] rounded-[16px] flex items-center gap-[26px] px-[19px] py-[21px]">
-                    <UserListIcon size={24} weight="thin" className="text-black flex-shrink-0" />
-                    <div className="flex flex-col gap-[7px] text-black">
-                        <p className="font-medium text-[16px] tracking-[-0.48px] leading-normal">
-                            {personalDetails.fullName}
-                        </p>
-                        <div className="flex flex-col gap-[3px] text-[13px] tracking-[-0.39px]">
-                            <p>{personalDetails.email}</p>
-                            <p>+91 {personalDetails.phone}</p>
-                        </div>
+            <div className="border border-[#D9D9D9] rounded-[16px] flex items-center gap-[26px] px-[19px] py-[21px]">
+                <UserListIcon size={24} weight="thin" className="text-black flex-shrink-0" />
+                <div className="flex flex-col gap-[7px] text-black">
+                    <p className="font-medium text-[16px] tracking-[-0.48px] leading-normal">
+                        {bookingData.user.fullName}
+                    </p>
+                    <div className="flex flex-col gap-[3px] text-[13px] tracking-[-0.39px]">
+                        <p>{bookingData.user.email}</p>
+                        <p>+91 {bookingData.user.phoneNumber}</p>
                     </div>
                 </div>
-            )}
+            </div>
 
             {/* Summary card */}
             <div className="rounded-2xl border border-zinc-300 overflow-hidden flex flex-col">
@@ -150,21 +139,21 @@ export default function ReviewInfo({
                 <div className="flex items-start justify-between gap-3 px-4 pt-5 pb-4">
                     <div className="flex flex-col gap-1.5 flex-1 min-w-0">
                         <h2 className="text-black text-xl font-semibold leading-snug">
-                            {batchDetails?.title || '—'}
+                            {bookingData.trip.title || '—'}
                         </h2>
                         <div className="flex items-center gap-1">
                             <span className="text-black text-xs">
                                 by{' '}
                                 <span className="font-semibold">
-                                    {batchDetails?.hostName || '—'}
+                                    {bookingData.trip.hostName || '—'}
                                 </span>
                             </span>
                         </div>
                     </div>
                     <div className="w-24 h-24 flex-shrink-0 rounded-xl overflow-hidden">
                         <MyImage
-                            src={batchDetails?.tripImage || ''}
-                            alt={batchDetails?.title || 'Trip image'}
+                            src={bookingData.trip.tripImage || ''}
+                            alt={bookingData.trip.title || 'Trip image'}
                             className="w-full h-full"
                             objectFit="cover"
                             fill={false}
@@ -174,132 +163,67 @@ export default function ReviewInfo({
 
                 <div className="mx-4 border-t border-zinc-300" />
 
-                {/* Trip Meta */}
                 <div className="flex flex-col gap-3 px-4 py-4">
-                    {/* Guests */}
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2.5">
-                            <UsersIcon size={24} weight="thin" className="text-black flex-shrink-0" />
-                            <span className="text-black text-xs">
-                                {guests} Traveler{guests > 1 ? 's' : ''}
-                            </span>
-                        </div>
-                    </div>
+                    {bookingDetailsMap.map((item) => {
+                        const IconComponent = item.icon;
+                        const shouldShow = item.condition(bookingData);
+                        if (!shouldShow) return null;
 
-                    {/* Meeting point */}
-                    {selectedMeetingPoint && (
-                        <div className="flex items-center gap-2.5">
-                            <MapPinLineIcon size={24} weight="thin" className="text-black flex-shrink-0" />
-                            <span className="text-black text-xs">
-                                {selectedMeetingPoint.city || selectedMeetingPoint.locationId}
-                            </span>
-                        </div>
-                    )}
-
-                    {/* Travel option */}
-                    {selectedTravelOption && (
-                        <div className="flex items-center gap-2.5">
-                            <CarIcon size={24} weight="thin" className="text-black flex-shrink-0" />
-                            <span className="text-black text-xs">{selectedTravelOption.label}</span>
-                        </div>
-                    )}
-
-                    {/* Add-on */}
-                    {selectedAddOn && (
-                        <div className="flex items-center gap-2.5">
-                            <span className="w-6 h-6 flex items-center justify-center text-black text-xs flex-shrink-0">🛏</span>
-                            <span className="text-black text-xs">
-                                {selectedAddOn.label}
-                            </span>
-                        </div>
-                    )}
-
-                    {/* Food preference */}
-                    {foodPreference && (
-                        <div className="flex items-center gap-2.5">
-                            <ForkKnifeIcon size={24} weight="thin" className="text-black flex-shrink-0" />
-                            <span className="text-black text-xs capitalize">{foodPreference} meal</span>
-                        </div>
-                    )}
-
-                    {/* Departure date */}
-                    <div className="flex items-center gap-2.5">
-                        <CalendarCheckIcon size={24} weight="thin" className="text-black flex-shrink-0" />
-                        <span className="text-black text-xs">{formattedDate || '—'}</span>
-                    </div>
-
-                    {/* Coupon / Referral applied */}
-                    {(couponCode || referralCode) && (
-                        <div className="flex items-center gap-2.5">
-                            <TagIcon size={24} weight="thin" className="text-black flex-shrink-0" />
-                            <span className="text-black text-xs">
-                                {couponCode && <span className="text-green-600 font-medium">{couponCode}</span>}
-                                {couponCode && referralCode && <span className="text-zinc-400"> · </span>}
-                                {referralCode && <span className="text-green-600 font-medium">{referralCode}</span>}
-                            </span>
-                        </div>
-                    )}
+                        return (
+                            <div key={item.key} className="flex items-center gap-2.5">
+                                <IconComponent size={24} weight="thin" className="text-black flex-shrink-0" />
+                                <span className={`text-black text-xs ${item.className || ''}`}>
+                                    {item.getValue(bookingData, formattedDate)}
+                                </span>
+                            </div>
+                        );
+                    })}
                 </div>
 
                 <div className="mx-4 border-t border-zinc-300" />
 
+                <div className="flex justify-between items-center px-4 pt-4">
+                    <span className="text-zinc-600 text-xs">
+                        {bookingData.booking.pricingTierSnapshot.label}
+                        {bookingData.booking.numberOfPeople > 1 && (
+                            <span className="text-zinc-400"> <CrossIcon weight='thin' /> {bookingData.booking.numberOfPeople}</span>
+                        )}
+                    </span>
+                    <span className="text-black text-xs">₹ {bookingData.booking.pricingTierSnapshot.pricePerPerson.toLocaleString('en-IN')}</span>
+                </div>
                 {/* Pricing Breakdown */}
-                {tripDetails && (
-                    <div className="flex flex-col gap-2.5 px-4 py-4">
-                        {(tripDetails.priceBreakdown ?? []).map((item) => (
-                            <div key={item._id} className="flex justify-between items-center">
-                                <span className="text-zinc-600 text-xs">
-                                    {item.label}
-                                    {item.quantity > 1 && (
-                                        <span className="text-zinc-400"> ×{item.quantity}</span>
-                                    )}
-                                </span>
-                                <span className="text-black text-xs">₹{item.total.toLocaleString('en-IN')}</span>
-                            </div>
-                        ))}
 
-                        <div className="flex justify-between items-center">
-                            <span className="text-zinc-600 text-xs">Convenience fee</span>
-                            <span className="text-black text-xs">₹{tripDetails.serviceFee.toLocaleString('en-IN')}</span>
+                <div className="flex flex-col gap-2.5 px-4 py-4">
+
+                    {(bookingData.booking.addOns ?? []).map((item) => (
+                        <div key={item._id} className="flex justify-between items-center">
+                            <span className="text-zinc-600 text-xs">
+                                {item.label}
+                                {item.quantity > 1 && (
+                                    <span className="text-zinc-400"> <CrossIcon weight='thin' /> {item.quantity}</span>
+                                )}
+                            </span>
+                            <span className="text-black text-xs">₹{item.pricePerPerson.toLocaleString('en-IN')}</span>
                         </div>
+                    ))}
 
-                        {(tripDetails.roomSharingCostTotal ?? 0) > 0 && (
-                            <div className="flex justify-between items-center">
-                                <span className="text-zinc-600 text-xs">Room sharing</span>
-                                <span className="text-black text-xs">₹{tripDetails.roomSharingCostTotal}</span>
-                            </div>
-                        )}
-
-                        {tripDetails.discount > 0 && (
-                            <div className="flex justify-between items-center">
-                                <span className="text-zinc-600 text-xs">
-                                    Coupon{' '}
-                                    {tripDetails.appliedCoupon?.code && (
-                                        <span className="text-green-600">{tripDetails.appliedCoupon.code}</span>
-                                    )}
+                    {(bookingData.booking.discounts ?? []).map((discount) => (
+                        <div key={discount._id} className="flex justify-between items-center">
+                            <span className="text-zinc-600 text-xs">
+                                {discount.type == 'coupon' ? 'Coupon' : discount.type == 'coupon' ? "referral" : "Wondrr Cash" }
+                                <span className="text-[#43A047] ml-1">
+                                    {discount.label}
                                 </span>
-                                <span className="text-green-600 text-xs">-₹{tripDetails.discount}</span>
-                            </div>
-                        )}
-
-                        {(tripDetails.referralDiscount ?? 0) > 0 && (
-                            <div className="flex justify-between items-center">
-                                <span className="text-zinc-600 text-xs">
-                                    Referral code{' '}
-                                    {referralCode && (
-                                        <span className="text-green-600">{referralCode}</span>
-                                    )}
-                                </span>
-                                <span className="text-green-600 text-xs">-₹{tripDetails.referralDiscount}</span>
-                            </div>
-                        )}
-
-                        <div className="flex justify-between items-center pt-1">
-                            <span className="text-black text-xl font-semibold">Total Value</span>
-                            <span className="text-black text-xl font-semibold">₹{tripDetails.grandTotal}</span>
+                            </span>
+                            <span className="text-[#43A047] text-xs">-₹{discount.amount.toLocaleString('en-IN')}</span>
                         </div>
+                    ))}
+
+                    <div className="flex justify-between items-center pt-1">
+                        <span className="text-black text-xl font-semibold">Total Value</span>
+                        <span className="text-black text-xl font-semibold">₹{bookingData.booking.pricingSnapshot.grandTotal}</span>
                     </div>
-                )}
+                </div>
             </div>
         </div>
     );

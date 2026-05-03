@@ -81,7 +81,7 @@ export default function BookingPage() {
     if (step === 'coupons') {
         return (
             <AllCouponsPage
-                coupons={couponsRef.current}
+                tripId={tripId.split('-').pop() || ''}
                 onDone={() => goToStep('reservation')}
             />
         );
@@ -89,10 +89,7 @@ export default function BookingPage() {
 
     if (step === 'review') {
         return (
-            <ReviewInfo
-                tripId={tripId}
-                batchId={batchId}
-            />
+            <ReviewInfo/>
         );
     }
 

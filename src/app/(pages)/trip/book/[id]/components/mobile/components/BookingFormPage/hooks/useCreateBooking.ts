@@ -26,7 +26,6 @@ export function useCreateBooking(tripId: string) {
         pricingTiers,
         addOns,
         meetingPoints,
-        selectedBatch,
     } = useBookingFormStore();
 
     const router = useRouter();
@@ -42,6 +41,7 @@ export function useCreateBooking(tripId: string) {
             localStorage.setItem(`booking_${tripId}`, newBookingId);
 
             params.set("bookingId", newBookingId); 
+            params.set("step", "review"); 
 
             router.push(`?${params.toString()}`);
         },

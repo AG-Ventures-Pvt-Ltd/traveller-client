@@ -7,14 +7,16 @@ export const useGetData = <T>(
   url: string,
   options?: UseQueryOptions<T, Error>
 ) => {
+  const queryKey = options?.queryKey || [url];
+  
   return useQuery<T>({
-    queryKey: [url],
+    ...options,
+    queryKey,
     queryFn: () => getData<T>(url),
     enabled: !!url,
     refetchOnWindowFocus: false,
     refetchOnMount: false,
     staleTime: Infinity,
-    ...options,
   });
 };
 

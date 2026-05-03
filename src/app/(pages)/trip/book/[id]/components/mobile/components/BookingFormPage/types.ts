@@ -32,6 +32,8 @@ export interface Coupon {
     code: string;
     discountType: string;
     discountValue: number;
+    minOrderAmount: number;
+    maxDiscountAmount : number;
 }
 
 export interface BookingOptionsResponse {

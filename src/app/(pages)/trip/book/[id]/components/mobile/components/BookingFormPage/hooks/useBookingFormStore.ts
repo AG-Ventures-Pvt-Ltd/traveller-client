@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import type { BookingOptionsResponse, BatchDetails } from '../types';
+import type { BookingOptionsResponse, BatchDetails, Coupon } from '../types';
 
 interface BookingFormState {
     // Reservation state
@@ -15,6 +15,7 @@ interface BookingFormState {
     foodPreference: 'veg' | 'non-veg' | null;
     couponInput: string;
     referralInput: string;
+    appliedCoupon: Coupon | null;
 
     // Personal details state
     fullName: string;
@@ -48,6 +49,7 @@ interface BookingFormState {
     setFoodPreference: (pref: 'veg' | 'non-veg' | null) => void;
     setCouponInput: (code: string) => void;
     setReferralInput: (code: string) => void;
+    setAppliedCoupon: (coupon: Coupon | null) => void;
     setFullName: (name: string) => void;
     setEmail: (email: string) => void;
     setPhone: (phone: string) => void;
@@ -71,6 +73,7 @@ const initialState = {
     foodPreference: null,
     couponInput: '',
     referralInput: '',
+    appliedCoupon: null,
     fullName: '',
     email: '',
     phone: '',
@@ -101,6 +104,7 @@ export const useBookingFormStore = create<BookingFormState>((set, get) => ({
     setFoodPreference: (foodPreference) => set({ foodPreference }),
     setCouponInput: (couponInput) => set({ couponInput }),
     setReferralInput: (referralInput) => set({ referralInput }),
+    setAppliedCoupon: (appliedCoupon) => set({ appliedCoupon }),
     setFullName: (fullName) => set({ fullName }),
     setEmail: (email) => set({ email }),
     setPhone: (phone) => set({ phone }),
