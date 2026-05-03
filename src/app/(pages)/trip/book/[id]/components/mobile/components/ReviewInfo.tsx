@@ -86,7 +86,7 @@ export default function ReviewInfo() {
     const bookingIdFromQuery = searchParams.get('bookingId');
     const existingBookingId = bookingIdFromQuery;
 
-    const { data: bookingData, isLoading: isbookingDataLoading } = useGetData<BookingData>(existingBookingId ? API_ENDPOINTS.BOOKINGS.GET_BY_ID(existingBookingId) : "")
+    const { data: bookingData, isLoading: isbookingDataLoading } = useGetData<BookingData>(existingBookingId ? API_ENDPOINTS.BOOKINGS.DETAILS(existingBookingId) : "")
 
     const formattedDate = bookingData?.trip.startDateTime
         ? new Date(bookingData?.trip.startDateTime).toLocaleDateString('en-GB', {
