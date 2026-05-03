@@ -1,7 +1,7 @@
 export const API_ENDPOINTS = {
   TRIPS: {
     BASIC_DETAILS: (id: string) => `api/client/v1/trips/details/${id}/basic`,
-    BOOKING_OPTIONS: (slug: string) => `/api/client/v1/trips/${slug}/booking-options`,
+    BOOKING_OPTIONS: (slug: string, batchId:string) => `/api/client/v1/trips/${slug}/booking-options?batchId=${batchId}`,
     DETAILED_DETAILS: (id: string) => `api/client/v1/trips/details/${id}/detailed`,
     FEATURED_TRIPS: (limit: string) => `/api/client/v1/trips/featured?limit=${limit}`,
     HOST_TRIPS: (hostUsername: string) => `/api/client/v1/trips/user/${hostUsername}`,
@@ -12,6 +12,8 @@ export const API_ENDPOINTS = {
   BOOKINGS: {
     START: "/api/client/v1/bookings/start",
     GET_BY_ID: (id: string) => `/api/client/v1/bookings/${id}`,
+    DETAILS: (id: string) => `/api/client/v1/bookings/details/${id}`,
+    VALIDATE_EMAIL_REGISTRATION : (email : string) => `/api/client/v1/user/validate/email?email=${encodeURIComponent(email)}`
   },
   PAYMENTS: {
     START: "/api/client/v1/payments/start",

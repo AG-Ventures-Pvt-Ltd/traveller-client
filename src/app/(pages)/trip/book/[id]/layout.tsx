@@ -13,7 +13,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     if (isMobile) {
         return (
             <div className='flex flex-col min-h-screen bg-[#FFF9F4]'>
-                <div className="px-5 pt-14 pb-4">
+                <div className="px-5 py-4">
                     <BackButton
                         label={headerLabel}
                         onClick={backAction ?? undefined}

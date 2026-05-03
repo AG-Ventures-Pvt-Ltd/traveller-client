@@ -1,6 +1,7 @@
 'use client';
 
 import CollapsibleCard from '@/common/ui/CollapsibleCard';
+import { useBookingFormStore } from '../hooks/useBookingFormStore';
 
 type FoodPreference = 'veg' | 'non-veg' | null;
 
@@ -10,22 +11,25 @@ const OPTIONS: { id: FoodPreference & string; label: string }[] = [
 ];
 
 interface FoodPreferenceSectionProps {
-    value: FoodPreference;
-    onChange: (value: FoodPreference) => void;
     isOpen?: boolean;
     onToggle?: () => void;
 }
 
-export default function FoodPreferenceSection({ value, onChange, isOpen, onToggle }: FoodPreferenceSectionProps) {
+export default function FoodPreferenceSection({ isOpen, onToggle }: FoodPreferenceSectionProps) {
+    const { foodPreference, setFoodPreference } = useBookingFormStore();
+
     return (
         <CollapsibleCard title="Food preference" isOpen={isOpen} onToggle={onToggle}>
             <div className="flex items-center gap-6 px-4 pb-5">
                 {OPTIONS.map((opt) => {
-                    const isSelected = value === opt.id;
+                    const isSelected = foodPreference === opt.id;
                     return (
                         <button
                             key={opt.id}
-                            onClick={() => onChange(isSelected ? null : opt.id)}
+                            onClick={() => {
+                                const newValue = isSelected ? null : opt.id;
+                                setFoodPreference(newValue);
+                            }}
                             className="flex items-center gap-2.5"
                         >
                             {/* Radio circle */}

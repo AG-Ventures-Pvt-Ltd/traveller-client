@@ -3,10 +3,11 @@
 import { useEffect, useRef } from 'react';
 import { useParams, useSearchParams, useRouter } from 'next/navigation';
 import { useBookingNavStore } from '../../[batchId]/store/useBookingNavStore';
-import BookingFormPage, { BookingFormData } from './components/BookingFormPage';
+import BookingFormPage, { BookingFormData } from './components/BookingFormPage/BookingFormPage';
 import ReviewInfo from './components/ReviewInfo';
 import AllCouponsPage from './components/AllCouponsPage';
-import type { Coupon } from './sections/types';
+import type { Coupon } from './components/BookingFormPage/types';
+
 
 type Step = 'reservation' | 'review' | 'coupons';
 
@@ -17,15 +18,16 @@ const STEP_CONFIG: Record<Step, { headerLabel: string; buttonLabel: string }> = 
 };
 
 export default function BookingPage() {
+
     const params = useParams();
     const searchParams = useSearchParams();
     const router = useRouter();
 
     const tripId = params.id as string;
-    const batchId = params.batchId as string;
+    const batchId = searchParams.get('batchId') || '';
     const step = (searchParams.get('step') || 'reservation') as Step;
 
-    const { setHeaderLabel, setButtonLabel, setBackAction } = useBookingNavStore();
+    const { setHeaderLabel, setButtonLabel, setBackAction, setContinueAction } = useBookingNavStore();
 
     const bookingDataRef = useRef<BookingFormData | null>(null);
     const couponsRef = useRef<Coupon[]>([]);
@@ -39,8 +41,11 @@ export default function BookingPage() {
     useEffect(() => {
         const config = STEP_CONFIG[step] ?? STEP_CONFIG.reservation;
         setHeaderLabel(config.headerLabel);
-        setButtonLabel(config.buttonLabel);
-    }, [step, setHeaderLabel, setButtonLabel]);
+        
+        if (step !== 'review' && step !== 'reservation') {
+            setContinueAction(null);
+        }
+    }, [step, setHeaderLabel, setButtonLabel, setContinueAction]);
 
     useEffect(() => {
         if (step === 'reservation') {
@@ -60,11 +65,6 @@ export default function BookingPage() {
     const handleViewCoupons = (coupons: Coupon[]) => {
         couponsRef.current = coupons;
         goToStep('coupons');
-    };
-
-    const handlePayment = () => {
-        // TODO: initiate payment flow
-        void 0;
     };
 
     if (step === 'reservation') {
@@ -92,7 +92,6 @@ export default function BookingPage() {
             <ReviewInfo
                 tripId={tripId}
                 batchId={batchId}
-                onContinue={handlePayment}
             />
         );
     }

@@ -3,6 +3,7 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 import { BookingStore } from '../components/types';
 
 const defaultBookingState = {
+    bookingId: null as string | null,
     guests: 1,
     selectedBatchId: '',
     selectedMeetingPoint: null,
@@ -43,12 +44,15 @@ export const useBookingStore = create<BookingStore>()(
             setPersonalDetails: (personalDetails) => set({ personalDetails }),
             setTotalAmount: (totalAmount) => set({ totalAmount }),
             setStoredTripId: (storedTripId) => set({ storedTripId }),
+            setBookingId: (bookingId) => set({ bookingId }),
+            clearPersonalDetails: () => set({ personalDetails: null }),
             reset: () => set(defaultBookingState),
         }),
         {
             name: 'ag-booking-state',
             storage: createJSONStorage(() => localStorage),
             partialize: (state) => ({
+                bookingId: state.bookingId,
                 guests: state.guests,
                 selectedBatchId: state.selectedBatchId,
                 selectedMeetingPoint: state.selectedMeetingPoint,

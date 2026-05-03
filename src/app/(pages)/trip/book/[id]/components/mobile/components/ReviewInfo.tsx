@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import { UserListIcon, MapPinLineIcon, CarIcon, ForkKnifeIcon, TagIcon, CalendarCheckIcon, UsersIcon } from '@phosphor-icons/react';
 import MyImage from '@/common/ui/Image';
 import { useGetData } from '@/services/useGetData';
@@ -9,6 +9,8 @@ import { useTripDetailsStore } from '../../../[batchId]/store/useTripDetailsStor
 import { useBookingStore } from '../../../[batchId]/store/useBookingStore';
 import { useBookingNavStore } from '../../../[batchId]/store/useBookingNavStore';
 import { ReviewSkeleton } from '../BookingStepSkeletons';
+import { usePayment } from '../../../[batchId]/hooks/usePayment';
+import { useSearchParams } from 'next/navigation';
 
 interface BatchDetails {
     tripImage: string;
@@ -22,14 +24,13 @@ interface BatchDetails {
 interface ReviewInfoProps {
     tripId: string;
     batchId: string;
-    onContinue: () => void;
 }
 
 export default function ReviewInfo({
     tripId,
     batchId,
-    onContinue,
 }: ReviewInfoProps) {
+
     const actualTripId = tripId ? (tripId.split('-').pop() || tripId) : '';
 
     const {
@@ -93,10 +94,9 @@ export default function ReviewInfo({
     ]);
 
     const { setContinueAction } = useBookingNavStore();
-    const continueRef = useRef(onContinue);
-    continueRef.current = onContinue;
+    
     useEffect(() => {
-        setContinueAction(() => continueRef.current());
+        setContinueAction(() => {});
     }, [setContinueAction]);
 
     const formattedDate = batchDetails?.startDateTime
@@ -107,6 +107,20 @@ export default function ReviewInfo({
           })
         : '';
 
+    const searchParams = useSearchParams();
+        
+    const bookingIdFromQuery = searchParams.get('bookingId');
+    const existingBookingId = bookingIdFromQuery;
+    
+    const { startPayment } = usePayment()
+
+    useEffect(() => {
+        
+        if (existingBookingId) {
+            setContinueAction(() => startPayment({ bookingId : existingBookingId }))
+        }
+    },[])
+    
     if (isLoading && !tripDetails) {
         return <ReviewSkeleton />;
     }

@@ -2,32 +2,34 @@
 
 import CollapsibleCard from '@/common/ui/CollapsibleCard';
 import SelectableItem from '@/common/components/atoms/SelectableItem';
-import type { AddOn } from './types';
+import { useBookingFormStore } from '../hooks/useBookingFormStore';
 
-interface ExtraAddOnsSectionProps {
-    addOns: AddOn[];
-    selectedAddOnIdx: number | null;
-    onSelect: (idx: number | null) => void;
+interface ActivityAddOnsSectionProps {
     isOpen?: boolean;
     onToggle?: () => void;
 }
 
-export default function ExtraAddOnsSection({ addOns, selectedAddOnIdx, onSelect, isOpen, onToggle }: ExtraAddOnsSectionProps) {
-    const filteredAddOns = addOns.filter(addOn => addOn.category === 'others');
+export default function ActivityAddOnsSection({ isOpen, onToggle }: ActivityAddOnsSectionProps) {
+    const { addOns, selectedActivityAddOnIdx, setSelectedActivityAddOnIdx } = useBookingFormStore();
+
+    const filteredAddOns = addOns.filter(addOn => addOn.category === 'extra_activity');
 
     if (filteredAddOns.length === 0) return null;
 
     return (
-        <CollapsibleCard title="Extra Add Ons" overflow="visible" isOpen={isOpen} onToggle={onToggle}>
+        <CollapsibleCard title="Activity Add Ons" overflow="visible" isOpen={isOpen} onToggle={onToggle}>
             <div className="flex flex-col gap-5 px-4 pb-4">
                 {filteredAddOns.map((addOn) => {
                     const originalIdx = addOns.findIndex(originalAddOn => originalAddOn === addOn);
-                    const isSelected = selectedAddOnIdx === originalIdx;
+                    const isSelected = selectedActivityAddOnIdx === originalIdx;
                     return (
                         <SelectableItem
                             key={originalIdx}
                             isSelected={isSelected}
-                            onClick={() => onSelect(isSelected ? null : originalIdx)}
+                            onClick={() => {
+                                const newIdx = isSelected ? null : originalIdx;
+                                setSelectedActivityAddOnIdx(newIdx);
+                            }}
                             label={addOn.label}
                             // description={addOn.description}
                             price={addOn.pricePerPerson}

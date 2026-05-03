@@ -7,8 +7,8 @@ interface BookingNavState {
     backAction: (() => void) | null;
     setHeaderLabel: (label: string) => void;
     setButtonLabel: (label: string) => void;
-    setContinueAction: (fn: () => void) => void;
-    setBackAction: (fn: () => void) => void;
+    setContinueAction: (fn: (() => void) | null) => void;
+    setBackAction: (fn: (() => void) | null) => void;
 }
 
 export const useBookingNavStore = create<BookingNavState>((set) => ({

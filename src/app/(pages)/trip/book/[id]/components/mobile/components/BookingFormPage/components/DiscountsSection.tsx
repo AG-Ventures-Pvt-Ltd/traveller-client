@@ -4,31 +4,24 @@ import { TagIcon, SealPercentIcon } from '@phosphor-icons/react';
 import CollapsibleCard from '@/common/ui/CollapsibleCard';
 import Button from '@/common/ui/Buttons/Button';
 import CustomInput from '@/common/ui/CustomInput';
-import type { Coupon } from './types';
+import { useBookingFormStore } from '../hooks/useBookingFormStore';
+import type { Coupon } from '../types';
 
 interface DiscountsSectionProps {
-    couponInput: string;
-    referralInput: string;
     coupons: Coupon[] | undefined;
-    onCouponChange: (value: string) => void;
-    onReferralChange: (value: string) => void;
-    onApply: () => void;
     onViewCoupons?: () => void;
     isOpen?: boolean;
     onToggle?: () => void;
 }
 
 export default function DiscountsSection({
-    couponInput,
-    referralInput,
     coupons,
-    onCouponChange,
-    onReferralChange,
-    onApply,
     onViewCoupons,
     isOpen,
     onToggle,
 }: DiscountsSectionProps) {
+    const { couponInput, referralInput, setCouponInput, setReferralInput } = useBookingFormStore();
+
     return (
         <CollapsibleCard title="Add a discount" defaultOpen={false} isOpen={isOpen} onToggle={onToggle}>
             <div className="flex flex-col gap-2 px-4 pb-4">
@@ -36,7 +29,7 @@ export default function DiscountsSection({
                     icon={TagIcon}
                     placeholder="Add a coupon"
                     value={couponInput}
-                    onChange={e => onCouponChange(e.target.value)}
+                    onChange={e => setCouponInput(e.target.value)}
                 />
                 <button
                     onClick={onViewCoupons}
@@ -48,9 +41,9 @@ export default function DiscountsSection({
                     icon={SealPercentIcon}
                     placeholder="Redeem a referral code"
                     value={referralInput}
-                    onChange={e => onReferralChange(e.target.value)}
+                    onChange={e => setReferralInput(e.target.value)}
                 /> */}
-                <Button variant="purple" fullWidth onClick={onApply}>
+                <Button variant="purple" fullWidth onClick={() => {}}>
                     Apply
                 </Button>
             </div>

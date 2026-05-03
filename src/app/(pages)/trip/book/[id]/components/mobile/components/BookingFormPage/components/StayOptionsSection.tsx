@@ -2,17 +2,17 @@
 
 import CollapsibleCard from '@/common/ui/CollapsibleCard';
 import SelectableItem from '@/common/components/atoms/SelectableItem';
-import type { AddOn } from './types';
+import { useBookingFormStore } from '../hooks/useBookingFormStore';
+import type { AddOn } from '../types';
 
 interface StayOptionsSectionProps {
-    addOns: AddOn[];
-    selectedAddOnIdx: number | null;
-    onSelect: (idx: number | null) => void;
     isOpen?: boolean;
     onToggle?: () => void;
 }
 
-export default function StayOptionsSection({ addOns, selectedAddOnIdx, onSelect, isOpen, onToggle }: StayOptionsSectionProps) {
+export default function StayOptionsSection({ isOpen, onToggle }: StayOptionsSectionProps) {
+    const { addOns, selectedAddOnIdx, setSelectedAddOnIdx } = useBookingFormStore();
+
     const roomUpgradeAddOns = addOns.filter(addOn => addOn.category === 'room_upgrade');
 
     if (roomUpgradeAddOns.length === 0) return null;
@@ -28,7 +28,10 @@ export default function StayOptionsSection({ addOns, selectedAddOnIdx, onSelect,
                         <SelectableItem
                             key={originalIdx}
                             isSelected={isSelected}
-                            onClick={() => onSelect(isSelected ? null : originalIdx)}
+                            onClick={() => {
+                                const newIdx = isSelected ? null : originalIdx;
+                                setSelectedAddOnIdx(newIdx);
+                            }}
                             label={addOn.label}
                             // description={addOn.description}
                             price={addOn.pricePerPerson}

@@ -1,16 +1,9 @@
+import { useEffect } from 'react';
 import { InfoIcon } from '@phosphor-icons/react';
 import CustomSelect from '@/common/ui/CustomSelect';
-import type { Batch, BatchDetails, BatchMeetingPoint } from './types';
+import { useBookingFormStore } from '../hooks/useBookingFormStore';
+import { notify } from '@/common/utils/notify';
 
-interface TripOverviewCardProps {
-    batchDetails: BatchDetails | undefined;
-    selectedBatch: Batch | undefined;
-    guests: number;
-    onGuestsChange: (guests: number) => void;
-    meetingPoints: BatchMeetingPoint[];
-    selectedMeetingPointIdx: number;
-    onMeetingPointChange: (idx: number) => void;
-}
 
 function formatDate(date: Date) {
     return date.toLocaleDateString('en-GB', { month: 'short', day: 'numeric', year: 'numeric' });
@@ -20,33 +13,31 @@ function formatDay(date: Date) {
     return date.toLocaleDateString('en-GB', { weekday: 'long' });
 }
 
-export default function TripOverviewCard({
-    batchDetails,
-    selectedBatch,
-    guests,
-    onGuestsChange,
-    meetingPoints,
-    selectedMeetingPointIdx,
-    onMeetingPointChange,
-}: TripOverviewCardProps) {
-    const startDate = selectedBatch?.startDateTime
-        ? new Date(selectedBatch.startDateTime)
-        : batchDetails?.startDateTime
+export default function TripOverviewCard() {
+    
+    const { guests, setGuests, meetingPoints, selectedMeetingPointIdx, setSelectedMeetingPointIdx, batchDetails } = useBookingFormStore();
+
+    const startDate =  batchDetails?.startDateTime
             ? new Date(batchDetails.startDateTime)
             : null;
+            
     const endDate = batchDetails?.endDateTime ? new Date(batchDetails.endDateTime) : null;
 
     const selectedPoint = meetingPoints[selectedMeetingPointIdx] ?? null;
     const hasExtraPrice = selectedPoint && selectedPoint.pickupPrice > 0;
 
+    useEffect(() => {
+            if (meetingPoints.length > 0) {
+                setSelectedMeetingPointIdx(0);
+            }
+        }, [meetingPoints.length]);
+    
+
     return (
         <div className="border border-[#D9D9D9] rounded-2xl px-[18px] pt-5 pb-4 flex flex-col gap-5">
-            {/* Title */}
             <p className="text-[16px] font-semibold text-black tracking-[-0.48px] leading-snug">
                 {batchDetails?.title || '—'}
             </p>
-
-            {/* Date range */}
             <div className="flex items-center justify-between">
                 <div className="flex flex-col gap-0.5">
                     <p className="text-xs font-medium text-black tracking-[-0.36px]">
@@ -70,14 +61,12 @@ export default function TripOverviewCard({
                     </p>
                 </div>
             </div>
-
-            {/* No. of Pax */}
             <div className="flex items-center gap-2">
                 <p className="text-xs text-black tracking-[-0.36px] whitespace-nowrap">No. of Pax :</p>
                 <div className="flex items-center gap-2.5">
                     <button
                         type="button"
-                        onClick={() => onGuestsChange(Math.max(1, guests - 1))}
+                        onClick={() => setGuests(Math.max(1, guests - 1))}
                         className="w-8 h-8 rounded-full bg-[#448AFF] text-white flex items-center justify-center text-lg font-medium leading-none select-none"
                         aria-label="Decrease guests"
                     >
@@ -88,7 +77,13 @@ export default function TripOverviewCard({
                     </p>
                     <button
                         type="button"
-                        onClick={() => onGuestsChange(guests + 1)}
+                        onClick={() => {
+                            if (guests + 1 <= (batchDetails?.availableSeats || 0)) {
+                                setGuests(guests + 1);
+                            } else {
+                                notify.error(`Maximum available seats: ${batchDetails?.availableSeats || 0}`);
+                            }
+                        }}
                         className="w-8 h-8 rounded-full bg-[#448AFF] text-white flex items-center justify-center text-lg font-medium leading-none select-none"
                         aria-label="Increase guests"
                     >
@@ -96,8 +91,6 @@ export default function TripOverviewCard({
                     </button>
                 </div>
             </div>
-
-            {/* Depart from */}
             {meetingPoints.length > 0 && (
                 <div className="flex flex-col gap-2">
                     <div className="flex items-center gap-2 flex-wrap">
@@ -106,7 +99,10 @@ export default function TripOverviewCard({
                             <div className="relative">
                                 <CustomSelect
                                     value={selectedMeetingPointIdx.toString()}
-                                    onChange={(value) => onMeetingPointChange(Number(value))}
+                                    onChange={(value) => {
+                                        const idx = Number(value);
+                                        setSelectedMeetingPointIdx(idx);
+                                    }}
                                     options={meetingPoints.map((point, idx) => ({
                                         value: idx.toString(),
                                         label: point.city || point.locationId,

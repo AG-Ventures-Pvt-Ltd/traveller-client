@@ -15,17 +15,14 @@ interface ApiResponse {
 }
 
 interface PaymentPayload {
-  userId: string;
-  batchId: string;
-  numberOfPeople: number;
-  amount: number;
+  bookingId : string
 }
 
 export const usePayment = () => {
 
   const router = useRouter()
 
-  const { mutateAsync } = usePostData({ url: API_ENDPOINTS.BOOKINGS.START });
+  const { mutateAsync } = usePostData({ url: API_ENDPOINTS.PAYMENTS.START });
 
   const openRazorpay = (order: Order) => {
     const options = {
@@ -59,5 +56,5 @@ export const usePayment = () => {
     }
   };
 
-  return { startPayment, openRazorpay };
+  return { startPayment };
 };

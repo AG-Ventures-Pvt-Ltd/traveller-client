@@ -40,6 +40,8 @@ export interface BookingOptionsResponse {
     addOns: AddOn[];
     currency: string;
     coupons: Coupon[];
+    meetingPoints: BatchMeetingPoint[];
+    batchDetails: BatchDetails;
 }
 
 export interface BatchDetails {
@@ -51,6 +53,17 @@ export interface BatchDetails {
     startDateTime: string;
     endDateTime?: string;
     duration?: number;
+}
+
+export interface BookingDetails {
+    _id: string;
+    numberOfPeople: number;
+    mealPreference?: 'veg' | 'non-veg';
+    travelOption?: { _id: string; label: string; pricePerPerson: number };
+    meetingPoint?: BatchMeetingPoint;
+    addOns?: Array<{ _id: string; category: string; label: string; pricePerPerson: number }>;
+    couponCode?: string;
+    referralCode?: string;
 }
 
 export interface FormErrors {
@@ -67,4 +80,5 @@ export interface BookingFormData {
     fullName: string;
     email: string;
     phone: string;
+    bookingId?: string;
 }

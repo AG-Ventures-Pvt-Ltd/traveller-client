@@ -5,7 +5,7 @@ import { SealPercentIcon } from '@phosphor-icons/react';
 import { useBookingStore } from '../../../[batchId]/store/useBookingStore';
 import { useBookingNavStore } from '../../../[batchId]/store/useBookingNavStore';
 import { CouponsSkeleton } from '../BookingStepSkeletons';
-import type { Coupon } from '../sections/types';
+import type { Coupon } from './BookingFormPage/types';
 
 interface AllCouponsPageProps {
     coupons: Coupon[];

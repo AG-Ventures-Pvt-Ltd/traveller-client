@@ -110,6 +110,9 @@ export interface PersonalDetailsItem {
 
 // Store interfaces
 export interface BookingStore {
+    // Booking
+    bookingId: string | null;
+    setBookingId: (bookingId: string | null) => void;
     // Reservation step
     guests: number;
     selectedBatchId: string;
@@ -149,6 +152,7 @@ export interface BookingStore {
     storedTripId: string;
     setStoredTripId: (tripId: string) => void;
     reset: () => void;
+    clearPersonalDetails: () => void;
 }
 
 export interface TripDetailsState {
