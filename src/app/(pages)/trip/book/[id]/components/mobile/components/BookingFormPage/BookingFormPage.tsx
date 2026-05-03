@@ -18,8 +18,9 @@ import { useBookingFormStore } from './hooks/useBookingFormStore';
 import type { BookingFormData, BookingOptionsResponse, Coupon } from './types';
 import LoadExistingBookingDetails from './components/LoadExistingBookingDetails'
 import { useBookingNavStore } from '../../../../[batchId]/store/useBookingNavStore';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { useCreateBooking } from './hooks/useCreateBooking';
+import { useUpdateBooking } from './hooks/useUpdateBooking';
 
 
 export type { BookingFormData };
@@ -52,17 +53,19 @@ export default function BookingFormPage({ tripId, batchId, onViewCoupons }: Book
 
     const { setContinueAction } = useBookingNavStore()
 
-    const router = useRouter()
-
     const { data: bookingOptionsData, isLoading: isBookingOptionsLoadingData } = useGetData<BookingOptionsResponse>(
         tripId ? API_ENDPOINTS.TRIPS.BOOKING_OPTIONS(tripId, batchId) : ''
     );
 
-    const { handleContinue, isLoading } = useCreateBooking(tripId)
+    const { handleContinue } = useCreateBooking(tripId)
+    const { handleUpdate } = useUpdateBooking(existingBookingId || '')
 
     // Keep a ref to always call the latest handleContinue without it being a useEffect dependency
     const handleContinueRef = useRef(handleContinue);
     handleContinueRef.current = handleContinue;
+
+    const handleUpdateRef = useRef(handleUpdate);
+    handleUpdateRef.current = handleUpdate;
 
     useEffect(() => {
         setBookingOptions(bookingOptionsData);
@@ -71,12 +74,7 @@ export default function BookingFormPage({ tripId, batchId, onViewCoupons }: Book
 
     useEffect(() => {
         if (existingBookingId) {
-            setContinueAction(() => {
-                const params = new URLSearchParams(searchParams.toString());
-                params.set("bookingId", existingBookingId);
-                params.set("step", "review");
-                router.push(`?${params.toString()}`);
-            });
+            setContinueAction(() => handleUpdateRef.current());
         } else {
             setContinueAction(() => handleContinueRef.current());
         }

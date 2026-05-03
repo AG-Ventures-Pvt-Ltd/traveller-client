@@ -41,11 +41,11 @@ export default function AllCouponsPage({ tripId, onDone }: AllCouponsPageProps) 
 
     const { couponCode, setCouponCode } = useBookingStore();
 
-    const { email, setAppliedCoupon } = useBookingFormStore()
+    const { email, appliedCoupon, setAppliedCoupon } = useBookingFormStore()
 
     const { setContinueAction } = useBookingNavStore();
 
-    const [selectedCode, setSelectedCode] = useState<string>('');
+    const [selectedCode, setSelectedCode] = useState<string>(appliedCoupon?.code ?? '');
 
     const { data : coupons , isLoading } = useGetData<Coupon[]>(API_ENDPOINTS.DISCOUNTS.GET_AVAILABLE(tripId, email), {
         queryKey: ['discounts', tripId, email],
@@ -56,11 +56,13 @@ export default function AllCouponsPage({ tripId, onDone }: AllCouponsPageProps) 
 
     const handleDone = useCallback(() => {
         if (selectedCode) {
-            // Find and apply the selected coupon
             const selectedCoupon = coupons?.find(coupon => coupon.code === selectedCode);
             if (selectedCoupon) {
                 setAppliedCoupon(selectedCoupon);
             }
+        } else {
+            // User deselected — clear the coupon
+            setAppliedCoupon(null);
         }
         setCouponCode(selectedCode);
         onDoneRef.current();

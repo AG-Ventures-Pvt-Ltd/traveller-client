@@ -74,6 +74,27 @@ export interface FormErrors {
     phone?: string;
 }
 
+export interface BookingCreationData {
+    email: string;
+    fullName: string;
+    phoneNumber: number;
+    batchId: string;
+    numberOfPeople: number;
+    couponCode: string | null;
+    referralCode: string | null;
+    travelOptionId: string;
+    addOnIds: string[];
+    meetingPointId: string;
+    mealPreference: 'veg' | 'non-veg';
+}
+
+
+export interface FormErrors {
+    fullName?: string;
+    email?: string;
+    phone?: string;
+}
+
 export interface BookingFormData {
     guests: number;
     selectedBatchId: string;

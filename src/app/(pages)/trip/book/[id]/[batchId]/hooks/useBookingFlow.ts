@@ -9,7 +9,7 @@ import usePostData from '@/services/usePostData';
 
 export const useBookingFlow = () => {
     const [isProcessing, setIsProcessing] = useState(false);
-    const { openRazorpay } = usePayment();
+    // const { openRazorpay } = usePayment();
     const { data: session } = useSession();
 
     const bookingContextRef = useRef<{
@@ -29,10 +29,10 @@ export const useBookingFlow = () => {
                 setIsProcessing(false);
                 return;
             }
-            openRazorpay({
-                amount: response?.data?.totalAmount,
-                orderId: orderId,
-            });
+            // openRazorpay({
+            //     amount: response?.data?.totalAmount,
+            //     orderId: orderId,
+            // });
             setIsProcessing(false);
         },
         onError: () => {

@@ -49,7 +49,8 @@ const BookingDetails = () => {
 
   const { data: bookingData, isLoading, error } = useGetData<BookingDetails>(API_ENDPOINTS.BOOKINGS.GET_BY_ID(id));
   const { data: emergencyContact } = useGetData<EmergencyContact>(API_ENDPOINTS.USER.GET_EMERGENCY_CONTACT);
-  const { openRazorpay } = usePayment();
+
+  // const { openRazorpay } = usePayment();
 
   const getStatusConfig = () => {
     if (bookingData?.status === 'cancelled' && bookingData?.payment?.status === 'cancelled') {
@@ -80,10 +81,10 @@ const BookingDetails = () => {
 
   const handleRetry = () => {
     if (bookingData?.payment?.gatewayOrderId) {
-      openRazorpay({
-        orderId: bookingData.payment.gatewayOrderId,
-        amount: bookingData.payment.tripPrice
-      });
+      // openRazorpay({
+      //   orderId: bookingData.payment.gatewayOrderId,
+      //   amount: bookingData.payment.tripPrice
+      // });
     }
   };
 

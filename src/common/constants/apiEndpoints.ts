@@ -13,6 +13,8 @@ export const API_ENDPOINTS = {
     START: "/api/client/v1/bookings/start",
     GET_BY_ID: (id: string) => `/api/client/v1/bookings/${id}`,
     DETAILS: (id: string) => `/api/client/v1/bookings/details/${id}`,
+    UPDATE_IN_BOOKING_FLOW : (id:string) => `/api/client/v1/bookings/update/${id}`,
+    GET_BOOKING_DETAILS_FOR_UPDATE : (id:string) => `/api/client/v1/bookings/creationflow/${id}`,
     VALIDATE_EMAIL_REGISTRATION : (email : string) => `/api/client/v1/user/validate/email?email=${encodeURIComponent(email)}`
   },
   PAYMENTS: {

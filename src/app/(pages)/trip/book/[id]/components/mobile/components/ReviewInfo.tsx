@@ -70,14 +70,6 @@ const bookingDetailsMap = [
     },
 ];
 
-const discountMap = (discounts: BookingData['booking']['discounts']) => {
-    return (discounts ?? []).map((discount) => ({
-        key: discount._id,
-        label: `${discount.type === 'coupon' ? 'Coupon' : discount.type} ${discount.label}`,
-        amount: discount.amount,
-        isDiscount: true,
-    }));
-};
 
 
 export default function ReviewInfo() {

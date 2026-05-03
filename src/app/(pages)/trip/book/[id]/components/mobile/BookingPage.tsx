@@ -57,6 +57,21 @@ export default function BookingPage() {
         }
     }, [step]); // eslint-disable-line react-hooks/exhaustive-deps
 
+    // Check localStorage for bookingId and add to query params if not present
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const existingBookingId = searchParams.get('bookingId');
+            if (!existingBookingId) {
+                const storedBookingId = localStorage.getItem(`booking_${tripId.split('-').pop()}`);
+                if (storedBookingId) {
+                    const p = new URLSearchParams(searchParams.toString());
+                    p.set('bookingId', storedBookingId);
+                    router.replace(`?${p.toString()}`);
+                }
+            }
+        }
+    }, [tripId, searchParams, router]);
+
     const handleBookingContinue = (data: BookingFormData) => {
         bookingDataRef.current = data;
         goToStep('review');
