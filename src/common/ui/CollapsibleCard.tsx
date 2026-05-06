@@ -34,6 +34,7 @@ export default function CollapsibleCard({
     children,
     className = '',
 }: CollapsibleCardProps) {
+    
     const [internalOpen, setInternalOpen] = useState(defaultOpen);
     const isControlled = controlledOpen !== undefined;
     const open = isControlled ? controlledOpen : internalOpen;

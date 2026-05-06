@@ -4,7 +4,7 @@ import { useEffect, useRef } from 'react';
 import { useParams, useSearchParams, useRouter } from 'next/navigation';
 import { useBookingNavStore } from '../../[batchId]/store/useBookingNavStore';
 import BookingFormPage, { BookingFormData } from './components/BookingFormPage/BookingFormPage';
-import ReviewInfo from './components/ReviewInfo';
+import ReviewInfo from './components/ReviewInfo/ReviewInfo';
 import AllCouponsPage from './components/AllCouponsPage';
 import type { Coupon } from './components/BookingFormPage/types';
 

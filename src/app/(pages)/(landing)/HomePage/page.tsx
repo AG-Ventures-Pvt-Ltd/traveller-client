@@ -12,52 +12,52 @@ import { useSession } from 'next-auth/react';
 
 
 const HomePage = () => {
-    const handleSearch = (value: string) => {};  // eslint-disable-line @typescript-eslint/no-unused-vars
+    const handleSearch = (value: string) => { };  // eslint-disable-line @typescript-eslint/no-unused-vars
 
     const { data: session } = useSession();
     const { data: featuredTripsData, isLoading: isTripsLoading } = useFeaturedTrips();
-      
+
     //   const { mutate: updateWallet } = usePostData({ 
     //     url: '/api/client/v1/wallet/update',
     //     retry: (failureCount, error) => (error as any)?.response?.status !== 409
     //   });
-    
-      // Check spinWheelData and update wallet on mount
-      // useEffect(() => {
-      //   const spinWheelData = localStorage.getItem('spinWheelData');
-      //   if (spinWheelData && session?.user?.id) {
-      //     try {
-      //       const data = JSON.parse(spinWheelData);
-            
-      //       // Only make API call if not already claimed
-      //       if (!data.claimed) {
-      //         const payload = {
-      //           rewardAmount: data.rewardAmount,
-      //           timestamp: data.timestamp,
-      //         };
-              
-      //         updateWallet(
-      //           payload,
-      //           {
-      //             onSuccess: () => {
-      //               // Mark as claimed and update localStorage
-      //               const updatedData = {
-      //                 ...data,
-      //                 claimed: true,
-      //               };
-      //               localStorage.setItem('spinWheelData', JSON.stringify(updatedData));
-      //             },
-      //             onError: (error) => {
-      //               console.error('Failed to update wallet:', error);
-      //             },
-      //           }
-      //         );
-      //       }
-      //     } catch (error) {
-      //       console.error('Failed to parse spinWheelData:', error);
-      //     }
-      //   }
-      // }, [session?.user?.id, updateWallet]);
+
+    // Check spinWheelData and update wallet on mount
+    // useEffect(() => {
+    //   const spinWheelData = localStorage.getItem('spinWheelData');
+    //   if (spinWheelData && session?.user?.id) {
+    //     try {
+    //       const data = JSON.parse(spinWheelData);
+
+    //       // Only make API call if not already claimed
+    //       if (!data.claimed) {
+    //         const payload = {
+    //           rewardAmount: data.rewardAmount,
+    //           timestamp: data.timestamp,
+    //         };
+
+    //         updateWallet(
+    //           payload,
+    //           {
+    //             onSuccess: () => {
+    //               // Mark as claimed and update localStorage
+    //               const updatedData = {
+    //                 ...data,
+    //                 claimed: true,
+    //               };
+    //               localStorage.setItem('spinWheelData', JSON.stringify(updatedData));
+    //             },
+    //             onError: (error) => {
+    //               console.error('Failed to update wallet:', error);
+    //             },
+    //           }
+    //         );
+    //       }
+    //     } catch (error) {
+    //       console.error('Failed to parse spinWheelData:', error);
+    //     }
+    //   }
+    // }, [session?.user?.id, updateWallet]);
 
     // Extract firstName from fullName
     const fullName = session?.user?.fullName || '';
@@ -91,31 +91,33 @@ const HomePage = () => {
             {isTripsLoading ? (
                 <HomePageSkeleton />
             ) : (
-            <div className="w-full bg-[#FFF9F4] px-4 sm:px-6 lg:px-9 pt-6 sm:pt-8 lg:pt-10 pb-12 sm:pb-16 lg:pb-24">
-                <div className="max-w-[1440px] mx-auto flex flex-col gap-8 sm:gap-10 lg:gap-12">
-                    <LocationSelector location="Delhi" avatar={customImage} />
-                    <div className='flex flex-col gap-2'>
-                        <SuggestionBanner
-                            suggestion={suggestion}
-                            placeholder="Search by keywords or places"
-                            onSearch={handleSearch}
-                        />
-                        {/* <StatisticsBanner
+                <div className="w-full bg-[#FFF9F4] sm:px-6 lg:px-9 pt-6 sm:pt-8 lg:pt-10 pb-12 sm:pb-16 lg:pb-24">
+                    <div className="max-w-[1440px] mx-auto flex flex-col gap-8 sm:gap-10 lg:gap-12">
+                        <LocationSelector location="Delhi" avatar={customImage} />
+                        <div className='flex flex-col gap-2 px-4'>
+                            <SuggestionBanner
+                                suggestion={suggestion}
+                                placeholder="Search by keywords or places"
+                                onSearch={handleSearch}
+                            />
+                            {/* <StatisticsBanner
                             text="156+ Travellers booked with us"
                             duration="last month"
                         /> */}
+                        </div>
+                        <div className='pl-4 flex flex-col gap-8'>
+                            {sortedCarousels.map((carousel, index) => (
+                                <SlidingCarouselSection
+                                    key={carousel.id}
+                                    title={carousel.title}
+                                    trips={carousel.trips}
+                                    isLoading={isTripsLoading}
+                                    carouselIndex={index}
+                                />
+                            ))}
+                        </div>
                     </div>
-                    {sortedCarousels.map((carousel, index) => (
-                        <SlidingCarouselSection
-                            key={carousel.id}
-                            title={carousel.title}
-                            trips={carousel.trips}
-                            isLoading={isTripsLoading}
-                            carouselIndex={index}
-                        />
-                    ))}
                 </div>
-            </div>
             )}
             <Footer />
         </>

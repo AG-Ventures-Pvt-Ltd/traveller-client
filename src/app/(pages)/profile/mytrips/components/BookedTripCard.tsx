@@ -11,10 +11,11 @@ import {
 } from '@phosphor-icons/react'
 import MyImage from '@/common/ui/Image'
 import { BookedTrip, TripStatus } from '../constants'
+import { formatDate } from '@/common/utils/dateUtils'
 
 interface BookedTripCardProps {
     trip: BookedTrip
-    onViewDetails?: (id: string) => void
+    onViewDetails : () => void
     onViewQRTicket?: (id: string) => void
     onFillDetails?: (id: string) => void
     onPayNow?: (id: string) => void
@@ -23,13 +24,17 @@ interface BookedTripCardProps {
 }
 
 const STATUS_CONFIG: Record<TripStatus, { label: string; className: string }> = {
-    upcoming: {
+    confirmed : {
         label: 'Upcoming',
         className: 'bg-[#448AFF] text-white',
     },
     completed: {
         label: 'Completed',
         className: 'bg-[#E2F4A6]',
+    },
+    pending : {
+        label : 'Pending',
+        className : 'bg-[#E2F4A6]',
     },
     cancelled: {
         label: 'Cancelled',
@@ -39,43 +44,52 @@ const STATUS_CONFIG: Record<TripStatus, { label: string; className: string }> = 
 
 const BookedTripCard: React.FC<BookedTripCardProps> = ({
     trip,
-    onViewDetails,
     onViewQRTicket,
+    onViewDetails,
     onFillDetails,
     onPayNow,
     onWriteReview,
     onEditReview,
 }) => {
     const {
-        slug,
-        image,
+        tripSlug,
+        tripImage,
         title,
-        organizer,
+        hostName,
         bookedOn,
-        travelerName,
-        extraTravelers,
+        travelers,
         amount,
-        status,
+        tripStatus,
         paymentStatus,
         tripDate,
         hasFilledDetails,
         hasReview,
     } = trip
 
-    const statusConfig = STATUS_CONFIG[status]
+    const statusConfig = STATUS_CONFIG[tripStatus]
 
+    const formatTravelers = (travelers: string) => {
+        if (travelers.length == 1) {
+            return travelers[0]
+        }
+        const names = travelers.split(',').map(n => n.trim());
+        if (names.length === 1) return travelers;
+        const extra = names.length - 1;
+        const firstName = names[0].split(' ')[0];
+        return `${firstName}+${extra}`;
+    }
+    
     const renderActions = () => {
 
-        if (status == 'cancelled') {
+        if (tripStatus == 'cancelled') {
             return <></>
         }
 
-        // Completed: Write a Review / Edit Review + View Details
-        if (status === 'completed') {
+        if (tripStatus === 'completed' && !hasReview) {
             return (
                 <>
                     <button
-                        onClick={() => hasReview ? onEditReview?.(slug) : onWriteReview?.(slug)}
+                        onClick={() => hasReview ? onEditReview?.(tripSlug) : onWriteReview?.(tripSlug)}
                         className="flex-1 py-2.5 rounded-xl bg-[#FFC107] text-sm font-normal flex items-center justify-center gap-2 hover:bg-neutral-800 transition-colors"
                     >
                         <PencilSimpleIcon size={16} weight="thin" />
@@ -90,7 +104,7 @@ const BookedTripCard: React.FC<BookedTripCardProps> = ({
             return (
                 <>
                     <button
-                        onClick={() => onPayNow?.(slug)}
+                        onClick={() => onPayNow?.(tripSlug)}
                         className="flex-1 py-2.5 rounded-xl bg-[#448AFF] text-white text-sm font-normal flex items-center justify-center gap-2 hover:bg-blue-700 transition-colors"
                     >
                         <CurrencyInrIcon size={16} weight="thin" />
@@ -101,11 +115,11 @@ const BookedTripCard: React.FC<BookedTripCardProps> = ({
         }
 
         // Upcoming + paid + no details filled: Fill in Details + View Details
-        if (!hasFilledDetails) {
+        if (tripStatus == 'confirmed' && !hasFilledDetails) {
             return (
                 <>
                     <button
-                        onClick={() => onFillDetails?.(slug)}
+                        onClick={() => onFillDetails?.(tripSlug)}
                         className="flex-1 py-2.5 rounded-xl bg-[#FFC107] text-black text-sm font-normal flex items-center justify-center gap-2 hover:bg-blue-700 transition-colors"
                     >
                         <PencilSimpleIcon size={16} weight="thin" />
@@ -118,13 +132,13 @@ const BookedTripCard: React.FC<BookedTripCardProps> = ({
         // Upcoming + paid + details filled: View QR Ticket + View Details
         return (
             <>
-                <button
-                    onClick={() => onViewQRTicket?.(slug)}
+                {/* <button
+                    onClick={() => onViewQRTicket?.(_id)}
                     className="flex-1 py-2.5 rounded-xl bg-[#448AFF] text-white text-sm font-normal flex items-center justify-center gap-2 hover:bg-blue-700 transition-colors"
                 >
                     <QrCodeIcon size={16} weight="thin" />
                     View QR Ticket
-                </button>
+                </button> */}
             </>
         )
     }
@@ -132,7 +146,7 @@ const BookedTripCard: React.FC<BookedTripCardProps> = ({
     return (
         <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm">
             <div className="relative w-full h-36">
-                <MyImage src={image} alt={title} className="w-full h-full" />
+                <MyImage src={tripImage} alt={title} className="w-full h-full" />
                 <span
                     className={`absolute top-3 right-3 text-xs font-medium px-3 py-1 rounded-full ${statusConfig.className}`}
                 >
@@ -144,20 +158,15 @@ const BookedTripCard: React.FC<BookedTripCardProps> = ({
                     {title}
                 </h3>
                 <p className="text-xs font-medium text-[#B8B8B8]">
-                    {organizer}
+                    {hostName}
                     <span className="mx-1.5 inline-block w-1 h-1 rounded-full bg-[#B8B8B8] align-middle" />
-                    Booked on {bookedOn}
+                    Booked on {formatDate(bookedOn)}
                 </p>
                 <div className="flex items-center gap-6">
                     <div className="flex items-center gap-1.5">
                         <UserIcon size={16} weight="thin" />
                         <span className="text-xs font-medium">
-                            {travelerName}
-                            {extraTravelers > 0 && (
-                                <span className="ml-1 text-[#448AFF] font-light">
-                                    +{extraTravelers}
-                                </span>
-                            )}
+                            {formatTravelers(travelers)}
                         </span>
                     </div>
                     <div className="flex items-center gap-1.5">
@@ -169,24 +178,33 @@ const BookedTripCard: React.FC<BookedTripCardProps> = ({
                         {((paymentStatus === 'pending') || (paymentStatus === 'failed')) && (
                             <WarningCircleIcon className='text-[#FFC107]' weight='fill' size={16} />
                         )}
+                        {((paymentStatus === 'refunded') || (paymentStatus === 'failed')) && (
+                            <WarningCircleIcon className='text-[#43A047]' weight='fill' size={16} />
+                        )}
                     </div>
                 </div>
                 <div className="flex items-center gap-1.5">
                     <CalendarCheckIcon size={16} weight="thin" />
-                    <span className="text-xs font-medium">{tripDate}</span>
+                    <span className="text-xs font-medium">{formatDate(tripDate)}</span>
                 </div>
                 <div>
-                    {paymentStatus == 'paid' && status == 'upcoming' && !hasFilledDetails &&  (
+                    {paymentStatus == 'paid' && tripStatus == 'confirmed' && !hasFilledDetails &&  (
                         <div className='flex items-center gap-2 text-[#F44336]'>
                             <WarningDiamondIcon weight='thin' size={16}/>
                            <span className='text-xs'>You need to fill in all passenger details to get your ticket</span>
+                        </div>
+                    )}
+                    {paymentStatus == 'refunded' && tripStatus == 'cancelled' && (
+                        <div className='flex items-center gap-2 text-[#43A047]'>
+                            <WarningDiamondIcon/>
+                            <span className='text-xs'>Refunded</span>
                         </div>
                     )}
                 </div>
                 <div className="flex gap-3 mt-1">
                     {renderActions()}
                     <button
-                        onClick={() => onViewDetails?.(slug)}
+                        onClick={() => onViewDetails()}
                         className="flex-1 py-2.5 rounded-xl border border-neutral-900 text-sm font-normal text-neutral-900 flex items-center justify-center hover:bg-neutral-50 transition-colors"
                     >
                         View Details

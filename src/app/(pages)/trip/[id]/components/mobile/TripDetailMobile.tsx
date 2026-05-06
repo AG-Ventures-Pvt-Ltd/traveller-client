@@ -20,6 +20,7 @@ import ReviewsSection from './components/ReviewsSection';
 import FAQsSection from './components/FAQsSection';
 import { CancellationPolicySection } from './components/PoliciesSection';
 import BookingBar from './components/BookingBar';
+import SafetySupportSection from './components/SafetySupportSection';
 import { sortBatchesByDate } from './utils';
 import { NAV_SECTION_IDS } from './constants';
 import { NavSection, SectionRefs } from './types';
@@ -200,22 +201,22 @@ export default function TripDetailMobile() {
                 <div className="p-4 pb-32">
 
                     <div ref={overviewRef} className="space-y-6 scroll-mt-24">
-                    {sortedBatches.length > 0 && (
-                                <BatchSelection
-                                    batches={sortedBatches}
-                                    selectedBatch={selectedBatch}
-                                    onSelect={setSelectedBatch}
-                                    bestTimeToVisit={basicData?.bestTimeToVisit}
-                                />
-                            )}
+                        {sortedBatches.length > 0 && (
+                            <BatchSelection
+                                batches={sortedBatches}
+                                selectedBatch={selectedBatch}
+                                onSelect={setSelectedBatch}
+                                bestTimeToVisit={basicData?.bestTimeToVisit}
+                            />
+                        )}
                         <OverviewSection
-                            description={{ destination : basicData?.location?.split(',')[0] || '', seats : seatsDisplay ,  }}
+                            description={{ destination: basicData?.location?.split(',')[0] || '', seats: seatsDisplay, }}
                             expanded={expandedOverview}
                             onToggle={() => setExpandedOverview(!expandedOverview)}
                         />
-                        
+
                         <div className="space-y-4">
-                            
+
 
                             {pricingList.length > 1 && (
                                 <TravelOptions
@@ -279,6 +280,10 @@ export default function TripDetailMobile() {
                             <ReviewsSection reviews={tripData.reviews} />
                         </div>
                     )}
+
+                    <div className="my-6">
+                        <SafetySupportSection />
+                    </div>
 
                     {tripData.faqs && tripData.faqs.length > 0 && (
                         <div ref={faqsRef} className="scroll-mt-24">

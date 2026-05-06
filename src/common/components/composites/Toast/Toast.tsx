@@ -2,6 +2,8 @@
 
 import React, { useEffect, useState } from 'react';
 import { CheckCircle2, XCircle, Info, AlertTriangle, X } from 'lucide-react';
+import { useDevice } from '@/common/hooks/useDevice';
+
 
 export type ToastType = 'success' | 'error' | 'info' | 'warning';
 
@@ -102,8 +104,12 @@ interface ToastContainerProps {
 }
 
 export const ToastContainer: React.FC<ToastContainerProps> = ({ toasts, onRemove }) => {
+
+  const { isMobile } = useDevice()
+
+
   return (
-    <div className="fixed bottom-6 right-6 z-50 flex flex-col gap-3 pointer-events-none">
+    <div className={`fixed ${isMobile ? 'top-6' : 'bottom-6' } right-6 z-50 flex flex-col gap-3 pointer-events-none`}>
       <div className="flex flex-col gap-3 pointer-events-auto">
         {toasts.map((toast) => (
           <ToastItem key={toast.id} toast={toast} onRemove={onRemove} />

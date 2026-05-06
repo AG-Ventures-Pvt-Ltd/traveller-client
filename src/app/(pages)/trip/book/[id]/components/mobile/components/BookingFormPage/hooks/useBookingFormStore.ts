@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import type { BookingOptionsResponse, BatchDetails, Coupon } from '../types';
+import type { BookingOptionsResponse, BatchDetails, BookingCreationData, Coupon } from '../types';
 
 interface BookingFormState {
     // Reservation state
@@ -13,9 +13,11 @@ interface BookingFormState {
     selectedTravelIdx: number | null;
     travelInfoIdx: number | null;
     foodPreference: 'veg' | 'non-veg' | null;
-    couponInput: string;
     referralInput: string;
     appliedCoupon: Coupon | null;
+    couponInitialized: boolean;
+    bookingInitialized: boolean;
+    serverSnapshot: BookingCreationData | null;
 
     // Personal details state
     fullName: string;
@@ -47,9 +49,11 @@ interface BookingFormState {
     setSelectedTravelIdx: (idx: number | null) => void;
     setTravelInfoIdx: (idx: number | null) => void;
     setFoodPreference: (pref: 'veg' | 'non-veg' | null) => void;
-    setCouponInput: (code: string) => void;
     setReferralInput: (code: string) => void;
     setAppliedCoupon: (coupon: Coupon | null) => void;
+    setCouponInitialized: (initialized: boolean) => void;
+    setBookingInitialized: (initialized: boolean) => void;
+    setServerSnapshot: (snapshot: BookingCreationData | null) => void;
     setFullName: (name: string) => void;
     setEmail: (email: string) => void;
     setPhone: (phone: string) => void;
@@ -71,9 +75,11 @@ const initialState = {
     selectedTravelIdx: null,
     travelInfoIdx: null,
     foodPreference: null,
-    couponInput: '',
     referralInput: '',
     appliedCoupon: null,
+    couponInitialized: false,
+    bookingInitialized: false,
+    serverSnapshot: null,
     fullName: '',
     email: '',
     phone: '',
@@ -102,9 +108,11 @@ export const useBookingFormStore = create<BookingFormState>((set, get) => ({
     setSelectedTravelIdx: (selectedTravelIdx) => set({ selectedTravelIdx }),
     setTravelInfoIdx: (travelInfoIdx) => set({ travelInfoIdx }),
     setFoodPreference: (foodPreference) => set({ foodPreference }),
-    setCouponInput: (couponInput) => set({ couponInput }),
     setReferralInput: (referralInput) => set({ referralInput }),
-    setAppliedCoupon: (appliedCoupon) => set({ appliedCoupon }),
+    setAppliedCoupon: (appliedCoupon) => set({ appliedCoupon, couponInitialized: true }),
+    setCouponInitialized: (couponInitialized) => set({ couponInitialized }),
+    setBookingInitialized: (bookingInitialized) => set({ bookingInitialized }),
+    setServerSnapshot: (serverSnapshot) => set({ serverSnapshot }),
     setFullName: (fullName) => set({ fullName }),
     setEmail: (email) => set({ email }),
     setPhone: (phone) => set({ phone }),

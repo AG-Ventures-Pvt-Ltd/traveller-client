@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { TagIcon, SealPercentIcon, X } from '@phosphor-icons/react';
 import CollapsibleCard from '@/common/ui/CollapsibleCard';
 import Button from '@/common/ui/Buttons/Button';
@@ -20,21 +21,26 @@ export default function DiscountsSection({
     isOpen,
     onToggle,
 }: DiscountsSectionProps) {
-    const { couponInput, referralInput, setCouponInput, setReferralInput, appliedCoupon, setAppliedCoupon } = useBookingFormStore();
-
+    const { appliedCoupon, setAppliedCoupon } = useBookingFormStore();
+    const [inputValue, setInputValue] = useState('');
     const handleApplyCoupon = () => {
-        // Find the coupon by code
-        const coupon = coupons?.find(c => c.code.toLowerCase() === couponInput.toLowerCase());
+        const coupon = coupons?.find(c => c.code.toLowerCase() === inputValue.toLowerCase());
         if (coupon) {
             setAppliedCoupon(coupon);
-            setCouponInput(''); // Clear input after applying
+            setInputValue('');
         }
     };
 
     const handleRemoveCoupon = () => {
         setAppliedCoupon(null);
-        setCouponInput('');
+        setInputValue('');
     };
+
+    useEffect(() => {
+        if (appliedCoupon) {
+            setInputValue(appliedCoupon.code)
+        }
+    },[appliedCoupon])
 
     return (
         <CollapsibleCard title="Add a discount" defaultOpen={false} isOpen={isOpen} onToggle={onToggle}>
@@ -67,8 +73,8 @@ export default function DiscountsSection({
                         <CustomInput
                             icon={TagIcon}
                             placeholder="Add a coupon"
-                            value={couponInput}
-                            onChange={e => setCouponInput(e.target.value)}
+                            value={inputValue}
+                            onChange={e => setInputValue(e.target.value)}
                         />
                         <button
                             onClick={onViewCoupons}
@@ -80,7 +86,7 @@ export default function DiscountsSection({
                             variant="purple"
                             fullWidth
                             onClick={handleApplyCoupon}
-                            disabled={!couponInput.trim()}
+                            disabled={!inputValue.trim()}
                         >
                             Apply
                         </Button>

@@ -25,15 +25,16 @@ export default function BookingSuccessPage() {
     }
   );
 
-  const handleGoHome = () => router.push('/');
-  const handleViewBookings = () => router.push('/profile?tab=bookings');
-
+  
   if (!orderId) return null;
-
+  
   const isFailed = error || bookingResponse?.bookingStatus === 'failed'
   const isPending = !isFailed && bookingResponse?.bookingStatus !== 'success'
-
+  
   const bookingDetails = bookingResponse?.bookingDetails
+  
+  const handleGoHome = () => router.push('/');
+  const handleViewBookings = () => router.push(`/profile/mytrips/${bookingDetails?.bookingId}`);
 
   if (isLoading) {
     return <LoadingState />;

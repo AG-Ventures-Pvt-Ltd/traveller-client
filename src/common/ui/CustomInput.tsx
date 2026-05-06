@@ -10,6 +10,7 @@ interface CustomInputProps {
   icon?: React.ElementType<any>;
   error?: boolean;
   className?: string;
+  readOnly?: boolean;
 }
 
 const CustomInput: React.FC<CustomInputProps> = ({
@@ -21,8 +22,9 @@ const CustomInput: React.FC<CustomInputProps> = ({
   icon: Icon,
   error = false,
   className = '',
+  readOnly = false,
 }) => {
-  const rowClass = `flex items-center gap-3 px-3 py-5 rounded-xl border ${
+  const rowClass = `flex items-center gap-3 px-3 py-4 rounded-xl border ${
     error ? 'border-red-400' : 'border-zinc-300'
   } ${className}`;
 
@@ -32,13 +34,14 @@ const CustomInput: React.FC<CustomInputProps> = ({
 
   return (
     <div className={rowClass}>
-      {Icon && <Icon className="w-5 h-5 text-black flex-shrink-0" />}
+      {Icon && <Icon className="w-5 h-5 text-black flex-shrink-0" weight='thin'/>}
       <input
         type={type}
         placeholder={placeholder}
         value={value}
         onChange={onChange}
         onBlur={onBlur}
+        readOnly={readOnly}
         className={inputClass}
       />
     </div>

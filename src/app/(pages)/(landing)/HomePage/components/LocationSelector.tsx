@@ -27,7 +27,7 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
     };
 
     return (
-        <div className="flex items-center justify-between w-full">
+        <div className="flex items-center justify-between w-full px-4">
             <div className="flex items-center gap-2">
                 <MapPinAreaIcon size={24} className="w-10 h-10 text-neutral-700" weight="regular" />
                 <div className="flex flex-col">

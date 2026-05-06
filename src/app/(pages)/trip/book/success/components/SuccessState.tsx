@@ -18,9 +18,9 @@ export default function SuccessState({ bookingDetails, handleViewBookings }: Suc
         : '—';
 
     const rows = [
-        { label: 'Transaction ID', value: bookingDetails?.bookingId || '—' },
-        { label: 'Date', value: paymentDate },
-        { label: 'Payment Type', value: bookingDetails?.method || '—' },
+        { label: 'Transaction ID', value: bookingDetails?.transactionId || '—' },
+        { label: 'Payment Date', value: paymentDate },
+        { label: 'Payment Method', value: bookingDetails?.method || '—' },
         { label: 'Total Amount', value: bookingDetails?.grandTotal || '—' },
         { label: 'Status', value: 'Successful', valueClassName: 'text-[#43a047]' },
     ];

@@ -8,17 +8,19 @@ export const setToastHandler = (handler: (type: ToastType, message: string) => v
   addToastFn = handler;
 };
 
+const isValid = (msg?: string) => !!msg?.trim();
+
 export const notify = {
   success: (msg: string) => {
-    if (addToastFn) addToastFn('success', msg);
+    if (isValid(msg) && addToastFn) addToastFn('success', msg);
   },
   error: (msg: string) => {
-    if (addToastFn) addToastFn('error', msg);
+    if (isValid(msg) && addToastFn) addToastFn('error', msg);
   },
   info: (msg: string) => {
-    if (addToastFn) addToastFn('info', msg);
+    if (isValid(msg) && addToastFn) addToastFn('info', msg);
   },
   warning: (msg: string) => {
-    if (addToastFn) addToastFn('warning', msg);
+    if (isValid(msg) && addToastFn) addToastFn('warning', msg);
   },
 };

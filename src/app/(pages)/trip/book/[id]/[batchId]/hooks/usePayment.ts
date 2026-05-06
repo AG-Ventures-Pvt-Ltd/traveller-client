@@ -4,6 +4,7 @@ import { logError } from "@/common/utils/logError";
 import usePostData from "@/services/usePostData";
 import { API_ENDPOINTS } from "@/common/constants/apiEndpoints";
 import { useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 
 interface Order {
   amount: number;
@@ -22,6 +23,10 @@ export const usePayment = () => {
 
   const router = useRouter()
 
+   const params = useParams();
+  
+  const tripId = params.id as string;
+
   const { mutateAsync } = usePostData({ url: API_ENDPOINTS.PAYMENTS.START });
 
   const openRazorpay = (order: Order) => {
@@ -36,6 +41,7 @@ export const usePayment = () => {
         color: '#121212',
       },
       handler: () => {
+        localStorage.removeItem(`booking_${tripId.split('-').pop()}`)
         router.push(`/trip/book/success?orderId=${order.orderId}`)
       },
     };

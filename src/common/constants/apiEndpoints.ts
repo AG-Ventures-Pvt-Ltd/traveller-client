@@ -12,8 +12,10 @@ export const API_ENDPOINTS = {
   BOOKINGS: {
     START: "/api/client/v1/bookings/start",
     GET_BY_ID: (id: string) => `/api/client/v1/bookings/${id}`,
+    GET_TRAVELERS : (id:string) => `/api/client/v1/bookings/${id}/travelers` , 
     DETAILS: (id: string) => `/api/client/v1/bookings/details/${id}`,
     UPDATE_IN_BOOKING_FLOW : (id:string) => `/api/client/v1/bookings/update/${id}`,
+    UPDATE_TRVELERS_DATA : (id : string) =>  `/api/client/v1/bookings/${id}/update/travelers`,
     GET_BOOKING_DETAILS_FOR_UPDATE : (id:string) => `/api/client/v1/bookings/creationflow/${id}`,
     VALIDATE_EMAIL_REGISTRATION : (email : string) => `/api/client/v1/user/validate/email?email=${encodeURIComponent(email)}`
   },

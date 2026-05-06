@@ -1,10 +1,10 @@
 export const formatDate = (date: Date | string): string => {
   const utcDate = new Date(date);
   const istDate = new Date(utcDate.getTime() + (5.5 * 60 * 60 * 1000));
-  const month = istDate.toLocaleDateString('en-US', { month: 'short' });
+  const month = istDate.toLocaleDateString('en-US', { month: 'long' });
   const day = istDate.getDate();
   const year = istDate.getFullYear();
-  return `${month} ${day}, ${year}`;
+  return `${day} ${month}, ${year}`;
 };
 
 export const formatDateSimple = (date: Date | string): string => {

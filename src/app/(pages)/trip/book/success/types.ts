@@ -1,6 +1,7 @@
 export interface BookingDetails {
     tripTitle: string;
     bookingId: string;
+    transactionId: string;
     startDate: string;
     startTime: string;
     numberOfPeople: string;
@@ -16,6 +17,7 @@ export interface BookingResponse {
     paymentStatus: 'success' | 'pending' | 'failed';
     message?: string;
     bookingDetails: BookingDetails;
+    
 }
 
 export type StatusType = 'success' | 'failed' | 'pending';

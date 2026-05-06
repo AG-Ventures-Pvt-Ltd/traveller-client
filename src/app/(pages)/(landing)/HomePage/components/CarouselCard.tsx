@@ -40,7 +40,7 @@ const CarouselCard: React.FC<CarouselCardProps> = ({
   return (
     <div
       onClick={handleCardClick}
-      className={`w-full h-full ${bgColor} rounded-3xl overflow-hidden border-10 ${borderColor} cursor-pointer hover:shadow-lg transition-shadow flex flex-col ${className}`}
+      className={`w-full h-full ${bgColor} rounded-3xl overflow-hidden border-10 ${borderColor} cursor-pointer hover:shadow-lg transition-shadow flex flex-col`}
     >
       <div className="relative h-32 overflow-hidden rounded-3xl">
         <MyImage

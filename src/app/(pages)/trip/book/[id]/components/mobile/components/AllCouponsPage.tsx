@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { SealPercentIcon } from '@phosphor-icons/react';
-import { useBookingStore } from '../../../[batchId]/store/useBookingStore';
 import { useBookingNavStore } from '../../../[batchId]/store/useBookingNavStore';
 import { CouponsSkeleton } from '../BookingStepSkeletons';
 import type { Coupon } from './BookingFormPage/types';
@@ -37,19 +36,15 @@ function getCouponSaveLine(coupon: Coupon): string {
 }
 
 export default function AllCouponsPage({ tripId, onDone }: AllCouponsPageProps) {
-    
 
-    const { couponCode, setCouponCode } = useBookingStore();
-
-    const { email, appliedCoupon, setAppliedCoupon } = useBookingFormStore()
-
+    const { email, appliedCoupon, setAppliedCoupon } = useBookingFormStore();
     const { setContinueAction } = useBookingNavStore();
 
     const [selectedCode, setSelectedCode] = useState<string>(appliedCoupon?.code ?? '');
 
     const { data : coupons , isLoading } = useGetData<Coupon[]>(API_ENDPOINTS.DISCOUNTS.GET_AVAILABLE(tripId, email), {
         queryKey: ['discounts', tripId, email],
-    })
+    });
 
     const onDoneRef = useRef(onDone);
     onDoneRef.current = onDone;
@@ -61,12 +56,10 @@ export default function AllCouponsPage({ tripId, onDone }: AllCouponsPageProps) 
                 setAppliedCoupon(selectedCoupon);
             }
         } else {
-            // User deselected — clear the coupon
             setAppliedCoupon(null);
         }
-        setCouponCode(selectedCode);
         onDoneRef.current();
-    }, [selectedCode, coupons, setAppliedCoupon, setCouponCode]);
+    }, [selectedCode, coupons, setAppliedCoupon]);
 
     useEffect(() => {
         setContinueAction(() => handleDone());

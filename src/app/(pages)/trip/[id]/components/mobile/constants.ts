@@ -1,3 +1,5 @@
+
+
 export const CAROUSEL_AUTO_SCROLL_INTERVAL = 4000;
 export const CAROUSEL_RESUME_DELAY = 5000;
 export const OVERVIEW_PREVIEW_LENGTH = 100;
@@ -28,3 +30,5 @@ export const NAV_SECTION_IDS = {
     CANCELLATION: 'cancellation',
     REFUND: 'refund',
 } as const;
+
+

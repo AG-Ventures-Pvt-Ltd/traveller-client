@@ -37,11 +37,11 @@ const MobileModal: React.FC<MobileModalProps> = ({ isOpen, onClose, title, child
       <div className="fixed inset-0 z-50 flex items-end md:items-center md:justify-center">
         <div className="bg-white w-full md:w-auto md:max-w-lg md:rounded-3xl rounded-t-3xl max-h-[90vh] flex flex-col animate-slideUp">
           {/* Header */}
-          <div className="flex items-center justify-between p-6 border-b border-gray-200">
-            <h2 className="text-xl font-bold text-neutral-900">{title}</h2>
+          <div className="flex items-center justify-between p-6">
+            <h2 className="font-bold text-neutral-900 w-full text-center">{title}</h2>
             <button
               onClick={onClose}
-              className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors"
+              className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors absolute end-4"
             >
               <X className="w-5 h-5 text-neutral-900" />
             </button>

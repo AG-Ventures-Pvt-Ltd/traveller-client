@@ -54,7 +54,12 @@ export default function BookingFormPage({ tripId, batchId, onViewCoupons }: Book
     const { setContinueAction } = useBookingNavStore()
 
     const { data: bookingOptionsData, isLoading: isBookingOptionsLoadingData } = useGetData<BookingOptionsResponse>(
-        tripId ? API_ENDPOINTS.TRIPS.BOOKING_OPTIONS(tripId, batchId) : ''
+        tripId ? API_ENDPOINTS.TRIPS.BOOKING_OPTIONS(tripId, batchId) : '',
+        {
+            queryKey: [tripId ? API_ENDPOINTS.TRIPS.BOOKING_OPTIONS(tripId, batchId) : ''],
+            refetchOnMount: true,
+            staleTime: 0,
+        }
     );
 
     const { handleContinue } = useCreateBooking(tripId)
