@@ -16,6 +16,7 @@ export interface HostProfile {
     active: number;
     inactive: number;
   };
+  username : string;
   createdAt: string;
 }
 

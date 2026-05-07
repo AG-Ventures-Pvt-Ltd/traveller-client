@@ -5,11 +5,20 @@ import BackButton from "@/common/ui/BackButton";
 import { HostTrips } from "./components/HostTrips/HostTrips";
 import { HostReviews } from "./components/HostReviews/HostReviews";
 import HostProfileCard from "./components/HostProfileCard/HostProfileCard";
+import { useDevice } from "@/common/hooks/useDevice";
+import HostProfileMobile from "./components/mobile/HostProfileMobile";
 
 
 export default function HostPage() {
   const params = useParams();
   const id = params.id as string;
+
+  const { isMobile } = useDevice()
+
+  if (isMobile) {
+    return <HostProfileMobile/>
+  }
+
 
   return (
     <div className="min-h-screen bg-white px-3 sm:px-6">

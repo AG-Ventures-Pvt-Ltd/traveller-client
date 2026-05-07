@@ -53,7 +53,11 @@ export const API_ENDPOINTS = {
     UPDATE: "/api/client/v1/user/me/update",
     GET_EMERGENCY_CONTACT: "/api/client/v1/user/emergencyContact",
     ADD_EMERGENCY_CONTACT: "/api/client/v1/user/addEmergencyContact"
-  }, RATINGS: {
+  }, 
+  HOST : {
+    TRIPS : (id: string) => `/api/client/v1/trips/host/${id}`,
+  },
+  RATINGS: {
     BY_USERNAME: (username: string, page?: number, limit?: number) => {
       const params = new URLSearchParams();
       if (page) params.append('page', page.toString());

@@ -39,3 +39,4 @@ const MyImage = ({ src, alt,className,rounded, objectFit = 'cover', fill = true,
 }
 
 export default MyImage;
+export type { WondrrImageProps };

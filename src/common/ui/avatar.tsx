@@ -1,24 +1,25 @@
 "use client";
 
 import * as React from "react";
-import Image from "next/image";
+import MyImage, { WondrrImageProps } from "./Image";
+
 
 import { cn } from "./utils";
 
-interface AvatarImageProps extends Omit<React.ComponentProps<typeof Image>, 'onLoad' | 'onError'> {
+interface AvatarImageProps extends Omit<WondrrImageProps, 'onLoad' | 'onError'> {
   onLoadingStatusChange?: (status: "loading" | "loaded" | "error") => void;
 }
 
 function Avatar({ className, children, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   const [imageStatus, setImageStatus] = React.useState<"loading" | "loaded" | "error">("loading");
 
-  const avatarImage = React.Children.toArray(children).find(
+  const avatarImage = React.useMemo(() => React.Children.toArray(children).find(
     (child) => React.isValidElement(child) && child.type === AvatarImage
-  ) as React.ReactElement<AvatarImageProps> | undefined;
+  ) as React.ReactElement<AvatarImageProps> | undefined, [children]);
 
-  const avatarFallback = React.Children.toArray(children).find(
+  const avatarFallback = React.useMemo(() => React.Children.toArray(children).find(
     (child) => React.isValidElement(child) && child.type === AvatarFallback
-  );
+  ), [children]);
 
   React.useEffect(() => {
     if (!avatarImage || !avatarImage.props.src) {
@@ -26,7 +27,7 @@ function Avatar({ className, children, ...props }: React.HTMLAttributes<HTMLDivE
     } else {
       setImageStatus("loading");
     }
-  }, [avatarImage]);
+  }, [avatarImage?.props.src]);
 
   const showFallback = imageStatus === "error";
 
@@ -52,17 +53,15 @@ function AvatarImage({
   className,
   onLoadingStatusChange,
   alt = "",
-  width = 40,
-  height = 40,
+  fill = true,
   ...props
 }: AvatarImageProps) {
   return (
-    <Image
+    <MyImage
       data-slot="avatar-image"
       className={cn("aspect-square size-full object-cover", className)}
       alt={alt}
-      width={typeof width === 'number' ? width : 40}
-      height={typeof height === 'number' ? height : 40}
+      fill={fill}
       onLoad={() => onLoadingStatusChange?.("loaded")}
       onError={() => onLoadingStatusChange?.("error")}
       {...props}
