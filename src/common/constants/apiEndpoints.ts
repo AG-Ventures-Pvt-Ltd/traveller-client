@@ -55,7 +55,7 @@ export const API_ENDPOINTS = {
     ADD_EMERGENCY_CONTACT: "/api/client/v1/user/addEmergencyContact"
   }, 
   HOST : {
-    TRIPS : (id: string) => `/api/client/v1/trips/host/${id}`,
+    TRIPS : (id: string) => `/api/client/v1/trips/host/profile/${id}`,
   },
   RATINGS: {
     BY_USERNAME: (username: string, page?: number, limit?: number) => {
