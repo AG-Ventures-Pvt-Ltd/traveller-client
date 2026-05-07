@@ -23,9 +23,11 @@ export const STATIC_REFUND_POLICY = {
 
 export const NAV_SECTION_IDS = {
     OVERVIEW: 'overview',
+    HIGHLIGHTS: 'highlights',
     ITINERARY: 'itinerary',
     INCLUSIONS: 'inclusions',
     REVIEWS: 'reviews',
+    TRIP_SUPPORT: 'trip-support',
     FAQS: 'faqs',
     CANCELLATION: 'cancellation',
     REFUND: 'refund',

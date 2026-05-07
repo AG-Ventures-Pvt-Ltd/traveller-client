@@ -30,25 +30,30 @@ export default function ItinerarySection({
             <div className="bg-[#e2f4a6] rounded-[16px] sticky top-8 z-15 p-4">
                 <p className="text-md font-medium text-black mb-3">Trip Itinerary</p>
                 <div className="flex gap-3 overflow-x-auto bg-white p-3 rounded-xl scrollbar-hide">
-                    {itinerary.map((_, dayIndex: number) => {
-                        const dayDate = getDayDate(dayIndex);
-                        return (
-                            <button
-                                key={dayIndex}
-                                className={`h-14 rounded-xl text-md font-medium whitespace-nowrap transition-all flex ${selectedDay === dayIndex
-                                        ? 'bg-[#EEA0FF] text-black border-0'
-                                        : 'border border-black text-black hover:bg-gray-100'
-                                    }`}
-                                onClick={() => onDaySelect(dayIndex)}
-                            >
-                                <span className={`text-[13px] font-medium transform rotate-180 whitespace-nowrap [writing-mode:vertical-lr] h-full flex items-center justify-center rounded-tr-xl rounded-br-xl py-1  ${selectedDay === dayIndex ? "bg-black text-white" : "border-l"
-                                    }`}>
-                                    {dayDate}
-                                </span>
-                                <span className='px-3 flex items-center text-lg'>Day {dayIndex + 1}</span>
-                            </button>
-                        );
-                    })}
+                    {/* Fixes trailing padding clip in overflow scroll */}
+                    <div className="flex gap-3 pr-3">
+                        {itinerary.map((_, dayIndex: number) => {
+                            const dayDate = getDayDate(dayIndex);
+                            const isSelected = selectedDay === dayIndex;
+                            return (
+                                <button
+                                    key={dayIndex}
+                                    className={`h-14 rounded-xl text-md font-medium whitespace-nowrap transition-all flex overflow-hidden ${isSelected
+                                            ? 'bg-[#EEA0FF] text-black border-0'
+                                            : 'border border-black text-black hover:bg-gray-100'
+                                        }`}
+                                    onClick={() => onDaySelect(dayIndex)}
+                                >
+                                    <span className={`text-[13px] font-medium transform rotate-180 whitespace-nowrap [writing-mode:vertical-lr] h-full flex items-center justify-center rounded-tr-xl rounded-br-xl py-1 px-[3px] ${isSelected ? "bg-black text-white" : "border-l border-black"
+                                        }`}>
+                                        {dayDate}
+                                    </span>
+                                    {/* pl-4 instead of px-3 gives breathing room from the border */}
+                                    <span className='pl-4 pr-3 flex items-center text-lg'>Day {dayIndex + 1}</span>
+                                </button>
+                            );
+                        })}
+                    </div>
                 </div>
             </div>
 
@@ -63,7 +68,7 @@ export default function ItinerarySection({
                         <span className="absolute left-9.5 top-11 -bottom-4 border-l-1 border-dashed border-black z-0" />
                         <button
                             onClick={() => onDayToggle(dayIndex)}
-                            className="w-full flex items-center justify-between gap-3 hover:opacity-80 transition-opacity relative z-10"
+                            className="w-full flex items-center justify-between gap-3 hover:opacity-80 transition-opacity relative z-10 p-2 rounded-lg"
                         >
                             <div className="flex items-center gap-3">
                                 <span className="bg-yellow-400 text-black rounded-full px-4 py-2 text-lg font-medium flex-shrink-0">
@@ -79,10 +84,10 @@ export default function ItinerarySection({
                             />
                         </button>
                         <div
-                            className={`overflow-hidden transition-all duration-300 ease-in-out ${expandedDays[dayIndex] ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+                            className={`overflow-hidden transition-all duration-300 ease-in-out ${expandedDays[dayIndex] ? 'max-h-96 opacity-100 pb-4' : 'max-h-0 opacity-0'
                                 }`}
                         >
-                            <div className="pl-23 pt-3">
+                            <div className="pl-20 pt-3">
                                 <p className="text-sm text-gray-700 pb-3 border-b border-[#d9d9d9] last:border-b-0">
                                     {day.description}
                                 </p>

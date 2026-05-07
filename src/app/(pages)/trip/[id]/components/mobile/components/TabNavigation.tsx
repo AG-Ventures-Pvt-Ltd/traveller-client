@@ -10,10 +10,10 @@ export default function TabNavigation({ sections, activeSection, onSectionClick 
                     <button
                         key={section.id}
                         onClick={() => onSectionClick(section.id)}
-                        className={`px-3 py-1 rounded-full text-lg font-medium whitespace-nowrap transition-all ${
+                        className={`px-3 py-1 rounded-full font-medium whitespace-nowrap transition-all ${
                             activeSection === section.id
                                 ? 'bg-yellow-400 text-black'
-                                : 'border-2 border-yellow-400 text-black hover:bg-yellow-50'
+                                : 'border border-yellow-400 text-black hover:bg-yellow-50'
                         }`}
                     >
                         {section.label}

@@ -45,7 +45,7 @@ export function MobileRatingOverview({
       </p>
 
       {/* Distribution bars */}
-      <div className="w-full flex flex-col gap-[10px] mt-[8px]">
+      {/* <div className="w-full flex flex-col gap-[10px] mt-[8px]">
         {distribution
           .slice()
           .sort((a, b) => b.stars - a.stars)
@@ -66,7 +66,7 @@ export function MobileRatingOverview({
               </span>
             </div>
           ))}
-      </div>
+      </div> */}
     </div>
   )
 }

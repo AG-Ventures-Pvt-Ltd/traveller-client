@@ -16,7 +16,6 @@ import BatchSelection from './components/BatchSelection';
 import TravelOptions from './components/TravelOptions';
 import ItinerarySection from './components/ItinerarySection';
 import InclusionsSection from './components/InclusionsSection';
-import ReviewsSection from './components/ReviewsSection';
 import FAQsSection from './components/FAQsSection';
 import { CancellationPolicySection } from './components/PoliciesSection';
 import BookingBar from './components/BookingBar';
@@ -26,6 +25,7 @@ import { NAV_SECTION_IDS } from './constants';
 import { NavSection, SectionRefs } from './types';
 import { getSeatsDisplay } from '@/common/utils/seatsDisplay';
 import { StarIcon } from '@phosphor-icons/react';
+import { MobileReviewSection } from '@/app/(pages)/[id]/components/mobile/components/MobileReviewSection';
 
 
 export default function TripDetailMobile() {
@@ -49,9 +49,11 @@ export default function TripDetailMobile() {
 
     // Section refs for smooth scrolling
     const overviewRef = useRef<HTMLDivElement>(null);
+    const highlightsRef = useRef<HTMLDivElement>(null);
     const itineraryRef = useRef<HTMLDivElement>(null);
     const inclusionsRef = useRef<HTMLDivElement>(null);
     const reviewsRef = useRef<HTMLDivElement>(null);
+    const tripSupportRef = useRef<HTMLDivElement>(null);
     const faqsRef = useRef<HTMLDivElement>(null);
     const cancellationPolicyRef = useRef<HTMLDivElement>(null);
     const refundPolicyRef = useRef<HTMLDivElement>(null);
@@ -112,20 +114,30 @@ export default function TripDetailMobile() {
     // Build available sections based on data
     const availableSections = useMemo<NavSection[]>(() => {
         const sections: NavSection[] = [{ id: NAV_SECTION_IDS.OVERVIEW, label: 'Overview' }];
+
+        if (tripData?.highlights && tripData.highlights.length > 0) {
+            sections.push({ id: NAV_SECTION_IDS.HIGHLIGHTS, label: 'Highlights' });
+        }
+
         if (tripData?.itinerary && tripData.itinerary.length > 0) {
             sections.push({ id: NAV_SECTION_IDS.ITINERARY, label: 'Itinerary' });
         }
+
         if ((tripData?.inclusions && tripData.inclusions.length > 0) || (tripData?.exclusions && tripData.exclusions.length > 0)) {
             sections.push({ id: NAV_SECTION_IDS.INCLUSIONS, label: 'Inclusions' });
         }
+
         if (tripData?.reviews && tripData.reviews.length > 0) {
             sections.push({ id: NAV_SECTION_IDS.REVIEWS, label: 'Reviews' });
         }
+
+        sections.push({ id: NAV_SECTION_IDS.TRIP_SUPPORT, label: 'Trip Support' });
+
         if (tripData?.faqs && tripData.faqs.length > 0) {
             sections.push({ id: NAV_SECTION_IDS.FAQS, label: 'FAQs' });
         }
+
         sections.push({ id: NAV_SECTION_IDS.CANCELLATION, label: 'Cancellation' });
-        sections.push({ id: NAV_SECTION_IDS.REFUND, label: 'Refund' });
         return sections;
     }, [tripData]);
 
@@ -152,19 +164,20 @@ export default function TripDetailMobile() {
     };
 
     const sectionRefs: SectionRefs = {
-        overviewRef, itineraryRef, inclusionsRef, reviewsRef, faqsRef, cancellationPolicyRef, refundPolicyRef,
+        overviewRef, highlightsRef, itineraryRef, inclusionsRef, reviewsRef, tripSupportRef, faqsRef, cancellationPolicyRef, refundPolicyRef,
     };
 
     const scrollToSection = (sectionId: string) => {
         setActiveSection(sectionId);
         const refMap: Record<string, React.RefObject<HTMLDivElement | null>> = {
             [NAV_SECTION_IDS.OVERVIEW]: sectionRefs.overviewRef,
+            [NAV_SECTION_IDS.HIGHLIGHTS]: sectionRefs.highlightsRef,
             [NAV_SECTION_IDS.ITINERARY]: sectionRefs.itineraryRef,
             [NAV_SECTION_IDS.INCLUSIONS]: sectionRefs.inclusionsRef,
             [NAV_SECTION_IDS.REVIEWS]: sectionRefs.reviewsRef,
+            [NAV_SECTION_IDS.TRIP_SUPPORT]: sectionRefs.tripSupportRef,
             [NAV_SECTION_IDS.FAQS]: sectionRefs.faqsRef,
             [NAV_SECTION_IDS.CANCELLATION]: sectionRefs.cancellationPolicyRef,
-            [NAV_SECTION_IDS.REFUND]: sectionRefs.refundPolicyRef,
         };
         const ref = refMap[sectionId];
         if (ref?.current) {
@@ -192,10 +205,10 @@ export default function TripDetailMobile() {
                 <div className='px-6'>
                     <div className='flex justify-between'>
                         <p className='font-bold text-2xl'>{basicData?.title}</p>
-                        <div className='bg-[#616161] text-white flex items-center my-0 px-2 rounded-xl'>
+                        {/* <div className='bg-[#616161] text-white flex items-center my-0 px-2 rounded-xl'>
                             <StarIcon weight='fill' className='text-[#FFC107] mr-1' />
                             <span className='font-bold'>{detailedData?.rating}<span className='font-normal'> ({detailedData?.totalReviews})</span></span>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
                 <div className="p-4 pb-32">
@@ -209,6 +222,12 @@ export default function TripDetailMobile() {
                                 bestTimeToVisit={basicData?.bestTimeToVisit}
                             />
                         )}
+                        {tripData?.host && (
+                        <HostedBy
+                            host={tripData.host}
+                            onPress={() => router.push(`/${tripData.host!.username}`)}
+                        />
+                    )}
                         <OverviewSection
                             description={{ destination: basicData?.location?.split(',')[0] || '', seats: seatsDisplay, }}
                             expanded={expandedOverview}
@@ -230,7 +249,7 @@ export default function TripDetailMobile() {
                         </div>
                     </div>
                     {tripData.highlights && tripData.highlights.length > 0 && (
-                        <div className="px-4 py-4 mt-6 border border-[#D9D9D9] rounded-2xl">
+                        <div ref={highlightsRef} className="scroll-mt-24 px-4 py-4 mt-6 border border-[#D9D9D9] rounded-2xl">
                             <TripHighlights highlights={tripData.highlights} />
                         </div>
                     )}
@@ -260,12 +279,7 @@ export default function TripDetailMobile() {
                             />
                         </div>
                     )}
-                    {tripData?.host && (
-                        <HostedBy
-                            host={tripData.host}
-                            onPress={() => router.push(`/${tripData.host!.username}`)}
-                        />
-                    )}
+                    
                     {((tripData.inclusions && tripData.inclusions.length > 0) || (tripData.exclusions && tripData.exclusions.length > 0)) && (
                         <div ref={inclusionsRef} className="scroll-mt-24">
                             <InclusionsSection
@@ -274,14 +288,11 @@ export default function TripDetailMobile() {
                             />
                         </div>
                     )}
+                    <div ref={reviewsRef} className='scroll-mt-24 mt-6'>
+                        <MobileReviewSection tripId={slug?.split('-').pop()}/>
+                    </div>    
 
-                    {tripData.reviews && tripData.reviews.length > 0 && (
-                        <div ref={reviewsRef} className="scroll-mt-24">
-                            <ReviewsSection reviews={tripData.reviews} />
-                        </div>
-                    )}
-
-                    <div className="my-6">
+                    <div ref={tripSupportRef} className="scroll-mt-24 my-6">
                         <SafetySupportSection />
                     </div>
 

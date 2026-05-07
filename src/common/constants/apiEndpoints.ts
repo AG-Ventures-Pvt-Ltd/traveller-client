@@ -72,4 +72,8 @@ export const API_ENDPOINTS = {
   REFERRAL: {
     GET_MY_REFERRAL_DATA: '/api/client/v1/referrals/me'
   },
+  REVIEW : {
+    PROFILE : (id: string) => `/api/client/v1/user/reviews/${id}`,
+    TRIP : (id: string) => `/api/client/v1/trips/reviews/${id}`,
+  }
 };
