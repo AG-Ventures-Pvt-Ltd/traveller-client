@@ -31,10 +31,10 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
             <div className="flex items-center gap-2">
                 <MapPinAreaIcon size={24} className="w-10 h-10 text-neutral-700" weight="regular" />
                 <div className="flex flex-col">
-                    <span className="text-neutral-700 text-sm font-medium font-['Satoshi']">
+                    <span className="text-neutral-700 text-sm font-medium">
                         Currently viewing for
                     </span>
-                    <p className="text-neutral-900 text-2xl sm:text-3xl font-bold font-['Satoshi']">
+                    <p className="text-neutral-900 text-2xl sm:text-3xl font-bold">
                         {location}
                     </p>
                 </div>

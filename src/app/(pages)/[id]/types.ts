@@ -4,6 +4,7 @@ export interface HostProfile {
   yearsOfExperience: string;
   bio: string;
   avatar?: string;
+  certificates : string[];
   stats: HostStats;
   rating: number;
   reviewCount: number;

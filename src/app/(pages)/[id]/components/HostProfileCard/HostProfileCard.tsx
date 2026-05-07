@@ -66,8 +66,8 @@ export default function HostProfileCard() {
                 <div className="flex flex-col items-center  gap-3 text-center">
                     <HostAvatar avatar={fetchedHost.avatar} fullName={fetchedHost.fullName} />
                     <div className="flex flex-col items-center  gap-1">
-                        <h2 className="text-neutral-900 text-base font-bold font-['Satoshi'] leading-6">{fetchedHost.fullName}</h2>
-                        <p className="text-neutral-900 text-xs font-bold font-['Satoshi']">{fetchedHost.yearsOfExperience} yrs exp</p>
+                        <h2 className="text-neutral-900 text-base font-bold  leading-6">{fetchedHost.fullName}</h2>
+                        <p className="text-neutral-900 text-xs font-bold ">{fetchedHost.yearsOfExperience} yrs exp</p>
                     </div>
                 </div>
                 <div className="flex flex-col gap-2">
@@ -76,13 +76,13 @@ export default function HostProfileCard() {
                             const showNewChip = (isRating || isReview) && value === "0";
                             return (
                                 <div key={label} className="flex items-center gap-6">
-                                    <span className="text-neutral-700 text-xs font-medium font-['Satoshi']">{label}</span>
+                                    <span className="text-neutral-700 text-xs font-medium ">{label}</span>
                                     <div className="flex items-center gap-1">
                                         {Icon && !showNewChip && <Icon className="w-3 h-3 text-neutral-900" fill="currentColor" strokeWidth={0} />}
                                         {showNewChip ? (
-                                            <span className="bg-neutral-800 text-white px-2 py-0.5 rounded-full text-xs font-bold font-['Satoshi']">New</span>
+                                            <span className="bg-neutral-800 text-white px-2 py-0.5 rounded-full text-xs font-bold ">New</span>
                                         ) : (
-                                            <span className="text-neutral-900 text-sm font-bold font-['Satoshi']">{value}</span>
+                                            <span className="text-neutral-900 text-sm font-bold">{value}</span>
                                         )}
                                     </div>
                                 </div>
@@ -99,8 +99,8 @@ export default function HostProfileCard() {
                     <div className="sm:hidden">
                         <div className="h-px bg-gray-200 sm:hidden mb-4" />
                         <div className="flex items-center justify-between w-full">
-                            <h3 className="text-neutral-900 text-sm font-bold font-['Satoshi']">Based In</h3>
-                            <span className="text-neutral-600 text-sm font-medium font-['Satoshi']">
+                            <h3 className="text-neutral-900 text-sm font-bold ">Based In</h3>
+                            <span className="text-neutral-600 text-sm font-medium ">
                                 {location}
                             </span>
                         </div>
@@ -110,16 +110,16 @@ export default function HostProfileCard() {
             <div className="h-px bg-gray-200 sm:hidden" />
 
             <div className="flex flex-col gap-2 sm:hidden">
-                <h3 className="text-neutral-900 text-sm font-bold font-['Satoshi']">About</h3>
-                <p className="text-neutral-700 text-xs font-medium font-['Satoshi'] leading-5">{fetchedHost.bio}</p>
+                <h3 className="text-neutral-900 text-sm font-bold ">About</h3>
+                <p className="text-neutral-700 text-xs font-medium  leading-5">{fetchedHost.bio}</p>
             </div>
 
             <div className="hidden sm:flex sm:flex-col sm:gap-4">
                 <div className="flex flex-col items-center gap-5">
                     <HostAvatar avatar={fetchedHost.avatar} fullName={fetchedHost.fullName} />
                     <div className="flex flex-col items-center gap-1 text-center">
-                        <h2 className="text-neutral-900 text-2xl lg:text-3xl font-bold font-['Satoshi'] leading-8">{fetchedHost.fullName}</h2>
-                        <p className="text-neutral-900 text-sm font-bold font-['Satoshi']">{fetchedHost.yearsOfExperience} yrs exp</p>
+                        <h2 className="text-neutral-900 text-2xl lg:text-3xl font-bold  leading-8">{fetchedHost.fullName}</h2>
+                        <p className="text-neutral-900 text-sm font-bold ">{fetchedHost.yearsOfExperience} yrs exp</p>
 
                     </div>
                 </div>
@@ -128,8 +128,8 @@ export default function HostProfileCard() {
                         <div>
                             <div className="h-px bg-gray-200" />
                             <div className="flex items-center justify-between mt-4 w-full">
-                                <h3 className="text-neutral-900 text-base font-bold font-['Satoshi']">Based In</h3>
-                                <span className="text-neutral-600 text-base font-medium font-['Satoshi']">
+                                <h3 className="text-neutral-900 text-base font-bold ">Based In</h3>
+                                <span className="text-neutral-600 text-base font-medium ">
                                     {location}
                                 </span>
                             </div>
@@ -138,8 +138,8 @@ export default function HostProfileCard() {
                 <div className="h-px bg-gray-200" />
 
                 <div className="flex flex-col gap-2">
-                    <h3 className="text-neutral-900 text-base font-bold font-['Satoshi']">About</h3>
-                    <p className="text-neutral-700 text-sm font-medium font-['Satoshi'] leading-5">{fetchedHost.bio}</p>
+                    <h3 className="text-neutral-900 text-base font-bold ">About</h3>
+                    <p className="text-neutral-700 text-sm font-medium  leading-5">{fetchedHost.bio}</p>
                 </div>
 
                 <div className="h-px bg-gray-200" />
@@ -150,13 +150,13 @@ export default function HostProfileCard() {
                             const showNewChip = (isRating || isReview) && value === "0";
                             return (
                                 <div key={label} className="flex justify-between items-center gap-3">
-                                    <span className="text-neutral-700 text-sm font-medium font-['Satoshi']">{label}</span>
+                                    <span className="text-neutral-700 text-sm font-medium ">{label}</span>
                                     <div className="flex items-center gap-1">
                                         {Icon && !showNewChip && <Icon className="w-4 h-4 text-neutral-900" fill="currentColor" strokeWidth={0} />}
                                         {showNewChip ? (
-                                            <span className="bg-neutral-800 text-white px-3 py-1 rounded-full text-sm font-bold font-['Satoshi']">New</span>
+                                            <span className="bg-neutral-800 text-white px-3 py-1 rounded-full text-sm font-bold ">New</span>
                                         ) : (
-                                            <span className="text-neutral-900 text-xl font-bold font-['Satoshi']">{value}</span>
+                                            <span className="text-neutral-900 text-xl font-bold ">{value}</span>
                                         )}
                                     </div>
                                 </div>

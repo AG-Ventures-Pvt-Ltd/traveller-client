@@ -41,7 +41,7 @@ export function MobileRatingOverview({
       </div>
 
       <p className="text-[14px] text-black tracking-tight">
-        Based on {totalReviews}+ reviews
+        Based on {totalReviews} reviews
       </p>
 
       {/* Distribution bars */}

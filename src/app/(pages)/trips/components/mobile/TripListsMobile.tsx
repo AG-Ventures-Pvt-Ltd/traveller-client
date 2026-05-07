@@ -3,13 +3,13 @@
 'use client';
 
 import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import BackButton from '@/common/ui/BackButton';
 import FilterModal from '../FilterModal';
 import { FilterValues } from '../TripFilters';
 import { useGetData } from '@/services/useGetData';
-import CarouselCard from '@/app/(pages)/(landing)/HomePage/components/CarouselCard';
 import SkeletonCard from './SkeletonCard';
+import { TripCard } from './TripCard';
 import { FunnelIcon } from '@phosphor-icons/react';
 
 
@@ -52,6 +52,7 @@ const EMPTY_FILTERS: FilterValues = {
 };
 
 const TripListsMobile = () => {
+    const router = useRouter();
     const searchParams = useSearchParams();
     const destination = searchParams.get('destination');
 
@@ -66,8 +67,16 @@ const TripListsMobile = () => {
     const isFetchingMore = useRef(false);
     const hasMoreRef = useRef(true);
     const isLoadingRef = useRef(false);
-
+    
+    const qParam = searchParams.get('q');
     const apiUrl = useMemo(() => {
+
+        if (qParam) {
+            // If 'q' query param is present, use v2/search endpoint with q param
+            return `api/client/v1/trips/v2/search?q=${encodeURIComponent(qParam)}`;
+        }
+
+        // If no 'q' query param, use current logic
         const params = new URLSearchParams();
 
         if (appliedFilters.tourTypes.length > 0) {
@@ -89,8 +98,9 @@ const TripListsMobile = () => {
         params.append('page', page.toString());
         params.append('limit', PAGE_SIZE.toString());
 
+
         return `api/client/v1/trips/search?${params.toString()}`;
-    }, [appliedFilters, destination, page]);
+    }, [appliedFilters, destination, page, searchParams]);
 
     const { data: tripsData, isLoading, error } = useGetData<TripsResponse>(apiUrl, {
         queryKey: [apiUrl],
@@ -168,9 +178,9 @@ const TripListsMobile = () => {
     return (
         <div className="min-h-screen bg-[#FFF9F4] px-4 pt-4 pb-8">
             <BackButton label='Back to Home' />
-            <div className="flex items-center justify-between my-3">
-                <h1 className="text-4xl font-bold text-black mb-1">
-                    {destination ? `Results for ${destination}` : 'All Trips'}
+            <div className="flex items-center justify-between my-3 px-4 pt-2">
+                <h1 className="text-3xl font-bold text-black mb-1">
+                    {qParam ? `Results for ${qParam}` : 'Explore'}
 
                 </h1>
                 <button
@@ -181,6 +191,10 @@ const TripListsMobile = () => {
                     Filters
                 </button>
             </div>
+            {/* <div className='flex gap-4 items-center mb-4'>
+                <span className='border rounded-full py-1 px-3'>Experiences</span>
+                <span>Destinations</span>
+            </div> */}
 
             {!tripsData && !isInitialLoading && (
                 <div className="mb-5" />
@@ -192,8 +206,8 @@ const TripListsMobile = () => {
                 onApplyFilters={handleApplyFilters}
             />
             {isInitialLoading && (
-                <div className="grid grid-cols-2 gap-3">
-                    {Array.from({ length: 6 }).map((_, index) => (
+                <div className="flex flex-col gap-3">
+                    {Array.from({ length: 4 }).map((_, index) => (
                         <SkeletonCard key={`skeleton-${index}`} />
                     ))}
                 </div>
@@ -206,25 +220,27 @@ const TripListsMobile = () => {
                 </div>
             )}
 
-            {/* 2-column card grid */}
+            {/* Card list */}
             {allTrips.length > 0 && (
-                <div className="grid grid-cols-2 gap-3">
+                <div className="flex flex-col gap-3">
                     {allTrips.map((trip, index) => {
-                        const colorScheme = (['yellow', 'purple', 'green'] as const)[index % 3];
+                        const CARD_COLORS = ['#FFD976', '#EEA0FF', '#E2F4A6'];
+                        const bgColor = CARD_COLORS[index % CARD_COLORS.length];
 
                         return (
-                            <div key={`${trip.slug}-${index}`} className=''>
-                                <CarouselCard
-                                    id={trip.slug}
-                                    image={trip.image}
-                                    title={trip.title}
-                                    provider={trip.hostName}
-                                    duration={trip.days}
-                                    price={trip.price}
-                                    rating={trip.rating}
-                                    colorScheme={colorScheme}
-                                />
-                            </div>
+                            <TripCard
+                                key={`${trip.slug}-${index}`}
+                                title={trip.title}
+                                image={trip.image}
+                                address={trip.address}
+                                rating={trip.rating}
+                                price={trip.price}
+                                hostName={trip.hostName}
+                                slug={trip.slug}
+                                days={trip.days}
+                                bgColor={bgColor}
+                                onClick={(slug) => router.push(`/trip/${slug}`)}
+                            />
                         );
                     })}
                 </div>

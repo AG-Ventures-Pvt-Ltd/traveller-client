@@ -14,7 +14,7 @@ const HostAvatar: React.FC<HostAvatarProps> = ({ avatar, fullName, className }) 
         <AvatarImage src={avatar} alt={fullName || 'Host'} />
       ) : null}
       <AvatarFallback name={fullName}>
-        {fullName ? fullName.split(' ').map(n => n[0]).join('').toUpperCase() : 'H'}
+        {fullName ? fullName.split(' ').map(n => n[0]).join('').toUpperCase() : 'W'}
       </AvatarFallback>
     </Avatar>
   )

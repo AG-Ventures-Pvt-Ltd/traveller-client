@@ -52,6 +52,11 @@ export function MobileReviewSection({
   const { data } = useGetData<TripReviewResponse>(reviewURL)
 
 
+  if (data?.reviews.length == 0) {
+    return <></>
+  }
+
+
   return (
     <CollapsibleCard title='Reviews' className="bg-[#EDEDED] border border-[#D9D9D9] rounded-[16px] overflow-hidden">
 

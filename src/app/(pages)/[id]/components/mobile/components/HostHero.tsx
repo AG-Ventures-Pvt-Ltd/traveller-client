@@ -11,6 +11,7 @@ import { useParams } from 'next/navigation'
 import { useGetData } from '@/services/useGetData'
 import { HostProfile } from '../../../types'
 import { API_ENDPOINTS } from '@/common/constants/apiEndpoints'
+import { HostHeroSkeleton } from './HostHeroSkeleton'
 
 
 const HostHero = () => {
@@ -19,6 +20,10 @@ const HostHero = () => {
     const id = params.id as string;
 
     const { data: fetchedHost, isLoading, error } = useGetData<HostProfile>(API_ENDPOINTS.USER.HOST_PROFILE(id));
+
+    if (isLoading) {
+        return <HostHeroSkeleton />;
+    }
 
     return (
         <div>
@@ -40,12 +45,12 @@ const HostHero = () => {
                     <div className='flex justify-between px-6'>
                         <HostAvatar avatar={fetchedHost?.avatar} fullName={fetchedHost?.fullName || 'Wondrr'} />
                         <div className="flex items-center gap-[5px] ">
-                            {/* <div className='bg-white flex rounded-3xl border border-black px-2.5 py-1.5 gap-1'>
+                            {fetchedHost?.certificates?.[0] == 'certified' && <div className='bg-white flex rounded-3xl border border-black px-2.5 py-1.5 gap-1'>
                                 <ShieldCheckIcon size={15} weight="fill" className="text-[#43A047]" />
                                 <span className="text-xs font-medium tracking-tight">
                                     Wondrr Verified
                                 </span>
-                            </div> */}
+                            </div>}
                         </div>
                     </div>
                 </div>

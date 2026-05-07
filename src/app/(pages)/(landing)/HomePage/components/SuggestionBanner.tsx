@@ -3,6 +3,7 @@
 import React from 'react';
 import { Search } from 'lucide-react';
 import { SparkleIcon, MoneyWavyIcon } from '@phosphor-icons/react';
+import { useRouter } from 'next/navigation';
 
 
 
@@ -17,11 +18,18 @@ const SuggestionBanner: React.FC<SuggestionBannerProps> = ({
     placeholder = 'Search by keywords or places',
     onSearch
 }) => {
+    const router = useRouter();
     const [searchValue, setSearchValue] = React.useState('');
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchValue(e.target.value);
         onSearch?.(e.target.value);
+    };
+
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter' && searchValue.trim()) {
+            router.push(`/trips?q=${encodeURIComponent(searchValue.trim())}`);
+        }
     };
 
     return (
@@ -40,7 +48,9 @@ const SuggestionBanner: React.FC<SuggestionBannerProps> = ({
                         placeholder={placeholder}
                         value={searchValue}
                         onChange={handleChange}
+                        onKeyDown={handleKeyDown}
                         className="w-full bg-white rounded-full pl-12 sm:pl-14 pr-4 sm:pr-6 py-3 sm:py-4 text-neutral-900 placeholder-neutral-500 text-base font-['Satoshi'] border-2 border-white focus:outline-none focus:border-neutral-300"
+                        enterKeyHint="search"
                     />
                 </div>
             </div>

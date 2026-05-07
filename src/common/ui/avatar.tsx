@@ -83,7 +83,7 @@ function AvatarFallback({ className, name, children, ...props }: React.HTMLAttri
     <div
       data-slot="avatar-fallback"
       className={cn(
-        "bg-gradient-to-br from-blue-500 to-blue-700 text-white flex size-full items-center justify-center rounded-full",
+        "bg-black text-white flex size-full items-center justify-center rounded-full text-3xl",
         className,
       )}
       {...props}
