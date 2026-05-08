@@ -3,12 +3,13 @@
 import { CaretDownIcon } from '@phosphor-icons/react';
 import { FAQ } from '../../../types';
 import { FAQsSectionProps } from '../types';
+import CollapsibleCard from '@/common/ui/CollapsibleCard';
+
 
 export default function FAQsSection({ faqs, expandedFaqs, onToggle }: FAQsSectionProps) {
     return (
-        <div className="border border-[#e0e0e0] rounded-[16px] p-4 mt-6 scroll-mt-24">
-            <p className="text-md font-medium text-black mb-3">FAQs</p>
-            <div className="space-y-2">
+        <CollapsibleCard className="border border-[#e0e0e0] rounded-[16px] mt-6 scroll-mt-24" title='FAQs'>
+            <div className="space-y-2 px-4">
                 {faqs.map((faq: FAQ, index: number) => (
                     <div key={index} className="border border-[#d9d9d9] rounded-[12px] overflow-hidden">
                         <button
@@ -34,6 +35,6 @@ export default function FAQsSection({ faqs, expandedFaqs, onToggle }: FAQsSectio
                     </div>
                 ))}
             </div>
-        </div>
+        </CollapsibleCard>
     );
 }

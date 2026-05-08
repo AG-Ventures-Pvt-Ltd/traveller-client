@@ -12,10 +12,6 @@ export default function BookingBar({
     basePrice,
     onBookNow,
 }: BookingBarProps) {
-    const seatsMsg =
-        selectedBatch !== null && batches
-            ? getSeatsMessage(batches[selectedBatch])
-            : 'No seats available';
 
     const displayPrice =
         selectedPricing !== null && pricingList.length > 0
@@ -23,11 +19,11 @@ export default function BookingBar({
             : (basePrice?.toLocaleString() || 0);
 
     return (
-        <div className="fixed bottom-0 left-0 right-0 bg-[#EEA0FF] pl-8 pr-4 py-4 flex items-center justify-between shadow-lg rounded-t-3xl z-20">
+        <div className="fixed bottom-0 left-0 right-0 bg-[#EEA0FF] pl-8 pr-4 py-5 flex items-center justify-between shadow-lg rounded-t-3xl z-20">
             <div>
-                <p className="text-sm font-medium text-black">{seatsMsg}</p>
-                <p className="text-xl font-bold text-black flex items-center">
-                    <CurrencyInrIcon weight='bold'/> {displayPrice}/ <span className="text-sm font-medium"> person</span>
+                <p className="text-xl font-bold text-black flex items-end">
+                    <span className='flex items-center'><CurrencyInrIcon weight='bold'/> {displayPrice}/</span> 
+                    <span className="text-sm font-medium pl-1"> person</span>
                 </p>
                 <p className='font-medium'>+5% GST</p>
             </div>

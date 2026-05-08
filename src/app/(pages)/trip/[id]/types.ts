@@ -57,6 +57,7 @@ export interface Host {
   responseTime?: string;
   languages?: string[];
   certifications?: string[];
+  isCertified?: boolean;
 }
 
 export interface CancellationRule {

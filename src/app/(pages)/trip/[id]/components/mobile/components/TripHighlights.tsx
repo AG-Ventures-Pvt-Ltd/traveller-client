@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import MyImage from '@/common/ui/Image';
 import { TripHighlight } from '../../../types';
+import CollapsibleCard from '@/common/ui/CollapsibleCard';
+
 
 interface TripHighlightsProps {
   highlights: TripHighlight[];
@@ -20,17 +22,8 @@ export default function TripHighlights({ highlights }: TripHighlightsProps) {
   const remainingCount = highlights.length - 3;
 
   return (
-    <div className="space-y-4">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <h2 className="text-md font-medium">Trip Highlights</h2>
-        <div className="w-4 h-4 flex items-center justify-center">
-          <div className="w-2.625 h-1.375 bg-black transform rotate-45" />
-        </div>
-      </div>
-
-      {/* Highlights Grid */}
-      <div className="space-y-3">
+    <CollapsibleCard className="" title='Trip Highlights'>
+      <div className="px-4 pb-4 flex flex-col gap-3">
         {displayedHighlights.map((highlight, index) => (
           <div
             key={index}
@@ -70,6 +63,6 @@ export default function TripHighlights({ highlights }: TripHighlightsProps) {
           </div>
         </button>
       )}
-    </div>
+    </CollapsibleCard>
   );
 }

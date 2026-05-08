@@ -60,7 +60,7 @@ export default function TripDetailMobile() {
     const dayRefs = useRef<Record<number, HTMLDivElement | null>>({});
 
     const { data: basicData, isLoading: isBasicLoading, error } = useTripBasicDetails(id as string);
-    const { data: detailedData } = useTripDetailedDetails(id as string, loadDetailed);
+    const { data: detailedData, isLoading: isDetailedLoading } = useTripDetailedDetails(id as string, loadDetailed);
 
     useEffect(() => {
         if (basicData && !loadDetailed) {
@@ -249,14 +249,14 @@ export default function TripDetailMobile() {
                         </div>
                     </div>
                     {tripData.highlights && tripData.highlights.length > 0 && (
-                        <div ref={highlightsRef} className="scroll-mt-24 px-4 py-4 mt-6 border border-[#D9D9D9] rounded-2xl">
+                        <div ref={highlightsRef} className="scroll-mt-20">
                             <TripHighlights highlights={tripData.highlights} />
                         </div>
                     )}
-                    {tripData.itinerary && tripData.itinerary.length > 0 && (
-                        <div ref={itineraryRef} className="scroll-mt-24 mb-6">
+                    {(isDetailedLoading || (tripData.itinerary && tripData.itinerary.length > 0)) && (
+                        <div ref={itineraryRef} className="scroll-mt-20 mb-6">
                             <ItinerarySection
-                                itinerary={tripData.itinerary}
+                                itinerary={tripData.itinerary || []}
                                 selectedDay={selectedDay}
                                 expandedDays={expandedDays}
                                 dayRefs={dayRefs}
@@ -276,28 +276,29 @@ export default function TripDetailMobile() {
                                     });
                                 }}
                                 onDayToggle={(index) => setExpandedDays(prev => ({ ...prev, [index]: !prev[index] }))}
+                                isLoading={isDetailedLoading}
                             />
                         </div>
                     )}
                     
                     {((tripData.inclusions && tripData.inclusions.length > 0) || (tripData.exclusions && tripData.exclusions.length > 0)) && (
-                        <div ref={inclusionsRef} className="scroll-mt-24">
+                        <div ref={inclusionsRef} className="scroll-mt-20">
                             <InclusionsSection
                                 inclusions={tripData.inclusions}
                                 exclusions={tripData.exclusions}
                             />
                         </div>
                     )}
-                    <div ref={reviewsRef} className='scroll-mt-24 mt-6'>
+                    <div ref={reviewsRef} className='scroll-mt-20 mt-6'>
                         <MobileReviewSection tripId={slug?.split('-').pop()}/>
                     </div>    
 
-                    <div ref={tripSupportRef} className="scroll-mt-24 my-6">
+                    <div ref={tripSupportRef} className="scroll-mt-20 my-6">
                         <SafetySupportSection />
                     </div>
 
                     {tripData.faqs && tripData.faqs.length > 0 && (
-                        <div ref={faqsRef} className="scroll-mt-24">
+                        <div ref={faqsRef} className="scroll-mt-20">
                             <FAQsSection
                                 faqs={tripData.faqs}
                                 expandedFaqs={expandedFaqs}
@@ -306,7 +307,7 @@ export default function TripDetailMobile() {
                         </div>
                     )}
 
-                    <div ref={cancellationPolicyRef} className="scroll-mt-24">
+                    <div ref={cancellationPolicyRef} className="scroll-mt-20">
                         <CancellationPolicySection cancellationPolicy={tripData.cancellationPolicy} />
                     </div>
                 </div>

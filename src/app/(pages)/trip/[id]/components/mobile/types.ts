@@ -66,13 +66,14 @@ export interface TravelOptionsProps {
 }
 
 export interface ItinerarySectionProps {
-    itinerary: NonNullable<TripData['itinerary']>;
+    itinerary: NonNullable<TripData['itinerary']> | [];
     selectedDay: number;
     expandedDays: Record<number, boolean>;
     dayRefs: React.MutableRefObject<Record<number, HTMLDivElement | null>>;
     batchStartDate?: string | Date;
     onDaySelect: (index: number) => void;
     onDayToggle: (index: number) => void;
+    isLoading?: boolean;
 }
 
 export interface InclusionsSectionProps {

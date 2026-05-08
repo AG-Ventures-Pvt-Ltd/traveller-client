@@ -4,6 +4,8 @@ import { CaretDownIcon } from '@phosphor-icons/react';
 import { ItineraryDay } from '../../../types';
 import { ItinerarySectionProps } from '../types';
 import { formatDate } from '../utils';
+import CollapsibleCard from '@/common/ui/CollapsibleCard';
+
 
 export default function ItinerarySection({
     itinerary,
@@ -13,7 +15,31 @@ export default function ItinerarySection({
     batchStartDate,
     onDaySelect,
     onDayToggle,
+    isLoading = false,
 }: ItinerarySectionProps) {
+    if (isLoading) {
+        return (
+            <CollapsibleCard overflow="visible" className="bg-[#e2f4a6] border border-[#d9d9d9] rounded-[16px] scroll-mt-24 mt-6" title='Trip Itinerary'>
+                <div className="bg-[#e2f4a6] sticky top-16 z-15 px-3 py-2">
+                    <div className="flex gap-3 overflow-x-auto bg-white p-3 rounded-xl scrollbar-hide">
+                        <div className="flex gap-3 pr-3">
+                            {Array.from({ length: 3 }).map((_, i) => (
+                                <div key={i} className="h-14 w-20 bg-gray-300 rounded-xl animate-pulse"></div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+                <div className="bg-[#e2f4a6] p-4 pt-4 rounded-[16px] space-y-4 relative">
+                    {Array.from({ length: 3 }).map((_, i) => (
+                        <div key={i} className="relative">
+                            <div className="bg-gray-300 h-12 rounded-lg animate-pulse mb-4"></div>
+                            <div className="bg-gray-300 h-16 rounded-lg animate-pulse"></div>
+                        </div>
+                    ))}
+                </div>
+            </CollapsibleCard>
+        );
+    }
     const getDayDate = (dayIndex: number): string => {
         if (!batchStartDate) return '';
         try {
@@ -26,9 +52,8 @@ export default function ItinerarySection({
         }
     };
     return (
-        <div className="bg-[#e2f4a6] border border-[#d9d9d9] rounded-[16px] scroll-mt-24 mt-6">
-            <div className="bg-[#e2f4a6] rounded-[16px] sticky top-8 z-15 p-4">
-                <p className="text-md font-medium text-black mb-3">Trip Itinerary</p>
+        <CollapsibleCard overflow="visible" className="bg-[#e2f4a6] border border-[#d9d9d9] rounded-[16px] scroll-mt-24 mt-6" title='Trip Itinerary'>
+            <div className="bg-[#e2f4a6] sticky top-16 z-15 px-3 py-2">
                 <div className="flex gap-3 overflow-x-auto bg-white p-3 rounded-xl scrollbar-hide">
                     {/* Fixes trailing padding clip in overflow scroll */}
                     <div className="flex gap-3 pr-3">
@@ -39,17 +64,16 @@ export default function ItinerarySection({
                                 <button
                                     key={dayIndex}
                                     className={`h-14 rounded-xl text-md font-medium whitespace-nowrap transition-all flex overflow-hidden ${isSelected
-                                            ? 'bg-[#EEA0FF] text-black border-0'
-                                            : 'border border-black text-black hover:bg-gray-100'
+                                        ? 'bg-[#EEA0FF] text-black border-0'
+                                        : 'border border-black text-black hover:bg-gray-100'
                                         }`}
                                     onClick={() => onDaySelect(dayIndex)}
                                 >
-                                    <span className={`text-[13px] font-medium transform rotate-180 whitespace-nowrap [writing-mode:vertical-lr] h-full flex items-center justify-center rounded-tr-xl rounded-br-xl py-1 px-[3px] ${isSelected ? "bg-black text-white" : "border-l border-black"
+                                    <span className={`text-[13px] font-medium transform rotate-180 whitespace-nowrap [writing-mode:vertical-lr] h-full min-w-[22px] flex items-center justify-center rounded-tr-xl rounded-br-xl py-1 px-[3px] ${isSelected ? "bg-black text-white" : "border-l border-black"
                                         }`}>
                                         {dayDate}
                                     </span>
-                                    {/* pl-4 instead of px-3 gives breathing room from the border */}
-                                    <span className='pl-4 pr-3 flex items-center text-lg'>Day {dayIndex + 1}</span>
+                                    <span className='px-2 flex items-center text-lg'>Day {dayIndex + 1}</span>
                                 </button>
                             );
                         })}
@@ -64,11 +88,13 @@ export default function ItinerarySection({
                         className="relative scroll-mt-40"
                         ref={(el) => { dayRefs.current[dayIndex] = el; }}
                     >
-                        {/* Dotted line connecting to next item */}
-                        <span className="absolute left-9.5 top-11 -bottom-4 border-l-1 border-dashed border-black z-0" />
+                        <span className="absolute left-9.5 top-11 -bottom-4 border-l-1 z-0" style={{
+                            borderLeftStyle: 'dashed',
+                            borderImage: 'repeating-linear-gradient(transparent, transparent 4px, black 4px, black 10px) 1',
+                        }} />
                         <button
                             onClick={() => onDayToggle(dayIndex)}
-                            className="w-full flex items-center justify-between gap-3 hover:opacity-80 transition-opacity relative z-10 p-2 rounded-lg"
+                            className="w-full flex items-center justify-between gap-3 hover:opacity-80 transition-opacity relative z-10 my-2 rounded-lg"
                         >
                             <div className="flex items-center gap-3">
                                 <span className="bg-yellow-400 text-black rounded-full px-4 py-2 text-lg font-medium flex-shrink-0">
@@ -105,6 +131,6 @@ export default function ItinerarySection({
                     </span>
                 </div>
             </div>
-        </div>
+        </CollapsibleCard>
     );
 }
