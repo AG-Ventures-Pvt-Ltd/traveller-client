@@ -6,8 +6,9 @@ import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import Loader from '@/common/ui/Loader/Loader';
 
-const LandingPage = dynamic(() => import('./(landing)/LandingPage/LandingPage'), { loading: () => <Loader /> });
-const LoggedInLandingPage = dynamic(() => import('./(landing)/LoggedInLandingPage/LoggedInLandingPage'), { loading: () => <Loader /> });
+
+const DesktopLanding = dynamic(() => import('./(landing)/DesktopLanding/DesktopLanding'), { loading: () => <Loader /> })
+
 const HomePage = dynamic(() => import('./(landing)/HomePage/page'), { ssr: false });
 
 
@@ -37,14 +38,8 @@ export const Landing = () => {
     if (isMobile) {
         return <HomePage/>
     }
-
-    if (status == 'authenticated') {
-        return (<LoggedInLandingPage/>)
-    }
-
-    return (
-        <LandingPage/>
-    )
+    
+    return <DesktopLanding/>
 }
 
 export default Landing

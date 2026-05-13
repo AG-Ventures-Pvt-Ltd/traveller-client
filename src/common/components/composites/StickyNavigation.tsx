@@ -3,6 +3,7 @@
 import React from 'react';
 import { House, PaperPlaneTilt, UserCircleIcon } from '@phosphor-icons/react';
 import { useRouter, usePathname } from 'next/navigation';
+import { useDevice } from '@/common/hooks/useDevice';
 
 interface StickyNavigationProps {
   showProfile?: boolean;
@@ -15,6 +16,8 @@ const StickyNavigation: React.FC<StickyNavigationProps> = ({
 }) => {
   const router = useRouter();
   const pathname = usePathname();
+
+  const { isDesktop } = useDevice()
 
   const isHiddenRoute = HIDDEN_ROUTES.some(route => pathname.startsWith(route));
 
@@ -39,6 +42,10 @@ const StickyNavigation: React.FC<StickyNavigationProps> = ({
   const handleProfileClick = () => {
     router.push('/profile');
   };
+
+  if (isDesktop) {
+    return <></>
+  }
 
   return (
     <div className="fixed bottom-6 right-6 z-40">

@@ -42,6 +42,8 @@ const Navbar = () => {
     setMobileMenuOpen(false); 
   };
 
+  return <></>
+
   return (
     <>
       <div className='px-2 md:px-9 py-5 bg-white/96 flex items-center border-b border-b-[#EDEDED] sticky top-0 z-50'>
