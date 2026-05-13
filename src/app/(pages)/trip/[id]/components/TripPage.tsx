@@ -130,7 +130,7 @@ export default function TripDetail() {
           <div className="hidden lg:block lg:col-span-1">
             <TripBookingCard
               availableDates={tripData.tripBatches || []}
-              basePrice={tripData.basePrice || 0}
+              basePrice={0}
               category={tripData.category}
               tripSlug={id}
               isBookmarked={tripData.isBookmarked || false}

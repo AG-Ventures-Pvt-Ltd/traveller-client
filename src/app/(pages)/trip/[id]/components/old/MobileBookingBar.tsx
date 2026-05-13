@@ -60,7 +60,7 @@ const MobileBookingBar: React.FC<MobileBookingBarProps> = ({ tripData, tripId })
 
     const displayPrice = selectedPricingIndex !== null && pricingList.length > 0
         ? pricingList[selectedPricingIndex].pricePerPerson
-        : selectedDateInfo?.price || tripData.basePrice || 0;
+        : selectedDateInfo?.price || 0;
 
     const handleBookNow = () => {
         const batchToBook = selectedBatchId || validAvailableDates[0]?.batchId;
