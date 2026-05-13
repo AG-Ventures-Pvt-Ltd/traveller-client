@@ -59,8 +59,8 @@ const MobileProfilePage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-white pb-8">
-      <BackButton label='Profile' className='my-4' to='/'/>
+    <div className="bg-[#FFF9F4] mb-8 min-h-screen">
+      <BackButton label='Profile' to='/' className='pt-6'/>
       <MobileProfileCard profileData={profileData} />
       {/* <StatsSection /> */}
       <MenuSection onEditProfile={() => setIsEditModalOpen(true)} router={router} />

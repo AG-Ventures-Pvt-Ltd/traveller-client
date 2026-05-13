@@ -25,7 +25,7 @@ export function MobileTripCard({ trip, onClick }: MobileTripCardProps) {
     <div
       className="relative rounded-[20px] overflow-hidden cursor-pointer active:scale-[0.98] transition-transform"
       style={{ backgroundColor: trip.bgColor }}
-      onClick={() => onClick?.(trip._id)}
+      onClick={() => onClick?.(trip.slug)}
     >
       <div className="relative mx-[10px] mt-[10px] rounded-[12px] overflow-hidden h-[100px]">
        <MyImage src={trip.image} alt={trip.slug} className='h-full w-full'/>

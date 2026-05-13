@@ -14,6 +14,7 @@ export default function HeroCarousel({
     onShare,
     onToggleBookmark,
 }: HeroCarouselProps) {
+    
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [isAutoScrolling, setIsAutoScrolling] = useState(true);
     const [touchStart, setTouchStart] = useState<number | null>(null);

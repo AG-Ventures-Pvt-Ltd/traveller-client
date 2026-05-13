@@ -97,10 +97,10 @@ export default function ItinerarySection({
                             className="w-full flex items-center justify-between gap-3 hover:opacity-80 transition-opacity relative z-10 my-2 rounded-lg"
                         >
                             <div className="flex items-center gap-3">
-                                <span className="bg-yellow-400 text-black rounded-full px-4 py-2 text-lg font-medium flex-shrink-0">
+                                <span className="bg-yellow-400 text-black rounded-full px-4 py-2 font-medium flex-shrink-0">
                                     Day {day.day}
                                 </span>
-                                <p className="font-bold text-md text-black text-left">{day.title}</p>
+                                <p className="font-bold text-black text-left">{day.title}</p>
                             </div>
                             <CaretDownIcon
                                 size={20}

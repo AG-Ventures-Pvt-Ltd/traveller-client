@@ -1,5 +1,4 @@
-import React from 'react'
-import Button from '@/common/ui/Buttons/Button'
+import React, { useState } from 'react'
 import MyImage from '@/common/ui/Image'
 import {
     ShareNetworkIcon,
@@ -12,20 +11,25 @@ import { useGetData } from '@/services/useGetData'
 import { HostProfile } from '../../../types'
 import { API_ENDPOINTS } from '@/common/constants/apiEndpoints'
 import { HostHeroSkeleton } from './HostHeroSkeleton'
+import { ShareModal } from '@/common/components/composites/ShareModal'
 
 
 const HostHero = () => {
 
     const params = useParams();
     const id = params.id as string;
+    const [shareOpen, setShareOpen] = useState(false);
 
-    const { data: fetchedHost, isLoading, error } = useGetData<HostProfile>(API_ENDPOINTS.USER.HOST_PROFILE(id));
+    const { data: fetchedHost, isLoading } = useGetData<HostProfile>(API_ENDPOINTS.USER.HOST_PROFILE(id));
 
     if (isLoading) {
         return <HostHeroSkeleton />;
     }
 
+    const shareUrl = `https://wondrr.in/${id}`;
+
     return (
+        <>
         <div>
             <div className="relative h-[160px] w-full">
                 <MyImage
@@ -37,6 +41,7 @@ const HostHero = () => {
                 <div className="absolute inset-0 bg-gradient-to-b from-black/30 to-transparent" />
                 <BackButton className='absolute top-4 left-4 w-8 h-8 rounded-full flex items-center justify-center shadow-sm active:opacity-70' label='' />
                 <button
+                    onClick={() => setShareOpen(true)}
                     className="absolute top-4 right-4 w-10 h-10 bg-black rounded-full flex items-center justify-center shadow-sm active:opacity-70"
                 >
                     <ShareNetworkIcon size={24} weight="thin" className="text-white" />
@@ -78,6 +83,14 @@ const HostHero = () => {
             </div>
 
         </div>
+        <ShareModal
+            open={shareOpen}
+            onClose={() => setShareOpen(false)}
+            title={'@' + (fetchedHost?.username || 'Host Profile') + "'s Trips"}
+            url={shareUrl}
+            utmMedium="host_profile_mobile"
+        />
+        </>
     )
 }
 

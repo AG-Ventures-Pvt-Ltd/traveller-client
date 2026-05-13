@@ -8,7 +8,7 @@ import { ShieldCheckIcon } from '@phosphor-icons/react';
 
 export default function HostedBy({ host, onPress }: HostedByProps) {
     return (
-        <CollapsibleCard title='Organised by'>
+        <CollapsibleCard title='Hosted by'>
             <button
                 onClick={onPress}
                 className="flex items-center gap-4 mb-6 hover:opacity-80 transition-opacity w-full px-4"
@@ -27,7 +27,7 @@ export default function HostedBy({ host, onPress }: HostedByProps) {
                 )}
                 <div className='flex flex-col items-start justify-center'>
                     <p className="text-md font-normal text-black">{host.name}</p>
-                    {host.isCertified && <span className='font-semibold flex items-center gap-1'><ShieldCheckIcon weight='fill' className='text-[#43A047]'/>Wondrr Verified</span>}
+                    {host.certificates && host.certificates.includes('certified') && <span className='font-semibold flex items-center gap-1'><ShieldCheckIcon weight='fill' className='text-[#43A047]'/>Wondrr Verified</span>}
                 </div>
             </button>
         </CollapsibleCard>

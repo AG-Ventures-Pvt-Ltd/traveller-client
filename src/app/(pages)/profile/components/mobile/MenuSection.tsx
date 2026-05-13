@@ -2,6 +2,7 @@ import React from 'react'
 import MenuItem from './MenuItem'
 import { MENU_ITEMS } from './constants'
 
+
 interface MenuSectionProps {
   onEditProfile: () => void
   router: any

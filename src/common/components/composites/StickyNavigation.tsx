@@ -9,7 +9,7 @@ interface StickyNavigationProps {
   showProfile?: boolean;
 }
 
-const HIDDEN_ROUTES = ['/trip/', '/wallet', '/auth', '/verify', '/profile/'];
+const ACTIVE_ROUTES = ['/','/profile','/auth' ];
 
 const StickyNavigation: React.FC<StickyNavigationProps> = ({
   showProfile = true,
@@ -19,9 +19,13 @@ const StickyNavigation: React.FC<StickyNavigationProps> = ({
 
   const { isDesktop } = useDevice()
 
-  const isHiddenRoute = HIDDEN_ROUTES.some(route => pathname.startsWith(route));
+  const isActiveRoute =
+    pathname === '/' ||
+    ACTIVE_ROUTES.some(
+      route => route !== '/' && pathname.startsWith(route)
+    );
 
-  if (isHiddenRoute) {
+  if (!isActiveRoute) {
     return null;
   }
 
@@ -81,7 +85,7 @@ const StickyNavigation: React.FC<StickyNavigationProps> = ({
           <button
             onClick={handleProfileClick}
             className={`flex items-center justify-center w-10 h-10 rounded-full transition-colors ${
-              isActive('/profile') 
+              isActive('/profile') || isActive('/auth')
                 ? 'bg-[#EEA0FF] text-black' 
                 : 'text-white hover:bg-white/10'
             }`}

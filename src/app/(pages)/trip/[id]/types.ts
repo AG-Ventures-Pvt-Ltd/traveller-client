@@ -56,7 +56,7 @@ export interface Host {
   description: string;
   responseTime?: string;
   languages?: string[];
-  certifications?: string[];
+  certificates?: string[];
   isCertified?: boolean;
 }
 
@@ -72,6 +72,8 @@ export interface RefundTerm {
 export interface TripData {
   title: string;
   description: string;
+  duration : string;
+  difficulty : string;
   images?: string[];
   highlights?: TripHighlight[];
   category: string;
@@ -91,7 +93,6 @@ export interface TripData {
   additionalInfo?: string;
   faqs?: FAQ[];
   tripBatches?: AvailableDate[];
-  basePrice?: number;
   tags?: string[];
   slug?: string;
   isBookmarked?: boolean;

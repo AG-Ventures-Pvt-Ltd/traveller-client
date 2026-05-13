@@ -39,7 +39,7 @@ export interface HostedByProps {
 }
 
 export interface OverviewSectionProps {
-    description: Record<string, string>;
+    description: Record<string, string | string[] | boolean>;
     expanded: boolean;
     onToggle: () => void;
 }
@@ -97,8 +97,6 @@ export interface PoliciesSectionProps {
 }
 
 export interface BookingBarProps {
-    selectedBatch: number | null;
-    batches?: AvailableDate[];
     selectedPricing: number | null;
     pricingList: Pricing[];
     basePrice?: number;

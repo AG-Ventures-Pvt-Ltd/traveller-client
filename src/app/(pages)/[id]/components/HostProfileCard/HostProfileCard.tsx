@@ -1,5 +1,5 @@
-import { Star } from "lucide-react";
-import { useEffect } from "react";
+import { Star, Share2 } from "lucide-react";
+import { useEffect, useState } from "react";
 import { API_ENDPOINTS } from "@/common/constants/apiEndpoints";
 import { useParams } from "next/navigation";
 import { useGetData } from "@/services/useGetData";
@@ -9,6 +9,7 @@ import Card from "@/common/ui/Card";
 // import { calculateYearsFromDate } from "@/common/utils/dateUtils";
 import HostAvatar from "./components/HostAvatar";
 import { useHostStore } from "../../store/hostStore";
+import { ShareModal } from "@/common/components/composites/ShareModal";
 
 
 // const PERFORMANCE = [
@@ -31,6 +32,7 @@ export default function HostProfileCard() {
     const params = useParams();
     const id = params.id as string;
     const setHostData = useHostStore((state) => state.setHostData);
+    const [shareOpen, setShareOpen] = useState(false);
 
     const { data: fetchedHost, isLoading, error } = useGetData<HostProfile>(API_ENDPOINTS.USER.HOST_PROFILE(id));
 
@@ -60,7 +62,10 @@ export default function HostProfileCard() {
 
     const location = fetchedHost.city || fetchedHost.state ? `${fetchedHost.city || ''}${fetchedHost.city && fetchedHost.state ? ', ' : ''}${fetchedHost.state || ''}` : '';
 
+    const shareUrl = typeof window !== "undefined" ? window.location.href : `https://wondrr.in/host/${id}`;
+
     return (
+        <>
         <Card variant="fill" className="flex flex-col p-4 sm:p-6 lg:p-8 gap-4 sm:gap-6 w-[90%] sm:w-96 mx-auto">
             <div className="grid grid-cols-2 gap-4 sm:hidden items-center justify-between">
                 <div className="flex flex-col items-center  gap-3 text-center">
@@ -69,6 +74,13 @@ export default function HostProfileCard() {
                         <h2 className="text-neutral-900 text-base font-bold  leading-6">{fetchedHost.fullName}</h2>
                         <p className="text-neutral-900 text-xs font-bold ">{fetchedHost.yearsOfExperience} yrs exp</p>
                     </div>
+                    <button
+                        onClick={() => setShareOpen(true)}
+                        className="flex items-center gap-1.5 text-neutral-700 text-xs font-medium hover:text-neutral-900 transition-colors"
+                    >
+                        <Share2 className="w-3.5 h-3.5" />
+                        Share
+                    </button>
                 </div>
                 <div className="flex flex-col gap-2">
                     <div className="flex flex-col gap-2">
@@ -120,7 +132,13 @@ export default function HostProfileCard() {
                     <div className="flex flex-col items-center gap-1 text-center">
                         <h2 className="text-neutral-900 text-2xl lg:text-3xl font-bold  leading-8">{fetchedHost.fullName}</h2>
                         <p className="text-neutral-900 text-sm font-bold ">{fetchedHost.yearsOfExperience} yrs exp</p>
-
+                        <button
+                            onClick={() => setShareOpen(true)}
+                            className="flex items-center gap-1.5 mt-1 text-neutral-600 text-xs font-medium hover:text-neutral-900 transition-colors"
+                        >
+                            <Share2 className="w-3.5 h-3.5" />
+                            Share Profile
+                        </button>
                     </div>
                 </div>
                 {location !== '' &&
@@ -166,5 +184,13 @@ export default function HostProfileCard() {
                 </div>
             </div>
         </Card>
+        <ShareModal
+            open={shareOpen}
+            onClose={() => setShareOpen(false)}
+            title={fetchedHost.fullName}
+            url={shareUrl}
+            utmMedium="host_profile_desktop"
+        />
+        </>
     );
 }

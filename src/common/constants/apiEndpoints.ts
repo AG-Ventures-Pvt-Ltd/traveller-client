@@ -75,5 +75,15 @@ export const API_ENDPOINTS = {
   REVIEW : {
     PROFILE : (id: string) => `/api/client/v1/user/reviews/${id}`,
     TRIP : (id: string) => `/api/client/v1/trips/reviews/${id}`,
-  }
+  },
+  WALLET: {
+    BALANCE: '/api/client/v1/wallet/balance',
+    TRANSACTIONS: (limit?: number, skip?: number) => {
+      const params = new URLSearchParams();
+      if (limit !== undefined) params.append('limit', limit.toString());
+      if (skip !== undefined) params.append('skip', skip.toString());
+      const query = params.toString();
+      return `/api/client/v1/wallet/transactions${query ? `?${query}` : ''}`;
+    },
+  },
 };

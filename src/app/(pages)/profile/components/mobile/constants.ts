@@ -1,7 +1,7 @@
 import { MoneyWavyIcon, MapPinIcon, GearIcon, ClockIcon, SuitcaseIcon } from '@phosphor-icons/react'
 import React from 'react'
 import type { NextRouter } from "next/router";
-
+import { TicketIcon, BookmarkSimpleIcon } from '@phosphor-icons/react';
 
 
 export interface MenuItemConfig {
@@ -16,28 +16,34 @@ export interface MenuItemConfig {
 
 export const MENU_ITEMS: MenuItemConfig[] = [
   {
-    id: 'rewards',
-    label: 'wondrr Rewards',
-    icon: MoneyWavyIcon,
-    action: (_, router) => router.push('/profile?tab=1'),
+    id: 'bookmarks',
+    label: 'Bookmarked Trips',
+    icon: BookmarkSimpleIcon,
+    action: (_, router) => router.push('/profile/bookmarks'),
   },
   {
     id: 'profile',
     label: 'Profile',
     icon: GearIcon,
-    action: (setIsEditModalOpen) => setIsEditModalOpen(true),
+    action: (_, router) => router.push('/profile/edit'),
   },
   {
     id: 'transaction',
     label: 'Transaction History',
     icon: ClockIcon,
-    action: (_, router) => router.push('/profile?tab=1'),
+    action: (_, router) => router.push('/profile/transactions'),
   },
   {
     id: 'trips',
     label: 'My Trips',
     icon: SuitcaseIcon,
     action: (_, router) => router.push('/profile/mytrips'),
+  },
+  {
+    id: 'support_tickets',
+    label: 'Support Tickets',
+    icon: TicketIcon,
+    action: (_, router) => router.push('/profile/tickets'),
   },
 ]
 

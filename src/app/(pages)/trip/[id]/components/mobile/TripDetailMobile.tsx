@@ -76,7 +76,13 @@ export default function TripDetailMobile() {
     );
 
     const selectedBatchData = selectedBatch !== null && sortedBatches[selectedBatch] ? sortedBatches[selectedBatch] : null;
-    const seatsDisplay = selectedBatchData ? getSeatsDisplay(selectedBatchData.seatsAvailable) : '';
+    const seatsDisplay = selectedBatchData ? getSeatsDisplay(selectedBatchData.totalSeats) : '';
+
+    const boardingPoint = selectedBatchData?.meetingPoint && selectedBatchData.meetingPoint.length > 0
+        ? selectedBatchData.meetingPoint.length === 1
+            ? selectedBatchData.meetingPoint[0]
+            : `${selectedBatchData.meetingPoint[0]} +${selectedBatchData.meetingPoint.length - 1}`
+        : '';
 
     useEffect(() => {
         if (tripData && tripData.title && slug) {
@@ -229,7 +235,13 @@ export default function TripDetailMobile() {
                         />
                     )}
                         <OverviewSection
-                            description={{ destination: basicData?.location?.split(',')[0] || '', seats: seatsDisplay, }}
+                            description={{ 
+                                destination: basicData?.location?.split(',')[0] || '', 
+                                seats: seatsDisplay, 
+                                duration : basicData?.duration || "", 
+                                difficulty : basicData?.difficulty || "", 
+                                boardingPoint, 
+                                certificates : detailedData?.host?.certificates || [] }}
                             expanded={expandedOverview}
                             onToggle={() => setExpandedOverview(!expandedOverview)}
                         />
@@ -313,11 +325,8 @@ export default function TripDetailMobile() {
                 </div>
 
                 <BookingBar
-                    selectedBatch={selectedBatch}
-                    batches={sortedBatches}
                     selectedPricing={selectedPricing}
                     pricingList={pricingList}
-                    basePrice={tripData.basePrice}
                     onBookNow={handleBookNow}
                 />
 

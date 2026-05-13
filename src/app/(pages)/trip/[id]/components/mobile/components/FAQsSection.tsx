@@ -9,7 +9,7 @@ import CollapsibleCard from '@/common/ui/CollapsibleCard';
 export default function FAQsSection({ faqs, expandedFaqs, onToggle }: FAQsSectionProps) {
     return (
         <CollapsibleCard className="border border-[#e0e0e0] rounded-[16px] mt-6 scroll-mt-24" title='FAQs'>
-            <div className="space-y-2 px-4">
+            <div className="space-y-2 px-4 pb-4">
                 {faqs.map((faq: FAQ, index: number) => (
                     <div key={index} className="border border-[#d9d9d9] rounded-[12px] overflow-hidden">
                         <button
