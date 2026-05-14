@@ -52,7 +52,7 @@ export function MobileReviewSection({
   const { data } = useGetData<TripReviewResponse>(reviewURL)
 
 
-  if (data?.reviews.length == 0) {
+  if (!data?.reviews || data?.reviews.length == 0) {
     return <></>
   }
 

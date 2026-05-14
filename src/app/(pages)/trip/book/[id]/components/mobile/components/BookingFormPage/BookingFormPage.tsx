@@ -11,7 +11,7 @@ import StayOptionsSection from './components/StayOptionsSection';
 import ExtraAddOnsSection from './components/ExtraAddOnsSection';
 import TransportOptionsSection from './components/TransportOptionsSection';
 import ActivityAddOnsSection from './components/ActivityAddOnsSection';
-import FoodPreferenceSection from './components/FoodPreferenceSection';
+// import FoodPreferenceSection from './components/FoodPreferenceSection';
 import DiscountsSection from './components/DiscountsSection';
 import { ReservationSkeleton } from '../../BookingStepSkeletons';
 import { useBookingFormStore } from './hooks/useBookingFormStore';
@@ -115,7 +115,7 @@ export default function BookingFormPage({ tripId, batchId, onViewCoupons }: Book
             <TransportOptionsSection />
             <ActivityAddOnsSection />
             <ExtraAddOnsSection />
-            <FoodPreferenceSection />
+            {/* <FoodPreferenceSection /> */}
 
             <DiscountsSection
                 coupons={bookingOptions?.coupons}

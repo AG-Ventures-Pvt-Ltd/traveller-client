@@ -61,6 +61,8 @@ export default function TripDetail() {
     throw Error(error.message)
   }
 
+  
+
   if (isMobile) {
     return <TripDetailMobile />;
   }
@@ -110,12 +112,12 @@ export default function TripDetail() {
               )}
             </div>
             <Separator className="my-4 sm:my-6" />
-            <TripReviews
+            { tripData.totalReviews !== 0  && <TripReviews
               reviews={tripData.reviews || []}
               averageRating={tripData.rating || 0}
               totalReviews={tripData.totalReviews || 0}
               ratingBreakdown={ratingBreakdown}
-            />
+            />}
             <Separator className="my-4 sm:my-6" />
             <TripPolicies
               cancellationRules={tripData.cancellationRules}
