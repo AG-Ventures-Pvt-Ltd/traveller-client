@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { InfoIcon } from '@phosphor-icons/react';
 import { useGetData } from '@/services/useGetData';
@@ -12,6 +12,8 @@ import { useWalletTransactions } from '../profile/transactions/hooks/useTransact
 import { walletTxToEntry } from '../profile/transactions/utils/transactionUtils';
 import Button from '@/common/ui/Buttons/Button';
 import { formatDate } from '@/common/utils/dateUtils';
+import { usePayment } from '../trip/book/[id]/[batchId]/hooks/usePayment';
+import { AddBalanceModal } from './components/AddBalanceModal';
 
 
 interface WalletData {
@@ -25,7 +27,10 @@ const WalletPage = () => {
   const router = useRouter();
   const { data: session } = useSession();
 
-  const { data: walletData, isLoading, error } = useGetData<WalletData>(
+  const [isAddBalanceOpen, setIsAddBalanceOpen] = useState(false)
+  const [isPaymentPending, setIsPaymentPending] = useState(false)
+
+  const { data: walletData, isLoading, error, refetch } = useGetData<WalletData>(
     '/api/client/v1/wallet/balance',
     {
       queryKey: ['wallet-balance'],
@@ -33,6 +38,20 @@ const WalletPage = () => {
   );
 
   const { data: txData, isLoading: txLoading } = useWalletTransactions(50, 0);
+
+  const { startWalletPayment } = usePayment({
+    onWalletSuccess: () => {
+      setIsPaymentPending(false)
+      setIsAddBalanceOpen(false)
+      refetch()
+    },
+  })
+
+  const handleAddBalance = async (amount: number) => {
+    setIsPaymentPending(true)
+    await startWalletPayment({ amount })
+    setIsPaymentPending(false)
+  }
 
   const walletEntries = useMemo(
     () => (txData?.transactions ?? []).map(walletTxToEntry),
@@ -116,11 +135,18 @@ const WalletPage = () => {
               title="Transaction History"
             />
           </div>
-         
-          <Button variant='purple' fullWidth>
-            Add Balance
-          </Button>
-          
+          <div className='fixed bottom-0 left-0 right-0 px-4 py-6'>
+            <Button variant='purple' fullWidth onClick={() => setIsAddBalanceOpen(true)}>
+              Add Balance
+            </Button>
+          </div>
+
+          <AddBalanceModal
+            isOpen={isAddBalanceOpen}
+            onClose={() => setIsAddBalanceOpen(false)}
+            onSubmit={handleAddBalance}
+            isSubmitting={isPaymentPending}
+          />
         </div>
       </div>
     </div>

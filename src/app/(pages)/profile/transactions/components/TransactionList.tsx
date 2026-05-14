@@ -20,6 +20,7 @@ export function TransactionList({
   onLoadMore,
   title = 'Transaction History',
 }: TransactionListProps) {
+
   return (
     <CollapsibleCard title={title} defaultOpen={true}>
       {isLoading && entries.length === 0 && (

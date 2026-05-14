@@ -19,11 +19,11 @@ const StickyNavigation: React.FC<StickyNavigationProps> = ({
 
   const { isDesktop } = useDevice()
 
-  const isActiveRoute =
-    pathname === '/' ||
-    ACTIVE_ROUTES.some(
-      route => route !== '/' && pathname.startsWith(route)
-    );
+const isActiveRoute =
+  pathname === '/' ||
+  ACTIVE_ROUTES.some(
+    route => route !== '/' && pathname === route
+  );
 
   if (!isActiveRoute) {
     return null;

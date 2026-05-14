@@ -38,7 +38,7 @@ const BackButton: React.FC<BackButtonProps> = ({
       <div className='bg-[#EEA0FF] text-black p-2 md:p-2 rounded-full'>
         <ArrowLeftIcon size={iconSize} weight='thin' />
       </div>
-      <span className="font-bold">{label}</span>
+      <span className="font-medium">{label}</span>
     </div>
   );
 };

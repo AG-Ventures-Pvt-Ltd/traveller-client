@@ -22,9 +22,9 @@ export function TransactionItem({ entry, showDivider = true }: TransactionItemPr
             style={{ backgroundColor: isCredit ? '#E2F4A6' : '#FFB9B9' }}
           >
             {isCredit ? (
-              <ArrowDownLeftIcon size={16} weight="bold" className="text-[#43A047]" />
+              <ArrowDownLeftIcon size={20} weight="thin" />
             ) : (
-              <ArrowUpRightIcon size={16} weight="bold" className="text-[#F44336]" />
+              <ArrowUpRightIcon size={20} weight="thin" />
             )}
           </div>
 

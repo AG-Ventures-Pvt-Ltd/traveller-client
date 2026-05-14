@@ -16,33 +16,52 @@ interface ApiResponse {
 }
 
 interface PaymentPayload {
-  bookingId : string
+  bookingId: string;
 }
 
-export const usePayment = () => {
+interface WalletPaymentPayload {
+  amount: number;
+}
+
+interface UsePaymentOptions {
+  onWalletSuccess?: () => void;
+}
+
+export const usePayment = ({ onWalletSuccess }: UsePaymentOptions = {}) => {
 
   const router = useRouter()
+  const params = useParams();
+  const tripId = params?.id as string | undefined;
 
-   const params = useParams();
-  
-  const tripId = params.id as string;
+  const { mutateAsync: mutateBooking } = usePostData({
+    url: API_ENDPOINTS.PAYMENTS.START,
+    enableNotifications: false,
+  });
 
-  const { mutateAsync } = usePostData({ url: API_ENDPOINTS.PAYMENTS.START });
+  const { mutateAsync: mutateWallet } = usePostData({
+    url: API_ENDPOINTS.PAYMENTS.WALLET_START,
+    enableNotifications: false,
+  });
 
-  const openRazorpay = (order: Order) => {
+  const openRazorpay = (order: Order, paymentType: 'booking' | 'wallet') => {
+    const isWallet = paymentType === 'wallet';
     const options = {
       key: process.env.NEXT_PUBLIC_RAZORPAY_KEY!,
       amount: order.amount * 100,
       currency: "INR",
       order_id: order.orderId,
       name: "Wondrr Trips",
-      description: 'Trip Booking Payment',
+      description: isWallet ? 'Add Wondrr Cash' : 'Trip Booking Payment',
       theme: {
         color: '#121212',
       },
       handler: () => {
-        localStorage.removeItem(`booking_${tripId.split('-').pop()}`)
-        router.push(`/trip/book/success?orderId=${order.orderId}`)
+        if (isWallet) {
+          onWalletSuccess?.()
+        } else {
+          if (tripId) localStorage.removeItem(`booking_${tripId.split('-').pop()}`)
+          router.push(`/trip/book/success?orderId=${order.orderId}`)
+        }
       },
     };
     const rzp = new window.Razorpay(options);
@@ -51,16 +70,29 @@ export const usePayment = () => {
 
   const startPayment = async (payload: PaymentPayload) => {
     try {
-      const response = await mutateAsync(payload as unknown as Record<string, unknown>) as ApiResponse;
-      openRazorpay(response.data);
+      const response = await mutateBooking(payload as unknown as Record<string, unknown>) as ApiResponse;
+      openRazorpay(response.data, 'booking');
     } catch (error) {
       logError({
         error: (error as Error).message,
         location: "traveller-client/src/app/trip/book/[id]/hooks/usePayment.ts",
-        when: "starting payment",
+        when: "starting booking payment",
       });
     }
   };
 
-  return { startPayment };
+  const startWalletPayment = async (payload: WalletPaymentPayload) => {
+    try {
+      const response = await mutateWallet(payload as unknown as Record<string, unknown>) as ApiResponse;
+      openRazorpay(response.data, 'wallet');
+    } catch (error) {
+      logError({
+        error: (error as Error).message,
+        location: "traveller-client/src/app/trip/book/[id]/hooks/usePayment.ts",
+        when: "starting wallet payment",
+      });
+    }
+  };
+
+  return { startPayment, startWalletPayment };
 };
