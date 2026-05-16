@@ -2,26 +2,23 @@
 
 import { Field } from 'react-final-form';
 import { Eye, EyeOff } from 'lucide-react';
-import { UserIcon, EnvelopeIcon, KeyIcon, PhoneIcon } from '@phosphor-icons/react';
 import { useState } from 'react';
-import { InputAdornment } from '@mui/material';
 import { required, validateEmail, validatePassword } from '../../utils/validations';
 import CustomInput from '@/common/ui/CustomInput';
-import Button from '@/common/ui/Buttons/Button';
 import Link from 'next/link';
 
 import { SignUpFormProps } from '../../types';
 
-export default function SignUpForm({ agreeToTerms, setAgreeToTerms }: SignUpFormProps) {
+interface ExtendedSignUpFormProps extends SignUpFormProps {
+  method: string; // 'password' or 'otp'
+  showOtpInput?: boolean;
+}
+
+export default function SignUpForm({ agreeToTerms, setAgreeToTerms, method = 'otp', showOtpInput = false }: ExtendedSignUpFormProps) {
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
-  };
-
-  const toggleConfirmPasswordVisibility = () => {
-    setShowConfirmPassword(!showConfirmPassword);
   };
 
   return (
@@ -33,19 +30,6 @@ export default function SignUpForm({ agreeToTerms, setAgreeToTerms }: SignUpForm
                 <CustomInput
                   {...input}
                   placeholder="Full Name"
-                  error={meta.touched && !!meta.error}
-                />
-              </div>
-            </div>
-          )}
-        </Field>
-        <Field name="username" validate={required}>
-          {({ input, meta }) => (
-            <div className="flex flex-col gap-2">
-              <div className="relative">
-                <CustomInput
-                  {...input}
-                  placeholder="Username"
                   error={meta.touched && !!meta.error}
                 />
               </div>
@@ -80,34 +64,51 @@ export default function SignUpForm({ agreeToTerms, setAgreeToTerms }: SignUpForm
             </div>
           )}
         </Field>
-        <Field name="password" validate={validatePassword}>
-          {({ input, meta }) => (
-            <div className="flex flex-col gap-2">
-              <div className="relative">
-                <CustomInput
-                  {...input}
-                  type={showPassword ? "text" : "password"}
-                  placeholder="Password"
-                  error={meta.touched && !!meta.error}
-                />
-              </div>
-            </div>
-          )}
-        </Field>
-        <Field name="confirmPassword" validate={required}>
-          {({ input, meta }) => (
-            <div className="flex flex-col gap-2">
-              <div className="relative">
-                <CustomInput
-                  {...input}
-                  type={showConfirmPassword ? "text" : "password"}
-                  placeholder="Confirm Password"
-                  error={meta.touched && !!meta.error}
-                />
-              </div>
-            </div>
-          )}
-        </Field>
+        
+        {method === 'otp' && showOtpInput && (
+          <>
+            <Field name="otp" validate={required}>
+              {({ input, meta }) => (
+                <div className="flex flex-col gap-2">
+                  <div className="relative">
+                    <CustomInput
+                      {...input}
+                      type="text"
+                      placeholder="Enter OTP"
+                      error={meta.touched && !!meta.error}
+                    />
+                  </div>
+                </div>
+              )}
+            </Field>
+          </>
+        )}
+        
+        {method === 'password' && (
+          <>
+            <Field name="password" validate={validatePassword}>
+              {({ input, meta }) => (
+                <div className="flex flex-col gap-2">
+                  <div className="relative">
+                    <CustomInput
+                      {...input}
+                      type={showPassword ? "text" : "password"}
+                      placeholder="Password"
+                      error={meta.touched && !!meta.error}
+                    />
+                    <button
+                      type="button"
+                      onClick={togglePasswordVisibility}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none"
+                    >
+                      {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                    </button>
+                  </div>
+                </div>
+              )}
+            </Field>
+          </>
+        )}
         <div className="flex justify-start items-start gap-2 mt-2">
           <input
             type="checkbox"

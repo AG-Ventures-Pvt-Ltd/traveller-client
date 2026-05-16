@@ -125,7 +125,7 @@ const SlidingCarousel: React.FC<SlidingCarouselProps> = ({
       {/* Carousel Container */}
       <div
         ref={containerRef}
-        className="overflow-hidden"
+        className="overflow-hidden px-3"
         style={{
           cursor: isDragging ? 'grabbing' : 'grab',
           maxWidth: '100%',
@@ -139,11 +139,11 @@ const SlidingCarousel: React.FC<SlidingCarouselProps> = ({
         onTouchEnd={handleTouchEnd}
       >
         <div
-          className="flex gap-3 sm:gap-3"
+          className="flex gap-3"
           style={{
             transform: `translateX(-${translateX}px)`,
             width: `${trackWidth}px`,
-            transition: isDragging ? 'none' : 'transform 0.3s ease',
+            // transition: isDragging ? 'none' : 'transform 0.3s ease',
           }}
 
         >

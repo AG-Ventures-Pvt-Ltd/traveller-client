@@ -19,7 +19,7 @@ const SlidingCarouselSection: React.FC<SlidingCarouselSectionProps> = ({
 
   return (
     <div className="w-full flex flex-col gap-3">
-      <div className="flex flex-col gap-3 pl-1">
+      <div className="flex flex-col gap-3 pl-4">
         <h2 className="text-neutral-900 text-lg sm:text-4xl lg:text-5xl font-medium font-['Satoshi'] leading-tight">
           {title}
         </h2>

@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { House, PaperPlaneTilt, UserCircleIcon } from '@phosphor-icons/react';
+import { HouseIcon, PaperPlaneTiltIcon, UserCircleIcon } from '@phosphor-icons/react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useDevice } from '@/common/hooks/useDevice';
 
@@ -52,46 +52,46 @@ const isActiveRoute =
   }
 
   return (
-    <div className="fixed bottom-6 right-6 z-40">
-      <div className="flex items-center gap-1 bg-[#2a2a2a] rounded-full px-2 py-2 sm:px-3 sm:py-3 shadow-lg">
+    <div className="fixed bottom-6 right-4 z-40">
+      <div className="flex items-center gap-1 bg-[#454545] rounded-full px-2.5 py-2.5 sm:px-3 sm:py-3 shadow-lg">
         {/* Home Button */}
         <button
           onClick={handleHomeClick}
-          className={`flex items-center justify-center w-10 h-10 rounded-full transition-colors ${
+          className={`flex items-center justify-center w-12 h-12 rounded-full transition-colors ${
             isActive('/') 
               ? 'bg-[#EEA0FF] text-black' 
               : 'text-white hover:bg-white/10'
           }`}
           aria-label="Home"
         >
-          <House size={20} weight="thin" />
+          <HouseIcon size={24} weight="thin" />
         </button>
 
         {/* Share Button */}
         <button
           onClick={handleTripsClick}
-          className={`flex items-center justify-center w-10 h-10 rounded-full transition-colors ${
+          className={`flex items-center justify-center w-12 h-12 rounded-full transition-colors ${
             isActive('/trips') 
               ? 'bg-[#EEA0FF] text-black' 
               : 'text-white hover:bg-white/10'
           }`}
           aria-label="Trips"
         >
-          <PaperPlaneTilt size={20} weight="thin" />
+          <PaperPlaneTiltIcon size={24} weight="thin" />
         </button>
 
         {/* Profile Button */}
         {showProfile && (
           <button
             onClick={handleProfileClick}
-            className={`flex items-center justify-center w-10 h-10 rounded-full transition-colors ${
+            className={`flex items-center justify-center w-12 h-12 rounded-full transition-colors ${
               isActive('/profile') || isActive('/auth')
                 ? 'bg-[#EEA0FF] text-black' 
                 : 'text-white hover:bg-white/10'
             }`}
             aria-label="Profile"
           >
-            <UserCircleIcon size={22} weight="thin" />
+            <UserCircleIcon size={24} weight="thin" />
           </button>
         )}
       </div>

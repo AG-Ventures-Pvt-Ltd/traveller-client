@@ -12,7 +12,7 @@ interface UsePostDataOptions<T = unknown> extends Omit<UseMutationOptions<T, Err
 }
 
 const usePostData = <T = unknown>(
-  { url, onSuccess, onError, enableNotifications = true, ...rest } : UsePostDataOptions<T>
+  { url, onSuccess, onError, enableNotifications = true, ...rest }: UsePostDataOptions<T>
 ) => {
   return useMutation<T, Error, MutationPayload>({
     mutationFn: async (payload: Record<string, unknown>) => {
@@ -27,17 +27,17 @@ const usePostData = <T = unknown>(
       onSuccess?.(data, variables, context);
     },
     onError: (error: Error, variables: MutationPayload, context: unknown) => {
-        const axiosError = error as { response?: { data?: { message?: string } } };
-        const errorMessage = axiosError?.response?.data?.message || error?.message || "Something went wrong!";
-
+      const axiosError = error as { response?: { data?: { message?: string } } };
+      const errorMessage = axiosError?.response?.data?.message || error?.message || "Something went wrong!";
+      if (enableNotifications) {
         notify.error(errorMessage);
-        
-        logError({
-            error: errorMessage,
-            location: "traveller-client/src/services/usePostData.ts",
-            when: "posting data",
-        });
-        onError?.(error, variables, context);
+      }
+      logError({
+        error: errorMessage,
+        location: "traveller-client/src/services/usePostData.ts",
+        when: "posting data",
+      });
+      onError?.(error, variables, context);
     },
     ...rest
   });

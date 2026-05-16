@@ -22,6 +22,7 @@ export interface AuthResponse {
 
 export interface GoogleSignInButtonProps {
   redirectTo: string;
+  isLogin : boolean;
 }
 
 export interface SignUpFormProps {

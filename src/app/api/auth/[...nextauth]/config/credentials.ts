@@ -17,12 +17,61 @@ export const credentialsProvider = CredentialsProvider({
       label: "Password",
       type: "password"
     },
+    otp: {
+      label: "OTP",
+      type: "text"
+    },
+    provider: {
+      label: "Provider",
+      type: "text"
+    },
+    mode: {
+      label: "Mode",
+      type: "text"
+    },
   },
 
   authorize: async (credentials, req) => {
 
     const reqType = req?.headers?.origin == process.env.NEXT_PUBLIC_SUBDOMAIN! ? 'Host' : 'Traveler'
 
+    // OTP login branch
+    if (credentials?.provider === 'otp' || credentials?.otp) {
+      if (!credentials?.email) {
+        throw new Error("Email is required for OTP login!");
+      }
+      if (!credentials?.otp) {
+        throw new Error("OTP is required!");
+      }
+
+      try {
+        const res = await axios.post(process.env.NEXT_PUBLIC_API_URL + '/api/client/v1/user/verifyOTP', {
+          email: credentials.email,
+          otp: credentials.otp,
+          mode: credentials.mode,
+        }, {
+          headers: {
+            'x-internal-auth': process.env.INTERNAL_AUTH_SECRET || 'MySuperSecretKey',
+          },
+        });
+
+        const data = res.data.data;
+
+        return {
+          id: data.userId.toString(),
+          name: data.fullName,
+          type: data.type,
+        } as unknown as NextAuthUser;
+
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          throw new Error(error.response?.data?.message || "OTP verification failed");
+        }
+        throw new Error("Unexpected error during OTP verification");
+      }
+    }
+
+    // Password login branch
     if (!credentials?.password) {
       throw new Error("Password is required!");
     }

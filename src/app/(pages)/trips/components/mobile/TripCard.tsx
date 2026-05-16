@@ -23,7 +23,7 @@ export function TripCard({ title, image, address, rating, price, hostName, slug,
       onClick={() => onClick?.(slug)}
     >
       {/* Image */}
-      <div className="relative m-[10px] rounded-[12px] overflow-hidden w-[157px] h-[115px] shrink-0">
+      <div className="relative m-[10px] rounded-[12px] overflow-hidden w-[157px] min-h-[115px] shrink-0">
         <MyImage src={image} alt={title} className="h-full w-full" objectFit="cover" />
         {/* Rating badge */}
         <div className="absolute bottom-[5px] right-[5px] bg-white flex items-center gap-[4px] px-[7px] py-[5px] rounded-[8px]">
@@ -37,7 +37,7 @@ export function TripCard({ title, image, address, rating, price, hostName, slug,
       {/* Content */}
       <div className="flex flex-col justify-center gap-[3px] py-[10px] pr-[10px] flex-1 min-w-0">
         <p className="font-semibold text-[18px] text-black tracking-tight leading-tight line-clamp-2">
-          {title}
+          {title} 
         </p>
         <div className="flex items-center gap-[4px]">
           <span className="text-[12.5px] font-normal text-black tracking-tight truncate">by {hostName}</span>

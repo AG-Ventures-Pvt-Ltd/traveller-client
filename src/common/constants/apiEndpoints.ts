@@ -46,6 +46,8 @@ export const API_ENDPOINTS = {
   USER: {
     REGISTER: "/api/client/v1/user/register",
     VERIFY_EMAIL: () => `/api/client/v1/user/verifyOTP`,
+    LOGIN_OTP : `/api/client/v1/user/login`,
+    SEND_OTP : `/api/client/v1/user/send-otp`,
     SOCIAL_LOGIN: "/api/client/v1/user/social_login",
     HOST_PROFILE: (id: string) => `/api/client/v1/user/host/profile/${id}`,
     HOST_IDS_FOR_SITEMAP : `/api/client/v1/user/host/sitemap`,
@@ -69,6 +71,7 @@ export const API_ENDPOINTS = {
   },
   LANDING_PAGE: {
     FEATURED_TRIPS: '/api/client/v1/landingpage/featuredTrips',
+    CITIES : '/api/client/v1/landingpage/cities',
   },
   REFERRAL: {
     GET_MY_REFERRAL_DATA: '/api/client/v1/referrals/me'

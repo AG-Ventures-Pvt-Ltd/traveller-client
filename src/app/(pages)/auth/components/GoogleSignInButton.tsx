@@ -4,7 +4,8 @@ import { signIn } from 'next-auth/react';
 import Button from '@/common/components/atoms/Button';
 import { GoogleSignInButtonProps } from '../types';
 
-const GoogleSignInButton = ({ redirectTo }: GoogleSignInButtonProps) => {
+const GoogleSignInButton = ({ redirectTo, isLogin }: GoogleSignInButtonProps) => {
+
   const handleGoogleSignIn = () => {
     signIn('google', { callbackUrl: redirectTo });
   };
@@ -26,7 +27,7 @@ const GoogleSignInButton = ({ redirectTo }: GoogleSignInButtonProps) => {
       }
     >
       <span className="text-base font-medium font-['Rubik']">
-        Sign Up with Google
+        Sign {isLogin ? 'In' : 'Up'} with Google
       </span>
     </Button>
   );

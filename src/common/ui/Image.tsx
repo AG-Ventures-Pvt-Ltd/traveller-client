@@ -12,7 +12,7 @@ const MyImage = ({ src, alt,className,rounded, objectFit = 'cover', fill = true,
     
     if (!fill) {
         return (
-            <img
+            <Image
                 src={imageSrc}
                 alt={alt || 'Some Trip Image'}
                 className={`${className} ${rounded ? 'rounded-full' : ''}`}
