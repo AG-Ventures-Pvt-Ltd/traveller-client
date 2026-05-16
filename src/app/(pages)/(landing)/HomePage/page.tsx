@@ -10,7 +10,7 @@ import Footer from '../Footer/Footer';
 import { useSession } from 'next-auth/react';
 import { useGetData } from '@/services/useGetData';
 import { API_ENDPOINTS } from '@/common/constants/apiEndpoints';
-import { City } from './components/LocationSelector';
+import { CitiesResponse } from './components/LocationSelector';
 
 
 
@@ -19,7 +19,7 @@ const HomePage = () => {
 
     const { data: session } = useSession();
     const { data: featuredTripsData, isLoading: isTripsLoading } = useFeaturedTrips();
-    const { data : cities, isLoading : cityLoading } = useGetData<City[]>(API_ENDPOINTS.LANDING_PAGE.CITIES)
+    const { data : cities, isLoading : cityLoading } = useGetData<CitiesResponse>(API_ENDPOINTS.LANDING_PAGE.CITIES)
     
 
     //   const { mutate: updateWallet } = usePostData({ 
@@ -98,7 +98,7 @@ const HomePage = () => {
             ) : (
                 <div className="w-full bg-[#FFF9F4] sm:px-6 lg:px-9 pt-6 sm:pt-8 lg:pt-10 pb-12 sm:pb-16 lg:pb-24">
                     <div className="max-w-[1440px] mx-auto flex flex-col gap-8 sm:gap-10 lg:gap-12">
-                        <LocationSelector avatar={customImage} cities={cities || []} cityLoading={cityLoading}/>
+                        <LocationSelector avatar={customImage} cities={cities || { cities: [] }} cityLoading={cityLoading}/>
                         <div className='flex flex-col gap-2 px-4'>
                             <SuggestionBanner
                                 suggestion={suggestion}

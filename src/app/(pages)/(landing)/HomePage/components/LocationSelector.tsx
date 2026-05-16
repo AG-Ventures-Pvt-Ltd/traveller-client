@@ -8,7 +8,7 @@ import MyImage from '@/common/ui/Image';
 import { useLocation } from '@/common/hooks/useLocation';
 
 
-interface CitiesResponse {
+export interface CitiesResponse {
     cities: City[];
 }
 
@@ -18,7 +18,7 @@ interface LocationSelectorProps {
     cityLoading: boolean;
 }
 
-export interface City {
+interface City {
     city: string;
     state: string;
     country: string;
