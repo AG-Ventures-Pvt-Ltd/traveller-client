@@ -77,7 +77,7 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
         if (session) {
             router.push('/profile');
         } else {
-            router.push('/auth');
+            router.push('/auth?mode=login&method=otp');
         }
     };
 
@@ -96,11 +96,11 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
                             <button
                                 onClick={() => setDropdownOpen(!dropdownOpen)}
                                 className="flex items-center gap-2 text-black text-xl sm:text-3xl font-bold transition-colors text-left pb-1"
-                                
+
                             >
                                 <span>{displayCity}</span>
                                 <CaretDownIcon
-                                    size={20} 
+                                    size={20}
                                     className={`transition-transform duration-300 ${dropdownOpen ? 'rotate-180' : ''}`}
                                     weight="thin"
                                 />
@@ -177,14 +177,14 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
                 {status == 'authenticated' && (
                     <button
                         onClick={() => router.push('/wallet')}
-                        className="p-2 hover:bg-gray-100 rounded-full transition-colors relative"
+                        className="p-1 hover:bg-gray-100 rounded-full transition-colors relative"
                         aria-label="View wallet"
                     >
                         <MoneyWavyIcon className="w-8 h-8 text-neutral-700" weight="regular" />
                         <div className="absolute top-2 left-1 w-3 h-3 bg-[#F44336] rounded-full" />
                     </button>
                 )}
-                {avatar ? (
+                {status == 'authenticated' && avatar ? (
                     <button
                         onClick={handleAvatarClick}
                         className="p-0 rounded-full transition-opacity hover:opacity-80"
@@ -200,12 +200,20 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
                 ) : (
                     <button
                         onClick={handleAvatarClick}
-                        className="w-10 h-10 rounded-full bg-orange-500 flex items-center justify-center text-white text-lg hover:opacity-80 transition-opacity"
+                        className="w-10 h-10 rounded-full transition-opacity hover:opacity-80 bg-black text-white"
                         aria-label="Go to profile or login"
                     >
-                        🧑
+                        {session?.user?.fullName?.[0]}
                     </button>
                 )}
+                { status == 'unauthenticated' &&  <button
+                        onClick={handleAvatarClick}
+                        className="flex items-center justify-center bg-[#EEA0FF] px-4 py-2 rounded-xl"
+                        aria-label="Go to profile or login"
+                    >
+                        Sign Up
+                    </button>
+                }
             </div>
         </div>
     );

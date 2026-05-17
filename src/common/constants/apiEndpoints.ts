@@ -72,6 +72,7 @@ export const API_ENDPOINTS = {
   LANDING_PAGE: {
     FEATURED_TRIPS: '/api/client/v1/landingpage/featuredTrips',
     CITIES : '/api/client/v1/landingpage/cities',
+    SIGNUP_BONUS: '/api/client/v1/landingpage/signup-bonus',
   },
   REFERRAL: {
     GET_MY_REFERRAL_DATA: '/api/client/v1/referrals/me'

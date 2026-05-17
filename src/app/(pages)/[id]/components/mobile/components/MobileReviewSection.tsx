@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect } from 'react'
 import { MobileRatingOverview, RatingDistributionItem } from './MobileRatingOverview'
 import { MobileReviewCard, MobileReviewCardData } from './MobileReviewCard'
 import { useGetData } from '@/services/useGetData'
@@ -13,6 +14,7 @@ export interface MobileReviewSectionProps {
   distribution?: RatingDistributionItem[]
   onWriteReview?: () => void
   onViewMore?: () => void
+  onAverageRatingChange?: (rating: string) => void
 }
 
 export interface TripReviewResponse {
@@ -37,6 +39,7 @@ export function MobileReviewSection({
   tripId,
   onWriteReview,
   onViewMore,
+  onAverageRatingChange,
 }: MobileReviewSectionProps) {
 
 
@@ -51,6 +54,17 @@ export function MobileReviewSection({
 
   const { data } = useGetData<TripReviewResponse>(reviewURL)
 
+  // Calculate and update average rating when reviews data changes
+  useEffect(() => {
+    if (data?.reviews && data.reviews.length > 0) {
+      const avgRating = (
+        data.reviews.reduce((sum, review) => sum + Number(review.rating), 0) /
+        data.reviews.length
+      ).toFixed(1);
+
+      onAverageRatingChange?.(avgRating);
+    }
+  }, [data?.reviews, onAverageRatingChange]);
 
   if (!data?.reviews || data?.reviews.length == 0) {
     return <></>

@@ -18,14 +18,15 @@ import ItinerarySection from './components/ItinerarySection';
 import InclusionsSection from './components/InclusionsSection';
 import FAQsSection from './components/FAQsSection';
 import { CancellationPolicySection } from './components/PoliciesSection';
-import BookingBar from './components/BookingBar';
+import BookingBar from '@/app/(pages)/trip/common/ui/BookingBar';
 import SafetySupportSection from './components/SafetySupportSection';
 import { sortBatchesByDate } from './utils';
 import { NAV_SECTION_IDS } from './constants';
 import { NavSection, SectionRefs } from './types';
 import { getSeatsDisplay } from '@/common/utils/seatsDisplay';
-import { StarIcon } from '@phosphor-icons/react';
 import { MobileReviewSection } from '@/app/(pages)/[id]/components/mobile/components/MobileReviewSection';
+import WhatsAppButton from './components/WhatsAppButton';
+import { StarIcon } from '@phosphor-icons/react';
 
 
 export default function TripDetailMobile() {
@@ -46,6 +47,7 @@ export default function TripDetailMobile() {
     const [selectedPricing, setSelectedPricing] = useState<number | null>(null);
     const [pricingInfoIndex, setPricingInfoIndex] = useState<number | null>(null);
     const [generatedSlug, setGeneratedSlug] = useState<string>('');
+    const [averageRating, setAverageRating] = useState<string>('0');
 
     // Section refs for smooth scrolling
     const overviewRef = useRef<HTMLDivElement>(null);
@@ -100,14 +102,12 @@ export default function TripDetailMobile() {
         }
     }, [tripData?.isBookmarked]);
 
-    // Set default selected batch to first (earliest) batch
     useEffect(() => {
         if (sortedBatches.length > 0) {
             setSelectedBatch(0);
         }
     }, [sortedBatches]);
 
-    // Set default selected pricing when trip data loads
     useEffect(() => {
         const pricingList = tripData?.pricing.pricings
         if (pricingList && pricingList.length > 0) {
@@ -115,7 +115,7 @@ export default function TripDetailMobile() {
         } else {
             setSelectedPricing(null);
         }
-    }, [tripData?.pricing, tripData?.pricings]);
+    }, [tripData?.pricing]);
 
     // Build available sections based on data
     const availableSections = useMemo<NavSection[]>(() => {
@@ -147,6 +147,11 @@ export default function TripDetailMobile() {
         return sections;
     }, [tripData]);
 
+
+    const pricingList = useMemo(() => {
+        return tripData?.pricing?.pricings || [];
+    }, [tripData?.pricing]);
+
     if (isBasicLoading || !tripData) return <Loader />;
 
     if (error) {
@@ -154,7 +159,10 @@ export default function TripDetailMobile() {
     }
 
     const images = tripData.images || [];
-    const pricingList = tripData.pricing.pricings || tripData.pricings || [];
+
+    const displayPrice = selectedPricing !== null && pricingList.length > 0
+        ? pricingList[selectedPricing].pricePerPerson.toLocaleString('en-IN')
+        : 0;
 
     const handleShare = () => {
         if (typeof window !== 'undefined' && navigator.share) {
@@ -211,10 +219,12 @@ export default function TripDetailMobile() {
                 <div className='px-6'>
                     <div className='flex justify-between'>
                         <p className='font-bold text-2xl'>{basicData?.title}</p>
-                        {/* <div className='bg-[#616161] text-white flex items-center my-0 px-2 rounded-xl'>
+                        <div className='bg-[#616161] text-white flex items-center my-0 px-2 rounded-xl'>
                             <StarIcon weight='fill' className='text-[#FFC107] mr-1' />
-                            <span className='font-bold'>{detailedData?.rating}<span className='font-normal'> ({detailedData?.totalReviews})</span></span>
-                        </div> */}
+                            <span className='font-bold'>{averageRating}
+                                {/* <span className='font-normal'> ({detailedData?.totalReviews})</span> */}
+                            </span>
+                        </div>
                     </div>
                 </div>
                 <div className="p-4 pb-32">
@@ -229,26 +239,25 @@ export default function TripDetailMobile() {
                             />
                         )}
                         {tripData?.host && (
-                        <HostedBy
-                            host={tripData.host}
-                            onPress={() => router.push(`/${tripData.host!.username}`)}
-                        />
-                    )}
+                            <HostedBy
+                                host={tripData.host}
+                                onPress={() => router.push(`/${tripData.host!.username}`)}
+                            />
+                        )}
                         <OverviewSection
-                            description={{ 
-                                destination: basicData?.location?.split(',')[0] || '', 
-                                seats: seatsDisplay, 
-                                duration : basicData?.duration || "", 
-                                difficulty : basicData?.difficulty || "", 
-                                boardingPoint, 
-                                certificates : detailedData?.host?.certificates || [] }}
+                            description={{
+                                destination: basicData?.location?.split(',')[0] || '',
+                                seats: seatsDisplay,
+                                duration: basicData?.duration || "",
+                                difficulty: basicData?.difficulty || "",
+                                boardingPoint,
+                                certificates: detailedData?.host?.certificates || []
+                            }}
                             expanded={expandedOverview}
                             onToggle={() => setExpandedOverview(!expandedOverview)}
                         />
 
                         <div className="space-y-4">
-
-
                             {pricingList.length > 1 && (
                                 <TravelOptions
                                     pricingList={pricingList}
@@ -292,7 +301,7 @@ export default function TripDetailMobile() {
                             />
                         </div>
                     )}
-                    
+
                     {((tripData.inclusions && tripData.inclusions.length > 0) || (tripData.exclusions && tripData.exclusions.length > 0)) && (
                         <div ref={inclusionsRef} className="scroll-mt-20">
                             <InclusionsSection
@@ -302,8 +311,8 @@ export default function TripDetailMobile() {
                         </div>
                     )}
                     <div ref={reviewsRef} className='scroll-mt-20 mt-6'>
-                        <MobileReviewSection tripId={slug?.split('-').pop()}/>
-                    </div>    
+                        <MobileReviewSection tripId={id} onAverageRatingChange={setAverageRating} />
+                    </div>
 
                     <div ref={tripSupportRef} className="scroll-mt-20 my-6">
                         <SafetySupportSection />
@@ -324,9 +333,14 @@ export default function TripDetailMobile() {
                     </div>
                 </div>
 
+                <WhatsAppButton
+                    tripTitle={tripData.title}
+                    tripSlug={id}
+                    className="bottom-[104px]"
+                />
+
                 <BookingBar
-                    selectedPricing={selectedPricing}
-                    pricingList={pricingList}
+                    displayPrice={displayPrice}
                     onBookNow={handleBookNow}
                 />
 

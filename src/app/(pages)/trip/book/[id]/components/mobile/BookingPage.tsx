@@ -27,7 +27,7 @@ export default function BookingPage() {
     const batchId = searchParams.get('batchId') || '';
     const step = (searchParams.get('step') || 'reservation') as Step;
 
-    const { setHeaderLabel, setButtonLabel, setBackAction, setContinueAction } = useBookingNavStore();
+    const { setHeaderLabel, setBackAction } = useBookingNavStore();
 
     const bookingDataRef = useRef<BookingFormData | null>(null);
     const couponsRef = useRef<Coupon[]>([]);
@@ -41,11 +41,7 @@ export default function BookingPage() {
     useEffect(() => {
         const config = STEP_CONFIG[step] ?? STEP_CONFIG.reservation;
         setHeaderLabel(config.headerLabel);
-        
-        if (step !== 'review' && step !== 'reservation') {
-            setContinueAction(null);
-        }
-    }, [step, setHeaderLabel, setButtonLabel, setContinueAction]);
+    }, [step, setHeaderLabel]);
 
     useEffect(() => {
         if (step === 'reservation') {

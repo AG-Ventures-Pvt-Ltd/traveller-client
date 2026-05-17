@@ -1,36 +1,21 @@
 'use client';
 
 import type { ElementType } from 'react';
-import { CheckIcon, CurrencyInrIcon, NumberCircleFourIcon, NumberCircleThreeIcon, NumberCircleTwoIcon, NumberCircleOneIcon } from '@phosphor-icons/react';
+import { CheckIcon, CurrencyInrIcon } from '@phosphor-icons/react';
+import { ICON_CONFIG } from '@/common/constants/iconConfig';
 
-// Icon mapping for auto-detection based on label words
-export const ICON_WORD_MAPPING: Record<string, string[]> = {
-    'quad_sharing_room' : ['quad','four'],
-    'triple_sharing_room' : ['triple','three'],
-    'double_sharing_room' : ['double','two'],
-    'single_room' : ['single'],
-};
 
-// Icon component mapping
-const ICON_COMPONENTS: Record<string, ElementType> = {
-    quad_sharing_room : NumberCircleFourIcon,
-    triple_sharing_room : NumberCircleThreeIcon,
-    double_sharing_room : NumberCircleTwoIcon,
-    single_room : NumberCircleOneIcon
-};
-
-// Function to detect icon from label words
 export function detectIconFromLabel(label: string): ElementType | undefined {
     const words = label.toLowerCase().split(/\s+/);
-    
-    for (const [iconName, keywords] of Object.entries(ICON_WORD_MAPPING)) {
+
+    for (const [, config] of Object.entries(ICON_CONFIG)) {
         for (const word of words) {
-            if (keywords.includes(word)) {
-                return ICON_COMPONENTS[iconName];
+            if (config.words.includes(word)) {
+                return config.icon;
             }
         }
     }
-    
+
     return undefined;
 }
 
@@ -43,16 +28,12 @@ interface SelectableItemProps {
     showPriceBadge?: boolean;
     showPlusInPrice?: boolean;
     icon?: ElementType;
-    /** Custom badge text that takes precedence over price badge */
     badgeLabel?: string;
-    /** Show check icon when selected (default: true). If false, expandable text can be shown instead */
     showCheckIcon?: boolean;
-    /** Expandable text to show instead of check icon when selected */
     expandableText?: {
         label: string;
         onClick: (e: React.MouseEvent) => void;
     };
-    /** Auto-detect icon from label words (default: false) */
     autoDetectIcon?: boolean;
 }
 
@@ -71,7 +52,7 @@ export default function SelectableItem({
     autoDetectIcon = false,
 }: SelectableItemProps) {
     const shouldShowBadge = showPriceBadge && (badgeLabel !== undefined || (price !== undefined && price > 0));
-    
+
     // Determine which icon to use
     const detectedIcon = autoDetectIcon ? detectIconFromLabel(label) : undefined;
     const IconComponent = Icon || detectedIcon;

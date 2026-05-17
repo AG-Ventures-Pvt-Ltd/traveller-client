@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Search } from 'lucide-react';
-import { SparkleIcon, MoneyWavyIcon } from '@phosphor-icons/react';
+import { SparkleIcon } from '@phosphor-icons/react';
 import { useRouter } from 'next/navigation';
 
 
@@ -14,7 +14,7 @@ interface SuggestionBannerProps {
 }
 
 const SuggestionBanner: React.FC<SuggestionBannerProps> = ({
-    suggestion = "Shreyansh's next escape ?",
+    suggestion = "Traveler's next escape ?",
     placeholder = 'Search by keywords or places',
     onSearch
 }) => {

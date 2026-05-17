@@ -2,12 +2,12 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { SealPercentIcon } from '@phosphor-icons/react';
-import { useBookingNavStore } from '../../../[batchId]/store/useBookingNavStore';
 import { CouponsSkeleton } from '../BookingStepSkeletons';
 import type { Coupon } from './BookingFormPage/types';
 import { API_ENDPOINTS } from '@/common/constants/apiEndpoints';
 import { useGetData } from '@/services/useGetData';
 import { useBookingFormStore } from './BookingFormPage/hooks/useBookingFormStore';
+import Button from '@/common/ui/Buttons/Button';
 
 
 interface AllCouponsPageProps {
@@ -38,7 +38,6 @@ function getCouponSaveLine(coupon: Coupon): string {
 export default function AllCouponsPage({ tripId, onDone }: AllCouponsPageProps) {
 
     const { email, appliedCoupon, setAppliedCoupon } = useBookingFormStore();
-    const { setContinueAction } = useBookingNavStore();
 
     const [selectedCode, setSelectedCode] = useState<string>(appliedCoupon?.code ?? '');
 
@@ -61,16 +60,12 @@ export default function AllCouponsPage({ tripId, onDone }: AllCouponsPageProps) 
         onDoneRef.current();
     }, [selectedCode, coupons, setAppliedCoupon]);
 
-    useEffect(() => {
-        setContinueAction(() => handleDone());
-    }, [setContinueAction, handleDone]);
-
     if (isLoading) {
         return <CouponsSkeleton />;
     }
 
     return (
-        <div className="px-4 pb-4 flex flex-col gap-4">
+        <div className="px-4 pb-20 flex flex-col gap-4">
             <div className="border border-[#D9D9D9] rounded-2xl overflow-hidden">
                 {/* Header row */}
                 <div className="flex items-center justify-between px-3 py-[18px] border-b border-[#D9D9D9]">
@@ -119,6 +114,15 @@ export default function AllCouponsPage({ tripId, onDone }: AllCouponsPageProps) 
                         );
                     })}
                 </div>
+            </div>
+            <div className="fixed bottom-0 left-0 right-0 px-5 py-5 bg-[#FFF9F4] z-50">
+                <Button
+                    variant="yellow"
+                    fullWidth
+                    onClick={handleDone}
+                >
+                    Done
+                </Button>
             </div>
         </div>
     );

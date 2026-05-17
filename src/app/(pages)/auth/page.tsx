@@ -35,9 +35,9 @@ export default function Page() {
   const [showOtpVerification, setShowOtpVerification] = useState(false);
   const [otpEmail, setOtpEmail] = useState<string>('');
 
-  const registerMutation = usePostData({ url: API_ENDPOINTS.USER.REGISTER, enableNotifications : false });
+  const registerMutation = usePostData({ url: API_ENDPOINTS.USER.REGISTER, enableNotifications: false });
 
-  const sendOtpMutation = usePostData({ url: API_ENDPOINTS.USER.LOGIN_OTP, enableNotifications : false });
+  const sendOtpMutation = usePostData({ url: API_ENDPOINTS.USER.LOGIN_OTP, enableNotifications: false });
 
   const onSubmit = async (values: LoginValues | SignupValues) => {
     setErrorMessage(null);
@@ -144,9 +144,9 @@ export default function Page() {
                 <SignUpForm method={method} agreeToTerms={agreeToTerms} setAgreeToTerms={setAgreeToTerms} showOtpInput={false} />
               )}
               {errorMessage && (
-                  <p className="text-red-600 text-sm text-center font-medium">
-                    {errorMessage}
-                  </p>
+                <p className="text-red-600 text-sm text-center font-medium">
+                  {errorMessage}
+                </p>
               )}
               <Button
                 variant='purple'

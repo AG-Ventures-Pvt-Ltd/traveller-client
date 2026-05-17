@@ -1,23 +1,21 @@
 'use client'
 
-import { BookingBarProps } from '../types';
 import { CurrencyInrIcon } from '@phosphor-icons/react';
 
+interface BookingBarProps {
+    displayPrice: string | number;
+    onBookNow: () => void;
+}
+
 export default function BookingBar({
-    selectedPricing,
-    pricingList,
+    displayPrice,
     onBookNow,
 }: BookingBarProps) {
-
-    const displayPrice =
-        selectedPricing !== null && pricingList.length > 0
-            ? pricingList[selectedPricing].pricePerPerson.toLocaleString() : 0 ;
-
     return (
         <div className="fixed bottom-0 left-0 right-0 bg-[#EEA0FF] pl-8 pr-4 py-5 flex items-center justify-between shadow-lg rounded-t-3xl z-20">
             <div>
                 <p className="text-xl font-bold text-black flex items-end">
-                    <span className='flex items-center'><CurrencyInrIcon weight='bold'/> {displayPrice}/</span> 
+                    <span className='flex items-center'><CurrencyInrIcon weight='bold' /> {displayPrice}/</span>
                     <span className="text-sm font-medium pl-1"> person</span>
                 </p>
                 <p className='font-medium'>+5% GST</p>

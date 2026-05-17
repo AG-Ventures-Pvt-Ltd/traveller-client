@@ -48,7 +48,7 @@ export const credentialsProvider = CredentialsProvider({
         const res = await axios.post(process.env.NEXT_PUBLIC_API_URL + '/api/client/v1/user/verifyOTP', {
           email: credentials.email,
           otp: credentials.otp,
-          mode: credentials.mode,
+          purpose : credentials.mode, 
         }, {
           headers: {
             'x-internal-auth': process.env.INTERNAL_AUTH_SECRET || 'MySuperSecretKey',

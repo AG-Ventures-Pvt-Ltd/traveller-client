@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useMemo } from 'react';
 import TravelOptionsList from '@/app/(pages)/trip/common/ui/TravelOptionsList';
 import CollapsibleCard from '@/common/ui/CollapsibleCard';
 import { useGetData } from '@/services/useGetData';
@@ -17,10 +17,10 @@ import { ReservationSkeleton } from '../../BookingStepSkeletons';
 import { useBookingFormStore } from './hooks/useBookingFormStore';
 import type { BookingFormData, BookingOptionsResponse, Coupon } from './types';
 import LoadExistingBookingDetails from './components/LoadExistingBookingDetails'
-import { useBookingNavStore } from '../../../../[batchId]/store/useBookingNavStore';
 import { useSearchParams } from 'next/navigation';
 import { useCreateBooking } from './hooks/useCreateBooking';
 import { useUpdateBooking } from './hooks/useUpdateBooking';
+import BookingBar from '@/app/(pages)/trip/common/ui/BookingBar';
 
 
 export type { BookingFormData };
@@ -49,9 +49,14 @@ export default function BookingFormPage({ tripId, batchId, onViewCoupons }: Book
         setBookingOptions,
         setIsBookingOptionsLoading,
         setSelectedTravelIdx,
+        guests,
+        addOns,
+        selectedAddOnIdx,
+        selectedExtraAddOnIdx,
+        selectedTransportAddOnIdx,
+        selectedActivityAddOnIdx,
+        appliedCoupon,
     } = useBookingFormStore();
-
-    const { setContinueAction } = useBookingNavStore()
 
     const { data: bookingOptionsData, isLoading: isBookingOptionsLoadingData } = useGetData<BookingOptionsResponse>(
         tripId ? API_ENDPOINTS.TRIPS.BOOKING_OPTIONS(tripId, batchId) : '',
@@ -75,22 +80,64 @@ export default function BookingFormPage({ tripId, batchId, onViewCoupons }: Book
     useEffect(() => {
         setBookingOptions(bookingOptionsData);
         setIsBookingOptionsLoading(isBookingOptionsLoadingData);
-    }, [bookingOptionsData, isBookingOptionsLoadingData]);
+    }, [bookingOptionsData, isBookingOptionsLoadingData, setBookingOptions, setIsBookingOptionsLoading]);
 
-    useEffect(() => {
-        if (existingBookingId) {
-            setContinueAction(() => handleUpdateRef.current());
-        } else {
-            setContinueAction(() => handleContinueRef.current());
+    // Calculate total price based on all selected options
+    const displayPrice = useMemo(() => {
+        let totalPerPerson = 0;
+
+        // Add base pricing tier price
+        if (selectedTravelIdx !== null && pricingTiers[selectedTravelIdx]) {
+            totalPerPerson += pricingTiers[selectedTravelIdx].pricePerPerson;
         }
-    }, [existingBookingId, setContinueAction]);
+
+        // Add selected add-ons
+        if (selectedAddOnIdx !== null && addOns[selectedAddOnIdx]) {
+            totalPerPerson += addOns[selectedAddOnIdx].pricePerPerson;
+        }
+        if (selectedExtraAddOnIdx !== null && addOns[selectedExtraAddOnIdx]) {
+            totalPerPerson += addOns[selectedExtraAddOnIdx].pricePerPerson;
+        }
+        if (selectedTransportAddOnIdx !== null && addOns[selectedTransportAddOnIdx]) {
+            totalPerPerson += addOns[selectedTransportAddOnIdx].pricePerPerson;
+        }
+        if (selectedActivityAddOnIdx !== null && addOns[selectedActivityAddOnIdx]) {
+            totalPerPerson += addOns[selectedActivityAddOnIdx].pricePerPerson;
+        }
+
+        // Calculate total for all guests
+        let total = totalPerPerson * guests;
+
+        // Apply coupon discount
+        if (appliedCoupon) {
+            if (appliedCoupon.discountType === 'percentage') {
+                const discountAmount = Math.min(
+                    (total * appliedCoupon.discountValue) / 100,
+                    appliedCoupon.maxDiscountAmount || Infinity
+                );
+                total -= discountAmount;
+            } else {
+                total -= appliedCoupon.discountValue;
+            }
+        }
+
+        return Math.max(0, total);
+    }, [selectedTravelIdx, pricingTiers, guests, addOns, selectedAddOnIdx, selectedExtraAddOnIdx, selectedTransportAddOnIdx, selectedActivityAddOnIdx, appliedCoupon]);
+
+    const handleButtonClick = () => {
+        if (existingBookingId) {
+            handleUpdateRef.current();
+        } else {
+            handleContinueRef.current();
+        }
+    };
 
     if (isBookingOptionsLoading && !bookingOptions) {
         return <ReservationSkeleton />;
     }
 
     return (
-        <div className="px-4 pb-4 flex flex-col gap-4">
+        <div className="px-4 pb-20 flex flex-col gap-4">
             <LoadExistingBookingDetails />
             <TripOverviewCard />
             <TravelerDetailsCard />
@@ -121,6 +168,7 @@ export default function BookingFormPage({ tripId, batchId, onViewCoupons }: Book
                 coupons={bookingOptions?.coupons}
                 onViewCoupons={onViewCoupons ? () => onViewCoupons(bookingOptions?.coupons ?? []) : undefined}
             />
+            <BookingBar displayPrice={displayPrice} onBookNow={handleButtonClick} />
         </div>
     );
 }

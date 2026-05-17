@@ -1,5 +1,14 @@
-import { CalendarCheckIcon, UsersIcon, ForkKnifeIcon, XIcon } from '@phosphor-icons/react';
+import { CalendarCheckIcon, UsersIcon, XIcon } from '@phosphor-icons/react';
 import MyImage from '@/common/ui/Image';
+import type { ElementType } from 'react';
+
+interface BookingDetailsItem {
+    key: string;
+    icon: ElementType;
+    getValue: (booking: TripSummaryCardProps['booking'], formattedDate?: string) => string;
+    condition: (booking: TripSummaryCardProps['booking']) => boolean;
+    className?: string;
+}
 
 interface TripSummaryCardProps {
     trip: {
@@ -42,25 +51,27 @@ const TripSummaryCard: React.FC<TripSummaryCardProps> = ({ trip, booking }) => {
         })
         : '';
 
-    const bookingDetailsMap = [
+    const bookingDetailsMap: BookingDetailsItem[] = [
         {
             key: 'travelers',
             icon: UsersIcon,
-            getValue: (data: any) => `${data.booking.numberOfPeople} Traveler${data.booking.numberOfPeople > 1 ? 's' : ''}`,
+            getValue: (booking) => `${booking.numberOfPeople} Traveler${booking.numberOfPeople > 1 ? 's' : ''}`,
             condition: () => true,
+            className: '',
         },
-        {
-            key: 'mealPreference',
-            icon: ForkKnifeIcon,
-            getValue: (data: any) => `${data.booking.mealPreference} meal`,
-            condition: (data: any) => !!data.booking.mealPreference,
-            className: 'capitalize',
-        },
+        // {
+        //     key: 'mealPreference',
+        //     icon: ForkKnifeIcon,
+        //     getValue: (booking) => `${booking.mealPreference} meal`,
+        //     condition: (booking) => !!booking.mealPreference,
+        //     className: 'capitalize',
+        // },
         {
             key: 'departureDate',
             icon: CalendarCheckIcon,
-            getValue: (data: any, formattedDate: string) => formattedDate || '—',
+            getValue: (booking, formattedDate) => formattedDate || '—',
             condition: () => true,
+            className: '',
         },
     ];
 
@@ -85,6 +96,8 @@ const TripSummaryCard: React.FC<TripSummaryCardProps> = ({ trip, booking }) => {
                     <MyImage
                         src={trip.tripImage || ''}
                         alt={trip.title || 'Trip image'}
+                        width={96}
+                        height={96}
                         className="w-full h-full"
                         objectFit="cover"
                         fill={false}
@@ -97,14 +110,14 @@ const TripSummaryCard: React.FC<TripSummaryCardProps> = ({ trip, booking }) => {
             <div className="flex flex-col gap-3 px-4 py-4">
                 {bookingDetailsMap.map((item) => {
                     const IconComponent = item.icon;
-                    const shouldShow = item.condition({ booking });
+                    const shouldShow = item.condition(booking);
                     if (!shouldShow) return null;
 
                     return (
                         <div key={item.key} className="flex items-center gap-2.5">
                             <IconComponent size={24} weight="thin" className="text-black flex-shrink-0" />
                             <span className={`text-black text-xs ${item.className || ''}`}>
-                                {item.getValue({ booking }, formattedDate)}
+                                {item.getValue(booking, formattedDate)}
                             </span>
                         </div>
                     );

@@ -1,14 +1,13 @@
 "use client";
 import { useDevice } from '@/common/hooks/useDevice';
 import BackButton from '@/common/ui/BackButton';
-import Button from '@/common/ui/Buttons/Button';
 import { useBookingNavStore } from './[batchId]/store/useBookingNavStore';
 
 
 export default function Layout({ children }: { children: React.ReactNode }) {
 
     const { isMobile } = useDevice();
-    const { headerLabel, buttonLabel, continueAction, backAction } = useBookingNavStore();
+    const { headerLabel, backAction } = useBookingNavStore();
 
     if (isMobile) {
         return (
@@ -20,17 +19,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                         className="gap-4"
                     />
                 </div>
-                <div className="flex-1 overflow-y-auto pb-28">
+                <div className="flex-1 overflow-y-auto pb-20">
                     {children}
-                </div>
-                <div className="fixed bottom-0 left-0 right-0 px-5 py-5 bg-[#FFF9F4] z-50">
-                    <Button
-                        variant="yellow"
-                        fullWidth
-                        onClick={continueAction ?? undefined}
-                    >
-                        {buttonLabel}
-                    </Button>
                 </div>
             </div>
         )

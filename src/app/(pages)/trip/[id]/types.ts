@@ -94,7 +94,7 @@ export interface TripData {
   faqs?: FAQ[];
   tripBatches?: AvailableDate[];
   tags?: string[];
-  slug?: string;
+  slug : string;
   isBookmarked?: boolean;
   bestTimeToVisit?: string;
   cancellationPolicy?: { refundTiers?: Array<{ daysBeforeCancellation: string; refundPercentage: string }> };
