@@ -3,6 +3,7 @@
 
 import { useDevice } from '@/common/hooks/useDevice';
 import BookingPage from './components/mobile/BookingPage';
+import { redirect } from 'next/navigation';
 
 
 
@@ -14,9 +15,7 @@ const Page = () => {
             return <BookingPage/>
         }
     
-    return (
-        <></>
-    )
+    redirect('/')
 
 }
 

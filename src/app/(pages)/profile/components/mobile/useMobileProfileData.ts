@@ -72,7 +72,7 @@ export const useMobileProfileData = () => {
   )
 
   const { data: userData, isLoading, error } = useGetData<UserData>(
-    API_ENDPOINTS.USER.ME
+    API_ENDPOINTS.USER.ME(''), { queryKey : ['user','profile']}
   )
 
   const formatDate = (dateString: string) => {

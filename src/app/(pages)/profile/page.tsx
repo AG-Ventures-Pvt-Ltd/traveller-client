@@ -92,7 +92,7 @@ export default function Page() {
     governmentIdNumber: ''
   });
 
-  const { data: userData, isLoading, error } = useGetData<{ fullName?: string; username?: string; bio?: string; email?: string; phone?: string; address?: string; city?: string; createdAt?: string; birthDate?: string; avatar?: string; governmentIdType?: string; governmentIdNumber?: string; emergencyContact?: { name: string; contactNumber: string } }>(API_ENDPOINTS.USER.ME);
+  const { data: userData, isLoading, error } = useGetData<{ fullName?: string; username?: string; bio?: string; email?: string; phone?: string; address?: string; city?: string; createdAt?: string; birthDate?: string; avatar?: string; governmentIdType?: string; governmentIdNumber?: string; emergencyContact?: { name: string; contactNumber: string } }>(API_ENDPOINTS.USER.ME(''),{ queryKey : ['user']});
 
   const formatDate = (dateString: string) => {
     if (!dateString) return 'Not added yet';
@@ -237,7 +237,7 @@ export default function Page() {
   }
 
   if (isMobile) {
-    return <MobileProfilePage/>
+    return <MobileProfilePage />
   }
 
   return (

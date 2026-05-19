@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { UserIcon, EnvelopeSimpleIcon, PhoneIcon, InfoIcon } from '@phosphor-icons/react';
 import CollapsibleCard from '@/common/ui/CollapsibleCard';
 import CustomInput from '@/common/ui/CustomInput';
@@ -11,6 +11,7 @@ import type { FormErrors } from '../types';
 import { API_ENDPOINTS } from '@/common/constants/apiEndpoints';
 import { useBookingFormStore } from '../hooks/useBookingFormStore';
 import { useSession } from 'next-auth/react';
+import { useGetData } from '@/services/useGetData';
 
 interface TravelerDetailsCardProps {
     isOpen?: boolean;
@@ -21,13 +22,17 @@ interface EmailValidationResponse {
     exists: boolean;
 }
 
+interface UserData {
+    email?: string;
+    fullName?: string;
+    phone?: string;
+}
+
 export default function TravelerDetailsCard({
     isOpen,
     onToggle,
 }: TravelerDetailsCardProps) {
     const {
-        guests,
-        setGuests,
         fullName,
         email: emailValue,
         phone,
@@ -42,21 +47,28 @@ export default function TravelerDetailsCard({
 
     const [emailExists, setEmailExists] = useState<boolean | null>(null);
     const [emailLocked, setEmailLocked] = useState(false);
+    const preFillDone = useRef(false);
 
     const { data: session, status } = useSession();
-    // Pre-fill form with session data when authenticated
+    
+    const { data: userData } = useGetData<UserData>(API_ENDPOINTS.USER.ME('booking'), { queryKey: ['user', 'booking'], retry : false })
+
+    // Pre-fill form with userData only if authenticated
     useEffect(() => {
-        if (status === 'authenticated' && session?.user) {
-            if (session.user.email && !emailValue) {
+        if (!preFillDone.current && status === 'authenticated' && session?.user && userData) {
+            if (session.user.email) {
                 setEmail(session.user.email);
                 setEmailLocked(true);
             }
-            if (session.user.fullName && !fullName) {
+            if (session.user.fullName) {
                 setFullName(session.user.fullName);
             }
-            
+            if (userData.phone) {
+                setPhone(userData.phone);
+            }
+            preFillDone.current = true;
         }
-    }, [status, session, emailValue, fullName, phone, setEmail, setFullName, setPhone]);
+    }, [status, session, userData, setEmail, setFullName, setPhone]);
 
     // Check if email is valid - trim whitespace and validate format
     const trimmedEmail = emailValue.trim();
@@ -68,7 +80,7 @@ export default function TravelerDetailsCard({
         queryKey: ['email-validation', trimmedEmail],
         queryFn: () => getData<EmailValidationResponse>(API_ENDPOINTS.BOOKINGS.VALIDATE_EMAIL_REGISTRATION(trimmedEmail)),
         enabled: isEmailValid,
-        staleTime: 5 * 60 * 1000, // 5 minutes
+        staleTime: 5 * 60 * 1000, 
     });
 
     // Update email exists state when API response changes
@@ -85,14 +97,13 @@ export default function TravelerDetailsCard({
 
     const handleBlur = (field: keyof FormErrors) => {
         setTouched({ ...touched, [field]: true });
-        const value = field === 'fullName' ? fullName : field === 'email' ? emailValue : phone;
         const error = field === 'fullName' ? '' : field === 'email' ? (emailValidationError || '') : '';
         setErrors({ ...errors, [field]: error });
     };
 
     return (
         <CollapsibleCard title="Traveler Details" isOpen={isOpen} onToggle={onToggle}>
-            {/* Personal Info Fields */}
+
             <div className="flex flex-col gap-1.5 px-4 pb-5">
                 <CustomInput
                     type="text"
@@ -138,7 +149,7 @@ export default function TravelerDetailsCard({
                     <InfoIcon weight='thin' size={20}/>
                     you can fill other passenger details later
                 </div>
-                {/* Email exists message */}
+
                 {emailExists === true && (
                     <p className="text-xs pl-1 mt-2">
                         You&apos;ve booked with us before! Log in to get your details pre-filled.

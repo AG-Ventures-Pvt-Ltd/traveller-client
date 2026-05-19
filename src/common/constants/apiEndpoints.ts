@@ -51,7 +51,7 @@ export const API_ENDPOINTS = {
     SOCIAL_LOGIN: "/api/client/v1/user/social_login",
     HOST_PROFILE: (id: string) => `/api/client/v1/user/host/profile/${id}`,
     HOST_IDS_FOR_SITEMAP : `/api/client/v1/user/host/sitemap`,
-    ME: "/api/client/v1/user/me",
+    ME: (loc : string) => `/api/client/v1/user/me?location=${loc}`,
     MY_TRIPS: "/api/client/v1/user/me/trips",
     UPDATE: "/api/client/v1/user/me/update",
     GET_EMERGENCY_CONTACT: "/api/client/v1/user/emergencyContact",
