@@ -68,12 +68,19 @@ const BookedTripCard: React.FC<BookedTripCardProps> = ({
 
     const statusConfig = STATUS_CONFIG[tripStatus]
 
-    const formatTravelers = (travelers: string) => {
-        if (travelers.length == 1) {
-            return travelers[0]
+    const formatTravelers = (travelers: any) => {
+        // Handle if travelers is an array
+        let names: string[] = [];
+        if (Array.isArray(travelers)) {
+            names = travelers.map(t => typeof t === 'string' ? t : t.name || 'Guest');
+        } else if (typeof travelers === 'string') {
+            // Handle if travelers is a comma-separated string
+            names = travelers.split(',').map(n => n.trim()).filter(n => n);
         }
-        const names = travelers.split(',').map(n => n.trim());
-        if (names.length === 1) return travelers;
+        
+        if (names.length === 0) return 'No travelers';
+        if (names.length === 1) return names[0];
+        
         const extra = names.length - 1;
         const firstName = names[0].split(' ')[0];
         return `${firstName}+${extra}`;
