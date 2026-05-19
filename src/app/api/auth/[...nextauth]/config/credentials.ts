@@ -59,6 +59,7 @@ export const credentialsProvider = CredentialsProvider({
 
         return {
           id: data.userId.toString(),
+          email: credentials.email,
           name: data.fullName,
           type: data.type,
         } as unknown as NextAuthUser;
@@ -98,6 +99,7 @@ export const credentialsProvider = CredentialsProvider({
 
         const result = {
           id: user.userId.toString(),
+          email: credentials.email || credentials.username,
           name: user.fullName,
           type: user.type
         };

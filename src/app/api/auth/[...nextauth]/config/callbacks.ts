@@ -33,6 +33,7 @@ export const authCallbacks: Pick<NextAuthOptions, 'callbacks'> = {
       if (!account && user) {
         token.sub = user.id;
         token.userId = user.id;
+        token.email = user.email;
         token.fullName = (user as { fullName?: string; name?: string }).fullName || user.name;
         token.type = user.type;
         return token;
