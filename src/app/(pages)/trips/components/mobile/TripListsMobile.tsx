@@ -239,6 +239,7 @@ const TripListsMobile = () => {
                                 slug={trip.slug}
                                 days={trip.days}
                                 bgColor={bgColor}
+                                isBookmarked={trip.isBookmarked}
                                 onClick={(slug) => router.push(`/trip/${slug}`)}
                             />
                         );

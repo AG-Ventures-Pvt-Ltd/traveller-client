@@ -105,36 +105,36 @@ const WalletPage = () => {
               </span>
             )}
             <p className="text-xl px-8 text-black font-normal mt-6">
-              you can use wondrr cash to save while booking trips !
+              {walletData?.balance == 0 ?
+                walletEntries.length == 0 ? 'Make your first booking to start earn wondrr cash and unlock rewards.' : 'Uh oh ! It seems that you are out of wondrr cash !'
+                : 'you can use wondrr cash to save while booking trips !'}
             </p>
           </div>
 
-          {/* Info Banner */}
-          <div className="flex gap-3 items-center bg-[#FFC107] rounded-2xl p-3 mb-6">
-            <InfoIcon
-              size={16}
-              className="w-4 h-4 text-black flex-shrink-0"
-              weight="thin"
-            />
-            <p className="text-xs text-black font-normal">
-              {walletData?.expiryDate && walletData?.expiryAmount > 0
-                ? `₹${walletData.expiryAmount.toLocaleString('en-IN')} expiring on ${formatDate(walletData.expiryDate)}`
-                : 'Rewards are only valid till 90 days from the date of addition.'
-              }
-            </p>
-          </div>
-          <p className="text-black text-center font-normal bg-[#E2F4A6] p-3 mb-6 rounded-xl">
-            Use ₹{walletData?.balance?.toLocaleString('en-IN') || '0'} for your next trip
-          </p>
+          {walletData?.expiryAmount != 0 &&
+            <div className="flex gap-3 items-center bg-[#FFC107] rounded-2xl p-3 mb-6">
+              <InfoIcon
+                size={16}
+                className="w-4 h-4 text-black flex-shrink-0"
+                weight="thin"
+              />
+              <p className="text-xs text-black font-normal">
+                {`₹${walletData?.expiryAmount.toLocaleString('en-IN')} expiring on ${formatDate(walletData?.expiryDate || '')}`}
+              </p>
+            </div>}
 
-          {/* Wallet Transaction History */}
-          <div className="mb-6">
+          {walletData?.balance != 0 &&
+            <p className="text-black text-center font-normal bg-[#E2F4A6] p-3 mb-6 rounded-xl">
+              Use ₹{walletData?.balance?.toLocaleString('en-IN')} for your next trip
+            </p>}
+
+          {walletEntries.length != 0 && <div className="mb-6">
             <TransactionList
               entries={walletEntries}
               isLoading={txLoading}
               title="Transaction History"
             />
-          </div>
+          </div>}
           <div className='fixed bottom-0 left-0 right-0 px-4 py-6'>
             <Button variant='purple' fullWidth onClick={() => setIsAddBalanceOpen(true)}>
               Add Balance

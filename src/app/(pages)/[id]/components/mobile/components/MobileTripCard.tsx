@@ -1,5 +1,6 @@
 import MyImage from '@/common/ui/Image'
-import { StarIcon, SealCheckIcon } from '@phosphor-icons/react'
+import { StarIcon, SealCheckIcon, HeartIcon } from '@phosphor-icons/react'
+import { useBookMarking } from '@/common/hooks/useBookMarking'
 
 export interface MobileTripCardData {
   _id: string
@@ -21,14 +22,36 @@ interface MobileTripCardProps {
 
 export function MobileTripCard({ trip, onClick }: MobileTripCardProps) {
 
+  const { isBookmarked, toggle } = useBookMarking(trip.slug, trip.isBookmarked)
+
+  const handleCardClick = () => onClick?.(trip.slug)
+
+  const handleBookmarkClick = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    toggle(e)
+  }
+
   return (
     <div
       className="relative rounded-[20px] overflow-hidden cursor-pointer active:scale-[0.98] transition-transform"
       style={{ backgroundColor: trip.bgColor }}
-      onClick={() => onClick?.(trip.slug)}
+      onClick={handleCardClick}
     >
       <div className="relative mx-[10px] mt-[10px] rounded-[12px] overflow-hidden h-[100px]">
        <MyImage src={trip.image} alt={trip.slug} className='h-full w-full'/>
+       
+        {/* Bookmark button */}
+        <button
+          onClick={handleBookmarkClick}
+          className="absolute top-1 right-1 flex items-center justify-center w-6 h-6 rounded-full bg-black/70 hover:bg-black transition-colors z-10"
+        >
+          <HeartIcon
+            size={14}
+            weight={isBookmarked ? 'fill' : 'regular'}
+            className={isBookmarked ? 'text-red-500' : 'text-white'}
+          />
+        </button>
+
         <div className="absolute bottom-[6px] right-[6px] bg-white flex items-center gap-[3px] px-[6px] py-[4px] rounded-[8px]">
           <StarIcon size={11} weight="fill" className="text-yellow-400" />
           <span className="text-[10px] font-normal text-black tracking-tight">

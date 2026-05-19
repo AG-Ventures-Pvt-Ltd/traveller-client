@@ -2,9 +2,10 @@
 
 import React from 'react';
 import { useRouter } from 'next/navigation';
-import { StarIcon, SealCheckIcon } from '@phosphor-icons/react';
+import { StarIcon, SealCheckIcon, HeartIcon } from '@phosphor-icons/react';
 import MyImage from '@/common/ui/Image';
 import { CarouselCardProps } from '../types';
+import { useBookMarking } from '@/common/hooks/useBookMarking';
 
 const CarouselCard: React.FC<CarouselCardProps> = ({
   id,
@@ -16,24 +17,29 @@ const CarouselCard: React.FC<CarouselCardProps> = ({
   rating,
   className,
   colorScheme = 'yellow',
-  onClick
+  onClick,
+  tripSlug,
+  isBookmarked: initialIsBookmarked = false,
 }) => {
 
   const router = useRouter();
-  
+
+  const slug = tripSlug || String(id);
+
+  const { isBookmarked, toggle } = useBookMarking(slug, initialIsBookmarked);
+
   const bgColor =
     colorScheme === 'yellow' ? 'bg-[#FFD976]' :
-    colorScheme === 'green'  ? 'bg-[#E2F4A6]' :
-                               'bg-[#EEA0FF]';
+      colorScheme === 'green' ? 'bg-[#E2F4A6]' :
+        'bg-[#EEA0FF]';
   const borderColor =
     colorScheme === 'yellow' ? 'border-[#FFD976]' :
-    colorScheme === 'green'  ? 'border-[#E2F4A6]' :
-                               'border-[#EEA0FF]';
+      colorScheme === 'green' ? 'border-[#E2F4A6]' :
+        'border-[#EEA0FF]';
 
   const handleCardClick = () => {
-    // Create slug from title and id
-    const slug = `${title.toLowerCase().replace(/\s+/g, '-')}-${id}`;
-    router.push(`/trip/${slug}`);
+    const cardSlug = tripSlug || `${title.toLowerCase().replace(/\s+/g, '-')}-${id}`;
+    router.push(`/trip/${cardSlug}`);
     onClick?.();
   };
 
@@ -49,6 +55,17 @@ const CarouselCard: React.FC<CarouselCardProps> = ({
           className="w-full h-full"
           rounded={false}
         />
+        {/* Bookmark button */}
+        <button
+          onClick={toggle}
+          className="absolute top-2 right-2 flex items-center justify-center w-7 h-7 rounded-full bg-black/70 hover:bg-black transition-colors z-10"
+        >
+          <HeartIcon
+            size={16}
+            weight={isBookmarked ? 'fill' : 'regular'}
+            className={isBookmarked ? 'text-red-500' : 'text-white'}
+          />
+        </button>
         <div className="absolute bottom-3 right-3 bg-white rounded-full px-2 py-1 flex items-center gap-1 shadow-md">
           <StarIcon size={14} className="w-3 h-3 text-yellow-500" weight="fill" />
           <span className="text-neutral-900 text-xs font-bold font-['Satoshi']">
@@ -65,7 +82,7 @@ const CarouselCard: React.FC<CarouselCardProps> = ({
             <p className="text-neutral-700 text-xs font-medium font-['Satoshi']">
               by {provider}
             </p>
-            <SealCheckIcon size={14}/>
+            <SealCheckIcon size={14} />
           </div>
         </div>
         <div className="flex flex-col gap-0.5 pt-0">

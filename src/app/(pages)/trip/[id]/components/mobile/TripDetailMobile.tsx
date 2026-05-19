@@ -1,32 +1,44 @@
 'use client'
 
+import dynamic from 'next/dynamic';
 import { useParams, useRouter } from 'next/navigation';
 import { useTripBasicDetails, useTripDetailedDetails } from '../../../api';
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { generateSlug } from '../../../utils';
 import Loader from '@/common/ui/Loader/Loader';
 import { TripData } from '../../types';
-import Footer from '../../../../(landing)/Footer/Footer';
-import HeroCarousel from './components/HeroCarousel';
-import TabNavigation from './components/TabNavigation';
-import TripHighlights from './components/TripHighlights';
-import HostedBy from './components/HostedBy';
-import OverviewSection from './components/OverviewSection';
-import BatchSelection from './components/BatchSelection';
-import TravelOptions from './components/TravelOptions';
-import ItinerarySection from './components/ItinerarySection';
-import InclusionsSection from './components/InclusionsSection';
-import FAQsSection from './components/FAQsSection';
-import { CancellationPolicySection } from './components/PoliciesSection';
-import BookingBar from '@/app/(pages)/trip/common/ui/BookingBar';
-import SafetySupportSection from './components/SafetySupportSection';
 import { sortBatchesByDate } from './utils';
 import { NAV_SECTION_IDS } from './constants';
 import { NavSection, SectionRefs } from './types';
 import { getSeatsDisplay } from '@/common/utils/seatsDisplay';
-import { MobileReviewSection } from '@/app/(pages)/[id]/components/mobile/components/MobileReviewSection';
-import WhatsAppButton from './components/WhatsAppButton';
 import { StarIcon } from '@phosphor-icons/react';
+import { useBookMarking } from '@/common/hooks/useBookMarking';
+
+// Above-fold — static imports
+import HeroCarousel from './components/HeroCarousel';
+import TabNavigation from './components/TabNavigation';
+import BatchSelection from './components/BatchSelection';
+import HostedBy from './components/HostedBy';
+import OverviewSection from './components/OverviewSection';
+import TravelOptions from './components/TravelOptions';
+import BookingBar from '@/app/(pages)/trip/common/ui/BookingBar';
+import WhatsAppButton from './components/WhatsAppButton';
+
+// Below-fold — lazy loaded so initial render is lean
+const TripHighlights = dynamic(() => import('./components/TripHighlights'), { ssr: false });
+const ItinerarySection = dynamic(() => import('./components/ItinerarySection'), { ssr: false });
+const InclusionsSection = dynamic(() => import('./components/InclusionsSection'), { ssr: false });
+const FAQsSection = dynamic(() => import('./components/FAQsSection'), { ssr: false });
+const CancellationPolicySection = dynamic(
+    () => import('./components/PoliciesSection').then(m => ({ default: m.CancellationPolicySection })),
+    { ssr: false }
+);
+const MobileReviewSection = dynamic(
+    () => import('@/app/(pages)/[id]/components/mobile/components/MobileReviewSection').then(m => ({ default: m.MobileReviewSection })),
+    { ssr: false }
+);
+const SafetySupportSection = dynamic(() => import('./components/SafetySupportSection'), { ssr: false });
+const Footer = dynamic(() => import('../../../../(landing)/Footer/Footer'), { ssr: false });
 
 
 export default function TripDetailMobile() {
@@ -36,8 +48,6 @@ export default function TripDetailMobile() {
     const slug = Array.isArray(slugParam) ? slugParam[0] : slugParam;
     const router = useRouter();
     const id = slug ? (slug.split('-').pop() || slug) : '';
-    const [loadDetailed, setLoadDetailed] = useState(false);
-    const [isBookmarked, setIsBookmarked] = useState(false);
     const [expandedOverview, setExpandedOverview] = useState(false);
     const [selectedDay, setSelectedDay] = useState(0);
     const [activeSection, setActiveSection] = useState<string>(NAV_SECTION_IDS.OVERVIEW);
@@ -62,13 +72,7 @@ export default function TripDetailMobile() {
     const dayRefs = useRef<Record<number, HTMLDivElement | null>>({});
 
     const { data: basicData, isLoading: isBasicLoading, error } = useTripBasicDetails(id as string);
-    const { data: detailedData, isLoading: isDetailedLoading } = useTripDetailedDetails(id as string, loadDetailed);
-
-    useEffect(() => {
-        if (basicData && !loadDetailed) {
-            setLoadDetailed(true);
-        }
-    }, [basicData, loadDetailed]);
+    const { data: detailedData, isLoading: isDetailedLoading } = useTripDetailedDetails(id as string, true);
 
     const tripData = useMemo(() => basicData ? { ...basicData, ...(detailedData || {}) } as TripData : null, [basicData, detailedData]);
 
@@ -89,18 +93,20 @@ export default function TripDetailMobile() {
     useEffect(() => {
         if (tripData && tripData.title && slug) {
             const slug_generated = generateSlug(tripData.title, id);
+
             setGeneratedSlug(slug_generated);
+
             if (slug !== slug_generated) {
-                router.replace(`/trip/${slug_generated}`);
+                window.history.replaceState(
+                    {},
+                    '',
+                    `/trip/${slug_generated}`
+                );
             }
         }
-    }, [tripData, slug, router, id]);
+    }, [tripData, slug, id]);
 
-    useEffect(() => {
-        if (tripData?.isBookmarked !== undefined) {
-            setIsBookmarked(tripData.isBookmarked);
-        }
-    }, [tripData?.isBookmarked]);
+    const { isBookmarked, toggle: toggleBookmark } = useBookMarking(id || '', tripData?.isBookmarked ?? false);
 
     useEffect(() => {
         if (sortedBatches.length > 0) {
@@ -207,7 +213,7 @@ export default function TripDetailMobile() {
                 isBookmarked={isBookmarked}
                 onBack={() => router.back()}
                 onShare={handleShare}
-                onToggleBookmark={() => setIsBookmarked(!isBookmarked)}
+                onToggleBookmark={toggleBookmark}
             />
             <div className="bg-[#fff9f4] min-h-screen">
                 <TabNavigation

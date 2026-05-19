@@ -33,11 +33,12 @@ function BookmarkCard({ trip, index }: { trip: BookmarkedTrip; index: number }) 
         image={trip.image}
         address={trip.location}
         rating={trip.rating ?? 0}
-        price={trip.price}
+        price={trip.price || 0}
         hostName={trip.hostName ?? ''}
         slug={trip.tripSlug}
         days={trip.days ?? ''}
         bgColor={bgColor}
+        isBookmarked={true}
         onClick={(slug) => router.push(`/trip/${slug}`)}
       />
     </div>
@@ -45,10 +46,11 @@ function BookmarkCard({ trip, index }: { trip: BookmarkedTrip; index: number }) 
 }
 
 export default function BookmarksPage() {
+  
   const { data: bookmarks, isLoading, error } = useBookmarks()
 
   return (
-    <div className="min-h-screen bg-[#FFF9F4] px-4 pt-4 pb-8">
+    <div className="min-h-screen bg-[#FFF9F4] pt-4 pb-8">
       <BackButton label="Back to Profile" to="/profile" className="mt-6" />
 
       <h1 className="text-4xl font-bold mt-6 mb-6 tracking-tight">

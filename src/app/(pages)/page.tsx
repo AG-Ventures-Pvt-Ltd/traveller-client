@@ -18,7 +18,7 @@ export const Landing = () => {
     const { status } = useSession()
     const [isMobile, setIsMobile] = useState(false);
     const [isHydrated, setIsHydrated] = useState(false);
-    const { requestLocationPermission, error, hasPermission, locationDetails } = useLocation();
+    const { requestLocationPermission, error, hasPermission } = useLocation();
     
     useEffect(() => {
         setIsHydrated(true);

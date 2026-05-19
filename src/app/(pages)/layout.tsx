@@ -13,8 +13,8 @@ interface RootLayoutProps {
 }
 
 export const metadata: Metadata = {
-  title : "Find and Join Group Trips in India on Wondrr",
-  description : "Join India’s most trusted group trips with expertly planned tours across top destinations. Safe, social, and hassle-free group travel in India with fixed departures and experienced trip leaders."
+  title: "Find and Join Group Trips in India on Wondrr",
+  description: "Join India’s most trusted group trips with expertly planned tours across top destinations. Safe, social, and hassle-free group travel in India with fixed departures and experienced trip leaders."
 }
 
 export default function RootLayout({ children }: RootLayoutProps) {

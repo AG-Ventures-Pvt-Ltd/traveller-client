@@ -6,6 +6,8 @@ export interface Trip {
   duration: string;
   price: number;
   rating: number;
+  tripSlug?: string;
+  isBookmarked?: boolean;
 }
 
 export interface CarouselTrip {
@@ -37,6 +39,8 @@ export interface CarouselCardProps {
   colorScheme?: 'yellow' | 'green' | 'purple';
   className?:string;
   onClick?: () => void;
+  tripSlug?: string;
+  isBookmarked?: boolean;
 }
 
 export interface SlidingCarouselProps {

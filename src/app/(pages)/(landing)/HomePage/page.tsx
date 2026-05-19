@@ -89,6 +89,8 @@ const HomePage = () => {
                     duration: trip.days,
                     price: trip.price,
                     rating: Math.random() * 1 + 4,
+                    tripSlug: trip.tripSlug,
+                    isBookmarked: trip.isBookmarked,
                 })),
             }));
     }, [featuredTripsData]);

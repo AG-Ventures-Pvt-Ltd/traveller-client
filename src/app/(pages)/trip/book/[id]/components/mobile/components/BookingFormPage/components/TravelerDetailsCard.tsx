@@ -10,6 +10,7 @@ import { email } from '@/common/utils/formValidators';
 import type { FormErrors } from '../types';
 import { API_ENDPOINTS } from '@/common/constants/apiEndpoints';
 import { useBookingFormStore } from '../hooks/useBookingFormStore';
+import { useSession } from 'next-auth/react';
 
 interface TravelerDetailsCardProps {
     isOpen?: boolean;
@@ -40,6 +41,22 @@ export default function TravelerDetailsCard({
     } = useBookingFormStore();
 
     const [emailExists, setEmailExists] = useState<boolean | null>(null);
+    const [emailLocked, setEmailLocked] = useState(false);
+
+    const { data: session, status } = useSession();
+    // Pre-fill form with session data when authenticated
+    useEffect(() => {
+        if (status === 'authenticated' && session?.user) {
+            if (session.user.email && !emailValue) {
+                setEmail(session.user.email);
+                setEmailLocked(true);
+            }
+            if (session.user.fullName && !fullName) {
+                setFullName(session.user.fullName);
+            }
+            
+        }
+    }, [status, session, emailValue, fullName, phone, setEmail, setFullName, setPhone]);
 
     // Check if email is valid - trim whitespace and validate format
     const trimmedEmail = emailValue.trim();
@@ -94,10 +111,11 @@ export default function TravelerDetailsCard({
                     type="email"
                     placeholder="Email"
                     value={emailValue}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={(e) => !emailLocked && setEmail(e.target.value)}
                     onBlur={() => handleBlur('email')}
                     icon={EnvelopeSimpleIcon}
                     error={touched.email && !!errors.email}
+                    readOnly={emailLocked}
                 />
                 {touched.email && errors.email && (
                     <p className="text-xs text-red-500 pl-1">{errors.email}</p>

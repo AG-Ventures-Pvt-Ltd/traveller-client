@@ -208,7 +208,7 @@ export default function HeroCarousel({
             <div className="absolute top-5 left-5 z-20">
                 <button
                     onClick={onBack}
-                    className="flex items-center justify-center w-10 h-10 rounded-full bg-black/60 hover:bg-pink-600 transition-colors"
+                    className="flex items-center justify-center w-10 h-10 rounded-full bg-black hover:bg-pink-600 transition-colors"
                 >
                     <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -220,13 +220,13 @@ export default function HeroCarousel({
             <div className="absolute top-5 right-5 z-20 flex gap-2">
                 <button
                     onClick={onShare}
-                    className="flex items-center justify-center w-10 h-10 rounded-full bg-black/60 hover:bg-black/80 transition-colors border border-white/20"
+                    className="flex items-center justify-center w-10 h-10 rounded-full bg-black hover:bg-black/80 transition-colors border border-white/20"
                 >
                     <Share2 className="w-5 h-5 text-white" />
                 </button>
                 <button
                     onClick={onToggleBookmark}
-                    className="flex items-center justify-center w-10 h-10 rounded-full bg-black/60 hover:bg-black/80 transition-colors border border-white/20"
+                    className="flex items-center justify-center w-10 h-10 rounded-full bg-black hover:bg-black/80 transition-colors border border-white/20"
                 >
                     <Heart
                         className={`w-5 h-5 transition-colors ${
