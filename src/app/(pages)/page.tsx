@@ -18,39 +18,47 @@ export const Landing = () => {
     const { status } = useSession()
     const [isMobile, setIsMobile] = useState(false);
     const [isHydrated, setIsHydrated] = useState(false);
-    const { requestLocationPermission, error, hasPermission } = useLocation();
-    
+    const { requestLocationPermission } = useLocation();
+
     useEffect(() => {
         setIsHydrated(true);
-        
+
         const checkMobile = () => {
             setIsMobile(window.innerWidth < 768);
         };
-        
+
         checkMobile();
         window.addEventListener('resize', checkMobile);
         return () => window.removeEventListener('resize', checkMobile);
     }, []);
 
-    // Request location permission on component mount (only once)
     useEffect(() => {
-        if (isHydrated && !hasPermission && !error) {
-            requestLocationPermission().catch(() => {
-                // Location permission rejected or failed - app can still work without it
-            });
-        }
-    }, [isHydrated, hasPermission, error, requestLocationPermission]);
+        if (!isHydrated) return;
+
+        navigator.permissions.query({ name: 'geolocation' }).then((result) => {
+            if (result.state === 'granted') {
+                requestLocationPermission().catch(() => { });
+            } else if (result.state === 'prompt') {
+                const timer = setTimeout(() => {
+                    requestLocationPermission().catch(() => { });
+                }, 15000);
+                return () => clearTimeout(timer);
+            }
+        });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isHydrated]);
+
 
     if (status === 'loading' || !isHydrated) {
-        return <Loader/>
+        return <Loader />
     }
 
     // Show HomePage on mobile devices only
     if (isMobile) {
-        return <HomePage/>
+        return <HomePage />
     }
-    
-    return <DesktopLanding/>
+
+    return <DesktopLanding />
 }
 
 export default Landing

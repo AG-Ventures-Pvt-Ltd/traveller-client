@@ -7,6 +7,9 @@ import Button from '@/common/ui/Buttons/Button';
 import { notify } from '@/common/utils/notify';
 import usePostData from '@/services/usePostData';
 import { API_ENDPOINTS } from '@/common/constants/apiEndpoints';
+import { useGetData } from '@/services/useGetData';
+import PhoneNumberPromptPage from '../PhoneNumberPrompt/PhoneNumberPromptPage';
+import SideBanner from '../SideBanner';
 
 interface OtpVerificationPageProps {
     email: string;
@@ -25,7 +28,13 @@ export default function OtpVerificationPage({
     const [timeLeft, setTimeLeft] = useState(300); // 5 minutes
     const [isResending, setIsResending] = useState(false);
     const [isVerifying, setIsVerifying] = useState(false);
+    const [showPhonePrompt, setShowPhonePrompt] = useState(false);
     const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+
+    const { refetch: checkPhoneExists } = useGetData<{ exists: boolean }>(
+        API_ENDPOINTS.USER.VALIDATE_PHONE,
+        { enabled: false, queryKey: [API_ENDPOINTS.USER.VALIDATE_PHONE] }
+    );
 
     const resendOtpMutation = usePostData({
         url: API_ENDPOINTS.USER.SEND_OTP,
@@ -112,6 +121,16 @@ export default function OtpVerificationPage({
                  if (mode === 'signup') {                     
                      router.push(redirectUrl);
                  } else {
+                     // For login, check if user has a phone number
+                     try {
+                         const { data: phoneData } = await checkPhoneExists();
+                         if (!phoneData?.exists) {
+                             setShowPhonePrompt(true);
+                             return;
+                         }
+                     } catch {
+                         // If check fails, just redirect normally
+                     }
                      router.push(redirectUrl);
                  }  
             }
@@ -154,6 +173,19 @@ export default function OtpVerificationPage({
         const secs = seconds % 60;
         return `${mins}:${secs.toString().padStart(2, '0')}`;
     };
+
+    if (showPhonePrompt) {
+        return (
+            <div className="flex bg-[#fff9f4] min-h-screen">
+                <div className='md:w-1/2'>
+                    <SideBanner />
+                </div>
+                <div className="w-full md:w-1/2 flex flex-col justify-center items-center px-[10%] sm:px-[14%] md:px-[4%] lg:px-[8%] xl:px-[12%] py-8 bg-[#fff9f4]">
+                    <PhoneNumberPromptPage onDone={() => router.push(redirectUrl)} />
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="w-full max-w-md mx-8">

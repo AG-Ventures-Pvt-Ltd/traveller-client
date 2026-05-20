@@ -54,6 +54,8 @@ export const API_ENDPOINTS = {
     ME: (loc : string) => `/api/client/v1/user/me?location=${loc}`,
     MY_TRIPS: "/api/client/v1/user/me/trips",
     UPDATE: "/api/client/v1/user/me/update",
+    VALIDATE_PHONE: "/api/client/v1/user/validate/phone",
+    UPDATE_PHONE: "/api/client/v1/user/me/phone/update",
     GET_EMERGENCY_CONTACT: "/api/client/v1/user/emergencyContact",
     ADD_EMERGENCY_CONTACT: "/api/client/v1/user/addEmergencyContact"
   }, 

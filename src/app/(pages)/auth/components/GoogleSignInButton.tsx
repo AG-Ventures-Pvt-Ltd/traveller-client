@@ -7,7 +7,8 @@ import { GoogleSignInButtonProps } from '../types';
 const GoogleSignInButton = ({ redirectTo, isLogin }: GoogleSignInButtonProps) => {
 
   const handleGoogleSignIn = () => {
-    signIn('google', { callbackUrl: redirectTo });
+    const postLoginUrl = `/auth/post-login?redirectUrl=${encodeURIComponent(redirectTo)}`;
+    signIn('google', { callbackUrl: postLoginUrl });
   };
 
   return (

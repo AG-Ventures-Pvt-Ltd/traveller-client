@@ -14,6 +14,8 @@ import { API_ENDPOINTS } from '@/common/constants/apiEndpoints';
 import { notify } from '@/common/utils/notify';
 import GoogleSignInButton from './components/GoogleSignInButton';
 import Button from '@/common/ui/Buttons/Button';
+import { useGetData } from '@/services/useGetData';
+import PhoneNumberPromptPage from './components/PhoneNumberPrompt/PhoneNumberPromptPage';
 
 export default function Page() {
 
@@ -34,6 +36,12 @@ export default function Page() {
   const [agreeToTerms, setAgreeToTerms] = useState(false);
   const [showOtpVerification, setShowOtpVerification] = useState(false);
   const [otpEmail, setOtpEmail] = useState<string>('');
+  const [showPhonePrompt, setShowPhonePrompt] = useState(false);
+
+  const { refetch: checkPhoneExists } = useGetData<{ exists: boolean }>(
+    API_ENDPOINTS.USER.VALIDATE_PHONE,
+    { enabled: false, queryKey: [API_ENDPOINTS.USER.VALIDATE_PHONE] }
+  );
 
   const registerMutation = usePostData({ url: API_ENDPOINTS.USER.REGISTER, enableNotifications: false });
 
@@ -67,6 +75,16 @@ export default function Page() {
       if (!result.success && result.error) {
         setErrorMessage(result.error);
       } else if (result.success) {
+        // Check if user has a phone number
+        try {
+          const { data: phoneData } = await checkPhoneExists();
+          if (!phoneData?.exists) {
+            setShowPhonePrompt(true);
+            return;
+          }
+        } catch {
+          // If check fails, just redirect normally
+        }
         const redirectTo = redirectUrl || '/';
         router.push(redirectTo);
       }
@@ -115,6 +133,20 @@ export default function Page() {
             email={otpEmail}
             mode={mode || 'login'}
           />
+        </div>
+      </div>
+    );
+  }
+
+  // Show phone prompt after password login if no phone on file
+  if (showPhonePrompt) {
+    return (
+      <div className="flex bg-[#fff9f4] min-h-screen">
+        <div className='md:w-1/2'>
+          <SideBanner />
+        </div>
+        <div className="w-full md:w-1/2 flex flex-col justify-center items-center px-[10%] sm:px-[14%] md:px-[4%] lg:px-[8%] xl:px-[12%] py-8 bg-[#fff9f4]">
+          <PhoneNumberPromptPage onDone={() => router.push(redirectUrl || '/')} />
         </div>
       </div>
     );
