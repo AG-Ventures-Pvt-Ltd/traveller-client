@@ -62,8 +62,7 @@ export default function BookingFormPage({ tripId, batchId, onViewCoupons }: Book
         tripId ? API_ENDPOINTS.TRIPS.BOOKING_OPTIONS(tripId, batchId) : '',
         {
             queryKey: [tripId ? API_ENDPOINTS.TRIPS.BOOKING_OPTIONS(tripId, batchId) : ''],
-            refetchOnMount: true,
-            staleTime: 0,
+            staleTime: 5 * 60 * 1000,
         }
     );
 

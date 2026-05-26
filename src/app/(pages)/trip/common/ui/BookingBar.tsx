@@ -5,11 +5,13 @@ import { CurrencyInrIcon } from '@phosphor-icons/react';
 interface BookingBarProps {
     displayPrice: string | number;
     onBookNow: () => void;
+    isLoading?: boolean;
 }
 
 export default function BookingBar({
     displayPrice,
     onBookNow,
+    isLoading = false,
 }: BookingBarProps) {
     return (
         <div className="fixed bottom-0 left-0 right-0 bg-[#EEA0FF] pl-8 pr-4 py-5 flex items-center justify-between shadow-lg rounded-t-3xl z-20">
@@ -22,9 +24,10 @@ export default function BookingBar({
             </div>
             <button
                 onClick={onBookNow}
-                className="bg-black text-white px-4 py-2 rounded-full font-semibold text-lg hover:bg-gray-800 transition-colors whitespace-nowrap"
+                disabled={isLoading}
+                className="bg-black text-white px-4 py-2 rounded-full font-semibold text-lg hover:bg-gray-800 transition-colors whitespace-nowrap disabled:opacity-70 disabled:cursor-not-allowed"
             >
-                Book Now
+                {isLoading ? 'Loading…' : 'Book Now'}
             </button>
         </div>
     );

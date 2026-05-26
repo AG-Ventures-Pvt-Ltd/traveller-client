@@ -30,17 +30,17 @@ export default function TripHighlights({ highlights }: TripHighlightsProps) {
             className="bg-white rounded-xl border border-gray-300 overflow-hidden flex"
           >
             {/* Image */}
-            <div className="w-29 h-26 flex-shrink-0">
+            {highlight.image && <div className="w-29 h-26 flex-shrink-0">
               <MyImage
                 src={highlight.image}
                 alt={highlight.title}
                 className="w-full h-full"
                 objectFit="cover"
               />
-            </div>
+            </div>}
 
             {/* Content */}
-            <div className="flex-1 p-6 flex flex-col justify-center">
+            <div className={`flex-1 ${ highlight.image ? 'p-6' : 'p-4'} flex flex-col justify-center`}>
               <h3 className="text-sm font-semibold text-black">
                 {highlight.title}
               </h3>

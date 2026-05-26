@@ -58,6 +58,7 @@ export default function TripDetailMobile() {
     const [pricingInfoIndex, setPricingInfoIndex] = useState<number | null>(null);
     const [generatedSlug, setGeneratedSlug] = useState<string>('');
     const [averageRating, setAverageRating] = useState<string>('0');
+    const [isBooking, setIsBooking] = useState(false);
 
     // Section refs for smooth scrolling
     const overviewRef = useRef<HTMLDivElement>(null);
@@ -105,6 +106,13 @@ export default function TripDetailMobile() {
             }
         }
     }, [tripData, slug, id]);
+
+    // Prefetch booking page JS as soon as we have the slug, so navigation is instant
+    useEffect(() => {
+        if (generatedSlug) {
+            router.prefetch(`/trip/book/${generatedSlug}`);
+        }
+    }, [generatedSlug, router]);
 
     const { isBookmarked, toggle: toggleBookmark } = useBookMarking(id || '', tripData?.isBookmarked ?? false);
 
@@ -179,6 +187,7 @@ export default function TripDetailMobile() {
     const handleBookNow = () => {
         if (selectedBatch !== null && sortedBatches[selectedBatch]) {
             const batchId = sortedBatches[selectedBatch].batchId;
+            setIsBooking(true);
             router.push(`/trip/book/${generatedSlug}?batchId=${batchId}`);
         }
     };
@@ -211,7 +220,7 @@ export default function TripDetailMobile() {
                 images={images}
                 title={tripData.title}
                 isBookmarked={isBookmarked}
-                onBack={() => router.back()}
+                onBack={() => router.push('/')}
                 onShare={handleShare}
                 onToggleBookmark={toggleBookmark}
             />
@@ -348,6 +357,7 @@ export default function TripDetailMobile() {
                 <BookingBar
                     displayPrice={displayPrice}
                     onBookNow={handleBookNow}
+                    isLoading={isBooking}
                 />
 
                 <Footer />
