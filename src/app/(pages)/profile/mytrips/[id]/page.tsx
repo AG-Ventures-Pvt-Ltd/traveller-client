@@ -5,7 +5,6 @@ import { useParams, useRouter } from 'next/navigation';
 import { useGetData } from '@/services/useGetData';
 import { API_ENDPOINTS } from '@/common/constants/apiEndpoints';
 import BackButton from '@/common/ui/BackButton';
-import { usePayment } from '@/app/(pages)/trip/book/[id]/[batchId]/hooks/usePayment';
 import TripSummaryCard from '@/app/(pages)/trip/book/[id]/components/mobile/components/ReviewInfo/components/TripSummaryCard';
 import { BookingData } from '@/app/(pages)/trip/book/[id]/components/mobile/type';
 import TripOverviewCard from '@/app/(pages)/trip/book/[id]/components/mobile/components/BookingFormPage/components/TripOverviewCard';

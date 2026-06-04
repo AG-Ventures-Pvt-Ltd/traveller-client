@@ -3,6 +3,9 @@ import { InfoIcon } from '@phosphor-icons/react';
 import CustomSelect from '@/common/ui/CustomSelect';
 import { useBookingFormStore } from '../hooks/useBookingFormStore';
 import { notify } from '@/common/utils/notify';
+import { usePathname } from 'next/navigation';
+
+
 
 interface TripOverviewCardProps {
     guests?: number;
@@ -24,6 +27,8 @@ function formatDay(date: Date) {
 }
 
 export default function TripOverviewCard(props: TripOverviewCardProps) {
+
+    const path = usePathname()
 
     const store = useBookingFormStore();
 
@@ -58,7 +63,8 @@ export default function TripOverviewCard(props: TripOverviewCardProps) {
 
     return (
         <div className={`border border-[#D9D9D9] rounded-2xl px-[18px] pt-5 pb-4 flex flex-col gap-${props.gap || 5}`}>
-            {batchDetails?.title && <p className="text-[16px] font-semibold text-black tracking-[-0.48px] leading-snug">
+            {batchDetails?.title && path.split('/')[1] !== 'profile' &&
+            <p className="text-[16px] font-semibold text-black tracking-[-0.48px] leading-snug">
                 {batchDetails?.title}
             </p>}
             <div className="flex items-center justify-between">
@@ -123,7 +129,7 @@ export default function TripOverviewCard(props: TripOverviewCardProps) {
                     <p className='font-medium'>{props.selectedMeetingPoint}</p>
                 </div>
             )}
-            {meetingPoints.length > 0 && (
+            { (meetingPoints.length > 0) && (path.split('/')[1] !== 'profile') && (
                 <div className="flex flex-col gap-2">
                     <div className="flex items-center gap-2 flex-wrap">
                         <p className="text-xs text-black tracking-[-0.36px] whitespace-nowrap">Depart from :</p>
