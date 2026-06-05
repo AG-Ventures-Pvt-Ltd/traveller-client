@@ -21,6 +21,7 @@ const HomePage = () => {
     const { data: featuredTripsData, isLoading: isTripsLoading } = useFeaturedTrips();
     const { data: cities, isLoading: cityLoading } = useGetData<CitiesResponse>(API_ENDPOINTS.LANDING_PAGE.CITIES)
     const { data: signupBonusData, isLoading: isBonusLoading } = useSignupBonus();
+    const { data: travelerStatsData } = useGetData<{ count: number }>(API_ENDPOINTS.LANDING_PAGE.TRAVELER_STATS);
 
     // Signup bonus data available for use:
     // signupBonusData?.signupBonus?.amount - The bonus amount in currency
@@ -112,10 +113,9 @@ const HomePage = () => {
                                 placeholder="Search by keywords or places"
                                 onSearch={handleSearch}
                             />
-                            {/* <StatisticsBanner
-                            text="156+ Travellers booked with us"
-                            duration="last month"
-                        /> */}
+                            {(travelerStatsData?.count ?? 0) > 0 && <StatisticsBanner
+                                message={`${travelerStatsData!.count}+ Travellers booked with us last month`}
+                            />}
                         </div>
                         <div className='flex flex-col gap-8'>
                             {sortedCarousels.map((carousel, index) => (

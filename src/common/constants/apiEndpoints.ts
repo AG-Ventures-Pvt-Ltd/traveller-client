@@ -7,7 +7,8 @@ export const API_ENDPOINTS = {
     HOST_TRIPS: (hostUsername: string) => `/api/client/v1/trips/user/${hostUsername}`,
     BATCH_DETAILS: (batchId: string) => `/api/client/v1/trips/host/trip/batch/${batchId}`,
     GET_METADATA : (id : string) => `/api/client/v1/trips/${id}/metadata`,
-    GET_SLUGS_FOR_SITEMAP :`/api/client/v1/trips/sitemap`
+    GET_SLUGS_FOR_SITEMAP :`/api/client/v1/trips/sitemap`,
+    TRAVELER_STATS: (slug: string) => `/api/client/v1/trips/${slug}/traveler-stats`,
   },
   BOOKINGS: {
     START: "/api/client/v1/bookings/start",
@@ -75,6 +76,7 @@ export const API_ENDPOINTS = {
     FEATURED_TRIPS: '/api/client/v1/landingpage/featuredTrips',
     CITIES : '/api/client/v1/landingpage/cities',
     SIGNUP_BONUS: '/api/client/v1/landingpage/signup-bonus',
+    TRAVELER_STATS: '/api/client/v1/landingpage/traveler-stats',
   },
   REFERRAL: {
     GET_MY_REFERRAL_DATA: '/api/client/v1/referrals/me'
