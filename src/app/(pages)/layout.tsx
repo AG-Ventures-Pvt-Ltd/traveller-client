@@ -13,9 +13,29 @@ interface RootLayoutProps {
 }
 
 export const metadata: Metadata = {
-  title: "Find and Join Group Trips in India on Wondrr",
-  description: "Join India’s most trusted group trips with expertly planned tours across top destinations. Safe, social, and hassle-free group travel in India with fixed departures and experienced trip leaders."
+  title: "Group Trips from India's Top Travel Brands | Wondrr",
+  description:
+    "Browse and book group trips from India's top verified travel brands — all on one platform. Fixed departures across the best destinations, zero hassle.",
+
+  openGraph: {
+    title: "Group Trips from India's Top Travel Brands | Wondrr",
+    description:
+      "Browse and book group trips from India's top verified travel brands — all on one platform. Fixed departures across the best destinations, zero hassle.",
+    url: "https://wondrr.in",
+    siteName: "Wondrr",
+    images: [
+      {
+        url: `https://wondrr.in/png/favicon.png`, // absolute URL
+        width: 1200,
+        height: 630,
+        alt: "Wondrr",
+      },
+    ],
+    locale: "en_IN",
+    type: "website",
+  },
 }
+
 
 export default function RootLayout({ children }: RootLayoutProps) {
 
