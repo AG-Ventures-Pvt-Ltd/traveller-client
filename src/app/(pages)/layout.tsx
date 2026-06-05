@@ -6,7 +6,7 @@ import Script from "next/script";
 import Navbar from '../(pages)/(landing)/Navbar/Navbar'
 import StickyNavigation from '@/common/components/composites/StickyNavigation';
 import type { Metadata } from 'next';
-
+import Image from "next/image";
 
 interface RootLayoutProps {
   children: React.ReactNode;
@@ -48,9 +48,11 @@ export default function RootLayout({ children }: RootLayoutProps) {
           src="https://checkout.razorpay.com/v1/checkout.js"
           strategy="afterInteractive"
         />
-        {isEnvProd && <Script async src="https://www.googletagmanager.com/gtag/js?id=G-8ZL8763359" />}
-        {isEnvProd && <Script id="ga-init" strategy="afterInteractive">
-          {`
+        {isEnvProd &&
+          <>
+            <Script async src="https://www.googletagmanager.com/gtag/js?id=G-8ZL8763359" />
+            <Script id="ga-init" strategy="afterInteractive">
+              {`
             window.dataLayer = window.dataLayer || []
             function gtag() {
                 dataLayer.push(arguments)
@@ -58,9 +60,9 @@ export default function RootLayout({ children }: RootLayoutProps) {
             gtag('js', new Date());
             gtag('config', 'G-8ZL8763359')
           `}
-        </Script>}
-        {isEnvProd && <Script id="clairt-init" type="text/javascript">
-          {`
+            </Script>
+            <Script id="clairt-init" strategy="afterInteractive">
+              {`
             (function(c,l,a,r,i,t,y)  {
                 c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
                 t=l.createElement(r);
@@ -69,9 +71,9 @@ export default function RootLayout({ children }: RootLayoutProps) {
                 y.parentNode.insertBefore(t,y);
             })(window, document, "clarity", "script", "uthr0z0hl7");
           `}
-        </Script>}
-        {isEnvProd && <Script id="meta-pixel-init">
-          {`
+            </Script>
+            <Script id="meta-pixel" strategy="afterInteractive">
+              {`
             !function(f,b,e,v,n,t,s)
             {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
             n.callMethod.apply(n,arguments):n.queue.push(arguments)};
@@ -82,12 +84,19 @@ export default function RootLayout({ children }: RootLayoutProps) {
             'https://connect.facebook.net/en_US/fbevents.js');
             fbq('init', '27319879267632269');
             fbq('track', 'PageView');
-            </script>
-            <noscript><img height="1" width="1" style="display:none"
-            src="https://www.facebook.com/tr?id=27319879267632269&ev=PageView&noscript=1"
-            />
-          `}
-        </Script>}
+            `}
+            </Script>
+            <noscript>
+              <Image
+                height="1"
+                width="1"
+                style={{ display: "none" }}
+                src="https://www.facebook.com/tr?id=27319879267632269&ev=PageView&noscript=1"
+                alt='Meta Pixel'
+              />
+            </noscript>
+          </>
+        }
         <link rel="icon" href="/png/favicon.png" />
       </head>
       <body>
