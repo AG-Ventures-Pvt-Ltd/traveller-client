@@ -2,58 +2,99 @@
 
 import { useRouter, useParams } from 'next/navigation'
 
-
-import { MobileTripCard, MobileTripCardData } from './components/MobileTripCard'
-import { TripCardSkeleton } from './components/TripCardSkeleton'
+import { MobileTripCardData } from './components/MobileTripCard'
 import { API_ENDPOINTS } from '@/common/constants/apiEndpoints'
 import HostHero from './components/HostHero'
 import { useGetData } from '@/services/useGetData'
 import { HostReviews } from '../HostReviews/HostReviews'
+import SlidingCarouselSection from '@/app/(pages)/(landing)/HomePage/components/SlidingCarouselSection'
+import { Trip } from '@/app/(pages)/(landing)/HomePage/types'
+import { ArrowRight } from '@phosphor-icons/react'
 
-
-const CARD_COLORS = ['#FFD976', '#EEA0FF', '#E2F4A6']
-
-
-
-interface MobileTripCardDataResponse {
-  trips: MobileTripCardData[]
+interface Pagination {
+  total: number
+  page: number
+  limit: number
+  totalPages: number
+  hasNextPage: boolean
+  hasPrevPage: boolean
 }
 
+interface TripsResponse {
+  trips: MobileTripCardData[]
+  pagination: Pagination
+}
+
+const toCarouselTrips = (trips: MobileTripCardData[]): Trip[] =>
+  trips.map((t) => ({
+    id: t._id,
+    image: t.image,
+    title: t.title,
+    provider: t.hostName,
+    duration: String(t.days),
+    price: t.price,
+    rating: t.rating,
+    tripSlug: t.slug,
+    isBookmarked: t.isBookmarked,
+  }))
 
 const HostProfileMobile = () => {
-
   const router = useRouter()
+  const params = useParams()
+  const id = params.id as string
 
-  const params = useParams();
-  const id = params.id as string;
+  const { data: upcomingData } = useGetData<TripsResponse>(API_ENDPOINTS.HOST.TRIPS(id, 1, 10))
+  const { data: pastData } = useGetData<TripsResponse>(API_ENDPOINTS.HOST.ARCHIVED_TRIPS(id, 1, 10))
 
-  const { data: fetchedTrips, isLoading } = useGetData<MobileTripCardDataResponse>(API_ENDPOINTS.HOST.TRIPS(id));
+  const upcomingTrips: Trip[] = toCarouselTrips(upcomingData?.trips ?? [])
+  const pastTrips: Trip[] = toCarouselTrips(pastData?.trips ?? [])
+
+  const hasMoreUpcoming = (upcomingData?.pagination?.total ?? 0) > 10
+  const hasMorePast = (pastData?.pagination?.total ?? 0) > 10
 
   return (
     <div className="min-h-screen bg-[#FFF9F4]">
-
       <HostHero />
+
       <div className="pt-6">
         <HostReviews hostUsername={id} />
       </div>
-      <div className="flex gap-2 mt-2 mx-6 mb-3 font-semibold">
-        Upcoming Trips
-      </div>
-      <div className="px-4 pb-8">
-        <div className="grid grid-cols-2 gap-[11px]">
-          {isLoading ? (
-            <TripCardSkeleton count={4} />
-          ) : (
-            fetchedTrips?.trips?.map((trip, index) => (
-              <MobileTripCard
-                key={trip._id}
-                trip={{ ...trip, bgColor: CARD_COLORS[index % CARD_COLORS.length] }}
-                onClick={(id) => router.push(`/trip/${id}`)}
-              />
-            ))
+
+      {upcomingTrips.length > 0 && (
+        <div className="mt-4">
+          <SlidingCarouselSection
+            title="Upcoming Trips"
+            trips={upcomingTrips}
+            carouselIndex={0}
+          />
+          {hasMoreUpcoming && (
+            <button
+              onClick={() => router.push(`/${id}/trips/upcoming`)}
+              className="flex items-center gap-1 mx-4 mt-3 text-sm font-semibold text-neutral-700 active:opacity-70"
+            >
+              View all upcoming trips <ArrowRight size={16} weight="bold" />
+            </button>
           )}
         </div>
-      </div>
+      )}
+
+      {pastTrips.length > 0 && (
+        <div className="mt-6 pb-8">
+          <SlidingCarouselSection
+            title="Past Trips"
+            trips={pastTrips}
+            carouselIndex={1}
+          />
+          {hasMorePast && (
+            <button
+              onClick={() => router.push(`/${id}/trips/past`)}
+              className="flex items-center gap-1 mx-4 mt-3 text-sm font-semibold text-neutral-700 active:opacity-70"
+            >
+              View all past trips <ArrowRight size={16} weight="bold" />
+            </button>
+          )}
+        </div>
+      )}
     </div>
   )
 }

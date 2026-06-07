@@ -61,7 +61,20 @@ export const API_ENDPOINTS = {
     ADD_EMERGENCY_CONTACT: "/api/client/v1/user/addEmergencyContact"
   }, 
   HOST : {
-    TRIPS : (id: string) => `/api/client/v1/trips/host/profile/${id}`,
+    TRIPS: (id: string, page?: number, limit?: number) => {
+      const params = new URLSearchParams();
+      if (page) params.append('page', page.toString());
+      if (limit) params.append('limit', limit.toString());
+      const q = params.toString();
+      return `/api/client/v1/trips/host/profile/${id}${q ? `?${q}` : ''}`;
+    },
+    ARCHIVED_TRIPS: (id: string, page?: number, limit?: number) => {
+      const params = new URLSearchParams();
+      if (page) params.append('page', page.toString());
+      if (limit) params.append('limit', limit.toString());
+      const q = params.toString();
+      return `/api/client/v1/trips/host/archived/${id}${q ? `?${q}` : ''}`;
+    },
   },
   RATINGS: {
     BY_USERNAME: (username: string, page?: number, limit?: number) => {
