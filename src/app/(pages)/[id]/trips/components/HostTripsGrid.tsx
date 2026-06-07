@@ -3,8 +3,8 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { ArrowLeft, ArrowLeft as PrevIcon, ArrowRight as NextIcon } from '@phosphor-icons/react'
-import { MobileTripCard, MobileTripCardData } from '../components/mobile/components/MobileTripCard'
-import { TripCardSkeleton } from '../components/mobile/components/TripCardSkeleton'
+import { MobileTripCard, MobileTripCardData } from '../../components/mobile/components/MobileTripCard'
+import { TripCardSkeleton } from '../../components/mobile/components/TripCardSkeleton'
 import { useGetData } from '@/services/useGetData'
 
 const CARD_COLORS = ['#FFD976', '#EEA0FF', '#E2F4A6']
