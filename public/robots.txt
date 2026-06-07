@@ -3,8 +3,20 @@ User-agent: *
 Disallow: /verify/*
 Disallow: /auth/
 
-# Host
-Host: https://wondrr.in
+User-agent: GPTBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Googlebot
+Allow: /
 
 # Sitemaps
 Sitemap: https://wondrr.in/sitemap.xml

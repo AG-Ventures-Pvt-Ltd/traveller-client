@@ -25,9 +25,9 @@ export async function generateMetadata({
     let bio: string | undefined;
     let website: string | undefined;
     let totalTrips: number | undefined;
-
+    
     try {
-        const meta = await getServerData<HostMeta>(`/v1/user/host/meta/${id}`);
+        const meta = await getServerData<HostMeta>(`/api/client/v1/user/host/meta/${id}`);
         fullName = meta.fullName || id;
         bio = meta.bio;
         website = meta.website;
