@@ -43,14 +43,14 @@ const HostProfileMobile = () => {
   const params = useParams()
   const id = params.id as string
 
-  const { data: upcomingData } = useGetData<TripsResponse>(API_ENDPOINTS.HOST.TRIPS(id, 1, 10))
-  const { data: pastData } = useGetData<TripsResponse>(API_ENDPOINTS.HOST.ARCHIVED_TRIPS(id, 1, 10))
+  const { data: upcomingData } = useGetData<TripsResponse>(API_ENDPOINTS.HOST.TRIPS(id, 1, 6))
+  const { data: pastData } = useGetData<TripsResponse>(API_ENDPOINTS.HOST.ARCHIVED_TRIPS(id, 1, 6))
 
   const upcomingTrips: Trip[] = toCarouselTrips(upcomingData?.trips ?? [])
   const pastTrips: Trip[] = toCarouselTrips(pastData?.trips ?? [])
 
-  const hasMoreUpcoming = (upcomingData?.pagination?.total ?? 0) > 10
-  const hasMorePast = (pastData?.pagination?.total ?? 0) > 10
+  const hasMoreUpcoming = (upcomingData?.pagination?.total ?? 0) > 6
+  const hasMorePast = (pastData?.pagination?.total ?? 0) > 6
 
   return (
     <div className="min-h-screen bg-[#FFF9F4]">
