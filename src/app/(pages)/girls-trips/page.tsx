@@ -15,6 +15,7 @@ interface Trip {
   title: string;
   image: string;
   address: string;
+  days: string;
   duration: string;
   startDate: string;
   endDate: string;
@@ -55,20 +56,22 @@ export default function GirlsTripsPage() {
   const router = useRouter();
   const destination = searchParams.get('destination');
   const [filters, setFilters] = useState<FilterValues>({
-    tourTypes: [],
+    states: [],
     priceRange: null,
     durations: [],
     durationRange: null,
     difficulties: [],
     minRating: null,
+    international: false,
   });
   const [appliedFilters, setAppliedFilters] = useState<FilterValues>({
-    tourTypes: [],
+    states: [],
     priceRange: null,
     durations: [],
     durationRange: null,
     difficulties: [],
     minRating: null,
+    international: false,
   });
   const [apiUrl, setApiUrl] = useState<string | null>(null);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
@@ -79,9 +82,9 @@ export default function GirlsTripsPage() {
     // Always filter for female-only trips
     params.append('type', 'femaleonly');
 
-    if (appliedFilters.tourTypes && appliedFilters.tourTypes.length > 0) {
-      const lowercaseCategories = appliedFilters.tourTypes.map(category => category.toLowerCase());
-      params.append('category', JSON.stringify(lowercaseCategories));
+    if (appliedFilters.states && appliedFilters.states.length > 0) {
+      const lowercaseStates = appliedFilters.states.map(state => state.toLowerCase());
+      params.append('states', JSON.stringify(lowercaseStates));
     }
     if (appliedFilters.priceRange) {
       params.append('maxBudget', appliedFilters.priceRange.toString());
