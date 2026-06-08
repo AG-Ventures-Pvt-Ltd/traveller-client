@@ -1,21 +1,16 @@
 'use client';
 
-
-import { useSession } from 'next-auth/react';
 import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import Loader from '@/common/ui/Loader/Loader';
 import { useLocation } from '@/common/hooks/useLocation';
-
-
-const DesktopLanding = dynamic(() => import('./(landing)/DesktopLanding/DesktopLanding'), { loading: () => <Loader /> })
+const LandingPage = dynamic(() => import('./(landing)/LandingPage/LandingPage'))
 
 const HomePage = dynamic(() => import('./(landing)/HomePage/page'), { ssr: false });
 
 
 export const Landing = () => {
 
-    const { status } = useSession()
     const [isMobile, setIsMobile] = useState(false);
     const [isHydrated, setIsHydrated] = useState(false);
     const { requestLocationPermission } = useLocation();
@@ -49,7 +44,7 @@ export const Landing = () => {
     }, [isHydrated]);
 
 
-    if (status === 'loading' || !isHydrated) {
+    if (!isHydrated) {
         return <Loader />
     }
 
@@ -58,7 +53,7 @@ export const Landing = () => {
         return <HomePage />
     }
 
-    return <DesktopLanding />
+    return <LandingPage />
 }
 
 export default Landing

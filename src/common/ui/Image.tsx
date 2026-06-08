@@ -8,7 +8,8 @@ interface WondrrImageProps extends Omit<ImageProps, 'src'> {
 }
 
 const MyImage = ({ src, alt,className,rounded, objectFit = 'cover', fill = true, ...props }: WondrrImageProps) => {
-    const imageSrc = `${src.startsWith('/') ? (process.env.NEXT_PUBLIC_CLOUDFRONT_URL + src) : src}`;
+
+    const imageSrc = `${src.startsWith('/assets') ? src : src.startsWith('/') ? (process.env.NEXT_PUBLIC_CLOUDFRONT_URL + src) : src}`;
     
     if (!fill) {
         return (

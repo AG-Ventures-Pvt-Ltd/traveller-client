@@ -33,7 +33,7 @@ const HostHero = () => {
         <div>
             <div className="relative h-[160px] w-full">
                 <MyImage
-                    src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800"
+                    src="/assets/png/banner.png"
                     alt="Host cover"
                     className="w-full h-full"
                     objectFit="cover"

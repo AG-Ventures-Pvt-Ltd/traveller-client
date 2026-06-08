@@ -21,6 +21,7 @@ interface Trip {
   duration: string;
   startDate: string;
   endDate: string;
+  days: string;
   rating: number;
   totalReviews: number;
   basePrice: number;
@@ -57,21 +58,24 @@ export default function Page() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const destination = searchParams.get('destination');
+  const qParam = searchParams.get('q');
   const [filters, setFilters] = useState<FilterValues>({
-    tourTypes: [],
+    states: [],
     priceRange: null,
     durations: [],
     durationRange: null,
     difficulties: [],
     minRating: null,
+    international: false,
   });
   const [appliedFilters, setAppliedFilters] = useState<FilterValues>({
-    tourTypes: [],
+    states: [],
     priceRange: null,
     durations: [],
     durationRange: null,
     difficulties: [],
     minRating: null,
+    international: false,
   });
   const [apiUrl, setApiUrl] = useState<string | null>(null);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
@@ -82,10 +86,6 @@ export default function Page() {
   useEffect(() => {
     const params = new URLSearchParams();
 
-    if (appliedFilters.tourTypes && appliedFilters.tourTypes.length > 0) {
-      const lowercaseCategories = appliedFilters.tourTypes.map(category => category.toLowerCase());
-      params.append('category', JSON.stringify(lowercaseCategories));
-    }
     if (appliedFilters.priceRange) {
       params.append('maxBudget', appliedFilters.priceRange.toString());
     }
@@ -98,11 +98,24 @@ export default function Page() {
     if (appliedFilters.minRating) {
       params.append('minRating', appliedFilters.minRating.toString());
     }
+    if (appliedFilters.states && appliedFilters.states.length > 0) {
+      params.append('states', appliedFilters.states.join(','));
+    }
+    if (appliedFilters.international) {
+      params.append('international', 'true');
+    }
+
+    if (qParam) {
+      params.append('q', qParam);
+      setApiUrl(`api/client/v1/trips/v2/search?${params.toString()}`);
+      return;
+    }
+
     if (destination) params.append('destination', destination);
 
     const queryString = params.toString();
     setApiUrl(`api/client/v1/trips/search${queryString ? `?${queryString}` : ''}`);
-  }, [appliedFilters, destination]);
+  }, [appliedFilters, destination, qParam]);
 
   const { data: tripsData, isLoading: tripsLoading, error } = useGetData<TripsResponse>(apiUrl || '', {
     queryKey: apiUrl ? [apiUrl] : ['trips-loading'],
@@ -139,13 +152,12 @@ export default function Page() {
   }
 
   if (isMobile) {
-    return <TripListsMobile/>
+    return <TripListsMobile />
   }
 
   return (
-    <div className='flex flex-col py-2 mb-8'>
+    <div className='flex flex-col py-2 mb-8 mx-12'>
       <div className='mb-4 mx-[1%] flex items-center justify-between'>
-      <BackButton className='ml-[1%]'/>
         <div className='md:hidden'>
           <Button
             onClick={() => setIsFilterModalOpen(true)}
@@ -177,7 +189,7 @@ export default function Page() {
           <div>
             <div>
               <h1 className='text-4xl font-bold text-gray-900'>
-                {destination ? `Search Results for ${destination}` : 'All Trips'}
+                {qParam ? `Results for "${qParam}"` : destination ? `Search Results for ${destination}` : 'All Trips'}
               </h1>
               {tripsData && (
                 <p className='text mb-3 font-semibold text-gray-600 mt-1'>

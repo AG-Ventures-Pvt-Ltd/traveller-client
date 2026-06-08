@@ -1,94 +1,169 @@
 'use client'
-import React from 'react'
-import OurTours from './components/OurTours'
+import React, { useMemo } from 'react'
 import Footer from '../Footer/Footer'
-import HeroSection from './components/HeroSection'
-import ExploreSection from './components/ExploreSection'
-import FAQSection from './components/FAQSection'
-import CTASection from './components/CTASection'
-
-const CONTENT = {
-  hero: {
-    badge: 'Explore',
-    title: "Discover Scenic Routes &",
-    subtitle: "Iconic Landscapes Across India",
-    cta: 'Find Your Group Trip'
-  },
-  gallery: {
-    badge: 'Our Tours',
-    title: 'Find Your Perfect\nGroup Trip Experience',
-    cta: 'See All Tours'
-  },
-  experience: {
-    badge: 'Experience',
-    title: 'With a love for nature and exploration,',
-    subtitle: 'we create meaningful routes that inspire, connect, and stay forever in memory.',
-    cta: 'See Our Gallery',
-    question: 'Would you like to explore more routes or customize this trip for your group?'
-  },
-  guides: {
-    title: 'Meet Your\nTour Guides',
-    badges: ['5+ Years of Experience', 'Local Experts', 'Support', 'Certified Tours', 'Multilanguages', 'Safe Routes'],
-    quote: {
-      text: "Every trip is personal. We keep groups small to make sure your experience feels private, safe, and unforgettable.",
-      author: "— Prataya, Founder, TORQ Industries"
-    },
-    cardTitle: 'Step inside a journey guided by passion and experience',
-    cardDescription: 'Each tour is led by people who know every tour, story, and sunrise of India — guides who turn every route into a journey worth remembering.'
-  },
-  faq: {
-    title: 'Everything you need to know ',
-    subtitle: '- before booking your group trip.',
-    questions: [
-      {
-        "question": "How do I book a group trip online?",
-        "answer": "Select your preferred group trip, choose the dates, and complete the secure checkout. You’ll receive instant booking confirmation by email."
-      },
-      {
-        "question": "What is included in the group trip cost?",
-        "answer": "The trip cost usually includes transportation, accommodation if mentioned, experienced trip leaders, safety equipment, and meals or activities listed in the itinerary."
-      },
-      {
-        "question": "What should I pack for a group tour?",
-        "answer": "Carry comfortable clothing, sturdy footwear, basic travel essentials, and personal medications. A detailed packing list is shared after booking."
-      },
-      {
-        "question": "Can I cancel or reschedule my booking?",
-        "answer": "Yes. You can cancel or reschedule up to 7 days before departure for a full refund. Later cancellations follow our refund policy."
-      },
-      {
-        "question": "Are group trips suitable for beginners?",
-        "answer": "Yes. Our group trips are designed to be beginner-friendly, with experienced trip leaders guiding participants throughout the journey to ensure a safe and enjoyable experience."
-      }
-    ],
-    helpCard: {
-      text: 'Didn\'t find your answer?',
-      answer: 'Our team is here to help — just reach out and we\'ll reply shortly.',
-      cta: 'Contact Support'
-    }
-  },
-  cta: {
-    badge: 'Start now',
-    title: 'Discover Your Next ',
-    subtitle: 'Group Travel Escape',
-    description: 'Plan and book verified group trips across India in just a few minutes.',
-    button: 'Plan Your Group Trip'
-  },
-}
-
+import { useSession } from 'next-auth/react'
+import { SearchIcon, Globe2, Plane, MapPin, Compass, Mountain, Waves, Camera, Sun, Anchor, Map } from 'lucide-react'
+import { useRouter } from 'next/navigation';
+import { useFeaturedTrips } from '@/common/hooks/useFeaturedTrips';
+import { useSignupBonus } from '@/common/hooks/useSignupBonus';
+import { useGetData } from '@/services/useGetData';
+import { API_ENDPOINTS } from '@/common/constants/apiEndpoints';
+import DesktopStatsBanner from './components/DesktopStatsBanner';
+import DesktopCarouselSection from './components/DesktopCarouselSection';
+import DesktopTrustSection from './components/DesktopTrustSection';
 
 const LandingPage = () => {
+
+  const { status, data: userData } = useSession()
+  const router = useRouter();
+  const [searchValue, setSearchValue] = React.useState('');
+
+  const { data: featuredTripsData, isLoading: isTripsLoading } = useFeaturedTrips();
+  const { data: signupBonusData } = useSignupBonus();
+  const { data: travelerStatsData } = useGetData<{ count: number }>(API_ENDPOINTS.LANDING_PAGE.TRAVELER_STATS);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchValue(e.target.value);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && searchValue.trim()) {
+      router.push(`/trips?q=${encodeURIComponent(searchValue.trim())}`);
+    }
+  };
+
+  const handleExplore = () => {
+    if (searchValue.trim()) {
+      router.push(`/trips?q=${encodeURIComponent(searchValue.trim())}`);
+    } else {
+      router.push('/trips');
+    }
+  };
+
+  const sortedCarousels = useMemo(() => {
+    if (!featuredTripsData) return [];
+    return [...featuredTripsData]
+      .sort((a, b) => a.priority - b.priority)
+      .map((carousel) => ({
+        id: carousel._id,
+        title: carousel.title,
+        trips: carousel.trips.map((trip) => ({
+          id: trip.tripSlug,
+          image: trip.image,
+          title: trip.title,
+          provider: trip.hostName,
+          duration: trip.days,
+          price: trip.price,
+          rating: 0,
+          tripSlug: trip.tripSlug,
+          isBookmarked: trip.isBookmarked,
+        })),
+      }));
+  }, [featuredTripsData]);
+
+  const showSignupBanner = status === 'unauthenticated' && signupBonusData?.signupBonus?.isEnabled;
+  const showStatsBanner = (travelerStatsData?.count ?? 0) > 0;
+
   return (
-    <main className="flex flex-col items-center overflow-hidden">
-      <div className="w-full px-[3%] md:px-[1%]">
-        <HeroSection />
+    <main className="flex flex-col items-center overflow-hidden bg-[#FCF3EB]">
+
+      {/* Hero section */}
+      <div className='w-full'>
+        <div className='bg-[#D0EF65] mx-24 rounded-2xl flex flex-col items-center py-16 my-2 relative overflow-hidden'>
+
+          {/* Travel decorative background elements */}
+          <Plane        className="absolute top-5 left-8   w-16 h-16 text-neutral-800 opacity-[0.09] rotate-[20deg]  pointer-events-none" />
+          <Compass      className="absolute top-4 right-10  w-14 h-14 text-neutral-800 opacity-[0.09] -rotate-6       pointer-events-none" />
+          <MapPin       className="absolute bottom-6 left-10 w-11 h-11 text-neutral-800 opacity-[0.09]                pointer-events-none" />
+          <Globe2       className="absolute bottom-4 right-8 w-16 h-16 text-neutral-800 opacity-[0.09] rotate-[10deg] pointer-events-none" />
+          <Mountain     className="absolute top-8  left-[20%] w-10 h-10 text-neutral-800 opacity-[0.07]              pointer-events-none" />
+          <Camera       className="absolute top-5  right-[20%] w-9 h-9 text-neutral-800 opacity-[0.07] rotate-6     pointer-events-none" />
+          <Waves        className="absolute bottom-5 left-[32%] w-12 h-12 text-neutral-800 opacity-[0.07]           pointer-events-none" />
+          <Sun          className="absolute -top-2 left-[46%] w-16 h-16 text-neutral-800 opacity-[0.06] rotate-45   pointer-events-none" />
+          <Anchor       className="absolute bottom-8 right-[24%] w-9 h-9 text-neutral-800 opacity-[0.07]            pointer-events-none" />
+          <Map          className="absolute top-6  right-[34%] w-8 h-8 text-neutral-800 opacity-[0.06]              pointer-events-none" />
+          <Plane        className="absolute bottom-4 right-[42%] w-8 h-8 text-neutral-800 opacity-[0.06] rotate-[-30deg] pointer-events-none" />
+          <MapPin       className="absolute top-10 left-[52%] w-7 h-7 text-neutral-800 opacity-[0.06]               pointer-events-none" />
+
+          {/* Content */}
+          <div className="relative z-10 flex flex-col items-center w-full">
+            <h2 className='text-5xl font-bold'>What&apos;s your next escape,</h2>
+            <h2 className='text-5xl font-bold'>{status == 'authenticated' ? userData.user?.fullName : 'Traveller'} ?</h2>
+            <h4 className='pt-4'>Safe group adventures for solo travelers who want to travel with</h4>
+            <h4>like-minded strangers.</h4>
+            <div className="relative mt-12 w-[60%]">
+              <SearchIcon className="absolute left-4 sm:left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-500" strokeWidth={2} />
+              <input
+                type="text"
+                placeholder={'Search by keywords or places'}
+                value={searchValue}
+                onChange={handleChange}
+                onKeyDown={handleKeyDown}
+                className="w-full bg-white rounded-2xl pl-14 pr-32 py-4 text-neutral-900 placeholder-neutral-500 text-base border-2 border-white focus:outline-none focus:border-neutral-300"
+                enterKeyHint="search"
+              />
+              <button
+                onClick={handleExplore}
+                className="absolute right-2 top-1/2 -translate-y-1/2 bg-neutral-900 text-white text-sm font-semibold px-4 py-3 rounded-xl hover:bg-neutral-700 transition-colors"
+              >
+                Explore
+              </button>
+            </div>
+          </div>
+
+        </div>
       </div>
-      <div className='flex flex-col justify-center mx-0 md:mx-[6%] w-full overflow-hidden'>
-        <ExploreSection content={CONTENT.hero} />
-        <OurTours />
-        <FAQSection content={CONTENT.faq} />
-        <CTASection content={CONTENT.cta} />
-      </div>
+
+      {/* Stats banners */}
+      {(showSignupBanner || showStatsBanner) && (
+        <div className="w-full px-24 mt-4 flex gap-4">
+          {showSignupBanner && (
+            <DesktopStatsBanner
+              variant="signup"
+              amount={signupBonusData!.signupBonus.amount}
+            />
+          )}
+          {showStatsBanner && (
+            <DesktopStatsBanner
+              variant="stats"
+              count={travelerStatsData!.count}
+            />
+          )}
+        </div>
+      )}
+
+      {/* Carousel sections */}
+      {!isTripsLoading && sortedCarousels.length > 0 && (
+        <div className="w-full px-24 mt-10 flex flex-col gap-12 mb-12">
+          {sortedCarousels.map((carousel, index) => (
+            <DesktopCarouselSection
+              key={carousel.id}
+              title={carousel.title}
+              trips={carousel.trips}
+              isLoading={isTripsLoading}
+              carouselIndex={index}
+            />
+          ))}
+        </div>
+      )}
+
+      {isTripsLoading && (
+        <div className="w-full px-24 mt-10 mb-12 flex flex-col gap-12">
+          {[0, 1].map((i) => (
+            <div key={i} className="flex flex-col gap-5">
+              <div className="h-8 w-48 bg-gray-200 rounded-lg animate-pulse" />
+              <div className="flex gap-5">
+                {[...Array(4)].map((_, j) => (
+                  <div key={j} className="flex-shrink-0 rounded-3xl bg-gray-200 animate-pulse" style={{ width: 280, height: 360 }} />
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <DesktopTrustSection />
+
       <Footer />
     </main>
   )

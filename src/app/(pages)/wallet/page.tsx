@@ -14,7 +14,7 @@ import Button from '@/common/ui/Buttons/Button';
 import { formatDate } from '@/common/utils/dateUtils';
 import { usePayment } from '../trip/book/[id]/[batchId]/hooks/usePayment';
 import { AddBalanceModal } from './components/AddBalanceModal';
-
+import { useDevice } from '@/common/hooks/useDevice';
 
 interface WalletData {
   balance: number;
@@ -26,6 +26,8 @@ const WalletPage = () => {
 
   const router = useRouter();
   const { data: session } = useSession();
+
+  const { isMobile, isDesktop } = useDevice()
 
   const [isAddBalanceOpen, setIsAddBalanceOpen] = useState(false)
   const [isPaymentPending, setIsPaymentPending] = useState(false)
@@ -67,8 +69,8 @@ const WalletPage = () => {
       {/* Sticky Floating Header */}
       <div className="fixed top-0 left-0 right-0 z-50">
         <div className=" px-4 py-4 flex items-center justify-between">
-          <BackButton label='' />
-          <button
+          {isMobile && <BackButton label='' />}
+          {isMobile && <button
             onClick={handleProfileClick}
             className="flex items-center justify-center w-14 h-14 rounded-full bg-gray-300 hover:opacity-80 transition-opacity flex-shrink-0 overflow-hidden relative"
             aria-label="Go to profile"
@@ -86,7 +88,7 @@ const WalletPage = () => {
                 {session?.user?.fullName?.charAt(0)?.toUpperCase() || 'U'}
               </span>
             )}
-          </button>
+          </button>}
         </div>
       </div>
 
@@ -136,9 +138,11 @@ const WalletPage = () => {
             />
           </div>}
           <div className='fixed bottom-0 left-0 right-0 px-4 py-6'>
-            <Button variant='purple' fullWidth onClick={() => setIsAddBalanceOpen(true)}>
-              Add Balance
-            </Button>
+            <div className='flex justify-center w-full'>
+              <Button variant='purple' className='w-full md:w-[40%]' onClick={() => setIsAddBalanceOpen(true)}>
+                Add Balance
+              </Button>
+            </div>
           </div>
 
           <AddBalanceModal

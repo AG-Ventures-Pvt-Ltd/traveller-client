@@ -1,6 +1,6 @@
 "use client";
 
-import { redirect, useParams } from "next/navigation";
+import { redirect } from "next/navigation";
 import BackButton from "@/common/ui/BackButton";
 import { HostTrips } from "./components/HostTrips/HostTrips";
 import { HostReviews } from "./components/HostReviews/HostReviews";
@@ -10,8 +10,6 @@ import HostProfileMobile from "./components/mobile/HostProfileMobile";
 
 
 export default function HostPage() {
-  const params = useParams();
-  const id = params.id as string;
 
   const { isMobile } = useDevice()
 

@@ -5,7 +5,7 @@ import { SlidersHorizontal, ChevronDown, IndianRupee } from 'lucide-react';
 import MobileModal from '@/common/ui/MobileModal';
 import Button from '@/common/components/atoms/Button';
 import { FilterValues } from './TripFilters';
-import { TRIP_CATEGORIES } from '../consants';
+import StatesDropdown from './StatesDropdown';
 
 interface FilterModalProps {
   isOpen: boolean;
@@ -14,7 +14,6 @@ interface FilterModalProps {
   onApplyFilters: () => void;
 }
 
-
 const FilterModal: React.FC<FilterModalProps> = ({
   isOpen,
   onClose,
@@ -22,62 +21,48 @@ const FilterModal: React.FC<FilterModalProps> = ({
   onApplyFilters,
 }) => {
   const [expandedSections, setExpandedSections] = useState<Set<string>>(
-    new Set(['tourType', 'priceRange', 'duration'])
+    new Set(['destination', 'priceRange', 'duration', 'international'])
   );
 
-  // Local state for modal filters
-  const [tourTypes, setTourTypes] = useState<string[]>([]);
-  const [priceRange, setPriceRange] = useState<number>(5000);
-  const [durationRange, setDurationRange] = useState<number>(5);
+  const [states, setStates] = useState<string[]>([]);
+  const [priceRange, setPriceRange] = useState<number>(20000);
+  const [durationRange, setDurationRange] = useState<number>(14);
+  const [international, setInternational] = useState<boolean>(false);
 
   const toggleSection = (section: string) => {
     setExpandedSections((prev) => {
       const newSet = new Set(prev);
-      if (newSet.has(section)) {
-        newSet.delete(section);
-      } else {
-        newSet.add(section);
-      }
+      if (newSet.has(section)) newSet.delete(section);
+      else newSet.add(section);
       return newSet;
     });
   };
 
-  const handleCheckboxChange = (
-    value: string,
-    currentValues: string[],
-    setter: (values: string[]) => void
-  ) => {
-    if (currentValues.includes(value)) {
-      setter(currentValues.filter((v) => v !== value));
-    } else {
-      setter([...currentValues, value]);
-    }
-  };
-
   const handleApply = () => {
-    // Update parent filters
     onFilterChange({
-      tourTypes,
+      states,
       priceRange,
       durations: [],
       durationRange,
       difficulties: [],
       minRating: null,
+      international,
     });
     onApplyFilters();
     onClose();
   };
 
   const handleClearAll = () => {
-    setTourTypes([]);
-    setPriceRange(5000);
-    setDurationRange(5);
+    setStates([]);
+    setPriceRange(20000);
+    setDurationRange(14);
+    setInternational(false);
   };
 
   return (
     <MobileModal isOpen={isOpen} onClose={onClose} title="Filters">
       <div className="flex flex-col min-h-0">
-        {/* Header with Clear All */}
+        {/* Header */}
         <div className="flex justify-between items-center mb-6 pb-4 border-b border-gray-200">
           <div className="flex items-center gap-2.5">
             <SlidersHorizontal className="w-5 h-5 text-neutral-900" />
@@ -91,35 +76,52 @@ const FilterModal: React.FC<FilterModalProps> = ({
           </button>
         </div>
 
-        {/* Filter Sections */}
         <div className="flex flex-col gap-6 flex-1 overflow-y-auto">
-          {/* Tour Type */}
+          {/* Destination (Indian States) */}
           <div className="flex flex-col gap-3">
             <button
-              onClick={() => toggleSection('tourType')}
+              onClick={() => toggleSection('destination')}
               className="flex justify-between items-center w-full text-left"
             >
-              <span className="text-neutral-900 text-base font-bold">Tour Type</span>
+              <span className="text-neutral-900 text-base font-bold">Destination</span>
               <ChevronDown
                 className={`w-4 h-4 text-neutral-700 transition-transform ${
-                  expandedSections.has('tourType') ? '' : '-rotate-90'
+                  expandedSections.has('destination') ? '' : '-rotate-90'
                 }`}
               />
             </button>
-            {expandedSections.has('tourType') && (
-              <div className="grid grid-cols-2 gap-3 pl-4">
-                {TRIP_CATEGORIES.map((type) => (
-                  <label key={type} className="flex items-center gap-3 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={tourTypes.includes(type)}
-                      onChange={() => handleCheckboxChange(type, tourTypes, setTourTypes)}
-                      className="w-4 h-4 rounded border-gray-300 text-neutral-900 focus:ring-neutral-900"
-                    />
-                    <span className="text-neutral-700 text-sm font-medium">{type}</span>
-                  </label>
-                ))}
+            {expandedSections.has('destination') && (
+              <div className="pl-4">
+                <StatesDropdown selected={states} onChange={setStates} />
               </div>
+            )}
+          </div>
+
+          <div className="h-px bg-gray-200" />
+
+          {/* International Trips */}
+          <div className="flex flex-col gap-3">
+            <button
+              onClick={() => toggleSection('international')}
+              className="flex justify-between items-center w-full text-left"
+            >
+              <span className="text-neutral-900 text-base font-bold">International</span>
+              <ChevronDown
+                className={`w-4 h-4 text-neutral-700 transition-transform ${
+                  expandedSections.has('international') ? '' : '-rotate-90'
+                }`}
+              />
+            </button>
+            {expandedSections.has('international') && (
+              <label className="flex items-center gap-3 cursor-pointer pl-4">
+                <input
+                  type="checkbox"
+                  checked={international}
+                  onChange={(e) => setInternational(e.target.checked)}
+                  className="w-4 h-4 rounded border-gray-300 text-neutral-900 focus:ring-neutral-900"
+                />
+                <span className="text-neutral-700 text-sm font-medium">Show international trips only</span>
+              </label>
             )}
           </div>
 
@@ -199,12 +201,12 @@ const FilterModal: React.FC<FilterModalProps> = ({
                   <div className="absolute top-1/2 -translate-y-1/2 w-full h-2 bg-neutral-200 rounded-xl" />
                   <div
                     className="absolute top-1/2 -translate-y-1/2 h-2 bg-black rounded-xl"
-                    style={{ width: `${((durationRange - 1) / 9) * 100}%` }}
+                    style={{ width: `${((durationRange - 1) / 13) * 100}%` }}
                   />
                   <input
                     type="range"
                     min="1"
-                    max="10"
+                    max="14"
                     step="1"
                     value={durationRange}
                     onChange={(e) => setDurationRange(parseInt(e.target.value))}
@@ -212,7 +214,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
                   />
                   <div
                     className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-3 h-3 bg-neutral-700 rounded-full pointer-events-none"
-                    style={{ left: `${((durationRange - 1) / 9) * 100}%` }}
+                    style={{ left: `${((durationRange - 1) / 13) * 100}%` }}
                   />
                 </div>
               </div>
@@ -220,7 +222,6 @@ const FilterModal: React.FC<FilterModalProps> = ({
           </div>
         </div>
 
-        {/* Apply Button */}
         <div className="mt-6 pt-4 border-t border-gray-200">
           <Button
             onClick={handleApply}

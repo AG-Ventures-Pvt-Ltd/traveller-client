@@ -37,7 +37,7 @@ const SuggestionBanner: React.FC<SuggestionBannerProps> = ({
             <div className="flex flex-col gap-4">
                 <div className="flex items-center gap-2">
                     <SparkleIcon className="w-8 h-8 text-neutral-900" fill="currentColor" />
-                    <p className="text-neutral-900 text-lg sm:text-xl font-bold font-['Satoshi']">
+                    <p className="text-neutral-900 text-lg sm:text-xl font-bold ">
                         {suggestion}
                     </p>
                 </div>
@@ -49,7 +49,7 @@ const SuggestionBanner: React.FC<SuggestionBannerProps> = ({
                         value={searchValue}
                         onChange={handleChange}
                         onKeyDown={handleKeyDown}
-                        className="w-full bg-white rounded-full pl-12 sm:pl-14 pr-4 sm:pr-6 py-3 sm:py-4 text-neutral-900 placeholder-neutral-500 text-base font-['Satoshi'] border-2 border-white focus:outline-none focus:border-neutral-300"
+                        className="w-full bg-white rounded-full pl-14 pr-6 py-4 text-neutral-900 placeholder-neutral-500 text-base  border-2 border-white focus:outline-none focus:border-neutral-300"
                         enterKeyHint="search"
                     />
                 </div>

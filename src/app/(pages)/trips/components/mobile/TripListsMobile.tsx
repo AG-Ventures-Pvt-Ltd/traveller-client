@@ -43,12 +43,13 @@ interface TripsResponse {
 const PAGE_SIZE = 12;
 
 const EMPTY_FILTERS: FilterValues = {
-    tourTypes: [],
+    states: [],
     priceRange: null,
     durations: [],
     durationRange: null,
     difficulties: [],
     minRating: null,
+    international: false,
 };
 
 const TripListsMobile = () => {
@@ -70,18 +71,8 @@ const TripListsMobile = () => {
     
     const qParam = searchParams.get('q');
     const apiUrl = useMemo(() => {
-
-        if (qParam) {
-            // If 'q' query param is present, use v2/search endpoint with q param
-            return `api/client/v1/trips/v2/search?q=${encodeURIComponent(qParam)}`;
-        }
-
-        // If no 'q' query param, use current logic
         const params = new URLSearchParams();
 
-        if (appliedFilters.tourTypes.length > 0) {
-            params.append('category', JSON.stringify(appliedFilters.tourTypes.map(c => c.toLowerCase())));
-        }
         if (appliedFilters.priceRange) {
             params.append('maxBudget', appliedFilters.priceRange.toString());
         }
@@ -94,13 +85,24 @@ const TripListsMobile = () => {
         if (appliedFilters.minRating) {
             params.append('minRating', appliedFilters.minRating.toString());
         }
+        if (appliedFilters.states && appliedFilters.states.length > 0) {
+            params.append('states', appliedFilters.states.join(','));
+        }
+        if (appliedFilters.international) {
+            params.append('international', 'true');
+        }
+
+        if (qParam) {
+            params.append('q', qParam);
+            return `api/client/v1/trips/v2/search?${params.toString()}`;
+        }
+
         if (destination) params.append('destination', destination);
         params.append('page', page.toString());
         params.append('limit', PAGE_SIZE.toString());
 
-
         return `api/client/v1/trips/search?${params.toString()}`;
-    }, [appliedFilters, destination, page, searchParams]);
+    }, [appliedFilters, destination, page, qParam]);
 
     const { data: tripsData, isLoading, error } = useGetData<TripsResponse>(apiUrl, {
         queryKey: [apiUrl],

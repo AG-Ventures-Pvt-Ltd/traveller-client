@@ -17,7 +17,7 @@ const StickyNavigation: React.FC<StickyNavigationProps> = ({
   const router = useRouter();
   const pathname = usePathname();
 
-  const { isDesktop } = useDevice()
+  const { isDesktop, isHydrated } = useDevice()
 
 const isActiveRoute =
   pathname === '/' ||
@@ -47,8 +47,8 @@ const isActiveRoute =
     router.push('/profile');
   };
 
-  if (isDesktop) {
-    return <></>
+  if (!isHydrated || isDesktop) {
+    return null;
   }
 
   return (
