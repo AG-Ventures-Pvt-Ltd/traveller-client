@@ -34,7 +34,9 @@ export default function DepartureDatesList({
     return (
         <div className={`flex gap-3 overflow-x-auto scrollbar-hide ${className}`}>
             {items.map((item) => {
-                const date = new Date(item.date);
+                const d = new Date(item.date);
+                const istDay = Number(d.toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' }).split('-')[2]);
+                const istMonth = d.toLocaleDateString('en-US', { timeZone: 'Asia/Kolkata', month: 'short' });
                 const isSelected = item.id === selectedId;
                 return (
                     <button
@@ -44,9 +46,9 @@ export default function DepartureDatesList({
                             ${isSelected ? 'bg-[#EEA0FF] border-transparent' : 'border-black bg-white'}`}
                     >
                         <span className="text-sm text-black text-center leading-tight">
-                            {date.getDate()}
+                            {istDay}
                             <br />
-                            <span className="text-base">{date.toLocaleString('default', { month: 'short' })}</span>
+                            <span className="text-base">{istMonth}</span>
                         </span>
                         {item.seatsLabel && (
                             <span className="text-xs text-zinc-500">{item.seatsLabel}</span>

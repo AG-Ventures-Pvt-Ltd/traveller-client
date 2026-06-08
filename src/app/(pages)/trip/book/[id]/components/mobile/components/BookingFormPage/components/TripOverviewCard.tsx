@@ -19,11 +19,11 @@ interface TripOverviewCardProps {
 }
 
 function formatDate(date: Date) {
-    return date.toLocaleDateString('en-GB', { month: 'short', day: 'numeric', year: 'numeric' });
+    return date.toLocaleDateString('en-GB', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'Asia/Kolkata' });
 }
 
 function formatDay(date: Date) {
-    return date.toLocaleDateString('en-GB', { weekday: 'long' });
+    return date.toLocaleDateString('en-GB', { weekday: 'long', timeZone: 'Asia/Kolkata' });
 }
 
 export default function TripOverviewCard(props: TripOverviewCardProps) {

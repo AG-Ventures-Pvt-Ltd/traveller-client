@@ -1,18 +1,20 @@
+const parseISTDate = (date: Date | string): [number, number, number] => {
+  const [y, m, d] = new Date(date).toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' }).split('-').map(Number);
+  return [y, m, d];
+};
+
 export const formatDate = (date: Date | string): string => {
-  const utcDate = new Date(date);
-  const istDate = new Date(utcDate.getTime() + (5.5 * 60 * 60 * 1000));
-  const month = istDate.toLocaleDateString('en-US', { month: 'long' });
-  const day = istDate.getDate();
-  const year = istDate.getFullYear();
-  return `${day} ${month}, ${year}`;
+  const [year, month, day] = parseISTDate(date);
+  const localMidnight = new Date(year, month - 1, day);
+  const monthStr = localMidnight.toLocaleDateString('en-US', { month: 'long' });
+  return `${day} ${monthStr}, ${year}`;
 };
 
 export const formatDateSimple = (date: Date | string): string => {
-  const utcDate = new Date(date);
-  const istDate = new Date(utcDate.getTime() + (5.5 * 60 * 60 * 1000));
-  const month = istDate.toLocaleDateString('en-US', { month: 'long' });
-  const day = istDate.getDate();
-  return `${day} ${month}`;
+  const [year, month, day] = parseISTDate(date);
+  const localMidnight = new Date(year, month - 1, day);
+  const monthStr = localMidnight.toLocaleDateString('en-US', { month: 'long' });
+  return `${day} ${monthStr}`;
 };
 
 export const formatDateTime = (date: Date | string): string => {
@@ -27,25 +29,22 @@ export const formatDateTime = (date: Date | string): string => {
 };
 
 export const formatDateRangeWithDuration = (startDate: string, endDate: string): string => {
-  const startUtc = new Date(startDate);
-  const endUtc = new Date(endDate);
-  const start = new Date(startUtc.getTime() + (5.5 * 60 * 60 * 1000));
-  const end = new Date(endUtc.getTime() + (5.5 * 60 * 60 * 1000));
-  const diffTime = Math.abs(end.getTime() - start.getTime());
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1; // inclusive days
+  const [sy, sm, sd] = parseISTDate(startDate);
+  const [ey, em, ed] = parseISTDate(endDate);
+  const start = new Date(sy, sm - 1, sd);
+  const end = new Date(ey, em - 1, ed);
+  const diffDays = Math.round((end.getTime() - start.getTime()) / 86400000) + 1;
   const nights = diffDays - 1;
-  const formattedStart = `${start.toLocaleDateString('en-US', { month: 'short' })} ${start.getDate()}, ${start.getFullYear()}`;
-  const formattedEnd = `${end.toLocaleDateString('en-US', { month: 'short' })} ${end.getDate()}, ${end.getFullYear()}`;
-  return `${formattedStart} - ${formattedEnd} • ${diffDays}D/${nights}N`;
+  const fmt = (d: Date) => `${d.toLocaleDateString('en-US', { month: 'short' })} ${d.getDate()}, ${d.getFullYear()}`;
+  return `${fmt(start)} - ${fmt(end)} • ${diffDays}D/${nights}N`;
 };
 
 export const formatDurationOnly = (startDate: string, endDate: string): string => {
-  const startUtc = new Date(startDate);
-  const endUtc = new Date(endDate);
-  const start = new Date(startUtc.getTime() + (5.5 * 60 * 60 * 1000));
-  const end = new Date(endUtc.getTime() + (5.5 * 60 * 60 * 1000));
-  const diffTime = Math.abs(end.getTime() - start.getTime());
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1; // inclusive days
+  const [sy, sm, sd] = parseISTDate(startDate);
+  const [ey, em, ed] = parseISTDate(endDate);
+  const start = new Date(sy, sm - 1, sd);
+  const end = new Date(ey, em - 1, ed);
+  const diffDays = Math.round((end.getTime() - start.getTime()) / 86400000) + 1;
   const nights = diffDays - 1;
   return `${diffDays}D/${nights}N`;
 };

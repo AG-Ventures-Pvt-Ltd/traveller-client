@@ -43,9 +43,10 @@ export default function ItinerarySection({
     const getDayDate = (dayIndex: number): string => {
         if (!batchStartDate) return '';
         try {
-            const startDate = new Date(batchStartDate);
-            const dayDate = new Date(startDate);
-            dayDate.setDate(startDate.getDate() + dayIndex);
+            // Get IST date components to avoid UTC-to-local shift on the start date
+            const istDateStr = new Date(batchStartDate).toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
+            const [y, m, d] = istDateStr.split('-').map(Number);
+            const dayDate = new Date(y, m - 1, d + dayIndex);
             return formatDate(dayDate);
         } catch {
             return '';

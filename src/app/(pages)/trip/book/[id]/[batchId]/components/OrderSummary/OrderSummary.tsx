@@ -90,7 +90,8 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({ tripId, batchId, guests = 1
               weekday: 'short',
               month: 'short',
               day: 'numeric',
-              year: 'numeric'
+              year: 'numeric',
+              timeZone: 'Asia/Kolkata',
             }) : ''} • {batchDetails?.startTime || ''}
           </span>
         </div>

@@ -37,26 +37,15 @@ export default function TripCalendar({
   const [currentDate, setCurrentDate] = useState(new Date())
   const [showCalendar, setShowCalendar] = useState(false)
 
-  // Get available dates from batches
-  const availableDates = new Set(
-    batches.map(batch => {
-      const dateStr = batch.startDate || batch.startDateTime
-      if (dateStr) {
-        return new Date(dateStr).toDateString()
-      }
-      return null
-    }).filter(Boolean)
-  )
+  const toISTDateStr = (d: Date | string) =>
+    new Date(d).toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' }) // "YYYY-MM-DD"
 
-  // Get batch ID for a specific date
-  const getBatchIdForDate = (date: Date) => {
-    const dateStr = date.toDateString()
-    const batch = batches.find(b => {
-      const batchDate = new Date(b.startDate || b.startDateTime || '')
-      return batchDate.toDateString() === dateStr
-    })
-    return batch?.batchId
-  }
+  // Get available dates from batches — keyed by IST date string
+  const batchByISTDate = new Map(
+    batches
+      .filter(b => b.startDate || b.startDateTime)
+      .map(b => [toISTDateStr(b.startDate || b.startDateTime), b.batchId])
+  )
 
   // Generate calendar dates for current month
   const generateCalendarDates = (date: Date): CalendarDate[] => {
@@ -64,7 +53,6 @@ export default function TripCalendar({
     const month = date.getMonth()
 
     const firstDay = new Date(year, month, 1)
-    const lastDay = new Date(year, month + 1, 0)
     const startDate = new Date(firstDay)
     startDate.setDate(startDate.getDate() - firstDay.getDay())
 
@@ -73,16 +61,17 @@ export default function TripCalendar({
 
     for (let i = 0; i < 42; i++) { // 6 weeks * 7 days
       const isCurrentMonth = current.getMonth() === month
-      const dateStr = current.toDateString()
-      const isAvailable = availableDates.has(dateStr)
-      const batchId = isAvailable ? getBatchIdForDate(current) : undefined
+      // Calendar cells are local midnight — format as YYYY-MM-DD directly
+      const ymd = `${current.getFullYear()}-${String(current.getMonth() + 1).padStart(2, '0')}-${String(current.getDate()).padStart(2, '0')}`
+      const batchId = batchByISTDate.get(ymd)
+      const isAvailable = !!batchId
 
       dates.push({
         date: new Date(current),
         day: current.getDate(),
         isCurrentMonth,
         isAvailable,
-        batchId
+        batchId,
       })
 
       current.setDate(current.getDate() + 1)
