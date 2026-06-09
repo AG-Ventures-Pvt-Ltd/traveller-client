@@ -2,26 +2,30 @@
 
 import { useState, useEffect } from 'react';
 import { signOut } from 'next-auth/react';
+import Image from 'next/image';
 import { useGetData } from '@/services/useGetData';
 import usePostData from '@/services/usePostData';
 import { API_ENDPOINTS } from '@/common/constants/apiEndpoints';
 import Modal from '@/common/ui/Modal';
 import Button from '@/common/components/atoms/Button';
-import { useRouter, useSearchParams } from 'next/navigation';
+import MyImage from '@/common/ui/Image';
+import { useRouter } from 'next/navigation';
 import {
-  ProfileCard,
-  TabNavigation,
-  TripFilterButtons,
   ProfileDetailsTab,
   EditProfileModal,
-  UserTrips,
-  AddReviewModal,
-  ProfileCardSkeleton,
   AddEmergencyContactModal,
   AddTravelerModal,
-  BookmarksTab,
 } from './components';
-import { ProfileData, Tab, FilterOption } from './types';
+import {
+  BookmarkSimpleIcon,
+  ClockIcon,
+  SuitcaseIcon,
+  TicketIcon,
+  CaretRightIcon,
+  PencilSimpleIcon,
+  SignOutIcon,
+} from '@phosphor-icons/react';
+import { ProfileData } from './types';
 import { useDevice } from '@/common/hooks/useDevice';
 import MobileProfilePage from './components/mobile/MobileProfilePage'
 
@@ -35,32 +39,22 @@ interface TravelerDetail {
   governmentIdNumber?: string;
 }
 
+const MENU_ITEMS = [
+  { id: 'mytrips', label: 'My Trips', icon: SuitcaseIcon, href: '/profile/mytrips' },
+  { id: 'bookmarks', label: 'Bookmarked Trips', icon: BookmarkSimpleIcon, href: '/profile/bookmarks' },
+  { id: 'transactions', label: 'Transaction History', icon: ClockIcon, href: '/profile/transactions' },
+  { id: 'tickets', label: 'Support Tickets', icon: TicketIcon, href: '/profile/tickets' },
+];
+
 export default function Page() {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const [activeTab, setActiveTab] = useState(0);
-  const [activeFilter, setActiveFilter] = useState(0);
-  const [isWriteReviewModalOpen, setIsWriteReviewModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isEmergencyContactModalOpen, setIsEmergencyContactModalOpen] = useState(false);
   const [isTravelerModalOpen, setIsTravelerModalOpen] = useState(false);
-  const [selectedTripTitle, setSelectedTripTitle] = useState('');
   const [selectedTraveler, setSelectedTraveler] = useState<TravelerDetail | null>(null);
   const [isDeleteTravelerModalOpen, setIsDeleteTravelerModalOpen] = useState(false);
   const [travelerToDelete, setTravelerToDelete] = useState<TravelerDetail | null>(null);
-
   const [deleteUrl, setDeleteUrl] = useState('');
-
-  // Initialize active tab from query params
-  useEffect(() => {
-    const tabParam = searchParams.get('tab');
-    if (tabParam) {
-      const tabIndex = parseInt(tabParam, 10);
-      if (!isNaN(tabIndex) && tabIndex >= 0 && tabIndex <= 3) {
-        setActiveTab(tabIndex);
-      }
-    }
-  }, [searchParams]);
 
   const { mutate: updateProfile, isPending: isUpdatingProfile } = usePostData({
     url: API_ENDPOINTS.USER.UPDATE,
@@ -122,19 +116,6 @@ export default function Page() {
     }
   }, [userData]);
 
-  const tabs: Tab[] = [
-    { label: 'Profile Details', active: activeTab === 0 },
-    { label: 'My Trips', active: activeTab === 1 },
-    { label: 'My Reviews', active: activeTab === 2 },
-    { label: 'My Bookmarks', active: activeTab === 3 },
-  ];
-
-  const filters: FilterOption[] = [
-    { label: 'All Trips', count: 0, active: activeFilter === 0 },
-    { label: 'Upcoming', count: 0, active: activeFilter === 1 },
-    { label: 'Completed', count: 0, active: activeFilter === 2 },
-  ];
-
   const handleEditProfile = () => {
     setIsEditModalOpen(true);
   };
@@ -169,23 +150,6 @@ export default function Page() {
     });
   };
 
-  const handleTabChange = (index: number) => {
-    setActiveTab(index);
-    // Update query params to persist tab state
-    const params = new URLSearchParams(searchParams.toString());
-    params.set('tab', index.toString());
-    router.replace(`?${params.toString()}`, { scroll: false });
-  };
-
-  const handleFilterChange = (index: number) => {
-    setActiveFilter(index);
-  };
-
-  const handleAddReview = (tripTitle: string) => {
-    setSelectedTripTitle(tripTitle);
-    setIsWriteReviewModalOpen(true);
-  };
-
   const handleEditEmergencyContact = () => {
     setIsEmergencyContactModalOpen(true);
   };
@@ -218,14 +182,19 @@ export default function Page() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen p-4 max-w-[1400px] mx-auto">
-        <div className="flex flex-col gap-8">
-          <ProfileCardSkeleton />
-          <div className="flex gap-4">
-            <div className="h-10 bg-gray-200 rounded-xl w-32 animate-pulse" />
-            <div className="h-10 bg-gray-200 rounded-xl w-32 animate-pulse" />
-            <div className="h-10 bg-gray-200 rounded-xl w-32 animate-pulse" />
-            <div className="h-10 bg-gray-200 rounded-xl w-32 animate-pulse" />
+      <div className="min-h-screen py-8 max-w-7xl mx-auto">
+        <div className="flex flex-col gap-8 animate-pulse">
+          <div className="flex items-center gap-6 bg-white rounded-3xl border-2 border-gray-200 p-8">
+            <div className="w-24 h-24 rounded-full bg-gray-200" />
+            <div className="flex-1 flex flex-col gap-3">
+              <div className="h-6 bg-gray-200 rounded w-48" />
+              <div className="h-4 bg-gray-200 rounded w-64" />
+            </div>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {[0, 1, 2, 3].map((i) => (
+              <div key={i} className="h-20 bg-gray-200 rounded-2xl" />
+            ))}
           </div>
         </div>
       </div>
@@ -241,71 +210,100 @@ export default function Page() {
   }
 
   return (
-    <div className="min-h-screen p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
-      <div className="flex flex-col gap-6 sm:gap-8">
-        <ProfileCard
-          profileData={profileData}
-          onEditProfile={handleEditProfile}
-          onLogout={handleLogout}
-        />
-        {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {stats.map((stat, index) => (
-            <StatsCard
-              key={index}
-              icon={stat.icon}
-              value={stat.value}
-              label={stat.label}
-              sublabel={stat.sublabel}
-            />
-          ))}
-        </div> */}
-        <TabNavigation tabs={tabs} onTabChange={handleTabChange} />
-        {activeTab === 1 && (
-          <>
-            <TripFilterButtons filters={filters} onFilterChange={handleFilterChange} />
-            <UserTrips
-              activeFilter={activeFilter}
-              onAddReview={handleAddReview}
-            />
-          </>
-        )}
-        {activeTab === 2 && (
-          <div className="flex flex-col gap-6">
-            <div className="text-center py-12">
-              <p className="text-neutral-700 text-lg font-['Satoshi']">No reviews yet</p>
+    <div className="min-h-screen py-8 max-w-7xl mx-auto">
+      <div className="flex flex-col gap-8">
+        {/* Profile header card */}
+        <div className="flex items-center gap-6 bg-white rounded-3xl border-2 border-gray-200 p-8">
+          {profileData.avatar ? (
+            profileData.avatar.startsWith('/') ? (
+              <MyImage
+                src={profileData.avatar}
+                alt={profileData.name}
+                rounded
+                className="w-24 h-24 object-cover flex-shrink-0"
+              />
+            ) : (
+              <Image
+                src={profileData.avatar}
+                alt={profileData.name}
+                width={96}
+                height={96}
+                className="w-24 h-24 rounded-full object-cover flex-shrink-0"
+              />
+            )
+          ) : (
+            <div className="w-24 h-24 rounded-full bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center text-white font-bold text-2xl flex-shrink-0">
+              {profileData.name?.charAt(0) || 'W'}
             </div>
+          )}
+          <div className="flex-1 min-w-0">
+            <h1 className="text-2xl font-bold text-neutral-900 line-clamp-1">
+              {profileData.name}
+            </h1>
+            <p className="text-sm font-medium text-neutral-600 break-all">
+              {profileData.email}
+            </p>
           </div>
-        )}
-        {activeTab === 3 && (
-          <BookmarksTab />
-        )}
-        {activeTab === 0 && (
-          <ProfileDetailsTab
-            birthDate={profileData.birthDate}
-            governmentIdType={profileData.governmentIdType}
-            governmentIdNumber={profileData.governmentIdNumber}
-            emergencyContact={userData?.emergencyContact ? {
-              name: userData.emergencyContact.name,
-              contactNumber: userData.emergencyContact.contactNumber
-            } : null}
-            onEditEmergencyContact={handleEditEmergencyContact}
-            onAddTraveler={handleAddTraveler}
-            onEditTraveler={handleEditTraveler}
-            onDeleteTraveler={handleDeleteTraveler}
-          />
-        )}
+          <div className="flex items-center gap-3 flex-shrink-0">
+            <button
+              onClick={handleEditProfile}
+              className="flex items-center gap-2 px-5 py-3 bg-maintext text-white rounded-xl hover:opacity-90 transition-opacity font-medium"
+            >
+              <PencilSimpleIcon size={20} weight="bold" />
+              Edit Profile
+            </button>
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-2 px-5 py-3 bg-red-500 text-white rounded-xl hover:bg-red-600 transition-colors font-medium"
+            >
+              <SignOutIcon size={20} weight="bold" />
+              Logout
+            </button>
+          </div>
+        </div>
+
+        {/* Menu grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {MENU_ITEMS.map((item) => {
+            const Icon = item.icon;
+            return (
+              <button
+                key={item.id}
+                onClick={() => router.push(item.href)}
+                className="flex items-center justify-between gap-3 px-5 py-5 bg-[#E2F4A6] rounded-2xl hover:opacity-90 transition-opacity"
+              >
+                <div className="flex items-center gap-3">
+                  <Icon size={24} weight="bold" className="text-neutral-700" />
+                  <span className="text-base font-medium text-neutral-900">{item.label}</span>
+                </div>
+                <CaretRightIcon size={22} weight="bold" className="text-neutral-500" />
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Profile details */}
+        <ProfileDetailsTab
+          birthDate={profileData.birthDate}
+          governmentIdType={profileData.governmentIdType}
+          governmentIdNumber={profileData.governmentIdNumber}
+          emergencyContact={userData?.emergencyContact ? {
+            name: userData.emergencyContact.name,
+            contactNumber: userData.emergencyContact.contactNumber
+          } : null}
+          onEditEmergencyContact={handleEditEmergencyContact}
+          onAddTraveler={handleAddTraveler}
+          onEditTraveler={handleEditTraveler}
+          onDeleteTraveler={handleDeleteTraveler}
+        />
       </div>
+
       <EditProfileModal
         open={isEditModalOpen}
         onClose={() => setIsEditModalOpen(false)}
         profileData={profileData}
         onSave={handleSaveProfile}
         isLoading={isUpdatingProfile}
-      />
-      <AddReviewModal
-        open={isWriteReviewModalOpen}
-        onClose={() => setIsWriteReviewModalOpen(false)}
-        tripTitle={selectedTripTitle}
       />
       <AddEmergencyContactModal
         open={isEmergencyContactModalOpen}

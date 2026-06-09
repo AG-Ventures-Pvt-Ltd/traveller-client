@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import Loader from '@/common/ui/Loader/Loader';
 import { useLocation } from '@/common/hooks/useLocation';
+import LandingSkeleton from './(landing)/LandingPage/components/LandingSkeleton';
 const LandingPage = dynamic(() => import('./(landing)/LandingPage/LandingPage'))
 
 const HomePage = dynamic(() => import('./(landing)/HomePage/page'), { ssr: false });
@@ -45,7 +46,9 @@ export const Landing = () => {
 
 
     if (!isHydrated) {
-        return <Loader />
+        // Desktop gets a layout-shaped skeleton; mobile keeps the generic loader.
+        const isDesktop = typeof window !== 'undefined' && window.innerWidth >= 768;
+        return isDesktop ? <LandingSkeleton /> : <Loader />
     }
 
     // Show HomePage on mobile devices only

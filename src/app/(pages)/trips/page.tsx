@@ -9,7 +9,7 @@ import { useGetData } from '@/services/useGetData';
 import BackButton from '@/common/ui/BackButton';
 import { SlidersHorizontal } from 'lucide-react';
 import Button from '@/common/components/atoms/Button';
-import CircularLoader from '@/common/ui/Loader/CircularLoader';
+import TripListSkeleton from './components/TripListSkeleton';
 import { useDevice } from '@/common/hooks/useDevice';
 import TripListsMobile from './components/mobile/TripListsMobile'
 
@@ -223,11 +223,10 @@ export default function Page() {
   return (
     <div className='flex flex-col py-2 mb-8 mx-12'>
       <div className='flex gap-3'>
-        <div className='flex-1 self-start sticky top-[6%]'>
+        <div className='flex-1 self-start sticky top-[8%]'>
           <TripFilters onFilterChange={handleFilterChange} onApplyFilters={handleApplyFilters} />
         </div>
         <div className='flex-1 md:flex-[3]'>
-          {tripsLoading && page === 1 && allTrips.length === 0 && <CircularLoader />}
           {!tripsLoading && allTrips.length === 0 && (
             <div className='bg-gray-50 border border-gray-200 text-gray-700 px-6 py-8 rounded-lg text-center'>
               <p className='text-lg font-medium'>No trips found</p>
@@ -245,6 +244,7 @@ export default function Page() {
                 </p>
               )}
             </div>
+            {tripsLoading && page === 1 && allTrips.length === 0 && <TripListSkeleton />}
             {allTrips.length > 0 && <TripList
               trips={allTrips}
               onBookNow={handleBookNow}
