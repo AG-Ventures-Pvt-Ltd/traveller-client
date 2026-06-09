@@ -85,7 +85,7 @@ const TripFilters: React.FC<TripFiltersProps> = ({ onFilterChange, onApplyFilter
         </button>
       </div>
 
-      <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-4">
         {/* Destination (Indian States) */}
         <div className="flex flex-col gap-2">
           <button

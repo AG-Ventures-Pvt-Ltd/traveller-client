@@ -42,7 +42,7 @@ const Navbar = () => {
 
   return (
     <>
-      <div className='px-2 md:px-9 py-5 bg-[#FCF3EB] flex items-center sticky top-0 z-50'>
+      <div className='px-2 md:px-9 py-5 bg-[#FFF9F4] flex items-center sticky top-0 z-50'>
         <div className='flex-1 flex items-center gap-2.5'>
           <div className='flex-1 flex flex-col items-start justify-center'>
             <Logo />

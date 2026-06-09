@@ -4,7 +4,9 @@ import CustomSelect from '@/common/ui/CustomSelect';
 import { useBookingFormStore } from '../hooks/useBookingFormStore';
 import { notify } from '@/common/utils/notify';
 import { usePathname } from 'next/navigation';
-
+import { useDevice } from '@/common/hooks/useDevice';
+import { CurrencyInrIcon } from '@phosphor-icons/react';
+import Button from '@/common/ui/Buttons/Button';
 
 
 interface TripOverviewCardProps {
@@ -16,6 +18,8 @@ interface TripOverviewCardProps {
     setSelectedMeetingPointIdx?: (idx: number) => void;
     batchDetails?: any;
     gap?: string
+    displayPrice?:number
+    handleBookNowClick?:() => void
 }
 
 function formatDate(date: Date) {
@@ -31,6 +35,8 @@ export default function TripOverviewCard(props: TripOverviewCardProps) {
     const path = usePathname()
 
     const store = useBookingFormStore();
+
+    const { isMobile } = useDevice()
 
     const guests = store.guests || props.guests || 1;
     const setGuests = useMemo(() =>
@@ -64,9 +70,9 @@ export default function TripOverviewCard(props: TripOverviewCardProps) {
     return (
         <div className={`border border-[#D9D9D9] rounded-2xl px-[18px] pt-5 pb-4 flex flex-col gap-${props.gap || 5}`}>
             {batchDetails?.title && path.split('/')[1] !== 'profile' &&
-            <p className="text-[16px] font-semibold text-black tracking-[-0.48px] leading-snug">
-                {batchDetails?.title}
-            </p>}
+                <p className="text-[16px] font-semibold text-black tracking-[-0.48px] leading-snug">
+                    {batchDetails?.title}
+                </p>}
             <div className="flex items-center justify-between">
                 <div className="flex flex-col gap-0.5">
                     <p className="text-xs font-medium text-black tracking-[-0.36px]">
@@ -129,7 +135,7 @@ export default function TripOverviewCard(props: TripOverviewCardProps) {
                     <p className='font-medium'>{props.selectedMeetingPoint}</p>
                 </div>
             )}
-            { (meetingPoints.length > 0) && (path.split('/')[1] !== 'profile') && (
+            {(meetingPoints.length > 0) && (path.split('/')[1] !== 'profile') && (
                 <div className="flex flex-col gap-2">
                     <div className="flex items-center gap-2 flex-wrap">
                         <p className="text-xs text-black tracking-[-0.36px] whitespace-nowrap">Depart from :</p>
@@ -170,6 +176,24 @@ export default function TripOverviewCard(props: TripOverviewCardProps) {
                     )}
                 </div>
             )}
+            {!isMobile && <div>
+                <div className="rounded-2xl flex flex-col gap-2 mt-12">
+                    <div>
+                        <p className="text-xl font-bold text-black flex items-end">
+                            <span className="flex items-center"><CurrencyInrIcon weight="bold" /> {props.displayPrice}/</span>
+                            <span className="text-sm font-medium pl-1"> person</span>
+                        </p>
+                        <p className="font-medium">+5% GST</p>
+                    </div>
+                    <Button 
+                        onClick={props.handleBookNowClick || (() => { })}
+                        variant='purple'
+                        className="font-semibold"
+                    >
+                        Book Now
+                    </Button>
+                </div>
+            </div>}
         </div>
     );
 }

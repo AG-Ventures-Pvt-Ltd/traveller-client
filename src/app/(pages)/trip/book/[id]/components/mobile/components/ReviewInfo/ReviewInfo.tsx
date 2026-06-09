@@ -10,6 +10,7 @@ import UserDetailsCard from './components/UserDetailsCard';
 import TripSummaryCard from './components/TripSummaryCard';
 import { BookingData } from '../../type';
 import Button from '@/common/ui/Buttons/Button';
+import { useDevice } from '@/common/hooks/useDevice';
 
 
 
@@ -17,6 +18,7 @@ export default function ReviewInfo({}) {
 
     const searchParams = useSearchParams();
     const params = useParams()
+    const { isMobile } = useDevice();
     const existingBookingId = searchParams.get('bookingId') || params.id as string;
 
     const { data: bookingData, isLoading: isbookingDataLoading } = useGetData<BookingData>(existingBookingId ? API_ENDPOINTS.BOOKINGS.DETAILS(existingBookingId) : "", {
@@ -32,10 +34,20 @@ export default function ReviewInfo({}) {
     }
 
     return (
-        <div className="px-4 pb-20 flex flex-col gap-4">
+        <div className={isMobile ? 'px-4 pb-20 flex flex-col gap-4' : 'flex flex-col gap-4 pb-10'}>
             <UserDetailsCard user={bookingData.user} />
             <TripSummaryCard trip={bookingData.trip} booking={bookingData.booking} />
-            <div className="fixed bottom-0 left-0 right-0 px-5 py-5 bg-[#FFF9F4] z-50">
+            {isMobile ? (
+                <div className="fixed bottom-0 left-0 right-0 px-5 py-5 bg-[#FFF9F4] z-50">
+                    <Button
+                        variant="yellow"
+                        fullWidth
+                        onClick={() => startPayment({ bookingId: existingBookingId })}
+                    >
+                        Confirm & Pay
+                    </Button>
+                </div>
+            ) : (
                 <Button
                     variant="yellow"
                     fullWidth
@@ -43,7 +55,7 @@ export default function ReviewInfo({}) {
                 >
                     Confirm & Pay
                 </Button>
-            </div>
+            )}
         </div>
     );
 }

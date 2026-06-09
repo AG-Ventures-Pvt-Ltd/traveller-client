@@ -1,7 +1,7 @@
 'use client';
 
 import { useSearchParams, useRouter } from 'next/navigation';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import TripFilters, { FilterValues } from './components/TripFilters';
 import FilterModal from './components/FilterModal';
 import TripList from './components/TripList';
@@ -80,14 +80,25 @@ export default function Page() {
   const [apiUrl, setApiUrl] = useState<string | null>(null);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [page, setPage] = useState(1);
+  const [allTrips, setAllTrips] = useState<Trip[]>([]);
+  const [hasMore, setHasMore] = useState(true);
   const PAGE_SIZE = 12;
+
+  const bottomRef = useRef<HTMLDivElement>(null);
+  const isFetchingMore = useRef(false);
+  const hasMoreRef = useRef(true);
+  const isLoadingRef = useRef(false);
 
 
   const { isMobile } = useDevice()
 
-  // Reset to first page whenever filters change
+  // Reset accumulation whenever filters/search change
   useEffect(() => {
     setPage(1);
+    setAllTrips([]);
+    setHasMore(true);
+    hasMoreRef.current = true;
+    isFetchingMore.current = false;
   }, [appliedFilters, destination, qParam]);
 
   useEffect(() => {
@@ -131,6 +142,51 @@ export default function Page() {
     enabled: !!apiUrl && !isMobile,
   });
 
+  // Keep loading state in a ref for the observer
+  useEffect(() => {
+    isLoadingRef.current = tripsLoading;
+  }, [tripsLoading]);
+
+  // Accumulate trips as pages arrive
+  useEffect(() => {
+    if (!tripsData) return;
+
+    const newTrips = tripsData.trips || [];
+    if (page === 1) {
+      setAllTrips(newTrips);
+    } else {
+      setAllTrips((prev) => [...prev, ...newTrips]);
+    }
+
+    const nextHasMore = tripsData.pagination?.hasNextPage ?? false;
+    setHasMore(nextHasMore);
+    hasMoreRef.current = nextHasMore;
+    isFetchingMore.current = false;
+  }, [tripsData]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Infinite scroll observer — created once, reads state via refs
+  useEffect(() => {
+    if (isMobile) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (
+          entries[0].isIntersecting &&
+          hasMoreRef.current &&
+          !isLoadingRef.current &&
+          !isFetchingMore.current
+        ) {
+          isFetchingMore.current = true;
+          setPage((prev) => prev + 1);
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    const el = bottomRef.current;
+    if (el) observer.observe(el);
+    return () => observer.disconnect();
+  }, [isMobile]);
+
   const handleFilterChange = useCallback((newFilters: FilterValues) => {
     setFilters(newFilters);
   }, []);
@@ -166,30 +222,13 @@ export default function Page() {
 
   return (
     <div className='flex flex-col py-2 mb-8 mx-12'>
-      <div className='mb-4 mx-[1%] flex items-center justify-between'>
-        <div className='md:hidden'>
-          <Button
-            onClick={() => setIsFilterModalOpen(true)}
-            className="md:hidden flex items-center gap-2 bg-neutral-900 hover:bg-neutral-800 text-white font-bold rounded-xl px-4 h-12"
-          >
-            <SlidersHorizontal className="w-5 h-5" />
-            Filters
-          </Button>
-        </div>
-      </div>
-      <FilterModal
-        isOpen={isFilterModalOpen}
-        onClose={() => setIsFilterModalOpen(false)}
-        onFilterChange={handleFilterChange}
-        onApplyFilters={handleApplyFilters}
-      />
       <div className='flex gap-3'>
-        <div className='hidden md:block flex-1 sticky top-[12%] self-start'>
+        <div className='flex-1 self-start sticky top-[6%]'>
           <TripFilters onFilterChange={handleFilterChange} onApplyFilters={handleApplyFilters} />
         </div>
         <div className='flex-1 md:flex-[3]'>
-          {tripsLoading && <CircularLoader />}
-          {tripsData && tripsData.trips?.length === 0 && (
+          {tripsLoading && page === 1 && allTrips.length === 0 && <CircularLoader />}
+          {!tripsLoading && allTrips.length === 0 && (
             <div className='bg-gray-50 border border-gray-200 text-gray-700 px-6 py-8 rounded-lg text-center'>
               <p className='text-lg font-medium'>No trips found</p>
               <p className='text-sm text-gray-600 mt-2'>Try adjusting your filters to see more results</p>
@@ -206,33 +245,22 @@ export default function Page() {
                 </p>
               )}
             </div>
-            {!tripsLoading && tripsData && <TripList
-              trips={tripsData.trips}
+            {allTrips.length > 0 && <TripList
+              trips={allTrips}
               onBookNow={handleBookNow}
               formatDate={formatDate}
               calculateDays={calculateDays}
             />}
-            {tripsData && tripsData.pagination && tripsData.pagination.totalPages > 1 && (
-              <div className='flex items-center justify-center gap-4 mt-8'>
-                <Button
-                  onClick={() => setPage((p) => Math.max(1, p - 1))}
-                  disabled={!tripsData.pagination.hasPrevPage}
-                  className='bg-neutral-900 hover:bg-neutral-800 text-white font-bold rounded-xl px-5 h-11 disabled:opacity-40 disabled:cursor-not-allowed'
-                >
-                  Previous
-                </Button>
-                <span className='text-sm font-semibold text-gray-700'>
-                  Page {tripsData.pagination.page} of {tripsData.pagination.totalPages}
-                </span>
-                <Button
-                  onClick={() => setPage((p) => p + 1)}
-                  disabled={!tripsData.pagination.hasNextPage}
-                  className='bg-neutral-900 hover:bg-neutral-800 text-white font-bold rounded-xl px-5 h-11 disabled:opacity-40 disabled:cursor-not-allowed'
-                >
-                  Next
-                </Button>
+            {tripsLoading && page > 1 && (
+              <div className='flex justify-center py-6'>
+                <div className='flex items-center gap-1.5'>
+                  <div className='w-2 h-2 rounded-full bg-neutral-900 animate-bounce' style={{ animationDelay: '0s' }} />
+                  <div className='w-2 h-2 rounded-full bg-neutral-900 animate-bounce' style={{ animationDelay: '0.15s' }} />
+                  <div className='w-2 h-2 rounded-full bg-neutral-900 animate-bounce' style={{ animationDelay: '0.3s' }} />
+                </div>
               </div>
             )}
+            {hasMore && <div ref={bottomRef} className='h-4 mt-2' />}
           </div>
         </div>
       </div>

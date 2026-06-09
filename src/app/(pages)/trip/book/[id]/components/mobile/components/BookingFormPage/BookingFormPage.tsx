@@ -84,6 +84,13 @@ export default function BookingFormPage({ tripId, batchId, onViewCoupons }: Book
         setIsBookingOptionsLoading(isBookingOptionsLoadingData);
     }, [bookingOptionsData, isBookingOptionsLoadingData, setBookingOptions, setIsBookingOptionsLoading]);
 
+    // Default-select the first package option (single option already locked in the store)
+    useEffect(() => {
+        if (pricingTiers.length > 0 && selectedTravelIdx === null) {
+            setSelectedTravelIdx(0);
+        }
+    }, [pricingTiers, selectedTravelIdx, setSelectedTravelIdx]);
+
     // Calculate total price based on all selected options
     const displayPrice = useMemo(() => {
         let totalPerPerson = 0;
@@ -142,7 +149,7 @@ export default function BookingFormPage({ tripId, batchId, onViewCoupons }: Book
         return (
             <div className="flex gap-6 items-start pb-10">
                 {/* Left: trip details & options */}
-                <div className="flex-1 min-w-0 flex flex-col gap-4">
+                <div className="flex-1 min-w-0 flex flex-col gap-4 mt-4">
                     <LoadExistingBookingDetails />
                     <TravelerDetailsCard />
 
@@ -175,24 +182,9 @@ export default function BookingFormPage({ tripId, batchId, onViewCoupons }: Book
                 </div>
 
                 {/* Right: floating sticky trip overview + pricing */}
-                <div className="w-[360px] shrink-0">
-                    <div className="sticky top-6 flex flex-col gap-4">
-                        <TripOverviewCard />
-                        <div className="bg-[#EEA0FF] rounded-2xl shadow-lg pl-6 pr-5 py-5 flex flex-col gap-4">
-                            <div>
-                                <p className="text-xl font-bold text-black flex items-end">
-                                    <span className="flex items-center"><CurrencyInrIcon weight="bold" /> {displayPrice}/</span>
-                                    <span className="text-sm font-medium pl-1"> person</span>
-                                </p>
-                                <p className="font-medium">+5% GST</p>
-                            </div>
-                            <button
-                                onClick={handleButtonClick}
-                                className="w-full bg-black text-white px-4 py-3 rounded-full font-semibold text-lg hover:bg-gray-800 transition-colors"
-                            >
-                                Book Now
-                            </button>
-                        </div>
+                <div className="w-[360px] shrink-0 sticky top-24">
+                    <div className="flex flex-col gap-4">
+                        <TripOverviewCard displayPrice={displayPrice} handleBookNowClick={() => handleButtonClick()}/>
                     </div>
                 </div>
             </div>

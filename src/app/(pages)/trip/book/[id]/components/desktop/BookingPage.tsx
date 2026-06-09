@@ -2,7 +2,6 @@
 
 import { useEffect, useRef } from 'react';
 import { useParams, useSearchParams, useRouter } from 'next/navigation';
-import BackButton from '@/common/ui/BackButton';
 import { useBookingNavStore } from '../../[batchId]/store/useBookingNavStore';
 import BookingFormPage, { BookingFormData } from '../mobile/components/BookingFormPage/BookingFormPage';
 import ReviewInfo from '../mobile/components/ReviewInfo/ReviewInfo';
@@ -78,16 +77,6 @@ export default function BookingPage() {
         couponsRef.current = coupons;
         goToStep('coupons');
     };
-
-    const handleBack = () => {
-        if (step === 'reservation') {
-            router.push(`/trip/${tripId}`);
-        } else {
-            goToStep('reservation');
-        }
-    };
-
-    const headerLabel = (STEP_CONFIG[step] ?? STEP_CONFIG.reservation).headerLabel;
 
     return (
         <div className="min-h-screen bg-[#FFF9F4]">
