@@ -13,17 +13,17 @@ const Footer = () => {
                     title: 'Explore',
                     links: [
                         { label: 'Trips', href: '/trips' },
-                        { label: 'All Girls Trips', href: '/girls-trips' }
+                        // { label: 'All Girls Trips', href: '/girls-trips' }
                     ]
                 },
-                {
-                    title: 'Company',
-                    links: [
-                        { label: 'About Us', href: '/about' },
-                        { label: 'Partner With Us', href: '/partner-with-us' },
-                        { label: 'How We Work', href: '/how-we-work' }
-                    ]
-                },
+                // {
+                //     title: 'Company',
+                //     links: [
+                //         { label: 'About Us', href: '/about' },
+                //         { label: 'Partner With Us', href: '/partner-with-us' },
+                //         { label: 'How We Work', href: '/how-we-work' }
+                //     ]
+                // },
                 {
                     title: 'Policies',
                     links: [
@@ -35,12 +35,15 @@ const Footer = () => {
                     title: 'Contact',
                     links: [
                         { label: 'support@wondrr.in', href: 'mailto:support@wondrr.in' },
-                        { label: '+91-8217728508', href: 'tel:+91-8217728508' },
+                        { label: '+91-9667427187', href: 'tel:+91-9667427187' },
                         { label: '+91-9151315550', href: 'tel:+91-9151315550' }
                     ]
                 }
             ],
-            social: [{ label: 'Instagram', href: 'https://instagram.com/wondrr.in' }],
+            social: [
+                { label: 'Instagram', href: 'https://instagram.com/wondrr.in' },
+                { label: 'LinkedIn', href: 'https://www.linkedin.com/company/wondrr' }
+            ],
             copyright: '© 2026 Wondrr. All rights reserved.'
         }
     }
@@ -55,7 +58,8 @@ const Footer = () => {
                     <div className="flex gap-3">
                         {CONTENT.footer.social.map((platform) => (
                             <a key={platform.label} href={platform.href} target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center cursor-pointer hover:bg-white/20 transition-colors">
-                                <Image src='/svg/instagram.svg' width={30} height={30} quality={90} alt='instagram' />
+                                {platform.label == 'Instagram' && <Image src='/svg/instagram.svg' width={30} height={30} quality={90} alt='instagram' />}
+                                {platform.label == 'LinkedIn' && <Image src='/png/linkedin.png' width={30} height={30} quality={90} alt='linkedin' />}
                             </a>
                         ))}
                     </div>

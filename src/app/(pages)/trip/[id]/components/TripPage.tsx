@@ -1,7 +1,7 @@
 'use client'
 
 import TripDetailMobile from "./mobile/TripDetailMobile";
-import { redirect } from 'next/navigation';
+import TripDetailDesktop from "./desktop/TripDetailDesktop";
 import { useDeviceContext } from "@/common/context/DeviceContext";
 
 
@@ -12,5 +12,5 @@ export default function TripDetail() {
     return <TripDetailMobile />;
   }
 
-  redirect('/');
+  return <TripDetailDesktop />;
 }

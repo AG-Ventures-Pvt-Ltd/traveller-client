@@ -68,7 +68,7 @@ const Navbar = () => {
                   <div
                     key={item.title}
                     onClick={() => handleNavigation(item.route)}
-                    className='flex flex-col items-start text-[#121212] font-bold cursor-pointer hover:text-gray-600 transition-colors whitespace-nowrap'
+                    className='flex items-center text-[#121212] cursor-pointer hover:text-gray-600 transition-colors whitespace-nowrap text-xl'
                   >
                     {item.title}
                   </div>
