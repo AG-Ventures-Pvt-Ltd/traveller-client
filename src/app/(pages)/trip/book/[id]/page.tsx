@@ -2,8 +2,8 @@
 
 import { useDevice } from '@/common/hooks/useDevice';
 import BookingPage from './components/mobile/BookingPage';
+import DesktopBookingPage from './components/desktop/BookingPage';
 import { ReservationSkeleton } from './components/mobile/BookingStepSkeletons';
-import { redirect } from 'next/navigation';
 
 const Page = () => {
     const { isMobile, isHydrated } = useDevice();
@@ -16,7 +16,7 @@ const Page = () => {
         return <BookingPage />;
     }
 
-    redirect('/');
+    return <DesktopBookingPage />;
 }
 
 export default Page

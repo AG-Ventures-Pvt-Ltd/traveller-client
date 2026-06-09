@@ -21,6 +21,8 @@ import { useSearchParams } from 'next/navigation';
 import { useCreateBooking } from './hooks/useCreateBooking';
 import { useUpdateBooking } from './hooks/useUpdateBooking';
 import BookingBar from '@/app/(pages)/trip/common/ui/BookingBar';
+import { useDevice } from '@/common/hooks/useDevice';
+import { CurrencyInrIcon } from '@phosphor-icons/react';
 
 
 export type { BookingFormData };
@@ -35,7 +37,8 @@ interface BookingFormPageProps {
 export default function BookingFormPage({ tripId, batchId, onViewCoupons }: BookingFormPageProps) {
 
     const searchParams = useSearchParams();
-    
+    const { isMobile } = useDevice();
+
 
     const bookingIdFromQuery = searchParams.get('bookingId');
     const bookingIdFromStorage = typeof window !== 'undefined' ? localStorage.getItem(`booking_${tripId.split('-').pop()}`) : null;
@@ -133,6 +136,67 @@ export default function BookingFormPage({ tripId, batchId, onViewCoupons }: Book
 
     if (isBookingOptionsLoading && !bookingOptions) {
         return <ReservationSkeleton />;
+    }
+
+    if (!isMobile) {
+        return (
+            <div className="flex gap-6 items-start pb-10">
+                {/* Left: trip details & options */}
+                <div className="flex-1 min-w-0 flex flex-col gap-4">
+                    <LoadExistingBookingDetails />
+                    <TravelerDetailsCard />
+
+                    {pricingTiers.length > 0 && (
+                        <CollapsibleCard
+                            title="Package Options"
+                            overflow="visible"
+                        >
+                            <div className="px-4 pb-4">
+                                <TravelOptionsList
+                                    items={pricingTiers}
+                                    selectedIndex={selectedTravelIdx}
+                                    onSelect={(idx) => {
+                                        setSelectedTravelIdx(idx);
+                                    }}
+                                />
+                            </div>
+                        </CollapsibleCard>
+                    )}
+                    <StayOptionsSection />
+                    <TransportOptionsSection />
+                    <ActivityAddOnsSection />
+                    <ExtraAddOnsSection />
+                    {/* <FoodPreferenceSection /> */}
+
+                    <DiscountsSection
+                        coupons={bookingOptions?.coupons}
+                        onViewCoupons={onViewCoupons ? () => onViewCoupons(bookingOptions?.coupons ?? []) : undefined}
+                    />
+                </div>
+
+                {/* Right: floating sticky trip overview + pricing */}
+                <div className="w-[360px] shrink-0">
+                    <div className="sticky top-6 flex flex-col gap-4">
+                        <TripOverviewCard />
+                        <div className="bg-[#EEA0FF] rounded-2xl shadow-lg pl-6 pr-5 py-5 flex flex-col gap-4">
+                            <div>
+                                <p className="text-xl font-bold text-black flex items-end">
+                                    <span className="flex items-center"><CurrencyInrIcon weight="bold" /> {displayPrice}/</span>
+                                    <span className="text-sm font-medium pl-1"> person</span>
+                                </p>
+                                <p className="font-medium">+5% GST</p>
+                            </div>
+                            <button
+                                onClick={handleButtonClick}
+                                className="w-full bg-black text-white px-4 py-3 rounded-full font-semibold text-lg hover:bg-gray-800 transition-colors"
+                            >
+                                Book Now
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
     }
 
     return (

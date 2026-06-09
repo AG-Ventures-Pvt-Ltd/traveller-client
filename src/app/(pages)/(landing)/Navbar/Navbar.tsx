@@ -91,7 +91,7 @@ const Navbar = () => {
                 )}
                 {status === 'unauthenticated' && (
                   <button
-                    className='!px-5 py-2 bg-[#EEA0FF] rounded-xl flex items-center gap-2.5 whitespace-nowrap'
+                    className='!px-4 py-1.5 bg-[#EEA0FF] rounded-xl flex items-center gap-2.5 whitespace-nowrap text-lg'
                     onClick={() => router.push('/auth')}
                   >
                       Sign Up
@@ -100,35 +100,6 @@ const Navbar = () => {
               </div>
             </div>
           </div>
-        </div>
-      </div>
-      <div
-        className={`md:hidden fixed top-[73px] left-0 right-0 bg-white border-b border-[#EDEDED] shadow-lg z-40 transition-all duration-300 ease-in-out`}
-      >
-        <div className='flex flex-col py-4'>
-          {navItems.map((item) => (
-            <div
-              key={item.title}
-              onClick={() => handleNavigation(item.route)}
-              className={`px-6 py-4 text-[#121212] font-bold cursor-pointer hover:bg-gray-50 transition-colors border-b border-gray-100 whitespace-nowrap flex items-center gap-2 }`}
-            >
-              {item.title}
-              {item.isNew && (
-                <span className='text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-[#E8674A]/10 text-[#C4532A] leading-none'>
-                  New
-                </span>
-              )}
-            </div>
-          ))}
-          {status === "authenticated" && authenticatedNavItems.map((item) => (
-            <div
-              key={item.title}
-              onClick={() => handleNavigation(item.route)}
-              className={`px-6 py-4 text-[#121212] font-bold cursor-pointer hover:bg-gray-50 transition-colors border-b border-gray-100 whitespace-nowrap }`}
-            >
-              {item.title}
-            </div>
-          ))}
         </div>
       </div>
     </>

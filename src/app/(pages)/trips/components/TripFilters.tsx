@@ -22,11 +22,12 @@ export interface FilterValues {
 
 const TripFilters: React.FC<TripFiltersProps> = ({ onFilterChange, onApplyFilters }) => {
   const [expandedSections, setExpandedSections] = useState<Set<string>>(
-    new Set(['destination', 'priceRange', 'duration', 'international'])
+    new Set(['destination', 'priceRange', 'duration', 'difficulty', 'international'])
   );
   const [states, setStates] = useState<string[]>([]);
   const [priceRange, setPriceRange] = useState<number | null>(null);
   const [durationRange, setDurationRange] = useState<number | null>(null);
+  const [difficulties, setDifficulties] = useState<string[]>([]);
   const [international, setInternational] = useState<boolean>(false);
 
   useEffect(() => {
@@ -36,12 +37,18 @@ const TripFilters: React.FC<TripFiltersProps> = ({ onFilterChange, onApplyFilter
         priceRange,
         durations: [],
         durationRange,
-        difficulties: [],
+        difficulties,
         minRating: null,
         international,
       });
     }
-  }, [states, priceRange, durationRange, international, onFilterChange]);
+  }, [states, priceRange, durationRange, difficulties, international, onFilterChange]);
+
+  const toggleDifficulty = (level: string) => {
+    setDifficulties((prev) =>
+      prev.includes(level) ? prev.filter((d) => d !== level) : [...prev, level]
+    );
+  };
 
   const toggleSection = (section: string) => {
     setExpandedSections((prev) => {
@@ -56,8 +63,11 @@ const TripFilters: React.FC<TripFiltersProps> = ({ onFilterChange, onApplyFilter
     setStates([]);
     setPriceRange(null);
     setDurationRange(null);
+    setDifficulties([]);
     setInternational(false);
   };
+
+  const DIFFICULTY_LEVELS = ['easy', 'moderate', 'challenging'];
 
   return (
     <div className="w-80 bg-white rounded-3xl border-2 border-gray-200 px-7 pt-7 pb-6 flex flex-col gap-3 sticky top-4">
@@ -216,6 +226,38 @@ const TripFilters: React.FC<TripFiltersProps> = ({ onFilterChange, onApplyFilter
                   style={{ left: `${(((durationRange || 14) - 1) / 13) * 100}%` }}
                 />
               </div>
+            </div>
+          )}
+        </div>
+
+        <div className="h-[1px] bg-gray-200" />
+
+        {/* Difficulty */}
+        <div className="flex flex-col gap-2">
+          <button
+            onClick={() => toggleSection('difficulty')}
+            className="flex justify-between items-center"
+          >
+            <span className="text-neutral-900 text-base font-bold">Difficulty</span>
+            <ChevronDown
+              className={`w-4 h-4 text-neutral-700 transition-transform ${
+                expandedSections.has('difficulty') ? '' : '-rotate-90'
+              }`}
+            />
+          </button>
+          {expandedSections.has('difficulty') && (
+            <div className="flex flex-col gap-2">
+              {DIFFICULTY_LEVELS.map((level) => (
+                <label key={level} className="flex items-center gap-2.5 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={difficulties.includes(level)}
+                    onChange={() => toggleDifficulty(level)}
+                    className="w-4 h-4 rounded border-gray-300 text-neutral-900 focus:ring-neutral-900"
+                  />
+                  <span className="text-neutral-700 text-sm font-medium capitalize">{level}</span>
+                </label>
+              ))}
             </div>
           )}
         </div>

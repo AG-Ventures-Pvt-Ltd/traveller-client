@@ -59,7 +59,7 @@ const Footer = () => {
                         {CONTENT.footer.social.map((platform) => (
                             <a key={platform.label} href={platform.href} target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center cursor-pointer hover:bg-white/20 transition-colors">
                                 {platform.label == 'Instagram' && <Image src='/svg/instagram.svg' width={30} height={30} quality={90} alt='instagram' />}
-                                {platform.label == 'LinkedIn' && <Image src='/png/linkedin.png' width={30} height={30} quality={90} alt='linkedin' />}
+                                {platform.label == 'LinkedIn' && <Image src='/png/linkedin.png' width={24} height={24} quality={90} alt='linkedin' />}
                             </a>
                         ))}
                     </div>

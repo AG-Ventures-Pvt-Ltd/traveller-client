@@ -79,9 +79,16 @@ export default function Page() {
   });
   const [apiUrl, setApiUrl] = useState<string | null>(null);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
+  const [page, setPage] = useState(1);
+  const PAGE_SIZE = 12;
 
 
   const { isMobile } = useDevice()
+
+  // Reset to first page whenever filters change
+  useEffect(() => {
+    setPage(1);
+  }, [appliedFilters, destination, qParam]);
 
   useEffect(() => {
     const params = new URLSearchParams();
@@ -112,10 +119,12 @@ export default function Page() {
     }
 
     if (destination) params.append('destination', destination);
+    params.append('page', page.toString());
+    params.append('limit', PAGE_SIZE.toString());
 
     const queryString = params.toString();
     setApiUrl(`api/client/v1/trips/search${queryString ? `?${queryString}` : ''}`);
-  }, [appliedFilters, destination, qParam]);
+  }, [appliedFilters, destination, qParam, page]);
 
   const { data: tripsData, isLoading: tripsLoading, error } = useGetData<TripsResponse>(apiUrl || '', {
     queryKey: apiUrl ? [apiUrl] : ['trips-loading'],
@@ -203,6 +212,27 @@ export default function Page() {
               formatDate={formatDate}
               calculateDays={calculateDays}
             />}
+            {tripsData && tripsData.pagination && tripsData.pagination.totalPages > 1 && (
+              <div className='flex items-center justify-center gap-4 mt-8'>
+                <Button
+                  onClick={() => setPage((p) => Math.max(1, p - 1))}
+                  disabled={!tripsData.pagination.hasPrevPage}
+                  className='bg-neutral-900 hover:bg-neutral-800 text-white font-bold rounded-xl px-5 h-11 disabled:opacity-40 disabled:cursor-not-allowed'
+                >
+                  Previous
+                </Button>
+                <span className='text-sm font-semibold text-gray-700'>
+                  Page {tripsData.pagination.page} of {tripsData.pagination.totalPages}
+                </span>
+                <Button
+                  onClick={() => setPage((p) => p + 1)}
+                  disabled={!tripsData.pagination.hasNextPage}
+                  className='bg-neutral-900 hover:bg-neutral-800 text-white font-bold rounded-xl px-5 h-11 disabled:opacity-40 disabled:cursor-not-allowed'
+                >
+                  Next
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       </div>

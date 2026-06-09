@@ -21,13 +21,22 @@ const FilterModal: React.FC<FilterModalProps> = ({
   onApplyFilters,
 }) => {
   const [expandedSections, setExpandedSections] = useState<Set<string>>(
-    new Set(['destination', 'priceRange', 'duration', 'international'])
+    new Set(['destination', 'priceRange', 'duration', 'difficulty', 'international'])
   );
 
   const [states, setStates] = useState<string[]>([]);
   const [priceRange, setPriceRange] = useState<number>(20000);
   const [durationRange, setDurationRange] = useState<number>(14);
+  const [difficulties, setDifficulties] = useState<string[]>([]);
   const [international, setInternational] = useState<boolean>(false);
+
+  const DIFFICULTY_LEVELS = ['easy', 'moderate', 'challenging'];
+
+  const toggleDifficulty = (level: string) => {
+    setDifficulties((prev) =>
+      prev.includes(level) ? prev.filter((d) => d !== level) : [...prev, level]
+    );
+  };
 
   const toggleSection = (section: string) => {
     setExpandedSections((prev) => {
@@ -44,7 +53,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
       priceRange,
       durations: [],
       durationRange,
-      difficulties: [],
+      difficulties,
       minRating: null,
       international,
     });
@@ -56,6 +65,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
     setStates([]);
     setPriceRange(20000);
     setDurationRange(14);
+    setDifficulties([]);
     setInternational(false);
   };
 
@@ -217,6 +227,38 @@ const FilterModal: React.FC<FilterModalProps> = ({
                     style={{ left: `${((durationRange - 1) / 13) * 100}%` }}
                   />
                 </div>
+              </div>
+            )}
+          </div>
+
+          <div className="h-px bg-gray-200" />
+
+          {/* Difficulty */}
+          <div className="flex flex-col gap-3">
+            <button
+              onClick={() => toggleSection('difficulty')}
+              className="flex justify-between items-center w-full text-left"
+            >
+              <span className="text-neutral-900 text-base font-bold">Difficulty</span>
+              <ChevronDown
+                className={`w-4 h-4 text-neutral-700 transition-transform ${
+                  expandedSections.has('difficulty') ? '' : '-rotate-90'
+                }`}
+              />
+            </button>
+            {expandedSections.has('difficulty') && (
+              <div className="flex flex-col gap-3 pl-4">
+                {DIFFICULTY_LEVELS.map((level) => (
+                  <label key={level} className="flex items-center gap-3 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={difficulties.includes(level)}
+                      onChange={() => toggleDifficulty(level)}
+                      className="w-4 h-4 rounded border-gray-300 text-neutral-900 focus:ring-neutral-900"
+                    />
+                    <span className="text-neutral-700 text-sm font-medium capitalize">{level}</span>
+                  </label>
+                ))}
               </div>
             )}
           </div>
