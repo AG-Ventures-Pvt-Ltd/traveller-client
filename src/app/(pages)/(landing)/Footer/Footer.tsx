@@ -7,23 +7,24 @@ const Footer = () => {
 
     const CONTENT = {
         footer: {
-            tagline: 'Building trust in group travel.',
+            tagline:
+                'Wondrr is a travel marketplace to discover and book fixed-departure group trips from India’s top verified travel brands — treks, road trips and adventures, all in one place.',
             sections: [
                 {
                     title: 'Explore',
                     links: [
-                        { label: 'Trips', href: '/trips' },
-                        // { label: 'All Girls Trips', href: '/girls-trips' }
+                        { label: 'All Trips', href: '/trips' },
+                        { label: 'All Girls Trips', href: '/girls-trips' }
                     ]
                 },
-                // {
-                //     title: 'Company',
-                //     links: [
-                //         { label: 'About Us', href: '/about' },
-                //         { label: 'Partner With Us', href: '/partner-with-us' },
-                //         { label: 'How We Work', href: '/how-we-work' }
-                //     ]
-                // },
+                {
+                    title: 'Company',
+                    links: [
+                        { label: 'About Us', href: '/about' },
+                        { label: 'Partner With Us', href: '/partner-with-us' },
+                        { label: 'How We Work', href: '/how-we-work' }
+                    ]
+                },
                 {
                     title: 'Policies',
                     links: [

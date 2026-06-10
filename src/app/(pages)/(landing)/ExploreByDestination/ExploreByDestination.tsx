@@ -18,20 +18,17 @@ interface ExploreByDestinationProps {
   variant?: 'desktop' | 'mobile';
 }
 
-const openState = (stateCode: string) => {
-  // Opens the dedicated state page in a new browser tab (shareable URL).
-  window.open(`/explore/${stateCode}`, '_blank', 'noopener,noreferrer');
-};
-
 const StateCard: React.FC<{ state: ExploreStateItem; rank: number; compact?: boolean }> = ({
   state,
   rank,
   compact = false,
 }) => (
-  <button
-    type="button"
-    onClick={() => openState(state.stateCode)}
-    className={`group relative overflow-hidden rounded-3xl text-left shadow-sm ring-1 ring-black/5 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 ${
+  <a
+    href={`/explore/${state.stateCode}`}
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label={`Explore group trips in ${state.name}`}
+    className={`group relative block overflow-hidden rounded-3xl text-left shadow-sm ring-1 ring-black/5 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 ${
       compact ? 'h-44 w-60 flex-shrink-0' : 'h-64 w-full'
     }`}
   >
@@ -76,7 +73,7 @@ const StateCard: React.FC<{ state: ExploreStateItem; rank: number; compact?: boo
         <ArrowRight size={18} />
       </span>
     </div>
-  </button>
+  </a>
 );
 
 const SkeletonCard: React.FC<{ compact?: boolean }> = ({ compact }) => (

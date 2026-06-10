@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import Logo from '@/common/components/atoms/Logo/Logo'
+import DesktopLocationSelector from '../LandingPage/components/DesktopLocationSelector'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { User } from 'lucide-react'
@@ -44,8 +45,9 @@ const Navbar = () => {
     <>
       <div className='px-2 md:px-9 py-5 bg-[#FFF9F4] flex items-center sticky top-0 z-50'>
         <div className='flex-1 flex items-center gap-2.5'>
-          <div className='flex-1 flex flex-col items-start justify-center'>
+          <div className='flex-1 flex items-center justify-start gap-6'>
             <Logo />
+            {pathname === '/' && <DesktopLocationSelector />}
           </div>
           <div className='flex-1 flex justify-end items-center'>
             <div className='flex items-center gap-3 md:gap-12'>

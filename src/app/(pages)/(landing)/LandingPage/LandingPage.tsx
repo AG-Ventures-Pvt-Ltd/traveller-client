@@ -88,8 +88,7 @@ const LandingPage = () => {
 
           {/* Content */}
           <div className="relative z-10 flex flex-col items-center w-full">
-            <h2 className='text-5xl font-bold'>What&apos;s your next escape,</h2>
-            <h2 className='text-5xl font-bold'>{status == 'authenticated' ? userData.user?.fullName : 'Traveller'} ?</h2>
+            <h1 className='text-5xl font-bold text-center'>What&apos;s your next escape,<br />{status == 'authenticated' ? userData.user?.fullName : 'Traveller'} ?</h1>
             <h4 className='pt-4'>Safe group adventures for solo travelers who want to travel with</h4>
             <h4>like-minded strangers.</h4>
             <div className="relative mt-12 w-[60%]">

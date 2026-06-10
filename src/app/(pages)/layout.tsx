@@ -7,16 +7,20 @@ import Navbar from '../(pages)/(landing)/Navbar/Navbar'
 import StickyNavigation from '@/common/components/composites/StickyNavigation';
 import type { Metadata } from 'next';
 import Image from "next/image";
+import { JsonLd, organizationSchema, websiteSchema } from '@/common/seo/JsonLd';
 
 interface RootLayoutProps {
   children: React.ReactNode;
 }
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://wondrr.in'),
   title: "Group Trips from India's Top Travel Brands | Wondrr",
   description:
     "Browse and book group trips from India's top verified travel brands — all on one platform. Fixed departures across the best destinations, zero hassle.",
-
+  alternates: {
+    canonical: '/',
+  },
   openGraph: {
     title: "Group Trips from India's Top Travel Brands | Wondrr",
     description:
@@ -25,14 +29,21 @@ export const metadata: Metadata = {
     siteName: "Wondrr",
     images: [
       {
-        url: `https://wondrr.in/png/favicon.png`, // absolute URL
-        width: 1200,
-        height: 630,
-        alt: "Wondrr",
+        url: `https://wondrr.in/assets/png/banner.png`, // absolute URL — real social card
+        width: 3944,
+        height: 1584,
+        alt: "Wondrr — group trips from India's top travel brands",
       },
     ],
     locale: "en_IN",
     type: "website",
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: "Group Trips from India's Top Travel Brands | Wondrr",
+    description:
+      "Browse and book group trips from India's top verified travel brands — all on one platform.",
+    images: [`https://wondrr.in/assets/png/banner.png`],
   },
 }
 
@@ -98,6 +109,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
           </>
         }
         <link rel="icon" href="/png/favicon.png" />
+        <JsonLd data={[organizationSchema, websiteSchema]} />
       </head>
       <body>
         <Providers>

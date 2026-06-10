@@ -1,14 +1,14 @@
 'use client';
 
-import { QueryClient, QueryCache, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClientProvider } from '@tanstack/react-query';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import { logError } from '@/common/utils/logError';
 import { SessionProvider } from 'next-auth/react';
 import { ToastProvider, useToast } from '@/common/utils/ToastContext';
 import { setToastHandler } from '@/common/utils/notify';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Analytics } from "@vercel/analytics/next"
 import { DeviceProvider } from "@/common/context/DeviceContext";
+import { getQueryClient } from '@/services/getQueryClient';
 
 
 
@@ -23,7 +23,7 @@ const theme = createTheme({
     }
   },
   typography: {
-    fontFamily: 'Satoshi, sans-serif',
+    fontFamily: 'Acme, sans-serif',
   },
   components: {
     MuiButton: {
@@ -38,18 +38,6 @@ const theme = createTheme({
   },
 });
 
-const queryClient = new QueryClient({
-  queryCache: new QueryCache({
-    onError: (error, query) => {
-      logError({
-        error: error?.message || error,
-        location: 'React Query',
-        when: `fetching data for query key: ${query.queryKey}`,
-      });
-    }
-  })
-});
-
 function ToastInitializer({ children }: { children: React.ReactNode }) {
   const { addToast } = useToast();
 
@@ -62,6 +50,8 @@ function ToastInitializer({ children }: { children: React.ReactNode }) {
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const isProduction = process.env.NEXT_PUBLIC_ENV === 'PROD';
+  // Stable per-environment client: new each server request, singleton in browser.
+  const [queryClient] = useState(getQueryClient);
 
   return (
     <ThemeProvider theme={theme}>
