@@ -11,6 +11,7 @@ import { API_ENDPOINTS } from '@/common/constants/apiEndpoints';
 import DesktopStatsBanner from './components/DesktopStatsBanner';
 import DesktopCarouselSection from './components/DesktopCarouselSection';
 import DesktopTrustSection from './components/DesktopTrustSection';
+import ExploreByDestination from '../ExploreByDestination/ExploreByDestination';
 
 const LandingPage = () => {
 
@@ -161,6 +162,11 @@ const LandingPage = () => {
           ))}
         </div>
       )}
+
+      {/* Explore by Destination */}
+      <div className="w-full px-24 mt-2 mb-12">
+        <ExploreByDestination variant="desktop" />
+      </div>
 
       <DesktopTrustSection />
 

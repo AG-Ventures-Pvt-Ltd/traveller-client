@@ -6,6 +6,7 @@
     "dev": "PORT=8005 next dev --turbopack",
     "build": "next build",
     "start": "next start",
+    "doctor": "react-doctor",
     "lint": "eslint",
     "prepare": "husky"
   },
@@ -43,6 +44,7 @@
     "eslint": "^9",
     "eslint-config-next": "15.5.2",
     "husky": "^9.1.7",
+    "react-doctor": "^0.5.0",
     "tailwindcss": "^4",
     "typescript": "^5"
   }
