@@ -24,6 +24,7 @@ jobs:
   deploy-client:
     name: traveller-client → Vercel
     runs-on: ubuntu-latest
+    environment: production
     if: ${{ inputs.deploy_client }}
     steps:
       - name: Trigger Vercel deploy
@@ -34,6 +35,7 @@ jobs:
   deploy-admin:
     name: traveller-admin → Vercel
     runs-on: ubuntu-latest
+    environment: production
     if: ${{ inputs.deploy_admin }}
     steps:
       - name: Trigger Vercel deploy
@@ -44,6 +46,7 @@ jobs:
   deploy-wondrr:
     name: wondrr-host-client → Vercel
     runs-on: ubuntu-latest
+    environment: production
     if: ${{ inputs.deploy_wondrr }}
     steps:
       - name: Trigger Vercel deploy
@@ -54,6 +57,7 @@ jobs:
   deploy-server:
     name: traveller-server → EC2
     runs-on: ubuntu-latest
+    environment: production
     if: ${{ inputs.deploy_server }}
     steps:
       - name: SSH deploy
