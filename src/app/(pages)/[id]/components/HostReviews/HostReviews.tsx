@@ -77,6 +77,7 @@ export function HostReviews({ hostUsername }: HostReviewsProps) {
   );
 
   const [current, setCurrent] = useState(0);
+  const [containerWidth, setContainerWidth] = useState(0);
   const currentRef = useRef(0);
   const totalRef = useRef(0);
   const trackX = useMotionValue(0);
@@ -91,14 +92,32 @@ export function HostReviews({ hostUsername }: HostReviewsProps) {
       const middleIndex = Math.floor(data.reviews.length / 2);
       setCurrent(middleIndex);
       currentRef.current = middleIndex;
-      // Initialize track position to show middle card
-      const containerWidth = containerRef.current?.offsetWidth ?? 340;
-      const cardWidth = Math.floor((containerWidth - 2 * CARD_GAP) / (1 + 2 * PEEK));
-      const step = cardWidth + CARD_GAP;
-      trackX.set(-middleIndex * step);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
+
+  // Measure the real container width (re-runs once the carousel mounts after
+  // data loads). Without this, render falls back to 340px while the effect that
+  // positions the track used the real width — the mismatch made the desktop
+  // carousel position cards off-screen ("collapsing completely").
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const update = () => setContainerWidth(el.offsetWidth);
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [data]);
+
+  // Keep the track centred on the active card whenever the width changes.
+  useEffect(() => {
+    if (!data || data.reviews.length === 0 || !containerWidth) return;
+    const cw = Math.floor((containerWidth - 2 * CARD_GAP) / (1 + 2 * PEEK));
+    const st = cw + CARD_GAP;
+    trackX.set(-currentRef.current * st);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [containerWidth, data]);
 
   if (isLoading) {
     return <div className="flex items-center justify-center py-8">Loading reviews...</div>;
@@ -127,8 +146,8 @@ export function HostReviews({ hostUsername }: HostReviewsProps) {
   const total = reviews.length;
   totalRef.current = total;
 
-  const containerWidth = containerRef.current?.offsetWidth ?? 340;
-  const cardWidth = Math.floor((containerWidth - 2 * CARD_GAP) / (1 + 2 * PEEK));
+  const measuredWidth = containerWidth || containerRef.current?.offsetWidth || 340;
+  const cardWidth = Math.floor((measuredWidth - 2 * CARD_GAP) / (1 + 2 * PEEK));
   const step = cardWidth + CARD_GAP;
   const peekPx = Math.floor(cardWidth * PEEK);
 

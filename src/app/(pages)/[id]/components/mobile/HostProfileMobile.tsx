@@ -10,6 +10,7 @@ import { HostReviews } from '../HostReviews/HostReviews'
 import SlidingCarouselSection from '@/app/(pages)/(landing)/HomePage/components/SlidingCarouselSection'
 import { Trip } from '@/app/(pages)/(landing)/HomePage/types'
 import { ArrowRight } from '@phosphor-icons/react'
+import AboutHost from '../AboutHost'
 
 interface Pagination {
   total: number
@@ -79,7 +80,7 @@ const HostProfileMobile = () => {
       )}
 
       {pastTrips.length > 0 && (
-        <div className="mt-6 pb-8">
+        <div className="mt-6">
           <SlidingCarouselSection
             title="Past Trips"
             trips={pastTrips}
@@ -95,6 +96,10 @@ const HostProfileMobile = () => {
           )}
         </div>
       )}
+
+      <div className="px-4 pt-10 pb-10">
+        <AboutHost />
+      </div>
     </div>
   )
 }
