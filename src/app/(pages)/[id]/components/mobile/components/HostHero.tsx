@@ -65,9 +65,10 @@ const HostHero = () => {
                 {/* Name row with Wondrr Verified on the right */}
                 <div className="flex items-center justify-between">
                     <div className="flex flex-col gap-1">
-                        <h1 className="text-xl font-semibold text-black tracking-tight leading-tight">
+                        {/* Visual name only — canonical H1 is server-rendered in the page layout. */}
+                        <p className="text-xl font-semibold text-black tracking-tight leading-tight">
                             {fetchedHost?.fullName}
-                        </h1>
+                        </p>
                         <p className="text-[12px] font-medium">
                             @{fetchedHost?.username}
                         </p>

@@ -1,14 +1,13 @@
 import { Metadata } from "next";
-import { notFound } from "next/navigation";
 import { cache } from "react";
 import { getServerData } from "@/services/serverApi";
-import { JsonLd } from "@/common/seo/JsonLd";
 
 interface HostMeta {
     fullName: string;
     bio?: string;
     website?: string;
-    totalTrips : number;
+    totalTrips: number;
+    avatar?: string;
 }
 
 interface LayoutProps {
@@ -16,15 +15,17 @@ interface LayoutProps {
     params: Promise<{ id: string }>;
 }
 
-// Fetch host metadata; returns null when the slug is not a real host so the
-// route can 404 instead of soft-200ing junk slugs (e.g. /llms.txt, /hdscjhdsch).
-const fetchHostMeta = cache(async (id: string): Promise<HostMeta | null> => {
+// Deduped per-request: generateMetadata + Layout share one fetch.
+const getHostMeta = cache(async (id: string): Promise<HostMeta | null> => {
     try {
         return await getServerData<HostMeta>(`/api/client/v1/user/host/meta/${id}`);
     } catch {
         return null;
     }
 });
+
+const resolveAvatar = (avatar?: string) =>
+    avatar ? `${process.env.NEXT_PUBLIC_CLOUDFRONT_URL}${avatar}` : undefined;
 
 export async function generateMetadata({
     params,
@@ -34,51 +35,57 @@ export async function generateMetadata({
 
     const { id } = await params;
 
-    const meta = await fetchHostMeta(id);
+    const meta = await getHostMeta(id);
+    const fullName = meta?.fullName || id;
+    const totalTrips = meta?.totalTrips;
+    const avatar = resolveAvatar(meta?.avatar);
 
-    // 404 unknown host slugs here (in generateMetadata) so the status is set
-    // before the response shell streams — calling notFound() during render
-    // would otherwise leave a soft 200.
-    if (!meta || !meta.fullName) {
-        notFound();
-    }
-
-    const fullName = meta.fullName;
-    const totalTrips = meta.totalTrips;
-
-    const title = `${fullName} - Verified Trips & Adventures | Wondrr`;
+    const title = `${fullName} - Verified Trips | Wondrr`;
     const generatedDescription = `${fullName} is a verified travel partner on Wondrr${totalTrips ? ` with ${totalTrips}+ trips` : ''} across India. Browse and book directly.`;
+    const url = `https://wondrr.in/${id}`;
 
     return {
         title,
-        description : generatedDescription,
+        description: generatedDescription,
         openGraph: {
+            type: 'profile',
+            siteName: 'Wondrr',
+            url,
             title,
-            description : generatedDescription,
+            description: generatedDescription,
+            ...(avatar && {
+                images: [{ url: avatar, alt: fullName, width: 1200, height: 630 }],
+            }),
+        },
+        twitter: {
+            card: 'summary_large_image',
+            title,
+            description: generatedDescription,
+            ...(avatar && { images: [avatar] }),
         },
         alternates: {
-            canonical: `https://wondrr.in/${id}`,
+            canonical: url,
         },
     };
 }
 
 export default async function Layout({ children, params }: LayoutProps) {
     const { id } = await params;
+    const meta = await getHostMeta(id);
 
-    const meta = await fetchHostMeta(id);
+    const fullName = meta?.fullName || id;
+    const avatar = resolveAvatar(meta?.avatar);
+    const totalTrips = meta?.totalTrips;
+    const ssrDescription = `${fullName} is a verified travel partner on Wondrr${totalTrips ? ` with ${totalTrips}+ trips` : ''} across India. Browse and book directly.`;
 
-    // Unknown slug → real 404 (no more soft-200 partner pages for junk slugs).
-    if (!meta || !meta.fullName) {
-        notFound();
-    }
-
-    const hostSchema = {
+    const jsonLd = {
         "@context": "https://schema.org",
         "@type": "TravelAgency",
-        "name": meta.fullName || id,
+        "name": fullName,
         "url": `https://wondrr.in/${id}`,
-        ...(meta.bio && { "description": meta.bio }),
-        "sameAs": [meta.website].filter(Boolean),
+        ...(meta?.bio && { "description": meta.bio }),
+        ...(avatar && { "image": avatar }),
+        "sameAs": [meta?.website].filter(Boolean),
         "address": {
             "@type": "PostalAddress",
             "addressCountry": "IN",
@@ -87,7 +94,15 @@ export default async function Layout({ children, params }: LayoutProps) {
 
     return (
         <>
-            <JsonLd data={hostSchema} />
+            <script
+                type="application/ld+json"
+                // Escape `<` so user-controlled fields (bio/name) can't break out of the script tag (XSS via `</script>`).
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
+            />
+            {/* Server-rendered crawlable heading/intro. The profile UI is client-fetched,
+                so this guarantees raw HTML carries the H1 + summary for non-JS crawlers (AI bots). */}
+            <h1 className="sr-only">{fullName}</h1>
+            <p className="sr-only">{ssrDescription}</p>
             {children}
         </>
     );

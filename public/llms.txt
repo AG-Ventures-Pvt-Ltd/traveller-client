@@ -1,13 +1,13 @@
 # Wondrr
 
-> Wondrr is a travel marketplace where solo travellers and groups discover and book
+> Wondrr is a travel marketplace where solo travellers can discover and book
 > fixed-departure group trips from India's top verified travel brands — all on one
 > platform. Browse curated treks, road trips, and adventures across India, compare
-> dates and prices, and book directly with vetted hosts.
+> dates and prices, and book directly with vetted hosts 
+> without having to look at between 10 different websites 
 
 Wondrr (https://wondrr.in) operates in India (en-IN). It aggregates group trips from
-independent, verified travel hosts and lets travellers book safe group adventures with
-like-minded people.
+independent, verified travel hosts, travel brands and lets travellers book safe group adventures with like-minded people.
 
 ## Key pages
 
