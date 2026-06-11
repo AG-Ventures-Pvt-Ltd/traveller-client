@@ -1,0 +1,31 @@
+# Wondrr
+
+> Wondrr is a travel marketplace where solo travellers can discover and book
+> fixed-departure group trips from India's top verified travel brands — all on one
+> platform. Browse curated treks, road trips, and adventures across India, compare
+> dates and prices, and book directly with vetted hosts 
+> without having to look at between 10 different websites 
+
+Wondrr (https://wondrr.in) operates in India (en-IN). It aggregates group trips from
+independent, verified travel hosts, travel brands and lets travellers book safe group adventures with like-minded people.
+
+## Key pages
+
+- [Home](https://wondrr.in/): Discover group trips and fixed departures.
+- [All trips](https://wondrr.in/trips): Browse every available group trip.
+- [About Wondrr](https://wondrr.in/about): Who we are and how the marketplace works.
+- [How we work](https://wondrr.in/how-we-work): How booking and verified hosts work.
+- [Partner with us](https://wondrr.in/partner-with-us): For travel brands and hosts.
+- [Booking policy](https://wondrr.in/booking-policy): Terms, cancellation, and refunds.
+
+## Content
+
+- Trip pages live at https://wondrr.in/trip/<slug> and include itinerary, inclusions,
+  dates, prices (INR), host details, and traveller reviews.
+- Verified host profiles live at https://wondrr.in/<host-username>.
+- The full URL inventory is in the sitemap: https://wondrr.in/sitemap.xml
+
+## Notes
+
+- All hosts on Wondrr are verified travel brands.
+- Prices are in Indian Rupees (INR). Bookings are made directly on the platform.

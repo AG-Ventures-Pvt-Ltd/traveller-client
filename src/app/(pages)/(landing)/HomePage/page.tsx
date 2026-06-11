@@ -13,6 +13,7 @@ import { useGetData } from '@/services/useGetData';
 import { API_ENDPOINTS } from '@/common/constants/apiEndpoints';
 import { CitiesResponse } from './components/LocationSelector';
 import StatisticsBanner from './components/StatisticsBanner';
+import ExploreByDestination from '../ExploreByDestination/ExploreByDestination';
 
 const HomePage = () => {
     const handleSearch = (value: string) => { };  // eslint-disable-line @typescript-eslint/no-unused-vars
@@ -116,6 +117,9 @@ const HomePage = () => {
                             {(travelerStatsData?.count ?? 0) > 0 && <StatisticsBanner
                                 message={`${travelerStatsData!.count}+ Travellers booked with us last month`}
                             />}
+                        </div>
+                        <div className='px-4'>
+                            <ExploreByDestination variant="mobile" />
                         </div>
                         <div className='flex flex-col gap-8'>
                             {sortedCarousels.map((carousel, index) => (

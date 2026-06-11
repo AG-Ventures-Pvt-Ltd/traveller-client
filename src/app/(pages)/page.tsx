@@ -1,62 +1,45 @@
-'use client';
+import { headers } from 'next/headers';
+import { dehydrate, HydrationBoundary, QueryClient } from '@tanstack/react-query';
+import { getServerData } from '@/services/serverApi';
+import { API_ENDPOINTS } from '@/common/constants/apiEndpoints';
+import LandingClient from './(landing)/LandingClient';
 
-import { useState, useEffect } from 'react';
-import dynamic from 'next/dynamic';
-import Loader from '@/common/ui/Loader/Loader';
-import { useLocation } from '@/common/hooks/useLocation';
-import LandingSkeleton from './(landing)/LandingPage/components/LandingSkeleton';
-const LandingPage = dynamic(() => import('./(landing)/LandingPage/LandingPage'))
+// SSR fresh on every request so trip cards, destinations, copy and internal links
+// are present in the initial HTML (fixes the CSR empty-shell / slow-LCP problem).
+export const dynamic = 'force-dynamic';
 
-const HomePage = dynamic(() => import('./(landing)/HomePage/page'), { ssr: false });
-
-
-export const Landing = () => {
-
-    const [isMobile, setIsMobile] = useState(false);
-    const [isHydrated, setIsHydrated] = useState(false);
-    const { requestLocationPermission } = useLocation();
-
-    useEffect(() => {
-        setIsHydrated(true);
-
-        const checkMobile = () => {
-            setIsMobile(window.innerWidth < 768);
-        };
-
-        checkMobile();
-        window.addEventListener('resize', checkMobile);
-        return () => window.removeEventListener('resize', checkMobile);
-    }, []);
-
-    useEffect(() => {
-        if (!isHydrated) return;
-
-        navigator.permissions.query({ name: 'geolocation' }).then((result) => {
-            if (result.state === 'granted') {
-                requestLocationPermission().catch(() => { });
-            } else if (result.state === 'prompt') {
-                const timer = setTimeout(() => {
-                    requestLocationPermission().catch(() => { });
-                }, 15000);
-                return () => clearTimeout(timer);
-            }
-        });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isHydrated]);
-
-
-    if (!isHydrated) {
-        // Desktop gets a layout-shaped skeleton; mobile keeps the generic loader.
-        const isDesktop = typeof window !== 'undefined' && window.innerWidth >= 768;
-        return isDesktop ? <LandingSkeleton /> : <Loader />
-    }
-
-    // Show HomePage on mobile devices only
-    if (isMobile) {
-        return <HomePage />
-    }
-
-    return <LandingPage />
+async function prefetch(qc: QueryClient, queryKey: unknown[], url: string) {
+  try {
+    await qc.prefetchQuery({ queryKey, queryFn: () => getServerData(url) });
+  } catch {
+    // A single API hiccup shouldn't blank the homepage — the client will refetch.
+  }
 }
 
-export default Landing
+// Phones (incl. mobile-first Googlebot) report a UA with one of these tokens.
+// iPads/tablets report desktop-like UAs and are treated as desktop (≥768px).
+const MOBILE_UA = /Android.+Mobile|iPhone|iPod|Windows Phone|BlackBerry|Opera Mini|IEMobile|Mobile.+Firefox|Firefox.+Mobile/i;
+
+export default async function Page() {
+  const ua = (await headers()).get('user-agent') || '';
+  const initialIsMobile = MOBILE_UA.test(ua);
+
+  const qc = new QueryClient();
+  const L = API_ENDPOINTS.LANDING_PAGE;
+
+  // Query keys MUST match the client hooks (useFeaturedTrips, useSignupBonus,
+  // useGetData) so HydrationBoundary feeds the SSR'd components their data.
+  await Promise.all([
+    prefetch(qc, ['featured-trips'], L.FEATURED_TRIPS),
+    prefetch(qc, [L.CITIES], L.CITIES),
+    prefetch(qc, [L.EXPLORE_STATES], L.EXPLORE_STATES),
+    prefetch(qc, ['signup-bonus'], L.SIGNUP_BONUS),
+    prefetch(qc, [L.TRAVELER_STATS], L.TRAVELER_STATS),
+  ]);
+
+  return (
+    <HydrationBoundary state={dehydrate(qc)}>
+      <LandingClient initialIsMobile={initialIsMobile} />
+    </HydrationBoundary>
+  );
+}

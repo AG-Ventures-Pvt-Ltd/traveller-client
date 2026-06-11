@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { HeartIcon, SealCheckIcon, CurrencyInrIcon, StarIcon } from '@phosphor-icons/react';
 import MyImage from '@/common/ui/Image';
 import { CarouselCardProps } from '../../HomePage/types';
@@ -20,8 +20,8 @@ const DesktopCarouselCard: React.FC<CarouselCardProps> = ({
   tripSlug,
   isBookmarked: initialIsBookmarked = false,
 }) => {
-  const router = useRouter();
   const slug = tripSlug || String(id);
+  const href = `/trip/${tripSlug || `${title.toLowerCase().replace(/\s+/g, '-')}-${id}`}`;
   const { isBookmarked, toggle } = useBookMarking(slug, initialIsBookmarked);
 
   const bgColor =
@@ -33,15 +33,10 @@ const DesktopCarouselCard: React.FC<CarouselCardProps> = ({
     colorScheme === 'green'  ? 'border-[#E2F4A6]' :
                                'border-[#EEA0FF]';
 
-  const handleClick = () => {
-    const cardSlug = tripSlug || `${title.toLowerCase().replace(/\s+/g, '-')}-${id}`;
-    router.push(`/trip/${cardSlug}`);
-    onClick?.();
-  };
-
   return (
-    <div
-      onClick={handleClick}
+    <Link
+      href={href}
+      onClick={() => onClick?.()}
       className={`w-full h-full ${bgColor} rounded-3xl overflow-hidden border-[10px] ${borderColor} cursor-pointer hover:shadow-xl transition-all duration-200 hover:-translate-y-0.5 flex flex-col`}
     >
       {/* Image */}
@@ -50,7 +45,7 @@ const DesktopCarouselCard: React.FC<CarouselCardProps> = ({
 
         {/* Bookmark */}
         <button
-          onClick={(e) => { e.stopPropagation(); toggle(e); }}
+          onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggle(e); }}
           className="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/60 hover:bg-black flex items-center justify-center z-10 transition-colors"
         >
           <HeartIcon
@@ -95,7 +90,7 @@ const DesktopCarouselCard: React.FC<CarouselCardProps> = ({
           </div>
         </div>
       </div>
-    </div>
+    </Link>
   );
 };
 

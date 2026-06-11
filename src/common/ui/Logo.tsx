@@ -9,7 +9,7 @@ const Logo: React.FC<LogoProps> = ({ className = '' }) => {
   const router = useRouter()
 
     return (
-      <h1 className={`text-3xl font-extrabold cursor-pointer p-3 md:p-6 ${className}`} onClick={() => router.push('/dashboard')}>Wondrr</h1>
+      <span role="link" tabIndex={0} aria-label="Wondrr home" className={`text-3xl font-extrabold cursor-pointer p-3 md:p-6 ${className}`} onClick={() => router.push('/dashboard')}>Wondrr</span>
     )
   }
 

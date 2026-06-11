@@ -119,6 +119,12 @@ export interface TripMetadata {
   location: string;
   hostName: string;
   image: string;
+  // Optional enrichment fields — included in schema only when the backend sends them.
+  priceFrom?: number;
+  priceCurrency?: string;
+  rating?: number;
+  reviewCount?: number;
+  hostUsername?: string;
 }
 
 export interface TripImageGalleryProps {

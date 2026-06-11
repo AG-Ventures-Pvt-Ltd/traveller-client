@@ -5,7 +5,7 @@ const Logo = ({ className = '' }) => {
   const router = useRouter()
 
   return (
-    <h1 className={`text-3xl font-extrabold cursor-pointer ${className}`} onClick={() => router.push('/')}>Wondrr</h1>
+    <span role="link" tabIndex={0} aria-label="Wondrr home" className={`text-3xl font-extrabold cursor-pointer ${className}`} onClick={() => router.push('/')}>Wondrr</span>
   )
 }
 
