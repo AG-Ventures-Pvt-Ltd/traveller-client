@@ -6,6 +6,7 @@ interface HostMeta {
     bio?: string;
     website?: string;
     totalTrips : number;
+    avatar?: string;
 }
 
 interface LayoutProps {
@@ -25,13 +26,15 @@ export async function generateMetadata({
     let bio: string | undefined;
     let website: string | undefined;
     let totalTrips: number | undefined;
-    
+    let avatar: string | undefined;
+
     try {
         const meta = await getServerData<HostMeta>(`/api/client/v1/user/host/meta/${id}`);
         fullName = meta.fullName || id;
         bio = meta.bio;
         website = meta.website;
         totalTrips = meta.totalTrips;
+        avatar = meta.avatar ?? `${process.env.NEXT_PUBLIC_CLOUDFRONT_URL}${meta.avatar}`;
     } catch {
         // fallback to id-based defaults
     }
@@ -45,7 +48,18 @@ export async function generateMetadata({
         openGraph: {
             title,
             description : generatedDescription,
+            ...(avatar && {
+                images: [{ url: avatar, alt: fullName }],
+            }),
         },
+        ...(avatar && {
+            twitter: {
+                card: 'summary_large_image',
+                title,
+                description: generatedDescription,
+                images: [avatar],
+            },
+        }),
         alternates: {
             canonical: `https://wondrr.in/${id}`,
         },
