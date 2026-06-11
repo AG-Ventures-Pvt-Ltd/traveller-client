@@ -14,6 +14,7 @@ import { API_ENDPOINTS } from '@/common/constants/apiEndpoints';
 import { CitiesResponse } from './components/LocationSelector';
 import StatisticsBanner from './components/StatisticsBanner';
 import ExploreByDestination from '../ExploreByDestination/ExploreByDestination';
+import MobileTrustSection from './components/MobileTrustSection';
 
 const HomePage = () => {
     const handleSearch = (value: string) => { };  // eslint-disable-line @typescript-eslint/no-unused-vars
@@ -132,6 +133,7 @@ const HomePage = () => {
                                 />
                             ))}
                         </div>
+                        <MobileTrustSection />
                     </div>
                 </div>
             )}

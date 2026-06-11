@@ -66,13 +66,11 @@ const LandingPage = () => {
   const showStatsBanner = (travelerStatsData?.count ?? 0) > 0;
 
   return (
-    <main className="flex flex-col items-center overflow-hidden bg-[#FCF3EB]">
+    <main className="flex flex-col items-center overflow-hidden bg-[#FFF9F4]">
 
-      {/* Hero section */}
       <div className='w-full'>
         <div className='bg-[#D0EF65] mx-24 rounded-2xl flex flex-col items-center py-16 my-2 relative overflow-hidden'>
 
-          {/* Travel decorative background elements */}
           <Plane        className="absolute top-5 left-8   w-16 h-16 text-neutral-800 opacity-[0.09] rotate-[20deg]  pointer-events-none" />
           <Compass      className="absolute top-4 right-10  w-14 h-14 text-neutral-800 opacity-[0.09] -rotate-6       pointer-events-none" />
           <MapPin       className="absolute bottom-6 left-10 w-11 h-11 text-neutral-800 opacity-[0.09]                pointer-events-none" />

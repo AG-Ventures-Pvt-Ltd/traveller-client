@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
-import { MapPinAreaIcon, CaretDownIcon } from '@phosphor-icons/react';
+import { MapPinIcon, CaretDownIcon, CheckIcon } from '@phosphor-icons/react';
 import { useLocation } from '@/common/hooks/useLocation';
 import { useGetData } from '@/services/useGetData';
 import { API_ENDPOINTS } from '@/common/constants/apiEndpoints';
@@ -25,12 +25,10 @@ const DesktopLocationSelector: React.FC = () => {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
-  // Default to Delhi when geolocation is unavailable.
   useEffect(() => {
     if (!locationDetails && !isLoading) setLocationDetails(DELHI_DEFAULT);
   }, [locationDetails, setLocationDetails, isLoading]);
 
-  // Close the dropdown when clicking outside.
   useEffect(() => {
     if (!open) return;
     const onClick = (e: MouseEvent) => {
@@ -42,99 +40,106 @@ const DesktopLocationSelector: React.FC = () => {
 
   const displayCity = locationDetails?.city || DELHI_DEFAULT.city;
   const displayState = locationDetails?.state || DELHI_DEFAULT.state;
-  const displayAddress = locationDetails?.address || DELHI_DEFAULT.address;
-
   const cityList = cities?.cities ?? [];
 
+  if (isLoading) {
+    return <div className="h-9 w-32 animate-pulse rounded-full bg-neutral-200" />;
+  }
+
   return (
-    <div ref={ref} className="relative inline-flex items-center">
-      {isLoading ? (
-        <div className="h-10 w-36 animate-pulse rounded-full bg-neutral-200" />
-      ) : (
-        <button
-          onClick={() => setOpen((v) => !v)}
-          aria-expanded={open}
-          aria-haspopup="listbox"
-          aria-label={`Trips in ${displayCity}. Change location`}
-          className="flex items-center gap-2 rounded-full border border-neutral-200 bg-white px-3.5 py-2 transition-colors hover:border-neutral-400"
-        >
-          <MapPinAreaIcon size={20} weight="fill" className="text-[#448AFF] flex-shrink-0" />
-          <span className="flex flex-col items-start leading-tight">
-            <span className="text-[10px] font-medium uppercase tracking-wide text-neutral-400">Trips in</span>
-            <span className="text-sm font-bold text-neutral-900">{displayCity}</span>
+    <div ref={ref} className="relative">
+      {/* ── Trigger ── */}
+      <button
+        onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
+        aria-haspopup="listbox"
+        aria-label={`Trips near ${displayCity}. Change location`}
+        className="group flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors"
+      >
+        <MapPinIcon size={24} weight="fill" className="text-[#1B4332] shrink-0" />
+        <span className="flex flex-col items-start leading-none -gap-2">
+          <span className="text-[10px] font-semibold uppercase tracking-[0.1em] text-neutral-600">
+            Trips from
           </span>
-          <CaretDownIcon
-            size={16}
-            weight="bold"
-            className={`text-neutral-500 transition-transform duration-300 ${open ? 'rotate-180' : ''}`}
-          />
-        </button>
-      )}
-
-      {open && !isLoading && (
+          <span className="font-bold text-base text-neutral-900">{displayCity}</span>
+        </span>
+        <CaretDownIcon
+          size={13}
+          weight="bold"
+          className={`text-neutral-700 transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
+        />
+      </button>
+      {open && (
         <div
-          className="absolute left-0 top-full z-50 mt-3 w-72 overflow-hidden rounded-xl bg-white shadow-lg"
-          style={{ border: '1px solid #448AFF' }}
+          className="absolute left-0 top-full z-50 mt-2 w-64 overflow-hidden rounded-2xl bg-white shadow-[0_8px_30px_-6px_rgba(0,0,0,0.18)] ring-1 ring-neutral-100"
           role="listbox"
+          aria-label="Select city"
         >
-          {cityLoading ? (
-            <div className="p-4 text-center text-sm text-black">Loading cities...</div>
-          ) : (
-            <div className="max-h-96 overflow-y-auto">
-              {locationDetails && (
-                <>
-                  <div className="border-b border-gray-100 px-4 py-3" style={{ backgroundColor: '#f0f4ff' }}>
-                    <div className="mb-1 flex items-center gap-2">
-                      <span className="h-2 w-2 rounded-full" style={{ backgroundColor: '#448AFF' }} />
-                      <span className="text-xs font-semibold uppercase tracking-wide" style={{ color: '#448AFF' }}>
-                        Your Current Location
-                      </span>
-                    </div>
-                    <p className="text-sm font-bold text-black">
-                      {displayCity}, {displayState}
-                    </p>
-                    <p className="mt-1 text-xs text-black opacity-60">{displayAddress}</p>
-                  </div>
-                  <div className="px-4 py-2">
-                    <p className="text-xs font-semibold uppercase tracking-wide opacity-40" style={{ color: '#448AFF' }}>
-                      Other Locations
-                    </p>
-                  </div>
-                </>
+          {/* Current location row */}
+          <div className="border-b border-neutral-100 bg-[#F4FBF7] px-4 py-3">
+            <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#1B4332]/60">
+              Your area
+            </p>
+            <p className="mt-0.5 text-sm font-bold text-neutral-900">
+              {displayCity}
+              {displayState && displayState !== displayCity && (
+                <span className="ml-1 font-medium text-neutral-400">{displayState}</span>
               )}
+            </p>
+          </div>
 
-              {cityList.length > 0 ? (
-                cityList.map((city, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => {
-                      setCityLocation(city.latitude, city.longitude, {
-                        city: city.city,
-                        state: city.state,
-                        country: city.country,
-                        address: `${city.city}, ${city.state}`,
-                        postalCode: '',
-                      });
-                      setOpen(false);
-                    }}
-                    className="w-full border-b px-4 py-3 text-left transition-all last:border-b-0"
-                    style={{ borderColor: '#f0f0f0', backgroundColor: 'transparent' }}
-                    onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#FFF9E6')}
-                    onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
-                  >
-                    <p className="text-sm font-semibold text-black">
-                      {city.city}, {city.state}
-                    </p>
-                    <p className="mt-0.5 text-xs text-black opacity-50">{city.country}</p>
-                  </button>
-                ))
-              ) : (
-                <div className="px-4 py-6 text-center text-sm text-black opacity-40">
-                  No other locations available
-                </div>
-              )}
-            </div>
-          )}
+          {/* City list */}
+          <div className="py-1.5 max-h-72 overflow-y-auto">
+            {cityLoading ? (
+              <div className="space-y-1 px-3 py-2">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="h-9 animate-pulse rounded-xl bg-neutral-100" />
+                ))}
+              </div>
+            ) : cityList.length > 0 ? (
+              <>
+                <p className="px-4 pt-1.5 pb-1 text-[10px] font-bold uppercase tracking-[0.18em] text-neutral-400">
+                  Explore elsewhere
+                </p>
+                {cityList.map((city, idx) => {
+                  const isActive =
+                    city.city === displayCity && city.state === displayState;
+                  return (
+                    <button
+                      key={idx}
+                      role="option"
+                      aria-selected={isActive}
+                      onClick={() => {
+                        setCityLocation(city.latitude, city.longitude, {
+                          city: city.city,
+                          state: city.state,
+                          country: city.country,
+                          address: `${city.city}, ${city.state}`,
+                          postalCode: '',
+                        });
+                        setOpen(false);
+                      }}
+                      className={`flex w-full items-center justify-between px-4 py-2.5 text-left transition-colors hover:bg-[#F4FBF7] ${
+                        isActive ? 'bg-[#E8F5EE]' : ''
+                      }`}
+                    >
+                      <span className="flex flex-col gap-0.5">
+                        <span className="text-sm font-semibold text-neutral-900">{city.city}</span>
+                        <span className="text-[11px] text-neutral-400">{city.state}</span>
+                      </span>
+                      {isActive && (
+                        <CheckIcon size={15} weight="bold" className="text-[#1B4332]" />
+                      )}
+                    </button>
+                  );
+                })}
+              </>
+            ) : (
+              <p className="px-4 py-5 text-center text-sm text-neutral-400">
+                No other locations available
+              </p>
+            )}
+          </div>
         </div>
       )}
     </div>

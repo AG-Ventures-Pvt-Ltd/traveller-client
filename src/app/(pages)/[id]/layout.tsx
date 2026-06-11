@@ -33,7 +33,9 @@ export async function generateMetadata({
     params: Promise<{ id: string }>;
 }): Promise<Metadata> {
 
-    const { id } = await params;
+    // Ids are lowercase-canonical; normalize so meta + canonical match the
+    // URL we redirect uppercase variants to (see page.tsx).
+    const id = (await params).id.toLowerCase();
 
     const meta = await getHostMeta(id);
     const fullName = meta?.fullName || id;
@@ -70,7 +72,7 @@ export async function generateMetadata({
 }
 
 export default async function Layout({ children, params }: LayoutProps) {
-    const { id } = await params;
+    const id = (await params).id.toLowerCase();
     const meta = await getHostMeta(id);
 
     const fullName = meta?.fullName || id;
