@@ -1,11 +1,12 @@
 import { Metadata } from "next";
+import { cache } from "react";
 import { getServerData } from "@/services/serverApi";
 
 interface HostMeta {
     fullName: string;
     bio?: string;
     website?: string;
-    totalTrips : number;
+    totalTrips: number;
     avatar?: string;
 }
 
@@ -13,6 +14,18 @@ interface LayoutProps {
     children: React.ReactNode;
     params: Promise<{ id: string }>;
 }
+
+// Deduped per-request: generateMetadata + Layout share one fetch.
+const getHostMeta = cache(async (id: string): Promise<HostMeta | null> => {
+    try {
+        return await getServerData<HostMeta>(`/api/client/v1/user/host/meta/${id}`);
+    } catch {
+        return null;
+    }
+});
+
+const resolveAvatar = (avatar?: string) =>
+    avatar ? `${process.env.NEXT_PUBLIC_CLOUDFRONT_URL}${avatar}` : undefined;
 
 export async function generateMetadata({
     params,
@@ -22,64 +35,75 @@ export async function generateMetadata({
 
     const { id } = await params;
 
-    let fullName = id;
-    let bio: string | undefined;
-    let website: string | undefined;
-    let totalTrips: number | undefined;
-    let avatar: string | undefined;
+    const meta = await getHostMeta(id);
+    const fullName = meta?.fullName || id;
+    const totalTrips = meta?.totalTrips;
+    const avatar = resolveAvatar(meta?.avatar);
 
-    try {
-        const meta = await getServerData<HostMeta>(`/api/client/v1/user/host/meta/${id}`);
-        fullName = meta.fullName || id;
-        bio = meta.bio;
-        website = meta.website;
-        totalTrips = meta.totalTrips;
-        avatar = meta.avatar ?? `${process.env.NEXT_PUBLIC_CLOUDFRONT_URL}${meta.avatar}`;
-    } catch {
-        // fallback to id-based defaults
-    }
-
-    const title = `${fullName} - Verified Trips & Adventures | Wondrr`;
-    const generatedDescription = `${fullName} is a verified travel partner on Wondrr ${totalTrips ? ` with ${totalTrips}+ trips` : ''} across India. Browse and book directly.`;
+    const title = `${fullName} - Verified Trips | Wondrr`;
+    const generatedDescription = `${fullName} is a verified travel partner on Wondrr${totalTrips ? ` with ${totalTrips}+ trips` : ''} across India. Browse and book directly.`;
+    const url = `https://wondrr.in/${id}`;
 
     return {
         title,
-        description : generatedDescription,
+        description: generatedDescription,
         openGraph: {
+            type: 'profile',
+            siteName: 'Wondrr',
+            url,
             title,
-            description : generatedDescription,
+            description: generatedDescription,
             ...(avatar && {
-                images: [{ url: avatar, alt: fullName }],
+                images: [{ url: avatar, alt: fullName, width: 1200, height: 630 }],
             }),
         },
-        ...(avatar && {
-            twitter: {
-                card: 'summary_large_image',
-                title,
-                description: generatedDescription,
-                images: [avatar],
-            },
-        }),
-        alternates: {
-            canonical: `https://wondrr.in/${id}`,
+        twitter: {
+            card: 'summary_large_image',
+            title,
+            description: generatedDescription,
+            ...(avatar && { images: [avatar] }),
         },
-        other: {
-            'script:ld+json': JSON.stringify({
-                "@context": "https://schema.org",
-                "@type": "TravelAgency",
-                "name": fullName,
-                "url": `https://wondrr.in/${id}`,
-                 ...(bio && { "description": bio }),
-                "sameAs": [website].filter(Boolean),
-                "address": {
-                    "@type": "PostalAddress",
-                    "addressCountry": "IN"
-                }
-            })
-        }
+        alternates: {
+            canonical: url,
+        },
     };
 }
 
-export default function Layout({ children }: LayoutProps) {
-    return children;
+export default async function Layout({ children, params }: LayoutProps) {
+    const { id } = await params;
+    const meta = await getHostMeta(id);
+
+    const fullName = meta?.fullName || id;
+    const avatar = resolveAvatar(meta?.avatar);
+    const totalTrips = meta?.totalTrips;
+    const ssrDescription = `${fullName} is a verified travel partner on Wondrr${totalTrips ? ` with ${totalTrips}+ trips` : ''} across India. Browse and book directly.`;
+
+    const jsonLd = {
+        "@context": "https://schema.org",
+        "@type": "TravelAgency",
+        "name": fullName,
+        "url": `https://wondrr.in/${id}`,
+        ...(meta?.bio && { "description": meta.bio }),
+        ...(avatar && { "image": avatar }),
+        "sameAs": [meta?.website].filter(Boolean),
+        "address": {
+            "@type": "PostalAddress",
+            "addressCountry": "IN",
+        },
+    };
+
+    return (
+        <>
+            <script
+                type="application/ld+json"
+                // Escape `<` so user-controlled fields (bio/name) can't break out of the script tag (XSS via `</script>`).
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
+            />
+            {/* Server-rendered crawlable heading/intro. The profile UI is client-fetched,
+                so this guarantees raw HTML carries the H1 + summary for non-JS crawlers (AI bots). */}
+            <h1 className="sr-only">{fullName}</h1>
+            <p className="sr-only">{ssrDescription}</p>
+            {children}
+        </>
+    );
 }
