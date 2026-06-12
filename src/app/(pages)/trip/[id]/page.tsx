@@ -1,10 +1,13 @@
-import TripPage from './components/TripPage'; // your existing component, renamed
+import TripPage from './components/TripPage';
 import { API_ENDPOINTS } from '@/common/constants/apiEndpoints';
 import { getServerData } from '@/services/serverApi';
 import { TripMetadata } from './types';
 import { JsonLd, SITE_URL } from '@/common/seo/JsonLd';
 import { notFound } from 'next/navigation';
 import { cache } from 'react';
+import { HydrationBoundary, dehydrate } from '@tanstack/react-query';
+import { getQueryClient } from '@/services/getQueryClient';
+import { getTripBasicDetails, getTripDetailedDetails } from './serverFetch';
 
 // cache() dedupes the fetch across generateMetadata + Page within one request.
 const getTripMeta = cache(async (id: string): Promise<{ slug: string; trip: TripMetadata } | null> => {
@@ -100,6 +103,9 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
     };
   }
 
+  if (trip.startDate) touristTrip.startDate = trip.startDate;
+  if (trip.endDate) touristTrip.endDate = trip.endDate;
+
   if (typeof trip.rating === 'number' && typeof trip.reviewCount === 'number' && trip.reviewCount > 0) {
     touristTrip.aggregateRating = {
       '@type': 'AggregateRating',
@@ -118,10 +124,24 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
     ],
   };
 
+  const queryClient = getQueryClient();
+  await Promise.all([
+    queryClient.prefetchQuery({
+      queryKey: [API_ENDPOINTS.TRIPS.BASIC_DETAILS(slug)],
+      queryFn: () => getTripBasicDetails(slug),
+    }),
+    queryClient.prefetchQuery({
+      queryKey: [API_ENDPOINTS.TRIPS.DETAILED_DETAILS(slug)],
+      queryFn: () => getTripDetailedDetails(slug),
+    }),
+  ]);
+
   return (
     <>
       <JsonLd data={[touristTrip, breadcrumb]} />
-      <TripPage />
+      <HydrationBoundary state={dehydrate(queryClient)}>
+        <TripPage />
+      </HydrationBoundary>
     </>
   );
 }

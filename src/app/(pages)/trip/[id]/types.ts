@@ -125,6 +125,8 @@ export interface TripMetadata {
   rating?: number;
   reviewCount?: number;
   hostUsername?: string;
+  startDate?: string;
+  endDate?: string;
 }
 
 export interface TripImageGalleryProps {

@@ -27,7 +27,12 @@ export const organizationSchema: JsonLdData = {
   '@id': `${SITE_URL}/#organization`,
   name: 'Wondrr',
   url: SITE_URL,
-  logo: `${SITE_URL}/png/favicon.png`,
+  logo: {
+    '@type': 'ImageObject',
+    url: `${SITE_URL}/assets/png/banner.png`,
+    width: 3944,
+    height: 1584,
+  },
   image: `${SITE_URL}/assets/png/banner.png`,
   description:
     "Wondrr is a travel marketplace to discover and book fixed-departure group trips from India's top verified travel brands.",

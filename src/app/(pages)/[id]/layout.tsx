@@ -46,9 +46,13 @@ export async function generateMetadata({
     const generatedDescription = `${fullName} is a verified travel partner on Wondrr${totalTrips ? ` with ${totalTrips}+ trips` : ''} across India. Browse and book directly.`;
     const url = `https://wondrr.in/${id}`;
 
+    // Host pages with no bio are thin content (~35 words). Noindex until content is enriched.
+    const isThinContent = !meta?.bio;
+
     return {
         title,
         description: generatedDescription,
+        ...(isThinContent && { robots: { index: false, follow: true } }),
         openGraph: {
             type: 'profile',
             siteName: 'Wondrr',

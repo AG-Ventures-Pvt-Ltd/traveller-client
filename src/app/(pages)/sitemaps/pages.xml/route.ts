@@ -2,12 +2,14 @@
 export async function GET() {
     const baseUrl = 'https://wondrr.in';
 
+    const today = new Date().toISOString().split('T')[0];
+
     const pages = [
-        { url: '', priority: '1.0', changefreq: 'weekly' },
-        { url: '/trips', priority: '0.9', changefreq: 'daily' },
-        { url: '/booking-policy', priority: '0.7', changefreq: 'monthly' },
-        { url: '/partner-with-us', priority: '0.7', changefreq: 'weekly' },
-        { url: '/about', priority: '0.5', changefreq: 'monthly' },
+        { url: '', priority: '1.0', changefreq: 'weekly', lastmod: today },
+        { url: '/trips', priority: '0.9', changefreq: 'daily', lastmod: today },
+        { url: '/booking-policy', priority: '0.7', changefreq: 'monthly', lastmod: '2026-06-01' },
+        { url: '/partner-with-us', priority: '0.7', changefreq: 'weekly', lastmod: today },
+        { url: '/about', priority: '0.5', changefreq: 'monthly', lastmod: '2026-06-01' },
     ];
 
     const xml = `<?xml version="1.0" encoding="UTF-8"?>
@@ -15,6 +17,7 @@ export async function GET() {
   ${pages.map(p => `
   <url>
     <loc>${baseUrl}${p.url}</loc>
+    <lastmod>${p.lastmod}</lastmod>
     <changefreq>${p.changefreq}</changefreq>
     <priority>${p.priority}</priority>
   </url>`).join('')}
