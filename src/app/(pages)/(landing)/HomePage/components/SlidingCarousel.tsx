@@ -153,6 +153,7 @@ const SlidingCarousel: React.FC<SlidingCarouselProps> = ({
                 {...trip}
                 colorScheme={COLOR_PAIRS[carouselIndex % 2][index % 2]}
                 onClick={() => onCardClick?.()}
+                priority={carouselIndex === 0 && index === 0}
               />
             </div>
           ))}

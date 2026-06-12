@@ -6,6 +6,7 @@ import { HeartIcon, SealCheckIcon, CurrencyInrIcon, StarIcon } from '@phosphor-i
 import MyImage from '@/common/ui/Image';
 import { CarouselCardProps } from '../../HomePage/types';
 import { useBookMarking } from '@/common/hooks/useBookMarking';
+import { generateSlug } from '@/app/(pages)/trip/utils';
 
 const DesktopCarouselCard: React.FC<CarouselCardProps> = ({
   id,
@@ -21,7 +22,7 @@ const DesktopCarouselCard: React.FC<CarouselCardProps> = ({
   isBookmarked: initialIsBookmarked = false,
 }) => {
   const slug = tripSlug || String(id);
-  const href = `/trip/${tripSlug || `${title.toLowerCase().replace(/\s+/g, '-')}-${id}`}`;
+  const href = `/trip/${generateSlug(title, tripSlug || String(id))}`;
   const { isBookmarked, toggle } = useBookMarking(slug, initialIsBookmarked);
 
   const bgColor =

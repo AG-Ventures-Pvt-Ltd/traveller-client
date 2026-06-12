@@ -1,11 +1,12 @@
 'use client'
 
 import { useState } from 'react';
+import dynamic from 'next/dynamic';
 import { AvailableDate } from '../../../types';
 import { BatchSelectionProps } from '../types';
 import DepartureDatesList from '@/app/(pages)/trip/common/ui/DepartureDatesList';
 import MobileModal from '@/common/ui/MobileModal';
-import TripCalendar from '@/common/ui/TripCalendar';
+const TripCalendar = dynamic(() => import('@/common/ui/TripCalendar'), { ssr: false });
 import { CalendarDotsIcon } from '@phosphor-icons/react';
 
 export default function BatchSelection({ batches, selectedBatch, onSelect, bestTimeToVisit }: BatchSelectionProps) {
