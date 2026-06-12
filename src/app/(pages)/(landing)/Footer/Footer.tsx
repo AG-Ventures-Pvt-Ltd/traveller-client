@@ -14,7 +14,8 @@ const Footer = () => {
                     title: 'Explore',
                     links: [
                         { label: 'All Trips', href: '/trips' },
-                        { label: 'All Girls Trips', href: '/girls-trips' }
+                        { label: 'All Girls Trips', href: '/girls-trips' },
+                        { label: 'Blog', href: '/blog' },
                     ]
                 },
                 {
