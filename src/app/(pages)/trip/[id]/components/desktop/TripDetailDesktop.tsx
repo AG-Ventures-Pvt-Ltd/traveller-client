@@ -1,5 +1,6 @@
 'use client'
 
+import React from 'react';
 import dynamic from 'next/dynamic';
 import { useParams, useRouter } from 'next/navigation';
 import { useTripBasicDetails, useTripDetailedDetails } from '../../../api';
@@ -7,24 +8,22 @@ import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { generateSlug } from '../../../utils';
 import Loader from '@/common/ui/Loader/Loader';
 import { TripData } from '../../types';
-import { sortBatchesByDate } from '../mobile/utils';
-import { NAV_SECTION_IDS } from '../mobile/constants';
-import { NavSection, SectionRefs } from '../mobile/types';
+import { sortBatchesByDate } from '../utils';
+import { NAV_SECTION_IDS, PANEL_STICKY_TOP } from '../constants';
+import { NavSection } from '../types';
 import { getSeatsDisplay } from '@/common/utils/seatsDisplay';
 import {
-    StarIcon, CurrencyInrIcon, WhatsappLogoIcon, ShieldCheckIcon,
-    MapPinIcon, ClockIcon, MountainsIcon, UsersThreeIcon, SignpostIcon,
-    GenderFemaleIcon, HeartIcon,
+    StarIcon, UsersThreeIcon,
 } from '@phosphor-icons/react';
-import { Heart, Share2, ChevronLeft, ChevronRight, X, Images, Plane, Compass, Sun } from 'lucide-react';
-import MyImage from '@/common/ui/Image';
+import { Heart, Share2, Plane, Compass, Sun } from 'lucide-react';
 import { useBookMarking } from '@/common/hooks/useBookMarking';
-
-import BatchSelection from '../mobile/components/BatchSelection';
-import TravelOptions from '../mobile/components/TravelOptions';
-import WhatsAppButton from '../mobile/components/WhatsAppButton';
-import Button from '@/common/ui/Buttons/Button';
 import CollapsibleCard from '@/common/ui/CollapsibleCard';
+
+import ImageLightbox from './components/ImageLightbox';
+import DesktopImageGallery from './components/DesktopImageGallery';
+import FactCards from './components/FactCards';
+import BookingPanel from './components/BookingPanel';
+import SectionTabNav from './components/SectionTabNav';
 
 const TripHighlights = dynamic(() => import('../mobile/components/TripHighlights'), { ssr: false });
 const ItinerarySection = dynamic(() => import('../mobile/components/ItinerarySection'), { ssr: false });
@@ -41,280 +40,6 @@ const MobileReviewSection = dynamic(
 const SafetySupportSection = dynamic(() => import('../mobile/components/SafetySupportSection'), { ssr: false });
 const Footer = dynamic(() => import('../../../../(landing)/Footer/Footer'), { ssr: false });
 
-const WHATSAPP_PHONE_NUMBER = '919667427187';
-// Site navbar is sticky top-0 (~72px). Tab nav sits below it.
-const TAB_NAV_TOP = 72;
-const PANEL_STICKY_TOP = 160; // navbar + tab nav + gap
-
-// ─── Fullscreen Lightbox ───────────────────────────────────────────────────
-function ImageLightbox({ images, title, initialIndex, onClose }: {
-    images: string[];
-    title: string;
-    initialIndex: number;
-    onClose: () => void;
-}) {
-    const [current, setCurrent] = useState(initialIndex);
-    const total = images.length;
-
-    useEffect(() => {
-        const handler = (e: KeyboardEvent) => {
-            if (e.key === 'ArrowRight') setCurrent(p => p === total - 1 ? 0 : p + 1);
-            if (e.key === 'ArrowLeft') setCurrent(p => p === 0 ? total - 1 : p - 1);
-            if (e.key === 'Escape') onClose();
-        };
-        window.addEventListener('keydown', handler);
-        return () => window.removeEventListener('keydown', handler);
-    }, [total, onClose]);
-
-    return (
-        <div className="fixed inset-0 z-[100] bg-[#1a1410] flex flex-col select-none">
-            <div className="flex items-center justify-between px-8 py-4 border-b border-white/10 shrink-0">
-                <p className="text-white font-bold truncate max-w-lg">{title}</p>
-                <div className="flex items-center gap-5 shrink-0">
-                    <span className="text-white/50 text-sm font-medium">{current + 1} / {total}</span>
-                    <button onClick={onClose} className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors">
-                        <X className="w-4 h-4 text-white" />
-                    </button>
-                </div>
-            </div>
-
-            <div className="flex-1 relative flex items-center justify-center px-20">
-                <div className="relative w-full h-full flex items-center justify-center">
-                    <MyImage
-                        src={images[current] || '/placeholder.jpg'}
-                        alt={`${title} — photo ${current + 1}`}
-                        objectFit="contain"
-                        fill={false}
-                        width={1400}
-                        height={900}
-                        style={{ maxWidth: '100%', maxHeight: 'calc(100vh - 200px)', objectFit: 'contain' }}
-                    />
-                </div>
-                {total > 1 && (
-                    <>
-                        <button onClick={() => setCurrent(p => p === 0 ? total - 1 : p - 1)} className="absolute left-5 w-12 h-12 rounded-full bg-white/10 hover:bg-[#EEA0FF] hover:text-black border border-white/15 flex items-center justify-center transition-colors text-white">
-                            <ChevronLeft className="w-6 h-6" />
-                        </button>
-                        <button onClick={() => setCurrent(p => p === total - 1 ? 0 : p + 1)} className="absolute right-5 w-12 h-12 rounded-full bg-white/10 hover:bg-[#EEA0FF] hover:text-black border border-white/15 flex items-center justify-center transition-colors text-white">
-                            <ChevronRight className="w-6 h-6" />
-                        </button>
-                    </>
-                )}
-            </div>
-
-            {total > 1 && (
-                <div className="flex gap-2 px-8 py-4 overflow-x-auto scrollbar-hide justify-center shrink-0">
-                    {images.map((img, i) => (
-                        <button key={i} onClick={() => setCurrent(i)} className={`shrink-0 w-16 h-12 rounded-lg overflow-hidden border-2 transition-all ${i === current ? 'border-[#EEA0FF] opacity-100' : 'border-transparent opacity-45 hover:opacity-75'}`}>
-                            <MyImage src={img} alt="" className="w-full h-full" objectFit="cover" />
-                        </button>
-                    ))}
-                </div>
-            )}
-        </div>
-    );
-}
-
-// ─── Image Gallery (main + side stack) ─────────────────────────────────────
-function DesktopImageGallery({ images, title, onOpen, isBookmarked, onShare, onToggleBookmark }: {
-    images: string[];
-    title: string;
-    onOpen: (index: number) => void;
-    isBookmarked: boolean;
-    onShare: () => void;
-    onToggleBookmark: () => void;
-}) {
-    if (images.length === 0) return null;
-    const main = images[0];
-    const side = images.slice(1, 3);
-    const extra = images.length - 3;
-
-    return (
-        <div className="relative">
-            <div className="flex gap-3 rounded-[28px] overflow-hidden shadow-[0_10px_50px_rgba(0,0,0,0.10)]" style={{ height: '460px' }}>
-                {/* Main */}
-                <div className={`overflow-hidden cursor-zoom-in group relative ${side.length > 0 ? 'flex-[3]' : 'flex-1'}`} onClick={() => onOpen(0)}>
-                    <MyImage src={main || '/placeholder.jpg'} alt={title} className="w-full h-full transition-transform duration-[600ms] group-hover:scale-[1.04]" objectFit="cover" />
-                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
-                </div>
-                {/* Side */}
-                {side.length > 0 && (
-                    <div className="flex-[2] flex flex-col gap-3">
-                        {side.map((img, i) => {
-                            const showOverlay = i === side.length - 1 && extra > 0;
-                            return (
-                                <div key={i} className="flex-1 relative overflow-hidden cursor-zoom-in group" onClick={() => onOpen(i + 1)}>
-                                    <MyImage src={img} alt={`${title} photo ${i + 2}`} className="w-full h-full transition-transform duration-[600ms] group-hover:scale-[1.04]" objectFit="cover" />
-                                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
-                                    {showOverlay && (
-                                        <div className="absolute inset-0 bg-black/55 flex flex-col items-center justify-center gap-1" onClick={(e) => { e.stopPropagation(); onOpen(i + 1); }}>
-                                            <span className="text-white text-4xl font-black leading-none">+{extra}</span>
-                                            <span className="text-white/80 text-sm font-medium">more</span>
-                                        </div>
-                                    )}
-                                </div>
-                            );
-                        })}
-                    </div>
-                )}
-            </div>
-
-            {/* Floating share / save — top right of gallery */}
-
-
-            {/* See all photos */}
-            <button onClick={() => onOpen(0)} className="absolute bottom-5 right-5 flex items-center gap-2 text-sm font-bold text-black bg-white px-4 py-2.5 rounded-full hover:bg-[#FFC107] transition-colors shadow-lg">
-                <Images className="w-4 h-4" />
-                See all {images.length} photos
-            </button>
-        </div>
-    );
-}
-
-// ─── Branded Fact Cards ────────────────────────────────────────────────────
-function FactCards({ location, duration, difficulty, boardingPoint, seats, certificates }: {
-    location?: string;
-    duration?: string;
-    difficulty?: string;
-    boardingPoint?: string;
-    seats?: string;
-    certificates?: string[];
-}) {
-    const facts = [
-        { Icon: MapPinIcon, label: 'Destination', value: location, bg: '#D0EF65' },
-        { Icon: ClockIcon, label: 'Duration', value: duration, bg: '#EEA0FF' },
-        { Icon: MountainsIcon, label: 'Difficulty', value: difficulty, bg: '#FFD976' },
-        { Icon: UsersThreeIcon, label: 'Group Size', value: seats, bg: '#E2F4A6' },
-        { Icon: SignpostIcon, label: 'Boarding', value: boardingPoint, bg: '#FFEAB2' },
-    ].filter((f): f is { Icon: typeof MapPinIcon; label: string; value: string; bg: string } => !!f.value);
-
-    const certMap: Record<string, { label: string; Icon: typeof GenderFemaleIcon; color: string }> = {
-        'female-friendly': { label: 'Female Friendly', Icon: GenderFemaleIcon, color: '#E050FF' },
-        'solo-friendly': { label: 'Loved by Solo Travelers', Icon: HeartIcon, color: '#FF5A5F' },
-    };
-    const certs = (certificates || []).filter(c => certMap[c]);
-
-    if (facts.length === 0 && certs.length === 0) return null;
-
-    return (
-        <div className="flex flex-wrap gap-3">
-            {facts.map((f, i) => (
-                <div key={i} className="flex items-center gap-3 rounded-2xl pl-2.5 pr-5 py-2.5 hover:-translate-y-0.5 transition-transform" style={{ backgroundColor: f.bg }}>
-                    <div className="w-10 h-10 rounded-xl bg-white/55 flex items-center justify-center shrink-0">
-                        <f.Icon size={22} />
-                    </div>
-                    <div>
-                        <p className="text-[11px] text-black font-semibold">{f.label}</p>
-                        <p className="text-sm font-bold text-black leading-tight">{f.value}</p>
-                    </div>
-                </div>
-            ))}
-            {certs.map(c => {
-                const data = certMap[c];
-                return (
-                    <div key={c} className="flex items-center gap-2 rounded-2xl px-4 py-2.5" style={{ backgroundColor: `${data.color}1a` }}>
-                        <data.Icon size={20} weight="duotone" style={{ color: data.color }} />
-                        <span className="text-sm font-semibold" style={{ color: data.color }}>{data.label}</span>
-                    </div>
-                );
-            })}
-        </div>
-    );
-}
-
-// ─── Section heading w/ lime underline ─────────────────────────────────────
-function SectionTitle({ children }: { children: React.ReactNode }) {
-    return (
-        <h2 className="text-2xl font-black text-black mb-4 relative inline-block">
-            <span className="absolute inset-x-0 bottom-1 h-3 rounded-sm z-0" />
-            <span className="relative z-10">{children}</span>
-        </h2>
-    );
-}
-
-// ─── Floating Booking Panel ────────────────────────────────────────────────
-function BookingPanel({
-    displayPrice, sortedBatches, selectedBatch, onSelectBatch, bestTimeToVisit,
-    pricingList, selectedPricing, pricingInfoIndex, onSelectPricing, onTogglePricingInfo,
-    onBookNow, isBooking, tripTitle, tripSlug, host, onHostPress, seatsLeft,
-}: {
-    displayPrice: string | number;
-    sortedBatches: ReturnType<typeof sortBatchesByDate>;
-    selectedBatch: number | null;
-    onSelectBatch: (index: number) => void;
-    bestTimeToVisit?: string;
-    pricingList: Array<{ label: string; description: string; pricePerPerson: number }>;
-    selectedPricing: number | null;
-    pricingInfoIndex: number | null;
-    onSelectPricing: (index: number) => void;
-    onTogglePricingInfo: (index: number) => void;
-    onBookNow: () => void;
-    isBooking: boolean;
-    tripTitle: string;
-    tripSlug: string;
-    host?: TripData['host'];
-    onHostPress: () => void;
-    seatsLeft?: number;
-}) {
-    const handleWhatsApp = () => {
-        const msg = `https://wondrr.in/trip/${tripSlug}\n\n Hi, I want to book the "${tripTitle}" trip. \nPlease help me confirm my spot.`;
-        window.open(`https://wa.me/${WHATSAPP_PHONE_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
-    };
-
-    return (
-        <div className="bg-white rounded-[28px] overflow-hidden shadow-[0_16px_50px_rgba(238,160,255,0.30)]">
-            {/* Price header */}
-            <div className="bg-[#EEA0FF] px-6 pt-5 pb-6 relative overflow-hidden">
-                <Plane className="absolute -right-3 -top-2 w-20 h-20 text-black opacity-[0.07] rotate-[25deg] pointer-events-none" />
-                <p className="text-[11px] font-bold text-black/55 mb-1">Starting from</p>
-                <p className="text-[2.1rem] font-bold text-black flex items-baseline gap-0.5 leading-none">
-                    <CurrencyInrIcon weight="bold" size={26} className="self-center" />
-                    {displayPrice}
-                    <span className="text-base font-semibold ml-1 text-black/70">/person</span>
-                </p>
-            </div>
-
-            <div className="p-4 space-y-3.5">
-                {sortedBatches.length > 0 && (
-                    <BatchSelection batches={sortedBatches} selectedBatch={selectedBatch} onSelect={onSelectBatch} bestTimeToVisit={bestTimeToVisit} />
-                )}
-                <Button variant='purple' fullWidth onClick={onBookNow} disabled={isBooking} className='font-semibold'>
-                    {isBooking ? 'Redirecting…' : 'Book Now'}
-                </Button>
-                <Button className='!bg-white flex justify-center gap-2 border border-[#D9D9D9]' onClick={handleWhatsApp} fullWidth>
-                    <WhatsappLogoIcon size={24} weight="fill" className='text-[#1ba84e]' />
-                    <span className='text-black font-semibold'>Chat with an Expert</span>
-                </Button>
-
-                {/* Hosted by */}
-                {host && (
-                    <div className="border-t-2 border-dashed border-[#f0e8de] pt-3.5">
-                        <p className="text-sm font-bold mb-1 pl-1">Hosted by</p>
-                        <button onClick={onHostPress} className="flex items-center gap-3 w-full text-left hover:opacity-80 transition-opacity group">
-                            {host.avatar ? (
-                                <MyImage src={host.avatar} alt={host.name} rounded className="w-12 h-12 shrink-0" />
-                            ) : (
-                                <div className="w-12 h-12 rounded-full bg-[#FFD976] flex items-center justify-center font-black text-lg text-black shrink-0">
-                                    {(host.initials || host.name.charAt(0)).toUpperCase()}
-                                </div>
-                            )}
-                            <div className="min-w-0">
-                                <p className="text-sm font-bold text-black truncate">{host.name}</p>
-                                {host.certificates?.includes('certified') && (
-                                    <span className="flex items-center gap-1 text-xs font-semibold text-[#43A047] mt-0.5">
-                                        <ShieldCheckIcon weight="fill" size={13} /> Wondrr Verified
-                                    </span>
-                                )}
-                            </div>
-                        </button>
-                    </div>
-                )}
-            </div>
-        </div>
-    );
-}
-
-// ─── Main ──────────────────────────────────────────────────────────────────
 export default function TripDetailDesktop() {
     const params = useParams();
     const slugParam = params.id;
@@ -405,11 +130,6 @@ export default function TripDetailDesktop() {
     const pricingList = useMemo(() => tripData?.pricing?.pricings || [], [tripData?.pricing]);
     const closeLightbox = useCallback(() => setLightboxIndex(null), []);
 
-    const sectionRefs: SectionRefs = {
-        overviewRef, highlightsRef, itineraryRef, inclusionsRef,
-        reviewsRef, tripSupportRef, faqsRef, cancellationPolicyRef, refundPolicyRef,
-    };
-
     const scrollToSection = (sectionId: string) => {
         setActiveSection(sectionId);
         const refMap: Record<string, React.RefObject<HTMLDivElement | null>> = {
@@ -470,7 +190,6 @@ export default function TripDetailDesktop() {
                     <Sun className="absolute -top-2 right-[30%] w-12 h-12 text-neutral-900 opacity-[0.04] rotate-45 pointer-events-none" />
 
                     <div className="relative z-10">
-
                         <div className="flex items-start justify-between gap-6">
                             <div className='flex gap-4 items-center'>
                                 <h1 className="text-[2.6rem] leading-[1.08] font-bold text-black max-w-3xl tracking-tight">
@@ -492,30 +211,14 @@ export default function TripDetailDesktop() {
                         </div>
                     </div>
                 </div>
-
-                {/* Fact cards */}
-
             </section>
 
             {/* ── Sticky tab nav ─────────────────────────────────── */}
-            <div className="sticky z-30 bg-[#FCF3EB]/95 backdrop-blur border-b-2 border-[#efe7dd] mt-3" style={{ top: `${TAB_NAV_TOP}px` }}>
-                <div className="mx-auto px-16 py-3">
-                    <div className="flex gap-2 overflow-x-auto scrollbar-hide">
-                        {availableSections.map(section => (
-                            <button
-                                key={section.id}
-                                onClick={() => scrollToSection(section.id)}
-                                className={`px-4 py-1.5 rounded-full font-bold whitespace-nowrap transition-all text-sm ${activeSection === section.id
-                                    ? 'bg-yellow-400 text-black'
-                                    : 'border-2 border-yellow-400 text-black hover:bg-yellow-50'
-                                    }`}
-                            >
-                                {section.label}
-                            </button>
-                        ))}
-                    </div>
-                </div>
-            </div>
+            <SectionTabNav
+                sections={availableSections}
+                activeSection={activeSection}
+                onSectionClick={scrollToSection}
+            />
 
             {/* ── TWO COLUMN ─────────────────────────────────────── */}
             <div className="mx-auto px-16 py-8">
@@ -554,7 +257,6 @@ export default function TripDetailDesktop() {
                                     </p>
                                 </CollapsibleCard>
                             )}
-
                         </div>
 
                         {/* Highlights */}
