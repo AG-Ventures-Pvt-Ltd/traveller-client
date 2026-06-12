@@ -69,7 +69,7 @@ const LandingPage = () => {
     <main className="flex flex-col items-center overflow-hidden bg-[#FFF9F4]">
 
       <div className='w-full'>
-        <div className='bg-[#D0EF65] mx-24 rounded-2xl flex flex-col items-center py-16 my-2 relative overflow-hidden'>
+        <div className='bg-[#D0EF65] mx-24 rounded-2xl flex flex-col items-center py-16 my-2 relative overflow-hidden min-h-[480px]'>
 
           <Plane        className="absolute top-5 left-8   w-16 h-16 text-neutral-800 opacity-[0.09] rotate-[20deg]  pointer-events-none" />
           <Compass      className="absolute top-4 right-10  w-14 h-14 text-neutral-800 opacity-[0.09] -rotate-6       pointer-events-none" />
@@ -87,8 +87,7 @@ const LandingPage = () => {
           {/* Content */}
           <div className="relative z-10 flex flex-col items-center w-full">
             <h1 className='text-5xl font-bold text-center'>What&apos;s your next escape,<br />{status == 'authenticated' ? userData.user?.fullName : 'Traveller'} ?</h1>
-            <h4 className='pt-4'>Safe group adventures for solo travelers who want to travel with</h4>
-            <h4>like-minded strangers.</h4>
+            <p className='pt-4 text-center'>Safe group adventures for solo travelers who want to travel with like-minded strangers.</p>
             <div className="relative mt-12 w-[60%]">
               <SearchIcon className="absolute left-4 sm:left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-500" strokeWidth={2} />
               <input

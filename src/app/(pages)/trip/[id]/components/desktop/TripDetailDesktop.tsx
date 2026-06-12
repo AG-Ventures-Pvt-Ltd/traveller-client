@@ -19,7 +19,7 @@ import { Heart, Share2, Plane, Compass, Sun } from 'lucide-react';
 import { useBookMarking } from '@/common/hooks/useBookMarking';
 import CollapsibleCard from '@/common/ui/CollapsibleCard';
 
-import ImageLightbox from './components/ImageLightbox';
+const ImageLightbox = dynamic(() => import('./components/ImageLightbox'), { ssr: false });
 import DesktopImageGallery from './components/DesktopImageGallery';
 import FactCards from './components/FactCards';
 import BookingPanel from './components/BookingPanel';
@@ -251,7 +251,7 @@ export default function TripDetailDesktop() {
                                 </div>
                             </div>
                             {tripData.description && (
-                                <CollapsibleCard title='About this trip' className='mt-6'>
+                                <CollapsibleCard title='Vibe of the trip' className='mt-6'>
                                     <p className="text-[15px] pl-4 pr-6 pb-2 text-justify">
                                         {tripData.description}
                                     </p>

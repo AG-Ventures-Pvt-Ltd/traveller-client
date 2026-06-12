@@ -2,8 +2,9 @@
 
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useState, useEffect, useCallback, useRef } from 'react';
+import dynamic from 'next/dynamic';
 import TripFilters, { FilterValues } from './components/TripFilters';
-import FilterModal from './components/FilterModal';
+const FilterModal = dynamic(() => import('./components/FilterModal'), { ssr: false });
 import TripList from './components/TripList';
 import { useGetData } from '@/services/useGetData';
 import BackButton from '@/common/ui/BackButton';

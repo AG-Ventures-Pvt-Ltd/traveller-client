@@ -41,6 +41,7 @@ export interface CarouselCardProps {
   onClick?: () => void;
   tripSlug?: string;
   isBookmarked?: boolean;
+  priority?: boolean;
 }
 
 export interface SlidingCarouselProps {
