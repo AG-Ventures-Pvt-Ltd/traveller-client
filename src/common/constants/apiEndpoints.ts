@@ -90,6 +90,8 @@ export const API_ENDPOINTS = {
     CITIES : '/api/client/v1/landingpage/cities',
     SIGNUP_BONUS: '/api/client/v1/landingpage/signup-bonus',
     TRAVELER_STATS: '/api/client/v1/landingpage/traveler-stats',
+    EXPLORE_STATES: '/api/client/v1/landingpage/explore-states',
+    TRIPS_BY_STATE: (stateCode: string) => `/api/client/v1/landingpage/explore-states/${stateCode}/trips`,
   },
   REFERRAL: {
     GET_MY_REFERRAL_DATA: '/api/client/v1/referrals/me'

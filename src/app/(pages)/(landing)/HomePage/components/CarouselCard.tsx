@@ -1,11 +1,12 @@
 'use client';
 
 import React from 'react';
-import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { StarIcon, SealCheckIcon, HeartIcon } from '@phosphor-icons/react';
 import MyImage from '@/common/ui/Image';
 import { CarouselCardProps } from '../types';
 import { useBookMarking } from '@/common/hooks/useBookMarking';
+import { generateSlug } from '@/app/(pages)/trip/utils';
 
 const CarouselCard: React.FC<CarouselCardProps> = ({
   id,
@@ -20,11 +21,11 @@ const CarouselCard: React.FC<CarouselCardProps> = ({
   onClick,
   tripSlug,
   isBookmarked: initialIsBookmarked = false,
+  priority = false,
 }) => {
 
-  const router = useRouter();
-
   const slug = tripSlug || String(id);
+  const href = `/trip/${generateSlug(title, tripSlug || String(id))}`;
 
   const { isBookmarked, toggle } = useBookMarking(slug, initialIsBookmarked);
 
@@ -37,15 +38,10 @@ const CarouselCard: React.FC<CarouselCardProps> = ({
       colorScheme === 'green' ? 'border-[#E2F4A6]' :
         'border-[#EEA0FF]';
 
-  const handleCardClick = () => {
-    const cardSlug = tripSlug || `${title.toLowerCase().replace(/\s+/g, '-')}-${id}`;
-    router.push(`/trip/${cardSlug}`);
-    onClick?.();
-  };
-
   return (
-    <div
-      onClick={handleCardClick}
+    <Link
+      href={href}
+      onClick={() => onClick?.()}
       className={`w-full h-full ${bgColor} rounded-3xl overflow-hidden border-10 ${borderColor} cursor-pointer hover:shadow-lg transition-shadow flex flex-col`}
     >
       <div className="relative h-32 overflow-hidden rounded-3xl">
@@ -54,10 +50,11 @@ const CarouselCard: React.FC<CarouselCardProps> = ({
           alt={title}
           className="w-full h-full"
           rounded={false}
+          priority={priority}
         />
         {/* Bookmark button */}
         <button
-          onClick={toggle}
+          onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggle(e); }}
           className="absolute top-2 right-2 flex items-center justify-center w-7 h-7 rounded-full bg-black/70 hover:bg-black transition-colors z-10"
         >
           <HeartIcon
@@ -99,7 +96,7 @@ const CarouselCard: React.FC<CarouselCardProps> = ({
           </div>
         </div>
       </div>
-    </div>
+    </Link>
   );
 };
 
