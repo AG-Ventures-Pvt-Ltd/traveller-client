@@ -9,6 +9,7 @@ export const API_ENDPOINTS = {
     GET_METADATA : (id : string) => `/api/client/v1/trips/${id}/metadata`,
     GET_SLUGS_FOR_SITEMAP :`/api/client/v1/trips/sitemap`,
     TRAVELER_STATS: (slug: string) => `/api/client/v1/trips/${slug}/traveler-stats`,
+    RECORD_VIEW: (slug: string) => `api/client/v1/trips/${slug}/view`,
   },
   BOOKINGS: {
     START: "/api/client/v1/bookings/start",
