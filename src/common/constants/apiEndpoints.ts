@@ -111,4 +111,17 @@ export const API_ENDPOINTS = {
       return `/api/client/v1/wallet/transactions${query ? `?${query}` : ''}`;
     },
   },
+  BLOGS: {
+    LIST: (page?: number, limit?: number, category?: string) => {
+      const params = new URLSearchParams();
+      if (page) params.append('page', page.toString());
+      if (limit) params.append('limit', limit.toString());
+      if (category) params.append('category', category);
+      const q = params.toString();
+      return `/api/client/v1/stories${q ? `?${q}` : ''}`;
+    },
+    BY_SLUG: (slug: string) => `/api/client/v1/stories/${slug}`,
+    CATEGORIES: '/api/client/v1/stories/categories',
+    SITEMAP: '/api/client/v1/stories/sitemap',
+  },
 };

@@ -9,7 +9,6 @@ import { useGetData } from '@/services/useGetData'
 import { HostReviews } from '../HostReviews/HostReviews'
 import SlidingCarouselSection from '@/app/(pages)/(landing)/HomePage/components/SlidingCarouselSection'
 import { Trip } from '@/app/(pages)/(landing)/HomePage/types'
-import { ArrowRight } from '@phosphor-icons/react'
 import AboutHost from '../AboutHost'
 
 interface Pagination {
@@ -67,15 +66,8 @@ const HostProfileMobile = () => {
             title="Upcoming Trips"
             trips={upcomingTrips}
             carouselIndex={0}
+            viewAllClick={hasMoreUpcoming ? () => router.push(`/${id}/trips/upcoming`) : undefined}
           />
-          {hasMoreUpcoming && (
-            <button
-              onClick={() => router.push(`/${id}/trips/upcoming`)}
-              className="flex items-center gap-1 mx-4 mt-3 text-sm font-semibold text-neutral-700 active:opacity-70"
-            >
-              View all upcoming trips <ArrowRight size={16} weight="bold" />
-            </button>
-          )}
         </div>
       )}
 
@@ -85,15 +77,8 @@ const HostProfileMobile = () => {
             title="Past Trips"
             trips={pastTrips}
             carouselIndex={1}
+            viewAllClick={hasMorePast ? () => router.push(`/${id}/trips/past`) : undefined}
           />
-          {hasMorePast && (
-            <button
-              onClick={() => router.push(`/${id}/trips/past`)}
-              className="flex items-center gap-1 mx-4 mt-3 text-sm font-semibold text-neutral-700 active:opacity-70"
-            >
-              View all past trips <ArrowRight size={16} weight="bold" />
-            </button>
-          )}
         </div>
       )}
 

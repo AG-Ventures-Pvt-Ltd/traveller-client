@@ -1,31 +1,64 @@
 # Wondrr
 
-> Wondrr is a travel marketplace where solo travellers can discover and book
-> fixed-departure group trips from India's top verified travel brands — all on one
-> platform. Browse curated treks, road trips, and adventures across India, compare
-> dates and prices, and book directly with vetted hosts 
-> without having to look at between 10 different websites 
+> Wondrr is a group travel marketplace where solo travellers in India discover and book
+> fixed-departure trips from 50+ verified travel brands — without coordinating on WhatsApp
+> or browsing a dozen websites. Every host is vetted, every trip has a set departure date,
+> and groups are capped at 15 so everyone is a real part of the trip.
 
 Wondrr (https://wondrr.in) operates in India (en-IN). It aggregates group trips from
-independent, verified travel hosts, travel brands and lets travellers book safe group adventures with like-minded people.
+independent, verified travel hosts and travel brands, letting travellers book safe group
+adventures with like-minded people.
 
-## Key pages
+## Key Pages
 
 - [Home](https://wondrr.in/): Discover group trips and fixed departures.
-- [All trips](https://wondrr.in/trips): Browse every available group trip.
-- [About Wondrr](https://wondrr.in/about): Who we are and how the marketplace works.
-- [How we work](https://wondrr.in/how-we-work): How booking and verified hosts work.
-- [Partner with us](https://wondrr.in/partner-with-us): For travel brands and hosts.
-- [Booking policy](https://wondrr.in/booking-policy): Terms, cancellation, and refunds.
+- [All Trips](https://wondrr.in/trips): Browse every available group trip with filters by destination, duration, and price.
+- [All-Girls Trips](https://wondrr.in/girls-trips): Curated women-only group departures.
+- [About Wondrr](https://wondrr.in/about): Platform mission and how host verification works.
+- [How We Work](https://wondrr.in/how-we-work): Booking process and what travellers can expect.
+- [Partner With Us](https://wondrr.in/partner-with-us): For travel operators who want to list trips.
+- [Blog](https://wondrr.in/blog): Travel tips, destination guides, and group travel stories from the Wondrr team.
+- [Booking Policy](https://wondrr.in/booking-policy): Terms, cancellation, and refunds.
+
+## Trip Categories
+
+- **Weekend getaways (2N/3D):** Rishikesh, Mcleodganj, Chakrata, Shimla, Kasol — from ₹5,500
+- **Himalayan treks:** Spiti Valley, Manali, Kasol, Chopta Chandrashila, Triund, Valley of Flowers
+- **Bike expeditions:** Ladakh (via Hanle / Tsomoriri), Spiti Valley — from ₹35,000
+- **International tours:** Bali, Thailand (Full Moon Party), Japan (Tokyo–Osaka), Vietnam, Georgia, Sri Lanka, Almaty
+- **All-girls trips:** Women-only fixed departures across India and international destinations
+
+## Pricing
+
+₹5,500 – ₹1,59,999 per person (INR). Fixed-departure dates. All bookings made directly on platform. No third-party coordinators.
+
+## Verified Hosts
+
+All hosts are vetted by Wondrr before listing trips. Example operators: Cliffseas travels, The Trippers, International Youth Club, OhBhaiSahab, JapsTours, CaptureATrip. Host profiles live at https://wondrr.in/<host-username>.
 
 ## Content
 
-- Trip pages live at https://wondrr.in/trip/<slug> and include itinerary, inclusions,
-  dates, prices (INR), host details, and traveller reviews.
-- Verified host profiles live at https://wondrr.in/<host-username>.
+- Trip pages live at https://wondrr.in/trip/<slug> and include day-by-day itinerary, inclusions/exclusions, departure dates, per-person pricing (INR), host details, and traveller reviews.
+- Blog posts live at https://wondrr.in/blog/<slug> and cover travel tips, destination guides, solo travel advice, and group travel stories written by the Wondrr team.
 - The full URL inventory is in the sitemap: https://wondrr.in/sitemap.xml
+
+## Contact
+
+- Email: support@wondrr.in
+- Phone: +91-9667427187 | +91-9151315550
 
 ## Notes
 
 - All hosts on Wondrr are verified travel brands.
+- Groups are intentionally capped at 15 travellers per departure.
 - Prices are in Indian Rupees (INR). Bookings are made directly on the platform.
+
+## Licensing
+
+- Content license: © 2026 Wondrr. All rights reserved.
+- AI training: Not permitted without written consent
+- AI search indexing: Permitted (see robots.txt)
+- Scraping for aggregation: Not permitted
+
+## RSL: 1.0
+ - License: https://wondrr.in/rsl-license.txt
