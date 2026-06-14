@@ -57,4 +57,5 @@ export interface SlidingCarouselSectionProps {
   trips: Trip[];
   isLoading?: boolean;
   carouselIndex?: number;
+  viewAllClick?: () => void | undefined
 }
