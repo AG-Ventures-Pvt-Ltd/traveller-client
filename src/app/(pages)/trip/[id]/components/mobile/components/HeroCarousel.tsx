@@ -196,6 +196,7 @@ export default function HeroCarousel({
                             src={image || '/placeholder.jpg'}
                             alt={`${title} - Image ${index + 1}`}
                             className="w-full h-full"
+                            priority={index === 0}
                         />
                     </div>
                 ))}
@@ -278,14 +279,13 @@ export default function HeroCarousel({
 
                     {/* Zoomed Image */}
                     <div className="w-full h-full flex items-center justify-center p-4">
-                        <div className="cursor-pointer" onClick={handleZoomedImageTap}>
+                        <div className="cursor-pointer w-full h-full flex items-center justify-center" onClick={handleZoomedImageTap}>
                             <MyImage
                                 src={images[zoomedImageIndex] || '/placeholder.jpg'}
                                 alt={`${title} - Image ${zoomedImageIndex + 1} (Zoomed)`}
-                                className="max-w-full max-h-full"
+                                className="w-full h-full"
                                 objectFit="contain"
-                                fill={false}
-                                style={{ maxWidth: '100vw', maxHeight: '100vh' }}
+                                priority
                             />
                         </div>
                     </div>

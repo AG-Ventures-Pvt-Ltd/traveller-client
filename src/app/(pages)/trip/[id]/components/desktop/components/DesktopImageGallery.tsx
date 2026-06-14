@@ -21,7 +21,7 @@ export default function DesktopImageGallery({ images, title, onOpen }: DesktopIm
             <div className="flex gap-3 rounded-[28px] overflow-hidden shadow-[0_10px_50px_rgba(0,0,0,0.10)]" style={{ height: '460px' }}>
                 {/* Main */}
                 <div className={`overflow-hidden cursor-zoom-in group relative ${side.length > 0 ? 'flex-[3]' : 'flex-1'}`} onClick={() => onOpen(0)}>
-                    <MyImage src={main || '/placeholder.jpg'} alt={title} className="w-full h-full transition-transform duration-[600ms] group-hover:scale-[1.04]" objectFit="cover" />
+                    <MyImage src={main || '/placeholder.jpg'} alt={title} className="w-full h-full transition-transform duration-[600ms] group-hover:scale-[1.04]" objectFit="cover" priority />
                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
                 </div>
                 {/* Side */}
@@ -31,7 +31,7 @@ export default function DesktopImageGallery({ images, title, onOpen }: DesktopIm
                             const showOverlay = i === side.length - 1 && extra > 0;
                             return (
                                 <div key={i} className="flex-1 relative overflow-hidden cursor-zoom-in group" onClick={() => onOpen(i + 1)}>
-                                    <MyImage src={img} alt={`${title} photo ${i + 2}`} className="w-full h-full transition-transform duration-[600ms] group-hover:scale-[1.04]" objectFit="cover" />
+                                    <MyImage src={img || '/placeholder.jpg'} alt={`${title} photo ${i + 2}`} className="w-full h-full transition-transform duration-[600ms] group-hover:scale-[1.04]" objectFit="cover" />
                                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
                                     {showOverlay && (
                                         <div className="absolute inset-0 bg-black/55 flex flex-col items-center justify-center gap-1" onClick={(e) => { e.stopPropagation(); onOpen(i + 1); }}>

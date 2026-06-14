@@ -46,6 +46,7 @@ export default function ImageLightbox({ images, title, initialIndex, onClose }: 
                         fill={false}
                         width={1400}
                         height={900}
+                        priority
                         style={{ maxWidth: '100%', maxHeight: 'calc(100vh - 200px)', objectFit: 'contain' }}
                     />
                 </div>
@@ -65,7 +66,7 @@ export default function ImageLightbox({ images, title, initialIndex, onClose }: 
                 <div className="flex gap-2 px-8 py-4 overflow-x-auto scrollbar-hide justify-center shrink-0">
                     {images.map((img, i) => (
                         <button key={i} onClick={() => setCurrent(i)} className={`shrink-0 w-16 h-12 rounded-lg overflow-hidden border-2 transition-all ${i === current ? 'border-[#EEA0FF] opacity-100' : 'border-transparent opacity-45 hover:opacity-75'}`}>
-                            <MyImage src={img} alt="" className="w-full h-full" objectFit="cover" />
+                            <MyImage src={img || '/placeholder.jpg'} alt="" className="w-full h-full" objectFit="cover" />
                         </button>
                     ))}
                 </div>
