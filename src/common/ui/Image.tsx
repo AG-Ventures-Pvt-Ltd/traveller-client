@@ -16,7 +16,7 @@ const MyImage = ({ src, alt,className,rounded, objectFit = 'cover', fill = true,
             <Image
                 src={imageSrc}
                 alt={alt || 'Some Trip Image'}
-                className={`${className} ${rounded ? 'rounded-full' : ''}`}
+                className={`${className ?? ''} ${rounded ? 'rounded-full' : ''}`.trim() || undefined}
                 style={{ objectFit }}
                 {...props}
             />
