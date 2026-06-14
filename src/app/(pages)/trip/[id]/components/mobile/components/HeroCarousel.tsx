@@ -182,24 +182,29 @@ export default function HeroCarousel({
             onTouchMove={onTouchMove}
             onTouchEnd={onTouchEnd}
         >
-            {/* Carousel Images */}
+            {/* Carousel Images — only render current ± 1 to avoid lazy-load skip on opacity-0 ancestors */}
             <div className="relative w-full h-full">
-                {images.map((image, index) => (
-                    <div
-                        key={index}
-                        className={`absolute w-full h-full transition-opacity duration-500 cursor-pointer ${
-                            index === currentImageIndex ? 'opacity-100' : 'opacity-0'
-                        }`}
-                        onClick={handleImageTap}
-                    >
-                        <MyImage
-                            src={image || '/placeholder.jpg'}
-                            alt={`${title} - Image ${index + 1}`}
-                            className="w-full h-full"
-                            priority={index === 0}
-                        />
-                    </div>
-                ))}
+                {images.map((image, index) => {
+                    const prev = (currentImageIndex - 1 + totalImages) % totalImages;
+                    const next = (currentImageIndex + 1) % totalImages;
+                    if (index !== prev && index !== currentImageIndex && index !== next) return null;
+                    return (
+                        <div
+                            key={index}
+                            className={`absolute w-full h-full transition-opacity duration-500 cursor-pointer ${
+                                index === currentImageIndex ? 'opacity-100' : 'opacity-0'
+                            }`}
+                            onClick={handleImageTap}
+                        >
+                            <MyImage
+                                src={image || '/placeholder.jpg'}
+                                alt={`${title} - Image ${index + 1}`}
+                                className="w-full h-full"
+                                priority
+                            />
+                        </div>
+                    );
+                })}
             </div>
 
             {/* Dark Overlay */}
