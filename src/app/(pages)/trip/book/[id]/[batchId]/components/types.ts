@@ -52,6 +52,7 @@ export interface TripDetails {
     };
     isCouponApplied: boolean;
     couponMessage?: string;
+    couponIncompatibleWith?: string[];
     appliedCoupon?: {
         code: string;
         displayText: string;

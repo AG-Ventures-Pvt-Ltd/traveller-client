@@ -172,6 +172,11 @@ const ReviewAndPay: React.FC<ReviewAndPayProps> = ({
                   {tripDetails.couponMessage}
                 </p>
               )}
+              {tripDetails?.couponIncompatibleWith?.includes('wondrrCash') && (
+                <p className="text-amber-700 text-xs font-medium font-['Satoshi'] leading-5 mt-0.5">
+                  Wondrr Cash cannot be used with this coupon
+                </p>
+              )}
             </div>
           </div>
         )}
