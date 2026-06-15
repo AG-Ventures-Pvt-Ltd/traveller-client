@@ -8,13 +8,13 @@ const nextConfig: NextConfig = {
     optimizePackageImports: ['@mui/material', 'lucide-react', '@tanstack/react-query'],
   },
   images: {
-  remotePatterns: [
-    { protocol: 'https', hostname: 'lh3.googleusercontent.com' },
-    { protocol: 'https', hostname: 'images.unsplash.com' },
-    { protocol: 'https', hostname : 'd1hjk5b7z017su.cloudfront.net'}
-  ],
-  qualities: [90,100],
-},
+    remotePatterns: [
+      { protocol: 'https', hostname: 'lh3.googleusercontent.com' },
+      { protocol: 'https', hostname: 'images.unsplash.com' },
+      { protocol: 'https', hostname: 'd1hjk5b7z017su.cloudfront.net' }
+    ],
+    qualities: [90, 100],
+  },
 
   async headers() {
     return [
@@ -32,12 +32,13 @@ const nextConfig: NextConfig = {
             key: 'Content-Security-Policy',
             value: [
               "default-src 'self'",
-              "script-src 'self' 'unsafe-inline' https://checkout.razorpay.com https://www.googletagmanager.com https://www.clarity.ms https://connect.facebook.net",
+              "script-src 'self' 'unsafe-inline' https://checkout.razorpay.com https://cdn.razorpay.com https://www.googletagmanager.com https://www.clarity.ms https://scripts.clarity.ms https://connect.facebook.net",
+              "script-src-elem 'self' 'unsafe-inline' https://checkout.razorpay.com https://cdn.razorpay.com https://www.googletagmanager.com https://www.clarity.ms https://scripts.clarity.ms https://connect.facebook.net",
               "style-src 'self' 'unsafe-inline'",
               "img-src 'self' data: blob: https://d1hjk5b7z017su.cloudfront.net https://www.facebook.com https://lh3.googleusercontent.com https://images.unsplash.com",
               "connect-src 'self' https:",
               "font-src 'self' data:",
-              "frame-src https://checkout.razorpay.com",
+              "frame-src https://checkout.razorpay.com https://api.razorpay.com",
               "frame-ancestors 'self'",
             ].join('; '),
           },
