@@ -30,6 +30,8 @@ export const API_ENDPOINTS = {
       const baseUrl = `/api/client/v1/discounts/${tripId}`;
       return email ? `${baseUrl}?email=${encodeURIComponent(email)}` : baseUrl;
     },
+    VALIDATE_COUPON: (tripId: string, code: string) =>
+      `/api/client/v1/discounts/${tripId}/validate?code=${encodeURIComponent(code)}`,
   },
   SUPPORT: {
     CREATE_TICKET: "/api/client/v1/support/tickets/create",

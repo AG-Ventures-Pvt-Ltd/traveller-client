@@ -176,6 +176,7 @@ export default function BookingFormPage({ tripId, batchId, onViewCoupons }: Book
                     {/* <FoodPreferenceSection /> */}
 
                     <DiscountsSection
+                        tripId={tripId}
                         coupons={bookingOptions?.coupons}
                         onViewCoupons={onViewCoupons ? () => onViewCoupons(bookingOptions?.coupons ?? []) : undefined}
                     />
@@ -220,6 +221,7 @@ export default function BookingFormPage({ tripId, batchId, onViewCoupons }: Book
             {/* <FoodPreferenceSection /> */}
 
             <DiscountsSection
+                tripId={tripId}
                 coupons={bookingOptions?.coupons}
                 onViewCoupons={onViewCoupons ? () => onViewCoupons(bookingOptions?.coupons ?? []) : undefined}
             />

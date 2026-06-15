@@ -7,8 +7,11 @@ import Button from '@/common/ui/Buttons/Button';
 import CustomInput from '@/common/ui/CustomInput';
 import { useBookingFormStore } from '../hooks/useBookingFormStore';
 import type { Coupon } from '../types';
+import { baseAPI } from '@/services/baseApi';
+import { API_ENDPOINTS } from '@/common/constants/apiEndpoints';
 
 interface DiscountsSectionProps {
+    tripId: string;
     coupons: Coupon[] | undefined;
     onViewCoupons?: () => void;
     isOpen?: boolean;
@@ -16,6 +19,7 @@ interface DiscountsSectionProps {
 }
 
 export default function DiscountsSection({
+    tripId,
     coupons,
     onViewCoupons,
     isOpen,
@@ -23,17 +27,40 @@ export default function DiscountsSection({
 }: DiscountsSectionProps) {
     const { appliedCoupon, setAppliedCoupon } = useBookingFormStore();
     const [inputValue, setInputValue] = useState('');
-    const handleApplyCoupon = () => {
-        const coupon = coupons?.find(c => c.code.toLowerCase() === inputValue.toLowerCase());
-        if (coupon) {
-            setAppliedCoupon(coupon);
+    const [isValidating, setIsValidating] = useState(false);
+    const [couponError, setCouponError] = useState('');
+
+    const handleApplyCoupon = async () => {
+        const code = inputValue.trim();
+        if (!code) return;
+        setCouponError('');
+
+        // Check local list first (public coupons — no round-trip needed)
+        const localCoupon = coupons?.find(c => c.code.toLowerCase() === code.toLowerCase());
+        if (localCoupon) {
+            setAppliedCoupon(localCoupon);
             setInputValue('');
+            return;
+        }
+
+        // Not in public list — validate via server (handles secret coupons)
+        setIsValidating(true);
+        try {
+            const response = await baseAPI.get(API_ENDPOINTS.DISCOUNTS.VALIDATE_COUPON(tripId, code));
+            setAppliedCoupon(response.data.data);
+            setInputValue('');
+        } catch (err) {
+            const msg = (err as { response?: { data?: { message?: string } } })?.response?.data?.message || 'Invalid coupon code';
+            setCouponError(msg);
+        } finally {
+            setIsValidating(false);
         }
     };
 
     const handleRemoveCoupon = () => {
         setAppliedCoupon(null);
         setInputValue('');
+        setCouponError('');
     };
 
     useEffect(() => {
@@ -77,8 +104,11 @@ export default function DiscountsSection({
                             icon={TagIcon}
                             placeholder="Add a coupon"
                             value={inputValue}
-                            onChange={e => setInputValue(e.target.value)}
+                            onChange={e => { setInputValue(e.target.value); setCouponError(''); }}
                         />
+                        {couponError && (
+                            <p className="text-xs text-red-500 px-1">{couponError}</p>
+                        )}
                         <button
                             onClick={onViewCoupons}
                             className="text-xs text-[#448AFF] text-left px-1 self-start"
@@ -89,9 +119,9 @@ export default function DiscountsSection({
                             variant="purple"
                             fullWidth
                             onClick={handleApplyCoupon}
-                            disabled={!inputValue.trim()}
+                            disabled={!inputValue.trim() || isValidating}
                         >
-                            Apply
+                            {isValidating ? 'Validating...' : 'Apply'}
                         </Button>
                     </>
                 )}
