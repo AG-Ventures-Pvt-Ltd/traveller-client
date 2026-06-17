@@ -5,7 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { HeartIcon, SealCheckIcon, StarIcon, CurrencyInrIcon } from '@phosphor-icons/react';
 import { ArrowLeft, Compass, Calendar } from 'lucide-react';
 import MyImage from '@/common/ui/Image';
-import Footer from '../../(landing)/Footer/Footer';
+import Footer from '../../(landing)/components/Footer/Footer';
 import { useGetData } from '@/services/useGetData';
 import { API_ENDPOINTS } from '@/common/constants/apiEndpoints';
 import { useBookMarking } from '@/common/hooks/useBookMarking';

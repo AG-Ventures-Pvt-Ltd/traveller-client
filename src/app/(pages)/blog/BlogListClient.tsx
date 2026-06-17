@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { Calendar, Clock, Tag, ChevronRight, BookOpen } from 'lucide-react';
-import Footer from '../(landing)/Footer/Footer';
+import Footer from '../(landing)/components/Footer/Footer';
 import { API_ENDPOINTS } from '@/common/constants/apiEndpoints';
 
 interface BlogSummary {

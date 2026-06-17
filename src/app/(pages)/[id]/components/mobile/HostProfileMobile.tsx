@@ -7,8 +7,8 @@ import { API_ENDPOINTS } from '@/common/constants/apiEndpoints'
 import HostHero from './components/HostHero'
 import { useGetData } from '@/services/useGetData'
 import { HostReviews } from '../HostReviews/HostReviews'
-import SlidingCarouselSection from '@/app/(pages)/(landing)/HomePage/components/SlidingCarouselSection'
-import { Trip } from '@/app/(pages)/(landing)/HomePage/types'
+import SlidingCarouselSection from '@/app/(pages)/(landing)/components/MobileLanding/components/CarouselSection'
+import { Trip } from '@/app/(pages)/(landing)/components/MobileLanding/types'
 import AboutHost from '../AboutHost'
 
 interface Pagination {

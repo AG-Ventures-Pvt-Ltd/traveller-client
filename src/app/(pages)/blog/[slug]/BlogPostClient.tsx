@@ -4,7 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { Calendar, Clock, ChevronRight, User, Tag, ArrowLeft } from 'lucide-react';
-import Footer from '../../(landing)/Footer/Footer';
+import Footer from '../../(landing)/components/Footer/Footer';
 import { sanitizeHtml } from '@/common/utils/sanitizeHtml';
 
 interface Blog {

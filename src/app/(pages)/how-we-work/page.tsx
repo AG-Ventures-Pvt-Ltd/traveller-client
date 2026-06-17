@@ -8,7 +8,7 @@ import WhyBookSection from './components/WhyBookSection'
 import FinalCTASection from './components/FinalCTASection'
 import GroupAdv from './components/GroupAdv'
 import ThreePage from './components/ThreePage'
-import Footer from '../(landing)/Footer/Footer'
+import Footer from '../(landing)/components/Footer/Footer'
 
 const HowWeWork = () => {
   return (

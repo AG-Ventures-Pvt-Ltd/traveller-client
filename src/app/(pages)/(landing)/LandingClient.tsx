@@ -6,8 +6,8 @@ import { useLocation } from '@/common/hooks/useLocation';
 
 // Both variants are SSR'd so the correct one is in the initial HTML per device
 // (no desktop→mobile flash, and content is present for mobile-first crawlers).
-const LandingPage = dynamic(() => import('./LandingPage/LandingPage'));
-const HomePage = dynamic(() => import('./HomePage/page'));
+const DesktopLanding = dynamic(() => import('./components/DesktopLanding/DesktopLanding'));
+const MobileLanding = dynamic(() => import('./components/MobileLanding/MobileLanding'));
 
 interface LandingClientProps {
   /** Device guess from the request User-Agent so SSR renders the right variant. */
@@ -41,7 +41,7 @@ const LandingClient = ({ initialIsMobile }: LandingClientProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return isMobile ? <HomePage /> : <LandingPage />;
+  return isMobile ? <MobileLanding /> : <DesktopLanding />;
 };
 
 export default LandingClient;

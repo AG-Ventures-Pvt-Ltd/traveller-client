@@ -6,7 +6,7 @@ import WhatWeOfferSection from './components/WhatWeOfferSection'
 import WhoCanPartnerSection from './components/WhoCanPartnerSection'
 import HowItWorksSection from './components/HowItWorksSection'
 import { TrustSection, FinalCTASection } from './components/TrustAndCTASection'
-import Footer from '../(landing)/Footer/Footer'
+import Footer from '../(landing)/components/Footer/Footer'
 import PartnerFeatures from './components/PartnerFeatures'
 import PartnerGrowth from './components/PartnerGrowth'
 export default function PartnerWithUsPage() {

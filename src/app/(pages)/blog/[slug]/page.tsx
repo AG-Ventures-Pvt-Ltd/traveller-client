@@ -52,7 +52,7 @@ export async function generateMetadata({
     ? blog.coverImage.startsWith('http')
       ? blog.coverImage
       : `${process.env.NEXT_PUBLIC_CLOUDFRONT_URL}${blog.coverImage}`
-    : `${SITE_URL}/assets/png/banner.png`;
+    : `${SITE_URL}/png/metadata.png`;
 
   return {
     title: `${title} | Wondrr Blog`,

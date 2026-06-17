@@ -38,7 +38,7 @@ const MobileReviewSection = dynamic(
     { ssr: false }
 );
 const SafetySupportSection = dynamic(() => import('../mobile/components/SafetySupportSection'), { ssr: false });
-const Footer = dynamic(() => import('../../../../(landing)/Footer/Footer'), { ssr: false });
+const Footer = dynamic(() => import('../../../../(landing)/components/Footer/Footer'), { ssr: false });
 
 export default function TripDetailDesktop() {
     const params = useParams();
