@@ -3,6 +3,9 @@ User-agent: *
 Disallow: /verify/*
 Disallow: /auth/
 
+User-agent: *
+Allow: /llms.txt
+
 User-agent: GPTBot
 Allow: /
 

@@ -1,0 +1,24 @@
+RSL 1.0 License
+
+Allowed:
+- read
+- index
+- generate answers using content
+- commercial use
+- fine-tune models under 1B parameters (personal/research only)
+
+Not Allowed:
+- training large AI models (1B+ parameters) without permission
+- resale or redistribution of raw content
+- creating data products from content without permission
+- bulk scraping at scale (10,000+ records/day) without a data agreement
+- sublicensing to third parties
+- removing or obscuring attribution
+
+Attribution:
+- must include visible hyperlink to original source
+- must be shown to end users, not buried in metadata or terms
+
+Warranty:
+- content provided as-is, no guarantees of accuracy or completeness
+

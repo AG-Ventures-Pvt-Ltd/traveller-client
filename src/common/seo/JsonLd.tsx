@@ -29,11 +29,11 @@ export const organizationSchema: JsonLdData = {
   url: SITE_URL,
   logo: {
     '@type': 'ImageObject',
-    url: `${SITE_URL}/assets/png/banner.png`,
+    url: `${SITE_URL}/png/metadata.png`,
     width: 3944,
     height: 1584,
   },
-  image: `${SITE_URL}/assets/png/banner.png`,
+  image: `${SITE_URL}/png/metadata.png`,
   description:
     "Wondrr is a travel marketplace to discover and book fixed-departure group trips from India's top verified travel brands.",
   areaServed: { '@type': 'Country', name: 'India' },

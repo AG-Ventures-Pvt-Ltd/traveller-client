@@ -3,7 +3,7 @@ import "./globals.css";
 import React from 'react';
 import { Providers } from "./providers";
 import Script from "next/script";
-import Navbar from '../(pages)/(landing)/Navbar/Navbar'
+import Navbar from './(landing)/components/Navbar/Navbar'
 import StickyNavigation from '@/common/components/composites/StickyNavigation';
 import type { Metadata } from 'next';
 import Image from "next/image";
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
     siteName: "Wondrr",
     images: [
       {
-        url: `https://wondrr.in/assets/png/banner.png`, // absolute URL — real social card
+        url: `https://wondrr.in/png/metadata.png`, // absolute URL — real social card
         width: 3944,
         height: 1584,
         alt: "Wondrr — group trips from India's top travel brands",
@@ -43,7 +43,7 @@ export const metadata: Metadata = {
     title: "Group Trips from India's Top Travel Brands | Wondrr",
     description:
       "Browse and book group trips from India's top verified travel brands — all on one platform.",
-    images: [`https://wondrr.in/assets/png/banner.png`],
+    images: [`https://wondrr.in/png/metadata.png`],
   },
 }
 
