@@ -65,7 +65,7 @@ const CarouselCard: React.FC<CarouselCardProps> = ({
         <div className="absolute bottom-3 right-3 bg-white rounded-full px-2 py-1 flex items-center gap-1 shadow-md">
           <StarIcon size={14} className="w-3 h-3 text-yellow-500" weight="fill" />
           <span className="text-neutral-900 text-xs font-bold font-['Satoshi']">
-            {rating == 0 ? 'New' : rating }
+            {rating == 0 ? 'New' : rating.toFixed(1) }
           </span>
         </div>
       </div>

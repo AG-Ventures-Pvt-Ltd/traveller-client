@@ -27,6 +27,7 @@ const SlidingCarousel: React.FC<DesktopSlidingCarouselProps> = ({
   onNextRef,
   onBoundsChange,
 }) => {
+
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);

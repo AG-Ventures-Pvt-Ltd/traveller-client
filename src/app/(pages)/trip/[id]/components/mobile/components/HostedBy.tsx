@@ -1,16 +1,17 @@
 'use client'
 
+import Link from 'next/link';
 import MyImage from '@/common/ui/Image';
 import { HostedByProps } from '../types';
 import CollapsibleCard from '@/common/ui/CollapsibleCard';
 import { ShieldCheckIcon } from '@phosphor-icons/react';
 
 
-export default function HostedBy({ host, onPress }: HostedByProps) {
+export default function HostedBy({ host }: HostedByProps) {
     return (
         <CollapsibleCard title='Hosted by'>
-            <button
-                onClick={onPress}
+            <Link
+                href={`/${host.username}`}
                 className="flex items-center gap-4 mb-6 hover:opacity-80 transition-opacity w-full px-4"
             >
                 {host.avatar ? (
@@ -29,7 +30,7 @@ export default function HostedBy({ host, onPress }: HostedByProps) {
                     <p className="text-md font-normal text-black">{host.name}</p>
                     {host.certificates && host.certificates.includes('certified') && <span className='font-semibold flex items-center gap-1'><ShieldCheckIcon weight='fill' className='text-[#43A047]'/>Wondrr Verified</span>}
                 </div>
-            </button>
+            </Link>
         </CollapsibleCard>
     );
 }

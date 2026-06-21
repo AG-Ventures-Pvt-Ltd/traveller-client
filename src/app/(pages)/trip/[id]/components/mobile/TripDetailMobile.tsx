@@ -254,10 +254,7 @@ export default function TripDetailMobile() {
                             />
                         )}
                         {tripData?.host && (
-                            <HostedBy
-                                host={tripData.host}
-                                onPress={() => router.push(`/${tripData.host!.username}`)}
-                            />
+                            <HostedBy host={tripData.host} />
                         )}
                         <OverviewSection
                             description={{

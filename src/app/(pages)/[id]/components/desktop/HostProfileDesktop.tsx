@@ -88,7 +88,7 @@ const HostProfileDesktop = () => {
           <DesktopCarouselSection title="Upcoming Trips" trips={upcomingTrips} carouselIndex={0} />
           {hasMoreUpcoming && (
             <button
-              onClick={() => router.push(`/${id}/trips/upcoming`)}
+              onClick={() => router.push(`/trips?host=${id}&status=published`)}
               className="mx-4 mt-4 flex items-center gap-1 text-sm font-semibold text-[#1B4332] transition hover:gap-2"
             >
               View all upcoming trips <ArrowRight size={16} weight="bold" />
@@ -106,7 +106,7 @@ const HostProfileDesktop = () => {
           <DesktopCarouselSection title="Past Trips" trips={pastTrips} carouselIndex={1} />
           {hasMorePast && (
             <button
-              onClick={() => router.push(`/${id}/trips/past`)}
+              onClick={() => router.push(`/trips?host=${id}&status=archived`)}
               className="mx-4 mt-4 flex items-center gap-1 text-sm font-semibold text-[#1B4332] transition hover:gap-2"
             >
               View all past trips <ArrowRight size={16} weight="bold" />

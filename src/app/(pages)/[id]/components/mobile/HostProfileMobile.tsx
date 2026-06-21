@@ -66,7 +66,7 @@ const HostProfileMobile = () => {
             title="Upcoming Trips"
             trips={upcomingTrips}
             carouselIndex={0}
-            viewAllClick={hasMoreUpcoming ? () => router.push(`/${id}/trips/upcoming`) : undefined}
+            viewAllClick={hasMoreUpcoming ? () => router.push(`/trips?host=${id}&status=published`) : undefined}
           />
         </div>
       )}
@@ -77,7 +77,7 @@ const HostProfileMobile = () => {
             title="Past Trips"
             trips={pastTrips}
             carouselIndex={1}
-            viewAllClick={hasMorePast ? () => router.push(`/${id}/trips/past`) : undefined}
+            viewAllClick={hasMorePast ? () => router.push(`/trips?host=${id}&status=archived`) : undefined}
           />
         </div>
       )}

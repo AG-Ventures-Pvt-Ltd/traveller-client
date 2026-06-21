@@ -346,7 +346,6 @@ export default function TripDetailDesktop() {
                                 tripTitle={tripData.title}
                                 tripSlug={id}
                                 host={tripData.host}
-                                onHostPress={() => tripData.host && router.push(`/${tripData.host.username}`)}
                                 seatsLeft={selectedBatchData?.seatsAvailable}
                             />
                         </div>

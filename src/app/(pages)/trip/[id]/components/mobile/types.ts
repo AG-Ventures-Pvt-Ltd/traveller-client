@@ -21,7 +21,6 @@ export interface TabNavigationProps {
 
 export interface HostedByProps {
     host: NonNullable<TripData['host']>;
-    onPress: () => void;
 }
 
 export interface OverviewSectionProps {
