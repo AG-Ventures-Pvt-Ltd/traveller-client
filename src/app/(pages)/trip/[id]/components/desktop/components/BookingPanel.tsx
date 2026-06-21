@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link';
 import { CurrencyInrIcon, WhatsappLogoIcon, ShieldCheckIcon } from '@phosphor-icons/react';
 import { Plane } from 'lucide-react';
 import MyImage from '@/common/ui/Image';
@@ -25,13 +26,12 @@ export interface BookingPanelProps {
     tripTitle: string;
     tripSlug: string;
     host?: TripData['host'];
-    onHostPress: () => void;
     seatsLeft?: number;
 }
 
 export default function BookingPanel({
     displayPrice, sortedBatches, selectedBatch, onSelectBatch, bestTimeToVisit,
-    onBookNow, isBooking, tripTitle, tripSlug, host, onHostPress,
+    onBookNow, isBooking, tripTitle, tripSlug, host,
 }: BookingPanelProps) {
     const handleWhatsApp = () => {
         const msg = `https://wondrr.in/trip/${tripSlug}\n\n Hi, I want to book the "${tripTitle}" trip. \nPlease help me confirm my spot.`;
@@ -67,7 +67,7 @@ export default function BookingPanel({
                 {host && (
                     <div className="border-t-2 border-dashed border-[#f0e8de] pt-3.5">
                         <p className="text-sm font-bold mb-1 pl-1">Hosted by</p>
-                        <button onClick={onHostPress} className="flex items-center gap-3 w-full text-left hover:opacity-80 transition-opacity group">
+                        <Link href={`/${host.username}`} className="flex items-center gap-3 w-full text-left hover:opacity-80 transition-opacity group">
                             {host.avatar ? (
                                 <MyImage src={host.avatar} alt={host.name} rounded className="w-12 h-12 shrink-0" />
                             ) : (
@@ -83,7 +83,7 @@ export default function BookingPanel({
                                     </span>
                                 )}
                             </div>
-                        </button>
+                        </Link>
                     </div>
                 )}
             </div>

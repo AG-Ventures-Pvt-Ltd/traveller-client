@@ -20,11 +20,11 @@ const CarouselSection: React.FC<SlidingCarouselSectionProps> = ({
     <div className="w-full flex flex-col gap-3">
       <div className='flex justify-between px-4'>
         <div className="flex flex-col gap-3">
-          <h2 className="text-neutral-900 text-lg sm:text-3xl lg:text-4xl font-medium font-['Satoshi'] leading-tight">
+          <h2 className="text-neutral-900 text-lg sm:text-3xl lg:text-4xl font-medium leading-tight">
             {title}
           </h2>
           {description && (
-            <p className="text-neutral-700 text-sm sm:text-base font-medium font-['Satoshi']">
+            <p className="text-neutral-700 text-sm sm:text-base font-medium">
               {description}
             </p>
           )}

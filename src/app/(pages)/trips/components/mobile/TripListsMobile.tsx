@@ -70,6 +70,8 @@ const TripListsMobile = () => {
     const isLoadingRef = useRef(false);
     
     const qParam = searchParams.get('q');
+    const hostParam = searchParams.get('host');
+    const statusParam = searchParams.get('status');
     const apiUrl = useMemo(() => {
         const params = new URLSearchParams();
 
@@ -92,6 +94,9 @@ const TripListsMobile = () => {
             params.append('international', 'true');
         }
 
+        if (hostParam) params.append('host', hostParam);
+        if (statusParam) params.append('status', statusParam);
+
         if (qParam) {
             params.append('q', qParam);
             return `api/client/v1/trips/v2/search?${params.toString()}`;
@@ -102,7 +107,7 @@ const TripListsMobile = () => {
         params.append('limit', PAGE_SIZE.toString());
 
         return `api/client/v1/trips/search?${params.toString()}`;
-    }, [appliedFilters, destination, page, qParam]);
+    }, [appliedFilters, destination, page, qParam, hostParam, statusParam]);
 
     const { data: tripsData, isLoading, error } = useGetData<TripsResponse>(apiUrl, {
         queryKey: [apiUrl],
@@ -138,7 +143,7 @@ const TripListsMobile = () => {
         setHasMore(true);
         hasMoreRef.current = true;
         isFetchingMore.current = false;
-    }, [appliedFilters]);
+    }, [appliedFilters, hostParam, statusParam]);
 
     // Infinite scroll observer — created once, reads state via refs
     useEffect(() => {

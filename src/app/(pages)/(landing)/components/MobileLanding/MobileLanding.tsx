@@ -45,7 +45,7 @@ const MobileLanding = () => {
                     provider: trip.hostName,
                     duration: trip.days,
                     price: trip.price,
-                    rating: Math.random() * 1 + 4,
+                    rating: trip.rating,
                     tripSlug: trip.tripSlug,
                     isBookmarked: trip.isBookmarked,
                 })),

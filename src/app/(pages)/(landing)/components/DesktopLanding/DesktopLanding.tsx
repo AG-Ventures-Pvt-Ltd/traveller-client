@@ -41,6 +41,8 @@ const DesktopLanding = () => {
     }
   };
 
+  console.log(featuredTripsData)
+
   const sortedCarousels = useMemo(() => {
     if (!featuredTripsData) return [];
     return [...featuredTripsData]
@@ -55,7 +57,7 @@ const DesktopLanding = () => {
           provider: trip.hostName,
           duration: trip.days,
           price: trip.price,
-          rating: 0,
+          rating: trip.rating,
           tripSlug: trip.tripSlug,
           isBookmarked: trip.isBookmarked,
         })),

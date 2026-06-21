@@ -21,6 +21,7 @@ const CarouselCard: React.FC<CarouselCardProps> = ({
   tripSlug,
   isBookmarked: initialIsBookmarked = false,
 }) => {
+
   const slug = tripSlug || String(id);
   const href = `/trip/${generateSlug(title, tripSlug || String(id))}`;
   const { isBookmarked, toggle } = useBookMarking(slug, initialIsBookmarked);

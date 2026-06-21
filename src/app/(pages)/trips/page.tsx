@@ -2,14 +2,9 @@
 
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useState, useEffect, useCallback, useRef } from 'react';
-import dynamic from 'next/dynamic';
 import TripFilters, { FilterValues } from './components/TripFilters';
-const FilterModal = dynamic(() => import('./components/FilterModal'), { ssr: false });
 import TripList from './components/TripList';
 import { useGetData } from '@/services/useGetData';
-import BackButton from '@/common/ui/BackButton';
-import { SlidersHorizontal } from 'lucide-react';
-import Button from '@/common/components/atoms/Button';
 import TripListSkeleton from './components/TripListSkeleton';
 import { useDevice } from '@/common/hooks/useDevice';
 import TripListsMobile from './components/mobile/TripListsMobile'
@@ -60,6 +55,8 @@ export default function Page() {
   const router = useRouter();
   const destination = searchParams.get('destination');
   const qParam = searchParams.get('q');
+  const hostParam = searchParams.get('host');
+  const statusParam = searchParams.get('status');
   const [filters, setFilters] = useState<FilterValues>({
     states: [],
     priceRange: null,
@@ -79,7 +76,6 @@ export default function Page() {
     international: false,
   });
   const [apiUrl, setApiUrl] = useState<string | null>(null);
-  const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [page, setPage] = useState(1);
   const [allTrips, setAllTrips] = useState<Trip[]>([]);
   const [hasMore, setHasMore] = useState(true);
@@ -100,7 +96,7 @@ export default function Page() {
     setHasMore(true);
     hasMoreRef.current = true;
     isFetchingMore.current = false;
-  }, [appliedFilters, destination, qParam]);
+  }, [appliedFilters, destination, qParam, hostParam, statusParam]);
 
   useEffect(() => {
     const params = new URLSearchParams();
@@ -124,6 +120,9 @@ export default function Page() {
       params.append('international', 'true');
     }
 
+    if (hostParam) params.append('host', hostParam);
+    if (statusParam) params.append('status', statusParam);
+
     if (qParam) {
       params.append('q', qParam);
       setApiUrl(`api/client/v1/trips/v2/search?${params.toString()}`);
@@ -136,7 +135,7 @@ export default function Page() {
 
     const queryString = params.toString();
     setApiUrl(`api/client/v1/trips/search${queryString ? `?${queryString}` : ''}`);
-  }, [appliedFilters, destination, qParam, page]);
+  }, [appliedFilters, destination, qParam, hostParam, statusParam, page]);
 
   const { data: tripsData, isLoading: tripsLoading, error } = useGetData<TripsResponse>(apiUrl || '', {
     queryKey: apiUrl ? [apiUrl] : ['trips-loading'],
@@ -224,7 +223,7 @@ export default function Page() {
   return (
     <div className='flex flex-col py-2 mb-8 mx-12'>
       <div className='flex gap-3'>
-        <div className='flex-1 self-start sticky top-[8%]'>
+        <div className='flex-1 self-start sticky top-[10%]'>
           <TripFilters onFilterChange={handleFilterChange} onApplyFilters={handleApplyFilters} />
         </div>
         <div className='flex-1 md:flex-[3]'>
@@ -235,16 +234,16 @@ export default function Page() {
             </div>
           )}
           <div>
-            <div>
+            {tripsData && tripsData.pagination?.total > 0 && <div>
               <h1 className='text-4xl font-bold text-gray-900'>
-                {qParam ? `Results for "${qParam}"` : destination ? `Search Results for ${destination}` : 'All Trips'}
+                {hostParam ? `Trips by ${hostParam}` : qParam ? `Results for "${qParam}"` : destination ? `Search Results for ${destination}` : 'All Trips'}
               </h1>
               {tripsData && (
                 <p className='text mb-3 font-semibold text-gray-600 mt-1'>
                   {tripsData.pagination?.total} {tripsData.pagination?.total === 1 ? 'trip' : 'trips'} found
                 </p>
               )}
-            </div>
+            </div>}
             {tripsLoading && page === 1 && allTrips.length === 0 && <TripListSkeleton />}
             {allTrips.length > 0 && <TripList
               trips={allTrips}

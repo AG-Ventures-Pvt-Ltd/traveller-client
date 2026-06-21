@@ -19,6 +19,7 @@ export interface CarouselTrip {
   days: string;
   price: number;
   isBookmarked: boolean;
+  rating: number;
 }
 
 export interface Carousel {
