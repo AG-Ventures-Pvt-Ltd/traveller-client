@@ -22,18 +22,16 @@ export default function BookingPolicy() {
 
                 <h2 className="text-2xl font-semibold mb-4">2. Cancellation & Refund Policy</h2>
                 <ul className="list-disc list-inside mb-4 space-y-1">
-                    <li>More than 7 days before the experience: 100% refund (less payment gateway charges)</li>
-                    <li>Between 72 hours and 7 days before the experience: 50% refund (less payment gateway charges)</li>
-                    <li>Less than 72 hours before the experience: No refund</li>
-                    <li>No-Show (failure to appear): No refund</li>
+                    <li>As mentioned in the trips Cancellation Section</li>
                 </ul>
                 <p className="mb-4"><strong>Important Refund Terms:</strong></p>
                 <ul className="list-disc list-inside mb-6 space-y-1">
                     <li>All refunds are subject to deduction of payment gateway processing charges (typically 2-3% of transaction value)</li>
                     <li>Refunds will be processed within 7-10 business days to your original payment method</li>
-                    <li>In cases where the Partner has received advance payments for non-refundable third-party costs (accommodation, transportation, permits), these costs will be deducted from your refund.
-                        {/* Such costs will be clearly disclosed in the experience listing prior to booking. */}
-                    </li>
+                    {/* <li>
+                        In cases where the Partner has received advance payments for non-refundable third-party costs (accommodation, transportation, permits), these costs will be deducted from your refund.
+                        Such costs will be clearly disclosed in the experience listing prior to booking.
+                    </li> */}
                 </ul>
 
                 <h2 className="text-2xl font-semibold mb-4">3. Partner Cancellations</h2>
@@ -70,7 +68,7 @@ export default function BookingPolicy() {
 
                 <h2 className="text-2xl font-semibold mb-4">6. Pricing & Payment</h2>
                 <ul className="list-disc list-inside mb-6 space-y-1">
-                    <li>All prices displayed on the platform are in Indian Rupees (INR) and include applicable taxes unless explicitly stated otherwise</li>
+                    <li>All prices displayed on the platform are in Indian Rupees (INR) and exclude applicable taxes</li>
                     <li>Payment must be completed at the time of booking through our secure payment gateway</li>
                     <li>Payment gateway processing charges are non-refundable in all circumstances</li>
                     <li>For international transactions, currency conversion fees charged by your financial institution are your responsibility</li>

@@ -7,9 +7,11 @@ export async function GET() {
     const pages = [
         { url: '', priority: '1.0', changefreq: 'weekly', lastmod: today },
         { url: '/trips', priority: '0.9', changefreq: 'daily', lastmod: today },
-        { url: '/booking-policy', priority: '0.7', changefreq: 'monthly', lastmod: '2026-06-01' },
+{ url: '/blog', priority: '0.8', changefreq: 'daily', lastmod: today },
         { url: '/partner-with-us', priority: '0.7', changefreq: 'weekly', lastmod: today },
         { url: '/about', priority: '0.5', changefreq: 'monthly', lastmod: '2026-06-01' },
+        { url: '/booking-policy', priority: '0.4', changefreq: 'monthly', lastmod: '2026-06-01' },
+        { url: '/privacy-policy', priority: '0.3', changefreq: 'monthly', lastmod: '2026-06-01' },
     ];
 
     const xml = `<?xml version="1.0" encoding="UTF-8"?>

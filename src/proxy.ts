@@ -5,7 +5,6 @@ const protectedRoutes = [
   '/profile',
   '/referral',
   '/referral-policy',
-  '/booking-policy'
 ];
 
 const authRoutes = ['/auth'];

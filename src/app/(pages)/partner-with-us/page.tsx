@@ -1,32 +1,30 @@
-'use client'
-import React from 'react'
-import PartnerHeroSection from './components/PartnerHeroSection'
-import WhyPartnerSection from './components/WhyPartnerSection'
-import WhatWeOfferSection from './components/WhatWeOfferSection'
-import WhoCanPartnerSection from './components/WhoCanPartnerSection'
-import HowItWorksSection from './components/HowItWorksSection'
-import { TrustSection, FinalCTASection } from './components/TrustAndCTASection'
+import PartnerHero from './components/PartnerHero'
+import WhyPartner from './components/WhyPartner'
+import PartnerTools from './components/PartnerTools'
+import PartnerSteps from './components/PartnerSteps'
+import WhoCanPartner from './components/WhoCanPartner'
+import PartnerFaq from './components/PartnerFaq'
+import PartnerCta from './components/PartnerCta'
 import Footer from '../(landing)/components/Footer/Footer'
-import PartnerFeatures from './components/PartnerFeatures'
-import PartnerGrowth from './components/PartnerGrowth'
+
 export default function PartnerWithUsPage() {
   return (
-    <main className="flex flex-col items-center">
-      <div className="w-full px-[1%]">
-        <PartnerHeroSection />
+    <main className="flex min-h-screen flex-col bg-[#FFF9F4]">
+      <div className="px-3 pt-3 sm:px-5 sm:pt-5">
+        <PartnerHero />
       </div>
-      <div className="flex flex-col justify-center mx-[4%] md:mx-[6%] w-full mb-12">
-        <WhyPartnerSection />
-        <PartnerFeatures />
-        <WhatWeOfferSection />
 
-        <WhoCanPartnerSection />
-        <HowItWorksSection />
-        <PartnerGrowth />
-        <TrustSection />
+      <WhyPartner />
 
-        <FinalCTASection />
+      <div className="px-3 sm:px-5">
+        <PartnerTools />
       </div>
+
+      <PartnerSteps />
+      <WhoCanPartner />
+      <PartnerFaq />
+      <PartnerCta />
+
       <Footer />
     </main>
   )

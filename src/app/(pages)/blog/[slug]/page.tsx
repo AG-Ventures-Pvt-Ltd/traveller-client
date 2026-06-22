@@ -27,7 +27,9 @@ interface Blog {
 
 async function fetchBlog(slug: string): Promise<Blog | null> {
   try {
-    return await getServerData<Blog>(API_ENDPOINTS.BLOGS.BY_SLUG(slug));
+    // API nests the record under `data.blog`; getServerData already unwraps `data`.
+    const res = await getServerData<{ blog: Blog }>(API_ENDPOINTS.BLOGS.BY_SLUG(slug));
+    return res?.blog ?? null;
   } catch {
     return null;
   }

@@ -21,5 +21,11 @@ Allow: /
 User-agent: Googlebot
 Allow: /
 
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
 # Sitemaps
 Sitemap: https://wondrr.in/sitemap.xml
