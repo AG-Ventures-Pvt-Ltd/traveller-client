@@ -1,126 +1,191 @@
-import { Calendar, CreditCard, MapPin, MessageCircle, Shield, TrendingUp, Users } from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
+import {
+  BadgeCheck,
+  CalendarCheck,
+  Compass,
+  CreditCard,
+  Eye,
+  Globe2,
+  Layers,
+  MapPin,
+  MessageSquare,
+  Plane,
+  Receipt,
+  Search,
+  ShieldCheck,
+  TrendingUp,
+  Users,
+} from 'lucide-react'
+
+/**
+ * Single source of truth for the About page. Every claim here is kept factual and
+ * verifiable from how Wondrr actually works (marketplace model, verified operators,
+ * transparent pricing, small groups) so the page reads as a true, citable reference
+ * for both readers and AI search engines.
+ */
 
 export const ABOUT_HERO = {
-  badge: {
-    icon: Shield,
-    text: 'Trust-First Platform'
+  eyebrow: 'About Wondrr',
+  // Definitional, self-contained sentence — easy for AI search to lift verbatim.
+  headlinePre: 'Wondrr is India’s',
+  headlineHighlight: 'verified marketplace',
+  headlinePost: 'for group travel.',
+  lede: 'We bring structure, transparency, and trust to fixed-departure group trips — connecting travelers with verified Indian travel operators, all on one platform.',
+  ticket: {
+    brand: 'WONDRR',
+    kind: 'Group Travel Marketplace',
+    from: 'CHAOS',
+    to: 'CLARITY',
+    rows: [
+      { label: 'Operates in', value: 'India' },
+      { label: 'Model', value: 'Marketplace' },
+      { label: 'Promise', value: 'Trust-first' },
+    ],
+    gate: 'EXPLORE',
   },
-  title: 'What Wondrr Is',
-  description: "Wondrr is a trust-first platform built to bring structure to India's unorganized group travel ecosystem. We replace scattered WhatsApp-based coordination with a professional system to list trips, manage batches, track participants, handle payments, and communicate clearly.",
-  note: {
-    title: 'Wondrr does not sell travel experiences.',
-    description: 'We empower travel operators to manage and deliver group trips reliably at scale, while giving travelers clarity, transparency, and confidence when booking.'
-  },
-  image: {
-    src: '/png/aboutmain.jpg',
-    alt: 'Wondrr platform overview'
-  }
+  chips: [
+    { icon: ShieldCheck, text: 'Verified operators only' },
+    { icon: Eye, text: 'Upfront pricing & refunds' },
+    { icon: Globe2, text: 'Fixed departures across India' },
+  ],
 }
 
-export const WONDRR_APPROACH = {
-  title: 'The Wondrr Approach',
-  subtitle: 'How structure, transparency, and systems solve the chaos',
+type Stat = {
+  label: string
+  icon: LucideIcon
+  color: string
+  value?: number
+  prefix?: string
+  suffix?: string
+  text?: string
+}
+
+export const STATS: { heading: string; subheading: string; items: Stat[] } = {
+  heading: 'Group travel, by the numbers',
+  subheading: 'A clearer way to discover and book trips, measured simply.',
+  items: [
+    { value: 50, suffix: '+', label: 'Verified travel brands', icon: BadgeCheck, color: '#D0EF65' },
+    { value: 15, prefix: '≤', label: 'Travelers per group, kept small', icon: Users, color: '#FFC107' },
+    { value: 100, suffix: '%', label: 'Upfront pricing & refund policies', icon: Eye, color: '#BFE3FF' },
+    { text: 'India', label: 'Fixed-departure destinations', icon: MapPin, color: '#FFB59E' },
+  ],
+}
+
+export const MISSION_SPLIT = {
+  heading: 'What Wondrr is — and what it isn’t',
+  subheading: 'We keep our role honest so you always know what you’re booking.',
+  does: {
+    label: 'What Wondrr does',
+    points: [
+      { icon: ShieldCheck, text: 'Verifies operators before they can list a trip' },
+      { icon: Receipt, text: 'Standardises itineraries, pricing and refund policies' },
+      { icon: CreditCard, text: 'Tracks payments and participants in one place' },
+      { icon: MessageSquare, text: 'Keeps trip communication organised, not scattered' },
+      { icon: TrendingUp, text: 'Lets operators run group trips reliably at scale' },
+    ],
+  },
+  doesnt: {
+    label: 'What Wondrr is not',
+    lead: 'Wondrr does not sell or run its own trips.',
+    points: [
+      { text: 'A marketplace — not a tour operator' },
+      { text: 'No fees hidden in the fine print' },
+      { text: 'No coordination lost in WhatsApp threads' },
+      { text: 'No unverified operators on the platform' },
+    ],
+  },
+}
+
+export const JOURNEY = {
+  heading: 'How Wondrr works',
+  subheading: 'One platform, from the first listing to the trip itself.',
+  steps: [
+    { icon: CalendarCheck, title: 'Operators list', text: 'Detailed itineraries, batches and capacities go up in one place.' },
+    { icon: ShieldCheck, title: 'Wondrr verifies', text: 'Operator profiles, policies and reviews are mandatory before listing.' },
+    { icon: Search, title: 'Travelers compare', text: '50+ vetted brands, browsable and bookable without tab-switching.' },
+    { icon: CreditCard, title: 'Book with clarity', text: 'Upfront pricing, secure payment and clear refund terms.' },
+    { icon: Plane, title: 'Travel together', text: 'Small groups and organised updates turn strangers into friends.' },
+  ],
+}
+
+export const TWO_SIDES = {
+  heading: 'Built for both sides of the trip',
+  subheading: 'Two audiences. One platform. Shared trust.',
   cards: [
     {
-      icon: Calendar,
-      title: 'Structured Trip Management',
-      description: 'Create trips with detailed itineraries, manage multiple batches, set capacities, and update information centrally for all participants.'
+      key: 'operators',
+      icon: Layers,
+      accent: '#D0EF65',
+      title: 'For travel operators',
+      tagline: 'Run group trips like a pro.',
+      features: [
+        'List and manage trips with rich itineraries',
+        'Handle multiple batches and participants effortlessly',
+        'Automate payment tracking and reminders',
+        'Build credibility through reviews and clear policies',
+        'Scale without administrative chaos',
+      ],
     },
     {
-      icon: Shield,
-      title: 'Transparency By Default',
-      description: 'Clear pricing, refund policies, operator profiles, and reviews are mandatory so travelers know exactly what to expect.'
+      key: 'travelers',
+      icon: Compass,
+      accent: '#FFC107',
+      title: 'For travelers',
+      tagline: 'Book group trips with confidence.',
+      features: [
+        'See full itineraries, pricing and inclusions upfront',
+        'Check operator credibility through profiles and reviews',
+        'Track bookings, payments and trip status in one place',
+        'Know refund policies clearly before you pay',
+        'Get organised updates, not WhatsApp confusion',
+      ],
     },
-    {
-      icon: CreditCard,
-      title: 'Payment Tracking',
-      description: 'Automated payment status, reminders, and refund workflows reduce manual work and errors.'
-    },
-    {
-      icon: Users,
-      title: 'Participant Management',
-      description: 'Track joined, paid, pending participants. Manage waitlists and send batch-specific updates from one dashboard.'
-    },
-    {
-      icon: MessageCircle,
-      title: 'Clear Communication',
-      description: 'Important trip updates and announcements reach everyone through organized channels, not lost chats.'
-    },
-    {
-      icon: TrendingUp,
-      title: 'Scalable Operations',
-      description: 'Grow from a few trips to hundreds per year without operational chaos.'
-    }
   ],
-  quote: {
-    text: '"Structure doesn\'t limit creativity.\nIt enables reliability."',
-    backgroundImage: '/png/A11.jpg'
-  }
 }
 
-export const WHO_ITS_BUILT_FOR = {
-  title: "Who It's Built For",
-  subtitle: 'Two sides. One platform. Shared Trust.',
-  images: [
-    {
-      src: '/png/A12.jpg',
-      alt: 'Travel Operators'
-    },
-    {
-      src: '/png/A11.jpg',
-      alt: 'Travelers'
-    }
-  ],
-  operators: {
-    icon: Users,
-    title: 'For Travel Operators',
-    description: "Whether you're a solo trek leader or a company running dozens of trips each month, Wondrr helps you operate professionally.",
-    features: [
-      'Create and manage trips with detailed itineraries',
-      'Handle multiple batches and participants effortlessly',
-      'Automate payment tracking and reminders',
-      'Build credibility through reviews and transparent policies',
-      'Scale operations without administrative overload'
-    ]
+/**
+ * Plain-text FAQ reused by both the on-page accordion and the FAQPage JSON-LD in
+ * layout.tsx. Answers are written as standalone, citable passages for AI search.
+ */
+export const FAQS = [
+  {
+    q: 'What is Wondrr?',
+    a: 'Wondrr is a trust-first online marketplace for group travel in India. It connects travelers with verified travel operators offering fixed-departure group trips, all discoverable and bookable on one platform.',
   },
-  travelers: {
-    icon: MapPin,
-    title: 'For Travelers',
-    description: 'Stop worrying about trust, clarity, and hidden surprises. Book group trips with confidence and transparency.',
-    features: [
-      'View complete itineraries, pricing, and inclusions upfront',
-      'Check operator credibility through profiles and reviews',
-      'Track bookings, payments, and trip status in one place',
-      'Know refund policies clearly before booking',
-      'Receive organized updates without WhatsApp confusion'
-    ]
-  }
+  {
+    q: 'Does Wondrr run its own tours?',
+    a: 'No. Wondrr is a marketplace, not a tour operator. It does not sell or operate trips itself — it gives verified operators the tools to list, manage and deliver group trips, and gives travelers a transparent way to find and book them.',
+  },
+  {
+    q: 'How does Wondrr build trust?',
+    a: 'Operators are verified before they can list, and clear pricing, inclusions and refund policies are mandatory on every trip. Traveler reviews and operator profiles add ongoing accountability.',
+  },
+  {
+    q: 'Who is Wondrr for?',
+    a: 'Wondrr serves two groups: travel operators who run group trips, and travelers — especially solo travelers — who want to join safe, well-organised group adventures with like-minded people.',
+  },
+  {
+    q: 'How big are the groups?',
+    a: 'Group sizes are kept intentionally small — many trips cap at around 15 travelers — so everyone is a real part of the trip rather than a number on a manifest.',
+  },
+  {
+    q: 'How do payments and refunds work?',
+    a: 'Bookings are paid through secure online payments, with payment status tracked on the platform and refund policies shown upfront before you book.',
+  },
+  {
+    q: 'Where does Wondrr operate?',
+    a: 'Wondrr operates across India, with fixed-departure group trips to destinations nationwide.',
+  },
+]
+
+export const FAQ_SECTION = {
+  heading: 'Questions, answered',
+  subheading: 'The honest details about how Wondrr works.',
 }
 
-export const VISION_SECTION = {
-  badge: {
-    icon: TrendingUp,
-    text: 'Long-Term Vision'
-  },
-  title: 'Building Reliability Into\nGroup Travel',
-  description: "India's group travel market is massive, but it runs on unorganized systems. Wondrr is here to fix that by giving both operators and travelers better tools to work together.",
-  commitment: {
-    main: "We're building a platform designed to last.\nReliable, scalable, and transparent.",
-    sub: 'Every trip. Every time.'
-  },
-  cta: {
-    primary: {
-      text: 'Explore Tours',
-      link: '/trips'
-    },
-    secondary: {
-      text: 'Contact Us',
-      link: '/privacy-policy'
-    }
-  }
-}
-
-export const FOOTER = {
-  brand: 'Wondrr',
-  copyright: '© 2025 Wondrr. Building trust in group travel.'
+export const ABOUT_CTA = {
+  heading: 'Your next escape is one trip away',
+  subheading: 'Browse verified group trips, or list yours and reach travelers across India.',
+  primary: { text: 'Explore trips', link: '/trips' },
+  secondary: { text: 'Partner with us', link: '/partner-with-us' },
 }

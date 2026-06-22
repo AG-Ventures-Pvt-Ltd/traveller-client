@@ -15,7 +15,6 @@ adventures with like-minded people.
 - [All Trips](https://wondrr.in/trips): Browse every available group trip with filters by destination, duration, and price.
 - [All-Girls Trips](https://wondrr.in/girls-trips): Curated women-only group departures.
 - [About Wondrr](https://wondrr.in/about): Platform mission and how host verification works.
-- [How We Work](https://wondrr.in/how-we-work): Booking process and what travellers can expect.
 - [Partner With Us](https://wondrr.in/partner-with-us): For travel operators who want to list trips.
 - [Blog](https://wondrr.in/blog): Travel tips, destination guides, and group travel stories from the Wondrr team.
 - [Booking Policy](https://wondrr.in/booking-policy): Terms, cancellation, and refunds.

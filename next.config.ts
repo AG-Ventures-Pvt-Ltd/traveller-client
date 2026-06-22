@@ -16,6 +16,27 @@ const nextConfig: NextConfig = {
     qualities: [90, 100],
   },
 
+  async redirects() {
+    return [
+      {
+        source: '/girls-trips',
+        destination: '/trips',
+        permanent: true,
+      },
+      {
+        source: '/trip',
+        destination: '/trips',
+        permanent: true,
+      },
+      {
+        // Page removed — content merged into /about. 301 preserves SEO equity.
+        source: '/how-we-work',
+        destination: '/about',
+        permanent: true,
+      },
+    ];
+  },
+
   async headers() {
     return [
       {

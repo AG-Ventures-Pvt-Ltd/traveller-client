@@ -1,7 +1,18 @@
 
 import "./globals.css";
 import React from 'react';
+import { Rubik } from 'next/font/google';
 import { Providers } from "./providers";
+
+// Rubik is declared as the site font in globals.css (`--font-sans`) but was never
+// actually loaded — this wires it up so the family resolves instead of falling
+// back to system-ui.
+const rubik = Rubik({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-rubik',
+  weight: ['300', '400', '500', '600', '700', '800', '900'],
+});
 import Script from "next/script";
 import Navbar from './(landing)/components/Navbar/Navbar'
 import StickyNavigation from '@/common/components/composites/StickyNavigation';
@@ -53,7 +64,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
   const isEnvProd = process.env.NEXT_PUBLIC_ENV == 'PRODUCTION'
 
   return (
-    <html lang="en">
+    <html lang="en" className={rubik.variable}>
       <head>
         <Script
           src="https://checkout.razorpay.com/v1/checkout.js"
