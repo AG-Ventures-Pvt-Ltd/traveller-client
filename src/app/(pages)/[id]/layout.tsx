@@ -58,7 +58,7 @@ export async function generateMetadata({
             siteName: 'Wondrr',
             url,
             title,
-            description: generatedDescription,
+            description: meta?.bio || generatedDescription,
             ...(avatar && {
                 images: [{ url: avatar, alt: fullName, width: 1200, height: 630 }],
             }),
