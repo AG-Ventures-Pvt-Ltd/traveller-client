@@ -9,9 +9,11 @@ interface Trip {
   rating: number;
   price: number;
   status: string;
-  hostName:string;
+  hostName: string;
+  hostUsername?: string;
   isBookmarked: boolean;
   slug: string;
+  tripSlug?: string;
 }
 
 interface TripListProps {
@@ -33,6 +35,7 @@ const TripList: React.FC<TripListProps> = ({
           <TripSearchCard
             key={trip.slug}
             tripSlug={trip.slug}
+            tripUrl={trip.tripSlug || trip.slug}
             imageUrl={trip.image}
             title={trip.title}
             location={trip.address}
@@ -40,6 +43,7 @@ const TripList: React.FC<TripListProps> = ({
             rating={trip.rating}
             price={trip.price}
             hostName={trip.hostName}
+            hostUsername={trip.hostUsername}
             isBookmarked={trip.isBookmarked}
             onViewDetails={() => onBookNow(trip.slug)}
           />

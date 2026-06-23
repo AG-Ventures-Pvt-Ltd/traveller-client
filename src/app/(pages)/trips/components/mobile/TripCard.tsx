@@ -1,6 +1,7 @@
 import React from 'react'
+import Link from 'next/link'
 import MyImage from '@/common/ui/Image'
-import { StarIcon, SealCheckIcon, MapPinIcon, HeartIcon } from '@phosphor-icons/react'
+import { StarIcon, MapPinIcon, HeartIcon } from '@phosphor-icons/react'
 import { useBookMarking } from '@/common/hooks/useBookMarking'
 
 export interface TripCardProps {
@@ -10,33 +11,34 @@ export interface TripCardProps {
   rating: number
   price: number
   hostName: string
+  hostUsername?: string
   slug: string
+  tripSlug?: string
   days: string
   bgColor?: string
   isBookmarked?: boolean
   onClick?: (slug: string) => void
 }
 
-export function TripCard({ title, image, address, rating, price, hostName, slug, days, bgColor = '#FFD976', isBookmarked: initialIsBookmarked = false, onClick }: TripCardProps) {
+export function TripCard({ title, image, address, rating, price, hostName, hostUsername, slug, tripSlug, days, bgColor = '#FFD976', isBookmarked: initialIsBookmarked = false }: TripCardProps) {
   const { isBookmarked, toggle } = useBookMarking(slug, initialIsBookmarked)
 
-  const handleCardClick = () => onClick?.(slug)
-
   const handleBookmarkClick = (e: React.MouseEvent) => {
+    e.preventDefault()
     e.stopPropagation()
     toggle(e)
   }
 
   return (
-    <div
-      className="relative rounded-[20px] overflow-hidden cursor-pointer active:scale-[0.98] transition-transform flex"
+    <Link
+      href={`/trip/${tripSlug || slug}`}
+      className="relative rounded-[20px] overflow-hidden active:scale-[0.98] transition-transform flex"
       style={{ backgroundColor: bgColor }}
-      onClick={handleCardClick}
     >
       {/* Image */}
       <div className="relative m-[10px] rounded-[12px] overflow-hidden w-[157px] min-h-[115px] shrink-0">
         <MyImage src={image} alt={title} className="h-full w-full" objectFit="cover" />
-        
+
         {/* Bookmark button */}
         <button
           onClick={handleBookmarkClick}
@@ -61,10 +63,16 @@ export function TripCard({ title, image, address, rating, price, hostName, slug,
       {/* Content */}
       <div className="flex flex-col justify-center gap-[3px] py-[10px] pr-[10px] flex-1 min-w-0">
         <p className="font-semibold text-[18px] text-black tracking-tight leading-tight line-clamp-2">
-          {title} 
+          {title}
         </p>
         <div className="flex items-center gap-[4px]">
-          <span className="text-[12.5px] font-normal text-black tracking-tight truncate">by {hostName}</span>
+          <Link
+            href={hostUsername ? `/${hostUsername}` : '#'}
+            onClick={(e) => e.stopPropagation()}
+            className="text-[12.5px] font-normal text-black tracking-tight truncate hover:underline"
+          >
+            by {hostName}
+          </Link>
         </div>
         <div className="flex items-center gap-[2px]">
           <span className="text-[12.5px] font-light text-black tracking-tight">{days || '3N • 2D'}</span>
@@ -79,6 +87,6 @@ export function TripCard({ title, image, address, rating, price, hostName, slug,
           <span className="text-[12.5px] font-normal text-black tracking-tight truncate">{address || 'India'}</span>
         </div>
       </div>
-    </div>
+    </Link>
   )
 }

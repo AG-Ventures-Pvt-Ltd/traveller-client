@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 import { Heart, MapPin, Clock, Star, IndianRupee } from 'lucide-react';
 import Card from '@/common/ui/Card';
 import MyImage from '@/common/ui/Image';
@@ -10,18 +11,21 @@ interface TripSearchCardProps {
   title: string;
   imageUrl: string;
   location: string;
-  days:string;
+  days: string;
   rating: number;
   price: number;
-  hostName:string;
+  hostName: string;
+  hostUsername?: string;
   isBookmarked: boolean;
   tripSlug: string;
-    onViewDetails: () => void;
+  tripUrl: string;
+  onViewDetails: () => void;
 }
 
 const TripSearchCard: React.FC<TripSearchCardProps> = ({
     imageUrl,
     tripSlug,
+    tripUrl,
     title,
     location,
     days,
@@ -29,6 +33,7 @@ const TripSearchCard: React.FC<TripSearchCardProps> = ({
     price,
     isBookmarked,
     hostName,
+    hostUsername,
     onViewDetails,
 }) => {
     return (
@@ -56,7 +61,13 @@ const TripSearchCard: React.FC<TripSearchCardProps> = ({
 
                     {hostName && (
                         <div className="flex items-center gap-1.5">
-                            <span className="text-neutral-700 text-base font-medium">by {hostName}</span>
+                            <Link
+                              href={hostUsername ? `/${hostUsername}` : '#'}
+                              className="text-neutral-700 text-base font-medium hover:underline"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              by {hostName}
+                            </Link>
                         </div>
                     )}
                     <div className="flex items-center gap-1.5">
@@ -83,13 +94,14 @@ const TripSearchCard: React.FC<TripSearchCardProps> = ({
                         <span className="text-neutral-700 text-xs md:text-sm font-medium pb-1">/person</span>
                     </div>
                 </div>
-                <Button
-                    variant="purple"
-                    onClick={onViewDetails}
-                    className="text-base !py-3 w-full whitespace-nowrap"
-                >
-                    View Details
-                </Button>
+                <Link href={`/trip/${tripUrl}`} className="w-full">
+                    <Button
+                        variant="purple"
+                        className="text-base !py-3 w-full whitespace-nowrap"
+                    >
+                        View Details
+                    </Button>
+                </Link>
             </div>
         </Card>
     );

@@ -3,7 +3,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import BackButton from '@/common/ui/BackButton';
 import FilterModal from '../FilterModal';
 import { FilterValues } from '../TripFilters';
@@ -21,7 +21,9 @@ interface Trip {
     price: number;
     isBookmarked: boolean;
     hostName: string;
+    hostUsername?: string;
     slug: string;
+    tripSlug?: string;
     days: string;
 }
 
@@ -53,7 +55,6 @@ const EMPTY_FILTERS: FilterValues = {
 };
 
 const TripListsMobile = () => {
-    const router = useRouter();
     const searchParams = useSearchParams();
     const destination = searchParams.get('destination');
 
@@ -243,11 +244,12 @@ const TripListsMobile = () => {
                                 rating={trip.rating}
                                 price={trip.price}
                                 hostName={trip.hostName}
+                                hostUsername={trip.hostUsername}
                                 slug={trip.slug}
+                                tripSlug={trip.tripSlug || trip.slug}
                                 days={trip.days}
                                 bgColor={bgColor}
                                 isBookmarked={trip.isBookmarked}
-                                onClick={(slug) => router.push(`/trip/${slug}`)}
                             />
                         );
                     })}
