@@ -5,13 +5,14 @@ import { useBookMarking } from '@/common/hooks/useBookMarking'
 export interface MobileTripCardData {
   _id: string
   title: string
-  hostName : string
-  slug : string
+  hostName: string
+  hostUsername?: string
+  slug: string
   rating: number
   days: number
   price: number
   image: string
-  isBookmarked : boolean
+  isBookmarked: boolean
   bgColor?: string
 }
 

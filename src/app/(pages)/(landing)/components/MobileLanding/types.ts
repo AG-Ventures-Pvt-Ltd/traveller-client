@@ -3,6 +3,7 @@ export interface Trip {
   image: string;
   title: string;
   provider: string;
+  hostUsername?: string;
   duration: string;
   price: number;
   rating: number;
@@ -15,6 +16,7 @@ export interface CarouselTrip {
   image: string;
   title: string;
   hostName: string;
+  hostUsername: string;
   location: string;
   days: string;
   price: number;
@@ -34,6 +36,7 @@ export interface CarouselCardProps {
   image: string;
   title: string;
   provider: string;
+  hostUsername?: string;
   duration: string;
   price: number;
   rating: number;

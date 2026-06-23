@@ -31,6 +31,7 @@ const toCarouselTrips = (trips: MobileTripCardData[]): Trip[] =>
     image: t.image,
     title: t.title,
     provider: t.hostName,
+    hostUsername: t.hostUsername,
     duration: String(t.days),
     price: t.price,
     rating: t.rating,
@@ -97,7 +98,6 @@ const HostProfileDesktop = () => {
         </section>
       )}
 
-      {/* ── Past trips ── */}
       {pastTrips.length > 0 && (
         <section className="mx-auto mt-20 max-w-6xl px-4 sm:px-8">
           <div className="pl-4">
