@@ -31,7 +31,9 @@ interface Trip {
   isFeatured: boolean;
   isBookmarked: boolean;
   hostName: string;
+  hostUsername?: string;
   slug: string;
+  tripSlug?: string;
   tags?: string[];
 }
 
