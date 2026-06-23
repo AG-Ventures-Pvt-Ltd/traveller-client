@@ -1,25 +1,51 @@
-"use client";
+import { headers } from 'next/headers';
+import { redirect } from 'next/navigation';
+import { dehydrate, HydrationBoundary, QueryClient } from '@tanstack/react-query';
+import { getServerData } from '@/services/serverApi';
+import { API_ENDPOINTS } from '@/common/constants/apiEndpoints';
+import HostProfileClient from './HostProfileClient';
 
-import { redirect, useParams } from "next/navigation";
-import { useDevice } from "@/common/hooks/useDevice";
-import HostProfileMobile from "./components/mobile/HostProfileMobile";
-import HostProfileDesktop from "./components/desktop/HostProfileDesktop";
+export const dynamic = 'force-dynamic';
 
-export default function HostPage() {
-  const params = useParams();
-  const { isMobile, isHydrated } = useDevice();
+const MOBILE_UA = /Android.+Mobile|iPhone|iPod|Windows Phone|BlackBerry|Opera Mini|IEMobile|Mobile.+Firefox|Firefox.+Mobile/i;
 
-  const id = params.id as string;
+async function prefetch(qc: QueryClient, url: string) {
+  try {
+    await qc.prefetchQuery({ queryKey: [url], queryFn: () => getServerData(url) });
+  } catch {
+    // single API failure shouldn't block the page — client will refetch
+  }
+}
+
+export default async function HostPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const lower = id.toLowerCase();
 
-  // Ids are lowercase by default now, but capitalized variants got indexed.
-  // Canonicalize any uppercase id to its lowercase URL so old links resolve.
   if (id !== lower) {
     redirect(`/${lower}`);
   }
 
-  // Gate on hydration so we never flash the wrong (mobile/desktop) layout.
-  if (!isHydrated) return null;
+  const ua = (await headers()).get('user-agent') || '';
+  const initialIsMobile = MOBILE_UA.test(ua);
+  const limit = initialIsMobile ? 6 : 8;
 
-  return isMobile ? <HostProfileMobile /> : <HostProfileDesktop />;
+  const hostProfileUrl = API_ENDPOINTS.USER.HOST_PROFILE(lower);
+  const tripsUrl = API_ENDPOINTS.HOST.TRIPS(lower, 1, limit);
+  const archivedUrl = API_ENDPOINTS.HOST.ARCHIVED_TRIPS(lower, 1, limit);
+  const reviewsUrl = API_ENDPOINTS.REVIEW.PROFILE(lower);
+
+  const qc = new QueryClient();
+
+  await Promise.all([
+    prefetch(qc, hostProfileUrl),
+    prefetch(qc, tripsUrl),
+    prefetch(qc, archivedUrl),
+    prefetch(qc, reviewsUrl),
+  ]);
+
+  return (
+    <HydrationBoundary state={dehydrate(qc)}>
+      <HostProfileClient initialIsMobile={initialIsMobile} />
+    </HydrationBoundary>
+  );
 }

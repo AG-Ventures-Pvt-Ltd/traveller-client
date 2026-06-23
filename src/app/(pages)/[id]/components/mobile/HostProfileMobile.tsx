@@ -31,6 +31,7 @@ const toCarouselTrips = (trips: MobileTripCardData[]): Trip[] =>
     image: t.image,
     title: t.title,
     provider: t.hostName,
+    hostUsername: t.hostUsername,
     duration: String(t.days),
     price: t.price,
     rating: t.rating,

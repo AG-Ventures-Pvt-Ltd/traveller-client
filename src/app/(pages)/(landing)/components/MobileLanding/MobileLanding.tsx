@@ -43,6 +43,7 @@ const MobileLanding = () => {
                     image: trip.image,
                     title: trip.title,
                     provider: trip.hostName,
+                    hostUsername: trip.hostUsername,
                     duration: trip.days,
                     price: trip.price,
                     rating: trip.rating,

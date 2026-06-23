@@ -13,6 +13,7 @@ const CarouselCard: React.FC<CarouselCardProps> = ({
   image,
   title,
   provider,
+  hostUsername,
   duration,
   price,
   rating,
@@ -69,7 +70,13 @@ const CarouselCard: React.FC<CarouselCardProps> = ({
         </h3>
 
         <div className="flex items-center gap-1">
-          <span className=" text-xs font-medium truncate">by {provider}</span>
+          <Link
+            className="text-xs font-medium truncate hover:underline"
+            href={hostUsername ? `/${hostUsername}` : '#'}
+            onClick={(e) => e.stopPropagation()}
+          >
+            by {provider}
+          </Link>
           <SealCheckIcon size={13} className=" flex-shrink-0" />
         </div>
 

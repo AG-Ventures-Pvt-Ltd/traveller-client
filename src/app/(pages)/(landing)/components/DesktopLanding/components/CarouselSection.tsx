@@ -12,6 +12,7 @@ const CarouselSection: React.FC<SlidingCarouselSectionProps> = ({
   isLoading = false,
   carouselIndex = 0,
 }) => {
+
   const [atStart, setAtStart] = useState(true);
   const [atEnd, setAtEnd] = useState(false);
 
@@ -29,7 +30,7 @@ const CarouselSection: React.FC<SlidingCarouselSectionProps> = ({
     <div className="w-full flex flex-col gap-5">
       <div className="flex items-end justify-between">
         <div className="flex flex-col gap-1">
-          <h2 className="text-neutral-900 text-3xl font-bold font-['Satoshi']">{title}</h2>
+          <h2 className="text-neutral-900 text-3xl font-bold">{title}</h2>
           {description && (
             <p className="text-neutral-500 text-sm font-medium">{description}</p>
           )}
