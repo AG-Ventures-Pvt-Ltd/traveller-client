@@ -17,6 +17,7 @@ import {
 } from '@phosphor-icons/react';
 import { Heart, Share2, Plane, Compass, Sun } from 'lucide-react';
 import { useBookMarking } from '@/common/hooks/useBookMarking';
+import { trackEvent, getFunnelSource } from '@/common/utils/analytics';
 import CollapsibleCard from '@/common/ui/CollapsibleCard';
 
 const ImageLightbox = dynamic(() => import('./components/ImageLightbox'), { ssr: false });
@@ -163,8 +164,15 @@ export default function TripDetailDesktop() {
 
     const handleBookNow = () => {
         if (selectedBatch !== null && sortedBatches[selectedBatch]) {
+            const batchId = sortedBatches[selectedBatch].batchId;
+            trackEvent('book_now_click', {
+                trip_id: id,
+                trip_title: tripData?.title,
+                batch_id: batchId,
+                funnel_source: getFunnelSource(),
+            });
             setIsBooking(true);
-            router.push(`/trip/book/${generatedSlug}?batchId=${sortedBatches[selectedBatch].batchId}`);
+            router.push(`/trip/book/${generatedSlug}?batchId=${batchId}`);
         }
     };
 
