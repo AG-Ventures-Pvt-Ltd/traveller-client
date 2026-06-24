@@ -7,6 +7,7 @@ import MyImage from '@/common/ui/Image';
 import { CarouselCardProps } from '../types';
 import { useBookMarking } from '@/common/hooks/useBookMarking';
 import { generateSlug } from '@/app/(pages)/trip/utils';
+import { trackEvent, setFunnelSource } from '@/common/utils/analytics';
 
 const CarouselCard: React.FC<CarouselCardProps> = ({
   id,
@@ -42,7 +43,11 @@ const CarouselCard: React.FC<CarouselCardProps> = ({
   return (
     <Link
       href={href}
-      onClick={() => onClick?.()}
+      onClick={() => {
+        setFunnelSource('landing');
+        trackEvent('trip_card_click', { trip_id: slug, trip_title: title, source: 'landing' });
+        onClick?.();
+      }}
       className={`w-full h-full ${bgColor} rounded-3xl overflow-hidden border-10 ${borderColor} cursor-pointer hover:shadow-lg transition-shadow flex flex-col`}
     >
       <div className="relative h-32 overflow-hidden rounded-3xl">

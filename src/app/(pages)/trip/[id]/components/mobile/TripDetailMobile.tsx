@@ -13,6 +13,7 @@ import { NavSection, SectionRefs } from './types';
 import { getSeatsDisplay } from '@/common/utils/seatsDisplay';
 import { StarIcon } from '@phosphor-icons/react';
 import { useBookMarking } from '@/common/hooks/useBookMarking';
+import { trackEvent, getFunnelSource } from '@/common/utils/analytics';
 
 // Above-fold — static imports
 import HeroCarousel from './components/HeroCarousel';
@@ -187,6 +188,12 @@ export default function TripDetailMobile() {
     const handleBookNow = () => {
         if (selectedBatch !== null && sortedBatches[selectedBatch]) {
             const batchId = sortedBatches[selectedBatch].batchId;
+            trackEvent('book_now_click', {
+                trip_id: id,
+                trip_title: tripData?.title,
+                batch_id: batchId,
+                funnel_source: getFunnelSource(),
+            });
             setIsBooking(true);
             router.push(`/trip/book/${generatedSlug}?batchId=${batchId}`);
         }

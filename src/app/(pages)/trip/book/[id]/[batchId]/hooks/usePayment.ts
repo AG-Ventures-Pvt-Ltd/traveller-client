@@ -5,6 +5,7 @@ import usePostData from "@/services/usePostData";
 import { API_ENDPOINTS } from "@/common/constants/apiEndpoints";
 import { useRouter } from "next/navigation";
 import { useParams } from "next/navigation";
+import { trackEvent, getFunnelSource, clearFunnelSource } from "@/common/utils/analytics";
 
 interface Order {
   amount: number;
@@ -45,6 +46,14 @@ export const usePayment = ({ onWalletSuccess }: UsePaymentOptions = {}) => {
 
   const openRazorpay = (order: Order, paymentType: 'booking' | 'wallet') => {
     const isWallet = paymentType === 'wallet';
+    if (!isWallet) {
+      trackEvent('payment_initiated', {
+        order_id: order.orderId,
+        amount: order.amount,
+        currency: 'INR',
+        funnel_source: getFunnelSource(),
+      });
+    }
     const options = {
       key: process.env.NEXT_PUBLIC_RAZORPAY_KEY!,
       amount: order.amount * 100,
@@ -60,6 +69,7 @@ export const usePayment = ({ onWalletSuccess }: UsePaymentOptions = {}) => {
           onWalletSuccess?.()
         } else {
           if (tripId) localStorage.removeItem(`booking_${tripId.split('-').pop()}`)
+          clearFunnelSource();
           router.push(`/trip/book/success?orderId=${order.orderId}`)
         }
       },

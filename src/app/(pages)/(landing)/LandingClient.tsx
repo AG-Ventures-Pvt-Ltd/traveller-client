@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { useLocation } from '@/common/hooks/useLocation';
+import { trackEvent } from '@/common/utils/analytics';
 
 // Both variants are SSR'd so the correct one is in the initial HTML per device
 // (no desktop→mobile flash, and content is present for mobile-first crawlers).
@@ -25,6 +26,10 @@ const LandingClient = ({ initialIsMobile }: LandingClientProps) => {
     checkMobile();
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  useEffect(() => {
+    trackEvent('lp_view');
   }, []);
 
   useEffect(() => {

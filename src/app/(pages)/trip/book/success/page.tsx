@@ -1,18 +1,20 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useGetData } from '@/services/useGetData';
 import { LoadingState, FailedState, PendingState, SuccessState } from './components';
 import DesktopBookingSuccess from './components/DesktopBookingSuccess';
 import { useDevice } from '@/common/hooks/useDevice';
 import type { BookingResponse } from './types';
+import { trackEvent } from '@/common/utils/analytics';
 
 export default function BookingSuccessPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const { isMobile, isHydrated } = useDevice();
   const orderId = searchParams.get('orderId');
+  const purchaseFiredRef = useRef(false);
 
   useEffect(() => {
     if (!orderId) {
@@ -29,13 +31,25 @@ export default function BookingSuccessPage() {
   );
 
   
+  const bookingDetails = bookingResponse?.bookingDetails;
+
+  useEffect(() => {
+    if (bookingResponse?.bookingStatus === 'success' && bookingDetails && !purchaseFiredRef.current) {
+      purchaseFiredRef.current = true;
+      trackEvent('purchase', {
+        transaction_id: bookingDetails.transactionId,
+        value: parseFloat(bookingDetails.grandTotal) || 0,
+        currency: 'INR',
+        items: [{ item_name: bookingDetails.tripTitle, quantity: parseInt(bookingDetails.numberOfPeople) || 1 }],
+      });
+    }
+  }, [bookingResponse?.bookingStatus, bookingDetails]);
+
   if (!orderId) return null;
-  
+
   const isFailed = error || bookingResponse?.bookingStatus === 'failed'
   const isPending = !isFailed && bookingResponse?.bookingStatus !== 'success'
-  
-  const bookingDetails = bookingResponse?.bookingDetails
-  
+
   const handleGoHome = () => router.push('/');
   const handleViewBookings = () => router.push(`/profile/mytrips/${bookingDetails?.bookingId}`);
 
