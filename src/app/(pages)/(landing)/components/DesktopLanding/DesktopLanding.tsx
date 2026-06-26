@@ -41,8 +41,6 @@ const DesktopLanding = () => {
     }
   };
 
-  console.log(featuredTripsData)
-
   const sortedCarousels = useMemo(() => {
     if (!featuredTripsData) return [];
     return [...featuredTripsData]
