@@ -41,15 +41,21 @@ const CarouselCard: React.FC<CarouselCardProps> = ({
         'border-[#EEA0FF]';
 
   return (
-    <Link
-      href={href}
-      onClick={() => {
-        setFunnelSource('landing');
-        trackEvent('trip_card_click', { trip_id: slug, trip_title: title, source: 'landing' });
-        onClick?.();
-      }}
-      className={`w-full h-full ${bgColor} rounded-3xl overflow-hidden border-10 ${borderColor} cursor-pointer hover:shadow-lg transition-shadow flex flex-col`}
+    <div
+      className={`relative w-full h-full ${bgColor} rounded-3xl overflow-hidden border-10 ${borderColor} cursor-pointer hover:shadow-lg transition-shadow flex flex-col`}
     >
+      {/* Stretched link covers full card — crawlable trip URL, no nested <a> */}
+      <Link
+        href={href}
+        onClick={() => {
+          setFunnelSource('landing');
+          trackEvent('trip_card_click', { trip_id: slug, trip_title: title, source: 'landing' });
+          onClick?.();
+        }}
+        className="absolute inset-0 z-0"
+        aria-label={title}
+      />
+
       <div className="relative h-32 overflow-hidden rounded-3xl">
         <MyImage
           src={image}
@@ -84,11 +90,11 @@ const CarouselCard: React.FC<CarouselCardProps> = ({
             <Link
               href={hostUsername ? `/${hostUsername}` : '#'}
               onClick={(e) => e.stopPropagation()}
-              className="text-neutral-700 text-xs font-medium font-['Satoshi'] hover:underline"
+              className="relative z-10 text-neutral-700 text-xs font-medium font-['Satoshi'] hover:underline"
             >
               by {provider}
             </Link>
-            <SealCheckIcon size={14} />
+            <SealCheckIcon size={14} className="relative z-10" />
           </div>
         </div>
         <div className="flex flex-col gap-0.5 pt-0">
@@ -105,7 +111,7 @@ const CarouselCard: React.FC<CarouselCardProps> = ({
           </div>
         </div>
       </div>
-    </Link>
+    </div>
   );
 };
 

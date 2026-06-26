@@ -38,15 +38,21 @@ const CarouselCard: React.FC<CarouselCardProps> = ({
                                'border-[#EEA0FF]';
 
   return (
-    <Link
-      href={href}
-      onClick={() => {
-        setFunnelSource('landing');
-        trackEvent('trip_card_click', { trip_id: slug, trip_title: title, source: 'landing' });
-        onClick?.();
-      }}
-      className={`w-full h-full ${bgColor} rounded-3xl overflow-hidden border-[10px] ${borderColor} cursor-pointer hover:shadow-xl transition-all duration-200 hover:-translate-y-0.5 flex flex-col`}
+    <div
+      className={`relative w-full h-full ${bgColor} rounded-3xl overflow-hidden border-[10px] ${borderColor} cursor-pointer hover:shadow-xl transition-all duration-200 hover:-translate-y-0.5 flex flex-col`}
     >
+      {/* Stretched link covers full card — crawlable trip URL, no nested <a> */}
+      <Link
+        href={href}
+        onClick={() => {
+          setFunnelSource('landing');
+          trackEvent('trip_card_click', { trip_id: slug, trip_title: title, source: 'landing' });
+          onClick?.();
+        }}
+        className="absolute inset-0 z-0"
+        aria-label={title}
+      />
+
       <div className="relative h-40 overflow-hidden rounded-2xl flex-shrink-0">
         <MyImage src={image} alt={title} className="w-full h-full" rounded={false} />
 
@@ -76,13 +82,13 @@ const CarouselCard: React.FC<CarouselCardProps> = ({
 
         <div className="flex items-center gap-1">
           <Link
-            className="text-xs font-medium truncate hover:underline"
+            className="relative z-10 text-xs font-medium truncate hover:underline"
             href={hostUsername ? `/${hostUsername}` : '#'}
             onClick={(e) => e.stopPropagation()}
           >
             by {provider}
           </Link>
-          <SealCheckIcon size={13} className=" flex-shrink-0" />
+          <SealCheckIcon size={13} className="relative z-10 flex-shrink-0" />
         </div>
 
         <p className=" text-xs font-medium">{duration}</p>
@@ -100,7 +106,7 @@ const CarouselCard: React.FC<CarouselCardProps> = ({
           </div>
         </div>
       </div>
-    </Link>
+    </div>
   );
 };
 

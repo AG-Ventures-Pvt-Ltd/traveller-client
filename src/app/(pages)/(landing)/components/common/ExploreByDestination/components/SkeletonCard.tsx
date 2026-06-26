@@ -6,8 +6,8 @@ interface SkeletonCardProps {
 
 const SkeletonCard: React.FC<SkeletonCardProps> = ({ compact }) => (
   <div
-    className={`animate-pulse rounded-3xl bg-gray-200 ${
-      compact ? 'h-44 w-60 flex-shrink-0' : 'h-64 w-full'
+    className={`animate-pulse rounded-3xl bg-black/5 ${
+      compact ? 'h-52 w-44 flex-shrink-0' : 'h-64 w-full'
     }`}
   />
 );
