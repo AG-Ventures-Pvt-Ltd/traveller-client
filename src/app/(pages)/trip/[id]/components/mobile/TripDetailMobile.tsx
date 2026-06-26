@@ -24,6 +24,7 @@ import OverviewSection from './components/OverviewSection';
 import TravelOptions from './components/TravelOptions';
 import BookingBar from '@/app/(pages)/trip/common/ui/BookingBar';
 import WhatsAppButton from './components/WhatsAppButton';
+import TripBreadcrumb from '../TripBreadcrumb';
 
 // Below-fold — lazy loaded so initial render is lean
 const TripHighlights = dynamic(() => import('./components/TripHighlights'), { ssr: false });
@@ -237,6 +238,8 @@ export default function TripDetailMobile() {
                     activeSection={activeSection}
                     onSectionClick={scrollToSection}
                 />
+
+                <TripBreadcrumb title={tripData.title} className="px-6 pb-1" />
 
                 <div className='px-6'>
                     <div className='flex justify-between'>

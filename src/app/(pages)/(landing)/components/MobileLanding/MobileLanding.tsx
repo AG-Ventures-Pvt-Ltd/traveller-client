@@ -74,9 +74,6 @@ const MobileLanding = () => {
                                 message={`${travelerStatsData!.count}+ Travellers booked with us last month`}
                             />}
                         </div>
-                        <div className='px-4'>
-                            <ExploreByDestination variant="mobile" />
-                        </div>
                         <div className='flex flex-col gap-8'>
                             {sortedCarousels.map((carousel, index) => (
                                 <CarouselSection
@@ -87,6 +84,9 @@ const MobileLanding = () => {
                                     carouselIndex={index}
                                 />
                             ))}
+                        </div>
+                        <div className='px-4'>
+                            <ExploreByDestination variant="mobile" />
                         </div>
                         <TrustSection />
                     </div>

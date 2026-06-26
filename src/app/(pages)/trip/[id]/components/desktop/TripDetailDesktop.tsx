@@ -25,6 +25,7 @@ import DesktopImageGallery from './components/DesktopImageGallery';
 import FactCards from './components/FactCards';
 import BookingPanel from './components/BookingPanel';
 import SectionTabNav from './components/SectionTabNav';
+import TripBreadcrumb from '../TripBreadcrumb';
 
 const TripHighlights = dynamic(() => import('../mobile/components/TripHighlights'), { ssr: false });
 const ItinerarySection = dynamic(() => import('../mobile/components/ItinerarySection'), { ssr: false });
@@ -191,8 +192,11 @@ export default function TripDetailDesktop() {
                     onToggleBookmark={toggleBookmark}
                 />
 
+                {/* Breadcrumb — sits below the gallery */}
+                <TripBreadcrumb title={tripData.title} className="mt-4" />
+
                 {/* Title block (below images) — decorative travel icons around it */}
-                <div className="relative overflow-hidden mt-6">
+                <div className="relative overflow-hidden mt-3">
                     <Plane className="absolute right-[10%] w-16 h-16 text-neutral-900 opacity-[0.05] rotate-[20deg] pointer-events-none" />
                     <Compass className="absolute top-10 right-[16%] w-12 h-12 text-neutral-900 opacity-[0.05] -rotate-6 pointer-events-none" />
                     <Sun className="absolute -top-2 right-[30%] w-12 h-12 text-neutral-900 opacity-[0.04] rotate-45 pointer-events-none" />

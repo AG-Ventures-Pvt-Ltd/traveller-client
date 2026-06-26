@@ -9,7 +9,6 @@ import { HydrationBoundary, dehydrate } from '@tanstack/react-query';
 import { getQueryClient } from '@/services/getQueryClient';
 import { getTripBasicDetails, getTripDetailedDetails } from './serverFetch';
 import { generateSlug } from '../utils';
-import Link from 'next/link';
 
 // cache() dedupes the fetch across generateMetadata + Page within one request.
 const getTripMeta = cache(async (id: string): Promise<{ slug: string; trip: TripMetadata } | null> => {
@@ -158,15 +157,6 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
   return (
     <>
       <JsonLd data={schemas} />
-      <nav aria-label="Breadcrumb" className="px-4 sm:px-9 py-2 text-sm text-neutral-500">
-        <ol className="flex items-center gap-1.5 flex-wrap">
-          <li><Link href="/" className="hover:text-neutral-900 transition-colors">Home</Link></li>
-          <li aria-hidden="true">/</li>
-          <li><Link href="/trips" className="hover:text-neutral-900 transition-colors">Trips</Link></li>
-          <li aria-hidden="true">/</li>
-          <li className="text-neutral-900 font-medium truncate max-w-[220px] sm:max-w-none">{trip.title}</li>
-        </ol>
-      </nav>
       <HydrationBoundary state={dehydrate(queryClient)}>
         <TripPage />
       </HydrationBoundary>
