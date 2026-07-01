@@ -74,13 +74,9 @@ const HostProfileDesktop = () => {
   return (
     <div className="min-h-screen bg-[#FFF9F4] pb-24">
       <HostHeroDesktop />
-      <section className="mx-auto mt-10 max-w-6xl px-8">
-        <div className="mb-10 text-center">
-          <h2 className="text-3xl font-bold tracking-tight text-neutral-900 sm:text-4xl">
-            What travellers say
-          </h2>
-        </div>
-        <HostReviewsDesktop hostUsername={id} />
+
+      <section className="mx-auto mt-24 max-w-6xl px-4 sm:px-8">
+        <AboutHost />
       </section>
 
       {/* ── Upcoming trips ── */}
@@ -116,8 +112,13 @@ const HostProfileDesktop = () => {
       )}
 
       {/* ── About the host (rendered last, matching mobile priority) ── */}
-      <section className="mx-auto mt-24 max-w-6xl px-4 sm:px-8">
-        <AboutHost />
+      <section className="mx-auto mt-10 max-w-6xl px-8">
+        <div className="mb-10 text-center">
+          <h2 className="text-3xl font-bold tracking-tight text-neutral-900 sm:text-4xl">
+            What travellers say
+          </h2>
+        </div>
+        <HostReviewsDesktop hostUsername={id} />
       </section>
     </div>
   )

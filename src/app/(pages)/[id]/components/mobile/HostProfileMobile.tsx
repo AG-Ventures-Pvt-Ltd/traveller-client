@@ -58,7 +58,7 @@ const HostProfileMobile = () => {
       <HostHero />
 
       <div className="pt-6">
-        <HostReviews hostUsername={id} />
+        <AboutHost />
       </div>
 
       {upcomingTrips.length > 0 && (
@@ -84,8 +84,9 @@ const HostProfileMobile = () => {
       )}
 
       <div className="px-4 pt-10 pb-10">
-        <AboutHost />
+        
       </div>
+      <HostReviews hostUsername={id} />
     </div>
   )
 }
