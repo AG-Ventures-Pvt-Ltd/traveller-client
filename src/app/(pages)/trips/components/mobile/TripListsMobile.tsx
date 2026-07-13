@@ -3,7 +3,6 @@
 'use client';
 
 import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
-import { useSearchParams } from 'next/navigation';
 import BackButton from '@/common/ui/BackButton';
 import FilterModal from '../FilterModal';
 import { FilterValues } from '../TripFilters';
@@ -11,56 +10,29 @@ import { useGetData } from '@/services/useGetData';
 import SkeletonCard from './SkeletonCard';
 import { TripCard } from './TripCard';
 import { FunnelIcon } from '@phosphor-icons/react';
+import { buildTripsApiUrl, EMPTY_FILTERS } from '../../buildApiUrl';
+import { Trip, Pagination, TripsResponse } from '../../types';
 
-
-interface Trip {
-    title: string;
-    image: string;
-    address: string;
-    rating: number;
-    price: number;
-    isBookmarked: boolean;
-    hostName: string;
-    hostUsername?: string;
-    slug: string;
-    tripSlug?: string;
-    days: string;
+interface TripListsMobileProps {
+    initialTrips: Trip[];
+    initialPagination: Pagination | null;
+    destination: string | null;
+    qParam: string | null;
+    hostParam: string | null;
+    statusParam: string | null;
 }
 
-interface Pagination {
-    total: number;
-    page: number;
-    limit: number;
-    totalPages: number;
-    hasNextPage: boolean;
-    hasPrevPage: boolean;
-}
-
-interface TripsResponse {
-    trips: Trip[];
-    pagination: Pagination;
-    message: string;
-}
-
-const PAGE_SIZE = 12;
-
-const EMPTY_FILTERS: FilterValues = {
-    states: [],
-    priceRange: null,
-    durations: [],
-    durationRange: null,
-    difficulties: [],
-    minRating: null,
-    international: false,
-};
-
-const TripListsMobile = () => {
-    const searchParams = useSearchParams();
-    const destination = searchParams.get('destination');
-
+const TripListsMobile = ({
+    initialTrips,
+    initialPagination,
+    destination,
+    qParam,
+    hostParam,
+    statusParam,
+}: TripListsMobileProps) => {
     const [page, setPage] = useState(1);
-    const [allTrips, setAllTrips] = useState<Trip[]>([]);
-    const [hasMore, setHasMore] = useState(true);
+    const [allTrips, setAllTrips] = useState<Trip[]>(initialTrips);
+    const [hasMore, setHasMore] = useState(initialPagination?.hasNextPage ?? false);
     const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
     const [pendingFilters, setPendingFilters] = useState<FilterValues>(EMPTY_FILTERS);
     const [appliedFilters, setAppliedFilters] = useState<FilterValues>(EMPTY_FILTERS);
@@ -69,46 +41,14 @@ const TripListsMobile = () => {
     const isFetchingMore = useRef(false);
     const hasMoreRef = useRef(true);
     const isLoadingRef = useRef(false);
-    
-    const qParam = searchParams.get('q');
-    const hostParam = searchParams.get('host');
-    const statusParam = searchParams.get('status');
-    const apiUrl = useMemo(() => {
-        const params = new URLSearchParams();
+    // Skips the reset-on-change effect's first fire, so it doesn't clobber the
+    // server-seeded trip list before the client has anything to replace it with.
+    const isFirstRender = useRef(true);
 
-        if (appliedFilters.priceRange) {
-            params.append('maxBudget', appliedFilters.priceRange.toString());
-        }
-        if (appliedFilters.durationRange) {
-            params.append('numberOfDays', appliedFilters.durationRange.toString());
-        }
-        if (appliedFilters.difficulties.length > 0) {
-            params.append('difficulties', appliedFilters.difficulties.join(','));
-        }
-        if (appliedFilters.minRating) {
-            params.append('minRating', appliedFilters.minRating.toString());
-        }
-        if (appliedFilters.states && appliedFilters.states.length > 0) {
-            params.append('states', appliedFilters.states.join(','));
-        }
-        if (appliedFilters.international) {
-            params.append('international', 'true');
-        }
-
-        if (hostParam) params.append('host', hostParam);
-        if (statusParam) params.append('status', statusParam);
-
-        if (qParam) {
-            params.append('q', qParam);
-            return `api/client/v1/trips/v2/search?${params.toString()}`;
-        }
-
-        if (destination) params.append('destination', destination);
-        params.append('page', page.toString());
-        params.append('limit', PAGE_SIZE.toString());
-
-        return `api/client/v1/trips/search?${params.toString()}`;
-    }, [appliedFilters, destination, page, qParam, hostParam, statusParam]);
+    const apiUrl = useMemo(
+        () => buildTripsApiUrl(appliedFilters, { destination, qParam, hostParam, statusParam, page }),
+        [appliedFilters, destination, page, qParam, hostParam, statusParam]
+    );
 
     const { data: tripsData, isLoading, error } = useGetData<TripsResponse>(apiUrl, {
         queryKey: [apiUrl],
@@ -137,8 +77,12 @@ const TripListsMobile = () => {
         isFetchingMore.current = false;
     }, [tripsData]); // eslint-disable-line react-hooks/exhaustive-deps
 
-    // Reset on filter change
+    // Reset on filter change (skips the initial mount)
     useEffect(() => {
+        if (isFirstRender.current) {
+            isFirstRender.current = false;
+            return;
+        }
         setPage(1);
         setAllTrips([]);
         setHasMore(true);
