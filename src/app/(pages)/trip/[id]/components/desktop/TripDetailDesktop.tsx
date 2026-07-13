@@ -27,20 +27,18 @@ import BookingPanel from './components/BookingPanel';
 import SectionTabNav from './components/SectionTabNav';
 import TripBreadcrumb from '../TripBreadcrumb';
 
-const TripHighlights = dynamic(() => import('../mobile/components/TripHighlights'), { ssr: false });
-const ItinerarySection = dynamic(() => import('../mobile/components/ItinerarySection'), { ssr: false });
-const InclusionsSection = dynamic(() => import('../mobile/components/InclusionsSection'), { ssr: false });
-const FAQsSection = dynamic(() => import('../mobile/components/FAQsSection'), { ssr: false });
+const TripHighlights = dynamic(() => import('../mobile/components/TripHighlights'));
+const ItinerarySection = dynamic(() => import('../mobile/components/ItinerarySection'));
+const InclusionsSection = dynamic(() => import('../mobile/components/InclusionsSection'));
+const FAQsSection = dynamic(() => import('../mobile/components/FAQsSection'));
 const CancellationPolicySection = dynamic(
-    () => import('../mobile/components/PoliciesSection').then(m => ({ default: m.CancellationPolicySection })),
-    { ssr: false }
+    () => import('../mobile/components/PoliciesSection').then(m => ({ default: m.CancellationPolicySection }))
 );
 const MobileReviewSection = dynamic(
-    () => import('@/app/(pages)/[id]/components/mobile/components/MobileReviewSection').then(m => ({ default: m.MobileReviewSection })),
-    { ssr: false }
+    () => import('@/app/(pages)/[id]/components/mobile/components/MobileReviewSection').then(m => ({ default: m.MobileReviewSection }))
 );
-const SafetySupportSection = dynamic(() => import('../mobile/components/SafetySupportSection'), { ssr: false });
-const Footer = dynamic(() => import('../../../../(landing)/components/Footer/Footer'), { ssr: false });
+const SafetySupportSection = dynamic(() => import('../mobile/components/SafetySupportSection'));
+const Footer = dynamic(() => import('../../../../(landing)/components/Footer/Footer'));
 
 export default function TripDetailDesktop() {
     const params = useParams();

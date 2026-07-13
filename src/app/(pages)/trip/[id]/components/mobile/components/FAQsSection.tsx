@@ -27,11 +27,15 @@ export default function FAQsSection({ faqs, expandedFaqs, onToggle }: FAQsSectio
                                 }`}
                             />
                         </button>
-                        {expandedFaqs[index] && (
+                        <div
+                            className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                                expandedFaqs[index] ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+                            }`}
+                        >
                             <div className="px-4 pb-3">
                                 <p className="text-sm text-gray-700">{faq.answer || ''}</p>
                             </div>
-                        )}
+                        </div>
                     </div>
                 ))}
             </div>

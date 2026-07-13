@@ -26,21 +26,19 @@ import BookingBar from '@/app/(pages)/trip/common/ui/BookingBar';
 import WhatsAppButton from './components/WhatsAppButton';
 import TripBreadcrumb from '../TripBreadcrumb';
 
-// Below-fold — lazy loaded so initial render is lean
-const TripHighlights = dynamic(() => import('./components/TripHighlights'), { ssr: false });
-const ItinerarySection = dynamic(() => import('./components/ItinerarySection'), { ssr: false });
-const InclusionsSection = dynamic(() => import('./components/InclusionsSection'), { ssr: false });
-const FAQsSection = dynamic(() => import('./components/FAQsSection'), { ssr: false });
+// Below-fold — code-split but still SSR'd so content is present for crawlers
+const TripHighlights = dynamic(() => import('./components/TripHighlights'));
+const ItinerarySection = dynamic(() => import('./components/ItinerarySection'));
+const InclusionsSection = dynamic(() => import('./components/InclusionsSection'));
+const FAQsSection = dynamic(() => import('./components/FAQsSection'));
 const CancellationPolicySection = dynamic(
-    () => import('./components/PoliciesSection').then(m => ({ default: m.CancellationPolicySection })),
-    { ssr: false }
+    () => import('./components/PoliciesSection').then(m => ({ default: m.CancellationPolicySection }))
 );
 const MobileReviewSection = dynamic(
-    () => import('@/app/(pages)/[id]/components/mobile/components/MobileReviewSection').then(m => ({ default: m.MobileReviewSection })),
-    { ssr: false }
+    () => import('@/app/(pages)/[id]/components/mobile/components/MobileReviewSection').then(m => ({ default: m.MobileReviewSection }))
 );
-const SafetySupportSection = dynamic(() => import('./components/SafetySupportSection'), { ssr: false });
-const Footer = dynamic(() => import('../../../../(landing)/components/Footer/Footer'), { ssr: false });
+const SafetySupportSection = dynamic(() => import('./components/SafetySupportSection'));
+const Footer = dynamic(() => import('../../../../(landing)/components/Footer/Footer'));
 
 
 export default function TripDetailMobile() {
