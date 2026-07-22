@@ -7,7 +7,7 @@ import { useGetData } from '@/services/useGetData'
 import DesktopCarouselSection from '@/app/(pages)/(landing)/components/DesktopLanding/components/CarouselSection'
 import { Trip } from '@/app/(pages)/(landing)/components/MobileLanding/types'
 import { MobileTripCardData } from '../mobile/components/MobileTripCard'
-import AboutHost from '../AboutHost'
+import ReelsSection from '../Reels/ReelsSection'
 import HostHeroDesktop from './components/HostHeroDesktop'
 import { HostReviewsDesktop } from './components/HostReviewsDesktop'
 
@@ -75,13 +75,9 @@ const HostProfileDesktop = () => {
     <div className="min-h-screen bg-[#FFF9F4] pb-24">
       <HostHeroDesktop />
 
-      <section className="mx-auto mt-24 max-w-6xl px-4 sm:px-8">
-        <AboutHost />
-      </section>
-
       {/* ── Upcoming trips ── */}
       {upcomingTrips.length > 0 && (
-        <section className="mx-auto mt-12 max-w-6xl px-4 sm:px-8">
+        <section className="mx-auto mt-16 max-w-6xl px-4 sm:px-8">
           <DesktopCarouselSection title="Upcoming Trips" trips={upcomingTrips} carouselIndex={0} />
           {hasMoreUpcoming && (
             <button
@@ -110,6 +106,8 @@ const HostProfileDesktop = () => {
           )}
         </section>
       )}
+
+      <ReelsSection variant="desktop" />
 
       {/* ── About the host (rendered last, matching mobile priority) ── */}
       <section className="mx-auto mt-10 max-w-6xl px-8">

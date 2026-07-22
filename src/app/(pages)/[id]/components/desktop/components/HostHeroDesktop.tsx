@@ -5,19 +5,18 @@ import { useParams } from 'next/navigation'
 import {
   ShareNetworkIcon,
   ShieldCheckIcon,
-  MapPinIcon,
-  AirplaneTiltIcon,
-  CompassIcon,
+  BriefcaseIcon,
+  SuitcaseRollingIcon,
+  CalendarCheckIcon,
 } from '@phosphor-icons/react'
 import MyImage from '@/common/ui/Image'
-import BackButton from '@/common/ui/BackButton'
 import { Avatar, AvatarImage, AvatarFallback } from '@/common/ui/avatar'
 import { useGetData } from '@/services/useGetData'
 import { API_ENDPOINTS } from '@/common/constants/apiEndpoints'
 import { ShareModal } from '@/common/components/composites/ShareModal'
 import { HostProfile } from '../../../types'
 
-
+/** Merged hero + about for desktop — wide channel-style banner, avatar below it, identity and trip stats on the page's cream background. */
 const HostHeroDesktop = () => {
   const params = useParams()
   const id = params.id as string
@@ -27,107 +26,115 @@ const HostHeroDesktop = () => {
 
   if (isLoading) {
     return (
-      <div className="w-full">
-        <div className="h-[420px] w-full animate-pulse bg-neutral-200" />
-        <div className="mx-auto -mt-24 max-w-6xl px-8">
-          <div className="h-44 animate-pulse rounded-[32px] bg-neutral-100 shadow-sm" />
+      <div>
+        <div className="h-[300px] w-full animate-pulse bg-neutral-200" />
+        <div className="mx-auto max-w-6xl px-8">
+          <div className="-mt-16 h-36 w-36 animate-pulse rounded-full border-4 border-background bg-neutral-300" />
+          <div className="mt-6 h-44 animate-pulse rounded-3xl bg-neutral-200" />
         </div>
       </div>
     )
   }
 
-  const verified = host?.certificates?.[0] === 'certified'
   const fullName = host?.fullName || 'Wondrr'
+  const verified = host?.certificates?.[0] === 'certified'
+  const yearsNum = Number(host?.yearsOfExperience)
+  const years = Number.isFinite(yearsNum) && yearsNum > 0 ? yearsNum : null
+  const bio = host?.bio?.trim()
   const shareUrl = `https://wondrr.in/${id}`
+
+  // Fallback bio stitched from available fields — keeps the section descriptive
+  // (and indexable) even when the host hasn't written an about.
+  const fallbackBio =
+    `${fullName} is a verified travel host on Wondrr` +
+    (years ? ` with ${years}+ year${years > 1 ? 's' : ''} of experience leading group trips` : '') +
+    `. Explore their upcoming and past trips below and book directly on Wondrr.`
+
+  const stats = [
+    { label: 'Trips hosted', value: host?.totalTrips ?? 0, icon: SuitcaseRollingIcon, tint: '#E2F4A6' },
+    { label: 'Upcoming batches', value: host?.upcomingBatches ?? 0, icon: CalendarCheckIcon, tint: '#FFD976' },
+  ]
 
   return (
     <>
-      <div className="relative w-full">
-        {/* ── Immersive banner ── */}
-        <div className="relative h-[320px] w-full ">
+      <section>
+        {/* Wide channel-style banner */}
+        <div className="relative h-[300px] w-full">
           <MyImage
-            src="/assets/png/banner.png"
+            src={host?.banner || '/assets/png/banner.png'}
             alt="Host cover"
             className="h-full w-full"
             objectFit="cover"
-          />
-          {/* Darken top for controls, fade bottom into the page's cream bg */}
-          <div className="absolute inset-0 bg-gradient-to-b from-black/0 via-black/10 to-[#FFF9F4]" />
-
-          {/* Travel decoration — dashed flight path arching across the banner */}
-          <svg
-            className="pointer-events-none absolute inset-0 h-full w-full opacity-70"
-            viewBox="0 0 1440 420"
-            fill="none"
-            preserveAspectRatio="none"
-            aria-hidden
-          >
-            <path
-              d="M -40 300 Q 480 60 760 180 T 1480 120"
-              stroke="white"
-              strokeWidth="2"
-              strokeDasharray="2 10"
-              strokeLinecap="round"
-            />
-          </svg>
-          <AirplaneTiltIcon
-            size={34}
-            weight="fill"
-            className="absolute right-[18%] top-[26%] -rotate-[18deg] text-white drop-shadow-md"
+            sizes="100vw"
+            priority
           />
         </div>
 
-        {/* ── Boarding-pass profile card (overlaps banner) ── */}
-        <div className="mx-auto -mt-20 max-w-6xl px-8">
-          <div className="relative flex flex-col items-center gap-6 rounded-[32px] bg-white p-8 shadow-[0_20px_60px_-25px_rgba(27,67,50,0.4)] sm:flex-row sm:items-end sm:gap-8">           
-            {/* Avatar pokes up into the banner */}
-            <div className="-mt-24 shrink-0 sm:-mt-28">
-              <Avatar className="h-36 w-36 border-[5px] border-white shadow-lg ring-1 ring-neutral-100">
+        <div className="mx-auto max-w-6xl px-8">
+          <div className="flex flex-col gap-8 lg:flex-row lg:items-start lg:gap-10">
+            <div className="min-w-0 flex-1">
+              <Avatar className="-mt-16 h-36 w-36 border-4 border-background shadow-lg">
                 {host?.avatar ? <AvatarImage src={host.avatar} alt={fullName} /> : null}
                 <AvatarFallback name={fullName}>
-                  {fullName
-                    .split(' ')
-                    .map((n) => n[0])
-                    .join('')
-                    .toUpperCase()}
+                  {fullName.split(' ').map((n) => n[0]).join('').toUpperCase()}
                 </AvatarFallback>
               </Avatar>
-            </div>
-
-            {/* Identity */}
-            <div className="flex flex-1 flex-col items-center gap-2 sm:items-start">
-              <div className="flex flex-wrap items-center justify-center gap-3 sm:justify-start">
-                {/* Visual name only — canonical H1 is server-rendered in the layout. */}
-                <p className="text-3xl font-bold leading-tight tracking-tight text-neutral-900">
-                  {fullName}
-                </p>
-              </div>
-              <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-sm font-medium text-neutral-500 sm:justify-start">
-                <span>@{host?.username || id}</span>
-                {verified && (
-                  <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-[#E8F5EE] px-3 py-1.5">
-                    <ShieldCheckIcon size={15} weight="fill" className="text-[#43A047]" />
-                    <span className="text-xs font-semibold tracking-tight text-[#1B4332]">
-                      Wondrr Verified
-                    </span>
+              <div className='mt-3 text-lg font-medium flex items-center gap-8'>
+              <span>@{host?.username || id}</span>
+              {verified && (
+                  <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-[#EEA0FF] px-3 py-1.5">
+                    <ShieldCheckIcon size={15} weight="fill" className="text-black" />
+                    <span className="text-xs font-bold text-black">Wondrr Verified</span>
                   </span>
                 )}
               </div>
+              {/* Visual name only — canonical H1 is server-rendered in the layout. */}
+              <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-2">
+                <p className="text-[38px] font-bold leading-none tracking-tight text-maintext">{fullName}</p>
+              </div>
+
+              <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm font-medium text-subtext">
+                {years && (
+                  <span className="inline-flex items-center gap-1.5">
+                    <BriefcaseIcon size={15} weight="fill" />
+                    {years}+ {years > 1 ? 'years' : 'year'} hosting
+                  </span>
+                )}
+              </div>
+
+              <p className="mt-5 max-w-2xl whitespace-pre-line text-[15px] leading-7 text-subtext">
+                {bio || fallbackBio}
+              </p>
             </div>
 
-            {/* Boarding-pass "stub" CTA */}
-            <div className="flex shrink-0 flex-col items-center gap-2 sm:w-36">
+            {/* Stats + share — sits alongside the identity block on wide screens */}
+            <div className="flex shrink-0 flex-col gap-3 lg:mt-8 lg:w-[220px]">
+              <div className="flex gap-3 lg:flex-col">
+                {stats.map(({ label, value, icon: Icon, tint }) => (
+                  <div
+                    key={label}
+                    className="flex flex-1 items-center gap-3.5 rounded-3xl px-5 py-4"
+                    style={{ backgroundColor: tint }}
+                  >
+                    <Icon size={22} weight="duotone" className="shrink-0 text-maintext" />
+                    <div className="min-w-0">
+                      <p className="text-2xl font-bold leading-none text-maintext">{value}</p>
+                      <p className="mt-1.5 whitespace-nowrap text-xs font-semibold text-maintext/70">{label}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
               <button
                 onClick={() => setShareOpen(true)}
-                className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-black px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#143728]"
+                className="inline-flex items-center justify-center gap-2 rounded-full bg-[#EEA0FF] px-5 py-3 text-sm font-semibold text-black transition hover:brightness-95"
               >
-                <ShareNetworkIcon size={18} weight="bold" />
-                Share
+                <ShareNetworkIcon size={17} weight="bold" />
+                Share profile
               </button>
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
       <ShareModal
         open={shareOpen}

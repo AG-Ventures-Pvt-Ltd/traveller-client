@@ -9,7 +9,7 @@ import { useGetData } from '@/services/useGetData'
 import { HostReviews } from '../HostReviews/HostReviews'
 import SlidingCarouselSection from '@/app/(pages)/(landing)/components/MobileLanding/components/CarouselSection'
 import { Trip } from '@/app/(pages)/(landing)/components/MobileLanding/types'
-import AboutHost from '../AboutHost'
+import ReelsSection from '../Reels/ReelsSection'
 
 interface Pagination {
   total: number
@@ -57,12 +57,8 @@ const HostProfileMobile = () => {
     <div className="min-h-screen bg-[#FFF9F4]">
       <HostHero />
 
-      <div className="pt-6">
-        <AboutHost />
-      </div>
-
       {upcomingTrips.length > 0 && (
-        <div className="mt-4">
+        <div className="mt-10">
           <SlidingCarouselSection
             title="Upcoming Trips"
             trips={upcomingTrips}
@@ -73,7 +69,7 @@ const HostProfileMobile = () => {
       )}
 
       {pastTrips.length > 0 && (
-        <div className="mt-6">
+        <div className="mt-10">
           <SlidingCarouselSection
             title="Past Trips"
             trips={pastTrips}
@@ -83,9 +79,7 @@ const HostProfileMobile = () => {
         </div>
       )}
 
-      <div className="px-4 pt-10 pb-10">
-        
-      </div>
+      <ReelsSection variant="mobile" />
       <HostReviews hostUsername={id} />
     </div>
   )

@@ -205,7 +205,12 @@ export function HostReviews({ hostUsername }: HostReviewsProps) {
         }
       `}</style>
 
-      <div className="mb-8">
+      <div className="my-8">
+        <div className="mb-4 text-center">
+          <h2 className="text-xl font-medium text-neutral-900">
+            What travellers say
+          </h2>
+        </div>
         <div className="flex flex-col gap-5">
           <div
             ref={containerRef}

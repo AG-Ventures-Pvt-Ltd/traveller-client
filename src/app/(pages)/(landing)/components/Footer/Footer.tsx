@@ -49,8 +49,8 @@ const Footer = () => {
                     title: 'Contact',
                     links: [
                         { label: 'support@wondrr.in', href: 'mailto:support@wondrr.in' },
-                        { label: '+91-9667427187', href: 'tel:+91-9667427187' },
-                        { label: '+91-9151315550', href: 'tel:+91-9151315550' }
+                        { label: '+91-9667427187', href: 'tel:+91-8217728508' },
+                        { label: '+91-9151315550', href: 'tel:+91-8629060785' }
                     ]
                 }
             ],
