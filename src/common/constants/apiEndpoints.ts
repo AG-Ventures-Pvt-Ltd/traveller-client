@@ -11,6 +11,9 @@ export const API_ENDPOINTS = {
     TRAVELER_STATS: (slug: string) => `/api/client/v1/trips/${slug}/traveler-stats`,
     RECORD_VIEW: (slug: string) => `api/client/v1/trips/${slug}/view`,
   },
+  LINKS: {
+    RESOLVE: (shortCode: string) => `/api/client/v1/resolve/${shortCode}`,
+  },
   BOOKINGS: {
     START: "/api/client/v1/bookings/start",
     GET_BY_ID: (id: string) => `/api/client/v1/bookings/${id}`,
