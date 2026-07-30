@@ -4,6 +4,10 @@ const nextConfig: NextConfig = {
   devIndicators: false,
   // Disable strict mode to prevent double rendering in dev
   reactStrictMode: false,
+  // jsdom (via isomorphic-dompurify) ships an ESM-only dep (@exodus/bytes) that
+  // Turbopack's server bundler can't require() — keep it external so Node's
+  // own module resolver (which handles ESM/CJS interop) loads it at runtime.
+  serverExternalPackages: ['jsdom', 'isomorphic-dompurify'],
   experimental: {
     optimizePackageImports: ['@mui/material', 'lucide-react', '@tanstack/react-query'],
   },
