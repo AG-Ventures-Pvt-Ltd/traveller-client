@@ -108,6 +108,7 @@ export const API_ENDPOINTS = {
   },
   WALLET: {
     BALANCE: '/api/client/v1/wallet/balance',
+    UPDATE: '/api/client/v1/wallet/update',
     TRANSACTIONS: (limit?: number, skip?: number) => {
       const params = new URLSearchParams();
       if (limit !== undefined) params.append('limit', limit.toString());

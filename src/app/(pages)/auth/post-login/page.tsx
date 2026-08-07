@@ -7,6 +7,7 @@ import { useGetData } from '@/services/useGetData';
 import { API_ENDPOINTS } from '@/common/constants/apiEndpoints';
 import SideBanner from '../components/SideBanner';
 import PhoneNumberPromptPage from '../components/PhoneNumberPrompt/PhoneNumberPromptPage';
+import { claimSpinReward } from '@/common/utils/claimSpinReward';
 
 export default function PostLoginPage() {
     const { status } = useSession();
@@ -24,6 +25,12 @@ export default function PostLoginPage() {
             router.replace('/auth?mode=login&method=otp');
         }
     }, [status, router]);
+
+    useEffect(() => {
+        if (status === 'authenticated') {
+            claimSpinReward();
+        }
+    }, [status]);
 
     useEffect(() => {
         if (phoneData?.exists) {
