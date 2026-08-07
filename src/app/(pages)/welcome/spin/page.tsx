@@ -15,8 +15,10 @@ interface Segment {
 interface SpinData {
   rewardAmount: number;
   timestamp: number;
-  claimed?: boolean;
 }
+
+const SPUN_KEY = 'spinWheelSpun';
+const DATA_KEY = 'spinWheelData';
 
 const SpinWheelPage: React.FC = () => {
   const router = useRouter();
@@ -62,22 +64,24 @@ const SpinWheelPage: React.FC = () => {
     return ((-90 - segmentCenterSVG) % 360 + 360) % 360;
   };
 
-  // Check localStorage on mount
+  // Check localStorage on mount. Spin lock (SPUN_KEY) is permanent so a user can't
+  // re-spin once claimed/expired data has been cleaned up; DATA_KEY only holds an
+  // unresolved reward, so its absence (with a spin on record) means it's resolved.
   useEffect(() => {
-    const storedSpinData = localStorage.getItem('spinWheelData');
+    const spun = localStorage.getItem(SPUN_KEY);
+    if (!spun) return;
+
+    setHasSpun(true);
+
+    const storedSpinData = localStorage.getItem(DATA_KEY);
     if (storedSpinData) {
       try {
-        const data = JSON.parse(storedSpinData) as SpinData;
-        setSpinData(data);
-        setHasSpun(true);
-        
-        // Check if already claimed
-        if (data.claimed) {
-          setIsClaimed(true);
-        }
+        setSpinData(JSON.parse(storedSpinData) as SpinData);
       } catch {
         // Silently fail if localStorage data is corrupted
       }
+    } else {
+      setIsClaimed(true);
     }
   }, []);
 
@@ -108,7 +112,8 @@ const SpinWheelPage: React.FC = () => {
         rewardAmount,
         timestamp: new Date().getTime(),
       };
-      localStorage.setItem('spinWheelData', JSON.stringify(spinDataToStore));
+      localStorage.setItem(SPUN_KEY, 'true');
+      localStorage.setItem(DATA_KEY, JSON.stringify(spinDataToStore));
       setSpinData(spinDataToStore);
       setHasSpun(true);
     }, 4000);
@@ -227,8 +232,8 @@ const SpinWheelPage: React.FC = () => {
 
       <h1 className="text-4xl font-black text-black mb-2 text-center">Spin & Win!</h1>
       <p className="text-gray-600 text-center mb-12 font-['Rubik'] text-lg">
-        {isClaimed 
-          ? '✅ You have already claimed this bonus!' 
+        {isClaimed
+          ? '✅ This bonus has already been used.'
           : hasSpun 
             ? 'Thank you for spinning! You won ₹' + spinData?.rewardAmount 
             : 'One spin, one chance to win cash!'}
@@ -345,8 +350,8 @@ const SpinWheelPage: React.FC = () => {
         <div className="relative w-[480px] h-[480px] mb-12 flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-50 rounded-3xl border-4 border-blue-200">
           <div className="text-center">
             <div className="text-7xl mb-6">🎉</div>
-            <p className="text-2xl font-bold text-neutral-900 font-['Satoshi'] mb-2">Bonus Already Claimed!</p>
-            <p className="text-neutral-600 font-['Satoshi']">Thank you for claiming your ₹{spinData?.rewardAmount} reward</p>
+            <p className="text-2xl font-bold text-neutral-900 font-['Satoshi'] mb-2">Bonus No Longer Available</p>
+            <p className="text-neutral-600 font-['Satoshi']">This spin reward has already been claimed or has expired</p>
           </div>
         </div>
       )}

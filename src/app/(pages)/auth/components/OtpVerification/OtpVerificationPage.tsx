@@ -10,6 +10,7 @@ import { API_ENDPOINTS } from '@/common/constants/apiEndpoints';
 import { useGetData } from '@/services/useGetData';
 import PhoneNumberPromptPage from '../PhoneNumberPrompt/PhoneNumberPromptPage';
 import SideBanner from '../SideBanner';
+import { claimSpinReward } from '@/common/utils/claimSpinReward';
 
 interface OtpVerificationPageProps {
     email: string;
@@ -118,7 +119,8 @@ export default function OtpVerificationPage({
             }
 
             if (result?.ok) {
-                 if (mode === 'signup') {                     
+                 if (mode === 'signup') {
+                     await claimSpinReward();
                      router.push(redirectUrl);
                  } else {
                      // For login, check if user has a phone number
