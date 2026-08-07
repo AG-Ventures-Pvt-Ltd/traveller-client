@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
+import MyImage from '@/common/ui/Image';
 import { motion } from 'framer-motion';
 import { ArrowLeft, ArrowRight, Check, Clock, Compass, Link2, List, Share2 } from 'lucide-react';
 import Footer from '../../(landing)/components/Footer/Footer';
@@ -179,7 +179,7 @@ export default function BlogPostClient({ blog, image }: Props) {
         {/* Cover */}
         <div className="relative mt-8 aspect-[16/9] w-full overflow-hidden rounded-[28px] border-2 border-neutral-900 shadow-[8px_8px_0_0_#111]">
           {image ? (
-            <Image src={image} alt={blog.title || 'Cover'} fill priority sizes="(max-width: 1024px) 100vw, 1024px" className="object-cover" />
+            <MyImage src={image} alt={blog.title || 'Cover'} fill priority sizes="(max-width: 1024px) 100vw, 1024px" objectFit="cover" className="w-full h-full" />
           ) : (
             <div className="flex h-full w-full items-center justify-center" style={{ backgroundColor: tintFor(blog.title) }}>
               <Compass size={64} className="text-neutral-900/40" />
