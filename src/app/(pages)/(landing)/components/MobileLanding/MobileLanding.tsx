@@ -71,7 +71,7 @@ const MobileLanding = () => {
                                 onSearch={handleSearch}
                             />
                             {(travelerStatsData?.count ?? 0) > 0 && <StatsBanner
-                                message={`${travelerStatsData!.count}+ Travellers booked with us last month`}
+                                message={`Join ${travelerStatsData!.count}+ travellers planning their next trip with Wondrr`}
                             />}
                         </div>
                         <div className='flex flex-col gap-8'>

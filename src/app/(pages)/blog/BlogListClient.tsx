@@ -7,6 +7,7 @@ import { motion } from 'framer-motion';
 import { ArrowRight, BookOpen, Clock, Compass } from 'lucide-react';
 import Footer from '../(landing)/components/Footer/Footer';
 import { API_ENDPOINTS } from '@/common/constants/apiEndpoints';
+import { baseAPI } from '@/services/baseApi';
 import { formatDate, resolveCover, tintFor } from './utils';
 
 interface BlogSummary {
@@ -140,11 +141,10 @@ export default function BlogListClient({ initialBlogs, initialTotal, categories 
   const fetchBlogs = useCallback(async (p: number, cat: string, append: boolean) => {
     setLoading(true);
     try {
-      const res = await fetch(API_ENDPOINTS.BLOGS.LIST(p, LIMIT, cat || undefined));
-      const json = await res.json();
-      const next: BlogSummary[] = json.data.blogs ?? [];
+      const res = await baseAPI.get(API_ENDPOINTS.BLOGS.LIST(p, LIMIT, cat || undefined));
+      const next: BlogSummary[] = res.data.data.blogs ?? [];
       setBlogs((prev) => (append ? [...prev, ...next] : next));
-      setTotal(json.data.total ?? 0);
+      setTotal(res.data.data.total ?? 0);
     } catch {
       // silent — keep current list
     } finally {

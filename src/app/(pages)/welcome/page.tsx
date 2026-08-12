@@ -1,16 +1,28 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { MaskHappyIcon, MotorcycleIcon, ConfettiIcon, UsersFourIcon, LightningIcon, PersonSimpleHikeIcon } from '@phosphor-icons/react';
 import Button from '@/common/components/atoms/Button';
+import { useSignupBonus } from '@/common/hooks/useSignupBonus';
 
 const WelcomePage: React.FC = () => {
   const router = useRouter();
+  const { data: signupBonusData, isLoading } = useSignupBonus();
+
+  useEffect(() => {
+    if (!isLoading && signupBonusData?.signupBonus?.isEnabled) {
+      router.replace('/');
+    }
+  }, [isLoading, signupBonusData, router]);
 
   const handleGetStarted = () => {
     router.push('/welcome/spin');
   };
+
+  if (isLoading || signupBonusData?.signupBonus?.isEnabled) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen bg-[#fff9f4] overflow-hidden flex flex-col md:hidden">
