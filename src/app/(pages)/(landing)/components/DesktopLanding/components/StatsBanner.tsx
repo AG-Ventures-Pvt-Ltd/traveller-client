@@ -44,15 +44,15 @@ const StatsBanner: React.FC<StatsBannerProps> = ({ variant, amount, count }) => 
           <span className="text-5xl font-black text-neutral-900 leading-none">
             {count.toLocaleString('en-IN')}+
           </span>
-          <span className="text-neutral-700 text-sm font-medium mt-1">travelers last month</span>
+          <span className="text-neutral-700 text-sm font-medium mt-1">travelers joined</span>
         </div>
         <div className="w-px h-12 bg-neutral-900/15" />
         <div className="flex flex-col gap-1">
           <div className="flex items-center gap-2">
             <UsersThreeIcon size={20} className="text-neutral-800" weight="thin" />
-            <p className="text-neutral-800 text-sm font-semibold">Booked with Wondrr</p>
+            <p className="text-neutral-800 text-sm font-semibold">Join {count}+ travelers</p>
           </div>
-          <p className="text-neutral-600 text-xs font-medium">Join a growing community of solo travelers</p>
+          <p className="text-neutral-600 text-xs font-medium">Planning their next trip with Wondrr</p>
         </div>
         <ConfettiIcon size={40} className="ml-auto text-neutral-800 opacity-30 flex-shrink-0" weight="thin" />
       </div>
