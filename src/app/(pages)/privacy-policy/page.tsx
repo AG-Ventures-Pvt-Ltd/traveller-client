@@ -16,7 +16,11 @@ const Policy = () => {
 
       <h2 className="text-2xl font-bold mb-4">Who We Are</h2>
       <p className="mb-4">
-        <strong>WONDRR TRIPS</strong> (the &quot;Company,&quot; &quot;we,&quot; &quot;us,&quot; or &quot;our&quot;) operates www.wondrr.in, a platform that connects travelers with group trip experiences offered by verified tour operators.
+        WONDRR TRIPS is currently owned and operated by <strong>Shreyansh Agrawal</strong>,
+        in his individual capacity as a sole proprietor, as the business has not yet been
+        incorporated as a separate legal entity. References to &quot;WONDRR TRIPS,&quot;
+        &quot;Company,&quot; &quot;we,&quot; &quot;us,&quot; or &quot;our&quot; in this
+        Privacy Policy refer to Shreyansh Agrawal, trading under the brand name &quot;WONDRR TRIPS.&quot;
       </p>
       <p className="mb-6">
         <strong>Contact Information:</strong><br />
@@ -503,7 +507,7 @@ const Policy = () => {
       </div>
 
       <h3 className="text-xl font-semibold mb-3">Impact of Disabling Cookies</h3>
-      
+
       <p className="font-semibold mb-2">Disabling Essential Cookies:</p>
       <ul className="list-none ml-4 mb-4 space-y-1">
         <li className="flex items-center gap-2"><X className="w-4 h-4 text-red-500 flex-shrink-0" /> You will not be able to log into your account</li>
