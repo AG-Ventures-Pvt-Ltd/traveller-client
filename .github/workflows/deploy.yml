@@ -77,7 +77,5 @@ jobs:
             echo "--- running migrations ---"
             npm run migrate:up
             echo "--- restarting pm2 ---"
-            /home/ubuntu/.nvm/versions/node/v22.16.0/bin/pm2 stop all
-            /home/ubuntu/.nvm/versions/node/v22.16.0/bin/pm2 start all
-            /home/ubuntu/.nvm/versions/node/v22.16.0/bin/pm2 save
+            /home/ubuntu/.nvm/versions/node/v22.16.0/bin/pm2 reload all
             echo "--- done ---"

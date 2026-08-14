@@ -27,6 +27,7 @@ export const API_ENDPOINTS = {
   PAYMENTS: {
     START: "/api/client/v1/payments/start",
     WALLET_START: "/api/client/v1/payments/wallet/start",
+    CONFIG: "/api/client/v1/payments/config",
   },
   DISCOUNTS: {
     GET_AVAILABLE: (tripId: string, email?: string) => {
