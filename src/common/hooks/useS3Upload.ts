@@ -22,6 +22,59 @@ const generateUniqueFilename = (originalFile: File): string => {
   return `${randomString}.${extension}`;
 };
 
+const MAX_DIMENSION = 1920;
+const JPEG_QUALITY = 0.8;
+const SKIP_BELOW_BYTES = 500 * 1024; // already small enough, don't bother
+
+// Downscale + recompress oversized photos client-side before they ever hit S3 —
+// uploads here go straight to CloudFront with no server-side resizing step.
+const compressImage = (file: File): Promise<File> => {
+  return new Promise((resolve) => {
+    if (!file.type.startsWith("image/") || file.type === "image/svg+xml") {
+      resolve(file);
+      return;
+    }
+    if (file.size < SKIP_BELOW_BYTES) {
+      resolve(file);
+      return;
+    }
+
+    const objectUrl = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => {
+      URL.revokeObjectURL(objectUrl);
+      const scale = Math.min(1, MAX_DIMENSION / Math.max(img.width, img.height));
+      const width = Math.round(img.width * scale);
+      const height = Math.round(img.height * scale);
+      const canvas = document.createElement("canvas");
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) {
+        resolve(file);
+        return;
+      }
+      ctx.drawImage(img, 0, 0, width, height);
+      canvas.toBlob(
+        (blob) => {
+          if (!blob || blob.size >= file.size) {
+            resolve(file);
+            return;
+          }
+          resolve(new File([blob], file.name.replace(/\.\w+$/, ".jpg"), { type: "image/jpeg" }));
+        },
+        "image/jpeg",
+        JPEG_QUALITY,
+      );
+    };
+    img.onerror = () => {
+      URL.revokeObjectURL(objectUrl);
+      resolve(file);
+    };
+    img.src = objectUrl;
+  });
+};
+
 
 const getPresignedUrl = async (
   fileName: string,
@@ -111,18 +164,21 @@ const useS3Upload = (): UseS3UploadReturn => {
       // Upload all files in parallel
       const uploadPromises = files.map(async (file, index) => {
         try {
+          // Downscale/compress before it ever leaves the browser
+          const uploadFile = await compressImage(file);
+
           // Generate unique filename
-          const uniqueFilename = generateUniqueFilename(file);
+          const uniqueFilename = generateUniqueFilename(uploadFile);
 
           // Get presigned URL from backend
           const { url: presignedUrl } = await getPresignedUrl(
             uniqueFilename,
-            file.type,
+            uploadFile.type,
             key
           );
 
           // Upload to S3
-          await uploadToS3(presignedUrl, file);
+          await uploadToS3(presignedUrl, uploadFile);
 
           // Get S3 path (without domain)
           const s3Path = getS3Path(presignedUrl);
