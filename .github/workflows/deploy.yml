@@ -70,6 +70,7 @@ jobs:
             source ~/.nvm/nvm.sh
             source ~/.bashrc
             cd wondrr-backend
+            PREVIOUS_COMMIT=$(git rev-parse HEAD)
             echo "--- pulling latest ---"
             git pull origin production
             echo "--- installing deps ---"
@@ -78,4 +79,18 @@ jobs:
             npm run migrate:up
             echo "--- restarting pm2 ---"
             /home/ubuntu/.nvm/versions/node/v22.16.0/bin/pm2 reload all
+            echo "Waiting for application to reload..."
+            sleep 5
+            echo "Performing health checks..."
+            if curl -f http://localhost:8000/health; then
+              echo "Health check gave success. Deployment successful!"
+            else
+              echo "Health check failed. Rolling back..."
+              git reset --hard $PREVIOUS_COMMIT
+              npm ci
+              pm2 reload all
+              echo "Rollback completed."
+              exit 1
+            fi
+            echo "--- done ---"
             echo "--- done ---"

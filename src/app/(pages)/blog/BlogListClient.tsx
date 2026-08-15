@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
+import MyImage from '@/common/ui/Image';
 import { motion } from 'framer-motion';
 import { ArrowRight, BookOpen, Clock, Compass } from 'lucide-react';
 import Footer from '../(landing)/components/Footer/Footer';
@@ -37,7 +37,7 @@ function Cover({ blog, sizes }: { blog: BlogSummary; sizes: string }) {
   const src = resolveCover(blog.coverImage);
   if (src) {
     return (
-      <Image src={src} alt={blog.title || 'Article'} fill sizes={sizes} className="object-cover transition-transform duration-500 group-hover:scale-105" />
+      <MyImage src={src} alt={blog.title || 'Article'} fill sizes={sizes} objectFit="cover" className="w-full h-full transition-transform duration-500 group-hover:scale-105" />
     );
   }
   return (
