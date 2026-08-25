@@ -7,6 +7,12 @@ const nextConfig: NextConfig = {
   experimental: {
     optimizePackageImports: ['@mui/material', 'lucide-react', '@tanstack/react-query'],
   },
+  // Sibling repos under the same parent dir make Turbopack probe that
+  // parent as a candidate workspace root, breaking module resolution
+  // (e.g. tailwindcss) and stalling compiles for ~90s. Pin the root.
+  turbopack: {
+    root: __dirname,
+  },
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: 'lh3.googleusercontent.com' },

@@ -3,6 +3,8 @@ import { notFound } from 'next/navigation';
 import { getServerData } from '@/services/serverApi';
 import { API_ENDPOINTS } from '@/common/constants/apiEndpoints';
 import { JsonLd, SITE_URL } from '@/common/seo/JsonLd';
+import type { TripMetadata } from '../../trip/[id]/types';
+import type { Trip } from '../../(landing)/components/MobileLanding/types';
 import BlogPostClient from './BlogPostClient';
 
 export const dynamic = 'force-dynamic';
@@ -21,6 +23,7 @@ interface Blog {
   metaTitle: string;
   metaDescription: string;
   readTime: number;
+  relatedTrips: string[];
   createdAt: string;
   updatedAt: string;
 }
@@ -33,6 +36,31 @@ async function fetchBlog(slug: string): Promise<Blog | null> {
   } catch {
     return null;
   }
+}
+
+async function fetchRelatedTrips(slugs: string[]): Promise<Trip[]> {
+  if (!slugs?.length) return [];
+
+  const results = await Promise.allSettled(
+    slugs.map((slug) => getServerData<TripMetadata>(API_ENDPOINTS.TRIPS.GET_METADATA(slug))),
+  );
+
+  return results.reduce<Trip[]>((trips, res, i) => {
+    if (res.status !== 'fulfilled' || !res.value) return trips;
+    const t = res.value;
+    trips.push({
+      id: slugs[i],
+      tripSlug: slugs[i],
+      image: t.image?.startsWith('http') ? t.image : `${process.env.NEXT_PUBLIC_CLOUDFRONT_URL}${t.image}`,
+      title: t.title,
+      provider: t.hostName,
+      hostUsername: t.hostUsername,
+      duration: `${t.numberOfDays} Day${t.numberOfDays === 1 ? '' : 's'}`,
+      price: t.priceFrom ?? 0,
+      rating: t.rating ?? 0,
+    });
+    return trips;
+  }, []);
 }
 
 export async function generateMetadata({
@@ -92,6 +120,8 @@ export default async function BlogPostPage({
     notFound();
   }
 
+  const relatedTrips = await fetchRelatedTrips(blog.relatedTrips);
+
   const url = `${SITE_URL}/blog/${blog.slug}`;
   const image = blog.coverImage
     ? blog.coverImage.startsWith('http')
@@ -146,7 +176,7 @@ export default async function BlogPostPage({
   return (
     <>
       <JsonLd data={[articleSchema, breadcrumbSchema]} />
-      <BlogPostClient blog={blog} image={image} />
+      <BlogPostClient blog={blog} image={image} relatedTrips={relatedTrips} />
     </>
   );
 }
