@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
 
 interface MobileModalProps {
@@ -11,6 +12,12 @@ interface MobileModalProps {
 }
 
 const MobileModal: React.FC<MobileModalProps> = ({ isOpen, onClose, title, children }) => {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
@@ -23,9 +30,13 @@ const MobileModal: React.FC<MobileModalProps> = ({ isOpen, onClose, title, child
     };
   }, [isOpen]);
 
-  if (!isOpen) return null;
+  if (!isOpen || !mounted) return null;
 
-  return (
+  // Portal straight to <body> — some call sites (e.g. the desktop trip
+  // booking panel) nest this inside a `position: sticky` ancestor, which
+  // traps a plain `fixed` element inside that ancestor's stacking context
+  // and lets later page content paint over the modal.
+  return createPortal(
     <>
       {/* Backdrop */}
       <div
@@ -35,13 +46,13 @@ const MobileModal: React.FC<MobileModalProps> = ({ isOpen, onClose, title, child
 
       {/* Modal */}
       <div className="fixed inset-0 z-50 flex items-end md:items-center md:justify-center">
-        <div className="bg-white w-full md:w-auto md:max-w-lg md:rounded-3xl rounded-t-3xl max-h-[90vh] flex flex-col animate-slideUp">
+        <div className="relative bg-white w-full md:w-auto md:max-w-lg md:rounded-3xl rounded-t-3xl max-h-[90vh] flex flex-col animate-slideUp">
           {/* Header */}
           <div className="flex items-center justify-between p-6">
             <h2 className="font-bold text-neutral-900 w-full text-center">{title}</h2>
             <button
               onClick={onClose}
-              className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors absolute end-4"
+              className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors absolute top-4 end-4"
             >
               <X className="w-5 h-5 text-neutral-900" />
             </button>
@@ -53,7 +64,8 @@ const MobileModal: React.FC<MobileModalProps> = ({ isOpen, onClose, title, child
           </div>
         </div>
       </div>
-    </>
+    </>,
+    document.body,
   );
 };
 

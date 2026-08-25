@@ -4,8 +4,11 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import MyImage from '@/common/ui/Image';
 import { motion } from 'framer-motion';
-import { ArrowLeft, ArrowRight, Check, Clock, Compass, Link2, List, Share2 } from 'lucide-react';
+import { ArrowRight, Clock, Compass, List, Share2 } from 'lucide-react';
 import Footer from '../../(landing)/components/Footer/Footer';
+import CarouselSection from '../../(landing)/components/DesktopLanding/components/CarouselSection';
+import { ShareModal } from '@/common/components/composites/ShareModal';
+import type { Trip } from '../../(landing)/components/MobileLanding/types';
 import { sanitizeHtml } from '@/common/utils/sanitizeHtml';
 import { formatDate, normalizeContentToHtml, processContent, tintFor, type TocItem } from '../utils';
 
@@ -28,43 +31,7 @@ interface Blog {
 interface Props {
   blog: Blog;
   image: string | null;
-}
-
-function ShareRow({ title }: { title: string }) {
-  const [copied, setCopied] = useState(false);
-  const share = (platform: 'wa' | 'x') => {
-    const url = encodeURIComponent(window.location.href);
-    const text = encodeURIComponent(title || 'Wondrr');
-    const href =
-      platform === 'wa'
-        ? `https://wa.me/?text=${text}%20${url}`
-        : `https://twitter.com/intent/tweet?text=${text}&url=${url}`;
-    window.open(href, '_blank', 'noopener,noreferrer');
-  };
-  const copy = async () => {
-    try {
-      await navigator.clipboard.writeText(window.location.href);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1800);
-    } catch {
-      /* ignore */
-    }
-  };
-  const btn =
-    'inline-flex h-9 w-9 items-center justify-center rounded-full border-2 border-neutral-900 bg-white transition-colors hover:bg-[#D0EF65]';
-  return (
-    <div className="flex items-center gap-2">
-      <button onClick={copy} aria-label="Copy link" className={btn}>
-        {copied ? <Check size={16} strokeWidth={3} /> : <Link2 size={16} />}
-      </button>
-      <button onClick={() => share('wa')} aria-label="Share on WhatsApp" className={btn}>
-        <Share2 size={16} />
-      </button>
-      <button onClick={() => share('x')} aria-label="Share on X" className={`${btn} w-auto px-3 text-sm font-bold`}>
-        X
-      </button>
-    </div>
-  );
+  relatedTrips: Trip[];
 }
 
 function TableOfContents({ toc, activeId }: { toc: TocItem[]; activeId: string }) {
@@ -91,7 +58,7 @@ function TableOfContents({ toc, activeId }: { toc: TocItem[]; activeId: string }
   );
 }
 
-export default function BlogPostClient({ blog, image }: Props) {
+export default function BlogPostClient({ blog, image, relatedTrips }: Props) {
   const { html, toc } = useMemo(
     () => processContent(sanitizeHtml(normalizeContentToHtml(blog.content))),
     [blog.content],
@@ -99,6 +66,8 @@ export default function BlogPostClient({ blog, image }: Props) {
   const articleRef = useRef<HTMLDivElement>(null);
   const [progress, setProgress] = useState(0);
   const [activeId, setActiveId] = useState('');
+  const [shareOpen, setShareOpen] = useState(false);
+  const shareUrl = typeof window !== 'undefined' ? window.location.href : `https://wondrr.in/blog/${blog.slug}`;
 
   useEffect(() => {
     const onScroll = () => {
@@ -229,8 +198,12 @@ export default function BlogPostClient({ blog, image }: Props) {
 
             {/* Share */}
             <div className="mt-8 flex items-center gap-3">
-              <span className="text-sm font-semibold text-neutral-700">Share</span>
-              <ShareRow title={blog.title} />
+              <button
+                onClick={() => setShareOpen(true)}
+                className="inline-flex items-center gap-2 rounded-full border-2 border-neutral-900 bg-white px-4 py-2 text-sm font-semibold text-neutral-700 transition-colors hover:bg-[#D0EF65]"
+              >
+                <Share2 size={16} /> Share
+              </button>
             </div>
 
             {/* Author */}
@@ -242,12 +215,6 @@ export default function BlogPostClient({ blog, image }: Props) {
                 <p className="font-bold text-neutral-900">{author}</p>
                 {blog.authorRole && <p className="text-sm text-neutral-500">{blog.authorRole}</p>}
               </div>
-            </div>
-
-            <div className="mt-10">
-              <Link href="/blog" className="inline-flex items-center gap-2 font-semibold text-neutral-700 transition-colors hover:text-neutral-900">
-                <ArrowLeft size={16} /> Back to blog
-              </Link>
             </div>
           </article>
 
@@ -272,7 +239,26 @@ export default function BlogPostClient({ blog, image }: Props) {
         </div>
       </div>
 
+      {/* Related trips — desktop only, matches homepage carousel */}
+      {relatedTrips.length > 0 && (
+        <div className="mx-auto hidden max-w-6xl px-5 pb-16 sm:px-8 lg:block">
+          <CarouselSection
+            title="Trips from this story"
+            description="Group trips mentioned in this article"
+            trips={relatedTrips}
+          />
+        </div>
+      )}
+
       <Footer />
+
+      <ShareModal
+        open={shareOpen}
+        onClose={() => setShareOpen(false)}
+        title={blog.title}
+        url={shareUrl}
+        utmMedium="blog_post"
+      />
     </main>
   );
 }
