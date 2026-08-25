@@ -44,6 +44,7 @@ export const organizationSchema: JsonLdData = {
   sameAs: [
     'https://www.instagram.com/wondrr.in',
     'https://www.linkedin.com/company/wondrr',
+    'https://www.youtube.com/@wondrrtrips',
   ],
 };
 
