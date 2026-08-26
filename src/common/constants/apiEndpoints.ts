@@ -118,6 +118,12 @@ export const API_ENDPOINTS = {
       return `/api/client/v1/wallet/transactions${query ? `?${query}` : ''}`;
     },
   },
+  SIP: {
+    PLANS: '/api/client/v1/sip/plans',
+    SUBSCRIBE: '/api/client/v1/sip/subscribe',
+    MY_SUBSCRIPTIONS: '/api/client/v1/sip/subscriptions/mine',
+    CANCEL: (id: string) => `/api/client/v1/sip/subscriptions/${id}/cancel`,
+  },
   BLOGS: {
     LIST: (page?: number, limit?: number, category?: string) => {
       const params = new URLSearchParams();
