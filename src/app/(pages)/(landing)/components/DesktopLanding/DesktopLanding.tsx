@@ -12,6 +12,7 @@ import StatsBanner from './components/StatsBanner';
 import CarouselSection from './components/CarouselSection';
 import TrustSection from './components/TrustSection';
 import ExploreByDestination from '../common/ExploreByDestination/ExploreByDestination';
+import RecognitionSection from '../common/RecognitionSection/RecognitionSection';
 
 const DesktopLanding = () => {
 
@@ -162,6 +163,8 @@ const DesktopLanding = () => {
       </div>
 
       <TrustSection />
+
+      <RecognitionSection variant="desktop" />
 
       <Footer />
     </main>

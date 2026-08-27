@@ -15,6 +15,7 @@ import { CitiesResponse } from './components/LocationSelector';
 import StatsBanner from './components/StatsBanner';
 import ExploreByDestination from '../common/ExploreByDestination/ExploreByDestination';
 import TrustSection from './components/TrustSection';
+import RecognitionSection from '../common/RecognitionSection/RecognitionSection';
 
 const MobileLanding = () => {
     const handleSearch = (value: string) => {};  // eslint-disable-line @typescript-eslint/no-unused-vars
@@ -89,6 +90,7 @@ const MobileLanding = () => {
                             <ExploreByDestination variant="mobile" />
                         </div>
                         <TrustSection />
+                        <RecognitionSection variant="mobile" />
                     </div>
                 </div>
             )}
