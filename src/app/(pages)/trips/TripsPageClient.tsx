@@ -1,18 +1,21 @@
 'use client';
 
-import { useState, useEffect, useCallback, useRef } from 'react';
-import { useRouter } from 'next/navigation';
-import TripFilters, { FilterValues } from './components/TripFilters';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import TripFilters from './components/TripFilters';
 import TripList from './components/TripList';
-import { useGetData } from '@/services/useGetData';
 import TripListSkeleton from './components/TripListSkeleton';
 import TripListsMobile from './components/mobile/TripListsMobile';
-import { buildTripsApiUrl, EMPTY_FILTERS } from './buildApiUrl';
-import { Trip, Pagination, TripsResponse } from './types';
+import ActiveFilterChips from './components/filters/ActiveFilterChips';
+import SortDropdown from './components/filters/SortDropdown';
+import { EMPTY_FILTERS, filtersToQuery, hasActiveFilters, parseFilters } from './buildApiUrl';
+import { useTripFeed } from './useTripFeed';
+import { FilterMeta, FilterValues, Pagination, Trip } from './types';
 
 interface TripsPageClientProps {
   initialTrips: Trip[];
   initialPagination: Pagination | null;
+  initialFilterMeta: FilterMeta | null;
   /** Device guess from the request User-Agent so SSR renders the right variant. */
   initialIsMobile: boolean;
   destination: string | null;
@@ -24,6 +27,7 @@ interface TripsPageClientProps {
 export default function TripsPageClient({
   initialTrips,
   initialPagination,
+  initialFilterMeta,
   initialIsMobile,
   destination,
   qParam,
@@ -31,23 +35,8 @@ export default function TripsPageClient({
   statusParam,
 }: TripsPageClientProps) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [isMobile, setIsMobile] = useState(initialIsMobile);
-  const [filters, setFilters] = useState<FilterValues>(EMPTY_FILTERS);
-  const [appliedFilters, setAppliedFilters] = useState<FilterValues>(EMPTY_FILTERS);
-  const [apiUrl, setApiUrl] = useState<string>(() =>
-    buildTripsApiUrl(EMPTY_FILTERS, { destination, qParam, hostParam, statusParam, page: 1 })
-  );
-  const [page, setPage] = useState(1);
-  const [allTrips, setAllTrips] = useState<Trip[]>(initialTrips);
-  const [hasMore, setHasMore] = useState(initialPagination?.hasNextPage ?? false);
-
-  const bottomRef = useRef<HTMLDivElement>(null);
-  const isFetchingMore = useRef(false);
-  const hasMoreRef = useRef(true);
-  const isLoadingRef = useRef(false);
-  // Skips the reset-on-change effect's first fire, so it doesn't clobber the
-  // server-seeded trip list before the client has anything to replace it with.
-  const isFirstRender = useRef(true);
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768);
@@ -56,157 +45,127 @@ export default function TripsPageClient({
     return () => window.removeEventListener('resize', check);
   }, []);
 
-  // Reset accumulation whenever filters/search change (skips the initial mount)
-  useEffect(() => {
-    if (isFirstRender.current) {
-      isFirstRender.current = false;
-      return;
-    }
-    setPage(1);
-    setAllTrips([]);
-    setHasMore(true);
-    hasMoreRef.current = true;
-    isFetchingMore.current = false;
-  }, [appliedFilters, destination, qParam, hostParam, statusParam]);
+  // The URL is the source of truth for filters: refresh, back/forward and sharing all
+  // keep the current view, and the server can render the same list on first paint.
+  const filters = useMemo(() => parseFilters(searchParams), [searchParams]);
 
-  useEffect(() => {
-    setApiUrl(buildTripsApiUrl(appliedFilters, { destination, qParam, hostParam, statusParam, page }));
-  }, [appliedFilters, destination, qParam, hostParam, statusParam, page]);
+  const setFilters = useCallback(
+    (next: FilterValues) => {
+      const sp = filtersToQuery(next);
+      // Search context lives in the URL too and isn't ours to drop.
+      if (destination) sp.set('destination', destination);
+      if (qParam) sp.set('q', qParam);
+      if (hostParam) sp.set('host', hostParam);
+      if (statusParam) sp.set('status', statusParam);
+      const query = sp.toString();
+      router.replace(query ? `/trips?${query}` : '/trips', { scroll: false });
+    },
+    [router, destination, qParam, hostParam, statusParam]
+  );
 
-  const { data: tripsData, isLoading: tripsLoading, error } = useGetData<TripsResponse>(apiUrl, {
-    queryKey: [apiUrl],
-    enabled: !!apiUrl && !isMobile,
+  const feed = useTripFeed({
+    filters,
+    destination,
+    qParam,
+    hostParam,
+    statusParam,
+    initialTrips,
+    initialPagination,
+    initialFilterMeta,
+    enabled: !isMobile,
   });
-
-  // Keep loading state in a ref for the observer
-  useEffect(() => {
-    isLoadingRef.current = tripsLoading;
-  }, [tripsLoading]);
-
-  // Accumulate trips as pages arrive
-  useEffect(() => {
-    if (!tripsData) return;
-
-    const newTrips = tripsData.trips || [];
-    if (page === 1) {
-      setAllTrips(newTrips);
-    } else {
-      setAllTrips((prev) => [...prev, ...newTrips]);
-    }
-
-    const nextHasMore = tripsData.pagination?.hasNextPage ?? false;
-    setHasMore(nextHasMore);
-    hasMoreRef.current = nextHasMore;
-    isFetchingMore.current = false;
-  }, [tripsData]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  // Infinite scroll observer — created once, reads state via refs
-  useEffect(() => {
-    if (isMobile) return;
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (
-          entries[0].isIntersecting &&
-          hasMoreRef.current &&
-          !isLoadingRef.current &&
-          !isFetchingMore.current
-        ) {
-          isFetchingMore.current = true;
-          setPage((prev) => prev + 1);
-        }
-      },
-      { threshold: 0.1 }
-    );
-
-    const el = bottomRef.current;
-    if (el) observer.observe(el);
-    return () => observer.disconnect();
-  }, [isMobile]);
-
-  const handleFilterChange = useCallback((newFilters: FilterValues) => {
-    setFilters(newFilters);
-  }, []);
-
-  const handleApplyFilters = useCallback(() => {
-    setAppliedFilters(filters);
-  }, [filters]);
-
-  const handleBookNow = (slug: string) => {
-    router.push(`/trip/${slug}`);
-  };
-
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-  };
-
-  const calculateDays = (startDate: string, endDate: string) => {
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-    const diffTime = Math.abs(end.getTime() - start.getTime());
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    return diffDays;
-  };
-
-  if (error) {
-    throw Error(error.message || 'Error Loading Trips');
-  }
 
   if (isMobile) {
     return (
       <TripListsMobile
         initialTrips={initialTrips}
         initialPagination={initialPagination}
+        initialFilterMeta={initialFilterMeta}
         destination={destination}
         qParam={qParam}
         hostParam={hostParam}
         statusParam={statusParam}
+        filters={filters}
+        onFiltersChange={setFilters}
       />
     );
   }
 
+  const heading = hostParam
+    ? `Trips by ${hostParam}`
+    : qParam
+      ? `Results for "${qParam}"`
+      : destination
+        ? `Trips in ${destination}`
+        : 'All trips';
+
+  const showEmpty = !feed.isInitialLoading && feed.trips.length === 0;
+
   return (
-    <div className='flex flex-col py-2 mb-8 mx-12'>
-      <div className='flex gap-3'>
-        <div className='flex-1 self-start sticky top-[10%]'>
-          <TripFilters onFilterChange={handleFilterChange} onApplyFilters={handleApplyFilters} />
+    <div className="flex-1 bg-[#FFF9F4] px-12 py-6">
+      <div className="flex gap-8">
+        {/* No self-start: the rail must stretch to the row's height or the sticky element
+            has no room to travel and simply sits at the top. */}
+        <div className="w-72 shrink-0">
+          <TripFilters value={filters} onChange={setFilters} meta={feed.filterMeta} />
         </div>
-        <div className='flex-1 md:flex-[3]'>
-          {!tripsLoading && allTrips.length === 0 && (
-            <div className='bg-gray-50 border border-gray-200 text-gray-700 px-6 py-8 rounded-lg text-center'>
-              <p className='text-lg font-medium'>No trips found</p>
-              <p className='text-sm text-gray-600 mt-2'>Try adjusting your filters to see more results</p>
+
+        <div className="min-w-0 flex-1">
+          <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
+            <div>
+              <h1 className="text-4xl font-bold text-neutral-900">{heading}</h1>
+              <p className="mt-1 text-sm font-semibold text-neutral-600">
+                {feed.isInitialLoading
+                  ? 'Finding trips…'
+                  : `${feed.total} ${feed.total === 1 ? 'trip' : 'trips'} found`}
+              </p>
+            </div>
+            <SortDropdown value={filters.sort} onChange={(sort) => setFilters({ ...filters, sort })} />
+          </div>
+
+          <div className="mb-4">
+            <ActiveFilterChips value={filters} onChange={setFilters} />
+          </div>
+
+          {feed.isInitialLoading && <TripListSkeleton />}
+
+          {showEmpty && (
+            <div className="rounded-3xl border-2 border-neutral-200 bg-white px-6 py-12 text-center">
+              <p className="text-lg font-bold text-neutral-900">No trips found</p>
+              <p className="mt-2 text-sm text-neutral-600">
+                {hasActiveFilters(filters)
+                  ? 'No upcoming departures match these filters. Try widening them.'
+                  : 'There are no upcoming departures right now. Check back soon.'}
+              </p>
+              {hasActiveFilters(filters) && (
+                <button
+                  type="button"
+                  onClick={() => setFilters({ ...EMPTY_FILTERS, sort: filters.sort })}
+                  className="mt-5 rounded-xl bg-neutral-900 px-5 py-2.5 text-sm font-bold text-white"
+                >
+                  Clear all filters
+                </button>
+              )}
             </div>
           )}
-          <div>
-            {allTrips.length > 0 && <div>
-              <h1 className='text-4xl font-bold text-gray-900'>
-                {hostParam ? `Trips by ${hostParam}` : qParam ? `Results for "${qParam}"` : destination ? `Search Results for ${destination}` : 'All Trips'}
-              </h1>
-              {tripsData && (
-                <p className='text mb-3 font-semibold text-gray-600 mt-1'>
-                  {tripsData.pagination?.total} {tripsData.pagination?.total === 1 ? 'trip' : 'trips'} found
-                </p>
-              )}
-            </div>}
-            {tripsLoading && page === 1 && allTrips.length === 0 && <TripListSkeleton />}
-            {allTrips.length > 0 && <TripList
-              trips={allTrips}
-              onBookNow={handleBookNow}
-              formatDate={formatDate}
-              calculateDays={calculateDays}
-            />}
-            {tripsLoading && page > 1 && (
-              <div className='flex justify-center py-6'>
-                <div className='flex items-center gap-1.5'>
-                  <div className='w-2 h-2 rounded-full bg-neutral-900 animate-bounce' style={{ animationDelay: '0s' }} />
-                  <div className='w-2 h-2 rounded-full bg-neutral-900 animate-bounce' style={{ animationDelay: '0.15s' }} />
-                  <div className='w-2 h-2 rounded-full bg-neutral-900 animate-bounce' style={{ animationDelay: '0.3s' }} />
-                </div>
+
+          {feed.trips.length > 0 && <TripList trips={feed.trips} />}
+
+          {feed.isLoadingMore && (
+            <div className="flex justify-center py-6">
+              <div className="flex items-center gap-1.5">
+                {[0, 0.15, 0.3].map((delay) => (
+                  <div
+                    key={delay}
+                    className="h-2 w-2 animate-bounce rounded-full bg-neutral-900"
+                    style={{ animationDelay: `${delay}s` }}
+                  />
+                ))}
               </div>
-            )}
-            {hasMore && <div ref={bottomRef} className='h-4 mt-2' />}
-          </div>
+            </div>
+          )}
+
+          {feed.hasMore && <div ref={feed.bottomRef} className="mt-2 h-4" />}
         </div>
       </div>
     </div>
