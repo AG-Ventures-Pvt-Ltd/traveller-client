@@ -8,6 +8,7 @@ import { getData } from '@/services/baseApi'
 import { API_ENDPOINTS } from '@/common/constants/apiEndpoints'
 import { openCashfreeSubscription } from '../services/cashfreeSubscription'
 import { openRazorpaySubscription } from '../services/razorpaySubscription'
+import { PolicyAgreementCheckbox } from './PolicyAgreementCheckbox'
 import type { SipPlan, SubscribeResponse, PaymentConfig } from '../types'
 
 const CADENCES: { value: 'daily' | 'weekly' | 'monthly'; label: string }[] = [
@@ -29,6 +30,7 @@ interface ApiResponse {
 
 export function SubscribeSipModal({ isOpen, onClose, plan, onSubscribed }: SubscribeSipModalProps) {
   const [cadence, setCadence] = useState<'daily' | 'weekly' | 'monthly'>('weekly')
+  const [agreed, setAgreed] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const { mutateAsync: subscribe } = usePostData<ApiResponse>({
@@ -40,6 +42,7 @@ export function SubscribeSipModal({ isOpen, onClose, plan, onSubscribed }: Subsc
 
   const handleClose = () => {
     setCadence('weekly')
+    setAgreed(false)
     onClose()
   }
 
@@ -69,45 +72,63 @@ export function SubscribeSipModal({ isOpen, onClose, plan, onSubscribed }: Subsc
 
   return (
     <MobileModal isOpen={isOpen} onClose={handleClose} title={plan ? `Subscribe: ${plan.name}` : 'Subscribe'}>
-      <div className="flex flex-col gap-6">
-        <div>
-          <p className="text-xs text-gray-500 mb-2">Choose auto-pay frequency</p>
-          <div className="grid grid-cols-3 gap-2">
-            {CADENCES.map((c) => (
-              <button
-                key={c.value}
-                type="button"
-                onClick={() => setCadence(c.value)}
-                className={`py-3 rounded-xl text-sm font-medium border transition-colors flex flex-col items-center gap-0.5 ${
-                  cadence === c.value
-                    ? 'bg-[#EEA0FF] border-[#EEA0FF] text-black'
-                    : 'border-[#D9D9D9] text-black hover:border-[#EEA0FF]'
-                }`}
-              >
-                <span>{c.label}</span>
-                <span className="text-xs opacity-70">₹{plan?.cadenceAmounts[c.value].toLocaleString('en-IN')}</span>
-              </button>
-            ))}
+      <div className="flex flex-col gap-6 md:w-[420px] md:min-h-[380px] justify-between">
+        <div className="flex flex-col gap-6">
+          <div>
+            <p className="text-xs text-gray-500 mb-2">Choose auto-pay frequency</p>
+            <div className="grid grid-cols-3 gap-2">
+              {CADENCES.map((c) => (
+                <button
+                  key={c.value}
+                  type="button"
+                  onClick={() => setCadence(c.value)}
+                  className={`py-3 rounded-xl text-sm font-medium border transition-colors flex flex-col items-center gap-0.5 ${
+                    cadence === c.value
+                      ? 'bg-[#EEA0FF] border-[#EEA0FF] text-black'
+                      : 'border-[#D9D9D9] text-black hover:border-[#EEA0FF]'
+                  }`}
+                >
+                  <span>{c.label}</span>
+                  <span className="text-xs opacity-70">₹{plan?.cadenceAmounts[c.value].toLocaleString('en-IN')}</span>
+                </button>
+              ))}
+            </div>
           </div>
-          {cadence === 'daily' && (
-            <p className="text-xs text-gray-500 mt-2">Daily auto-pay via UPI or net banking only — cards don&apos;t support daily debits.</p>
-          )}
+
+          <div className="bg-gray-50 rounded-xl p-4 flex flex-col gap-2 text-sm">
+            <div className="flex justify-between">
+              <span className="text-gray-500">Amount per installment</span>
+              <span className="font-medium text-black">₹{amount?.toLocaleString('en-IN')}</span>
+            </div>
+            {plan && amount && (
+              <div className="flex justify-between">
+                <span className="text-gray-500">Total installments</span>
+                <span className="font-medium text-black">{Math.ceil(plan.targetAmount / amount)}</span>
+              </div>
+            )}
+            <div className="flex justify-between">
+              <span className="text-gray-500">Target</span>
+              <span className="font-medium text-black">₹{plan?.targetAmount.toLocaleString('en-IN')}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-500">Bonus on completion</span>
+              <span className="font-medium text-black">₹{plan?.bonusAmount.toLocaleString('en-IN')}</span>
+            </div>
+          </div>
         </div>
 
-        {plan && amount && (
-          <p className="text-xs text-gray-500">
-            Roughly {Math.ceil(plan.targetAmount / amount)} installments of ₹{amount.toLocaleString('en-IN')} to reach ₹{plan.targetAmount.toLocaleString('en-IN')}, then a ₹{plan.bonusAmount.toLocaleString('en-IN')} bonus lands in your Wondrr Cash wallet.
-          </p>
-        )}
+        <div className="flex flex-col gap-4">
+          <PolicyAgreementCheckbox checked={agreed} onChange={setAgreed} />
 
-        <Button
-          variant="purple"
-          fullWidth
-          onClick={handleSubmit}
-          disabled={!plan || isSubmitting}
-        >
-          {isSubmitting ? 'Setting up…' : 'Set up auto-pay'}
-        </Button>
+          <Button
+            variant="purple"
+            fullWidth
+            onClick={handleSubmit}
+            disabled={!plan || !agreed || isSubmitting}
+          >
+            {isSubmitting ? 'Setting up…' : 'Confirm & Subscribe'}
+          </Button>
+        </div>
       </div>
     </MobileModal>
   )

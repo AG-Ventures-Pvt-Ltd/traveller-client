@@ -11,6 +11,7 @@ import BackButton from '@/common/ui/BackButton'
 import { formatDate } from '@/common/utils/dateUtils'
 import { SipPlanCard } from './components/SipPlanCard'
 import { SubscribeSipModal } from './components/SubscribeSipModal'
+import { CancelSipModal } from './components/CancelSipModal'
 import type { SipPlan, SipSubscription } from './types'
 
 const STATUS_LABELS: Record<SipSubscription['status'], string> = {
@@ -28,6 +29,7 @@ const TravelSipPage = () => {
   const router = useRouter()
 
   const [subscribeModal, setSubscribeModal] = useState<{ open: boolean; plan: SipPlan | null }>({ open: false, plan: null })
+  const [cancelModal, setCancelModal] = useState<{ open: boolean; subscription: SipSubscription | null }>({ open: false, subscription: null })
 
   const { data: plansData, isLoading: plansLoading } = useGetData<SipPlan[]>(API_ENDPOINTS.SIP.PLANS, {
     queryKey: ['sip-plans'],
@@ -66,7 +68,10 @@ const TravelSipPage = () => {
   }
 
   const renderSipCard = (sub: SipSubscription) => {
+    // Locked in at subscribe time (sip.controller.js) — stays fixed for this
+    // subscription even if the plan's live cadenceAmounts/target change later.
     const target = sub.planSnapshot.targetAmount
+    const bonus = sub.planSnapshot.totalPayout - sub.planSnapshot.targetAmount
     const pct = Math.min(100, Math.round((sub.cumulativePaidAmount / target) * 100))
     return (
       <div key={sub._id} className="border border-[#D9D9D9] rounded-2xl p-4 bg-white">
@@ -75,6 +80,10 @@ const TravelSipPage = () => {
             {typeof sub.planId === 'object' ? sub.planId.name : 'SIP Plan'}
           </span>
           <span className="text-xs text-gray-500">{STATUS_LABELS[sub.status]}</span>
+        </div>
+        <div className="flex justify-between text-xs text-gray-500 mb-2 capitalize">
+          <span>{sub.cadence} · ₹{sub.installmentAmount.toLocaleString('en-IN')}/installment</span>
+          <span>Bonus: ₹{bonus.toLocaleString('en-IN')}</span>
         </div>
         <div className="w-full bg-gray-200 rounded-full h-2 mb-2">
           <div className="bg-[#EEA0FF] h-2 rounded-full" style={{ width: `${pct}%` }} />
@@ -87,7 +96,7 @@ const TravelSipPage = () => {
         </div>
         {(sub.status === 'active' || sub.status === 'pending_auth') && (
           <button
-            onClick={() => handleCancel(sub._id)}
+            onClick={() => setCancelModal({ open: true, subscription: sub })}
             className="text-xs text-red-500 mt-2 underline"
           >
             Cancel
@@ -158,6 +167,13 @@ const TravelSipPage = () => {
         plan={subscribeModal.plan}
         onClose={() => setSubscribeModal({ open: false, plan: null })}
         onSubscribed={() => refetchSubs()}
+      />
+
+      <CancelSipModal
+        isOpen={cancelModal.open}
+        subscription={cancelModal.subscription}
+        onClose={() => setCancelModal({ open: false, subscription: null })}
+        onConfirm={handleCancel}
       />
     </div>
   )
