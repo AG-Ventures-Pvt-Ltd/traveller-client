@@ -13,7 +13,7 @@ const WHATSAPP_PHONE_NUMBER = '919667427187'; // WhatsApp Business Number (count
 
 const generateWhatsAppMessage = ({tripTitle, tripSlug }: WhatsAppButton): string => {
 
-    return `https://wondrr.in/trip/${tripSlug}\n\n Hi, I want to book the "${tripTitle}" trip. \nPlease help me confirm my spot.`;
+    return `https://wondrr.in/trip/${tripSlug}?utm_location=button\n\n Hi, I want to book the "${tripTitle}" trip. \nPlease help me confirm my spot.`;
 };
 
 interface WhatsAppButtonProps {

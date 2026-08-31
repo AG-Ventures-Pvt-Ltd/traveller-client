@@ -13,6 +13,9 @@ import CarouselSection from './components/CarouselSection';
 import TrustSection from './components/TrustSection';
 import ExploreByDestination from '../common/ExploreByDestination/ExploreByDestination';
 import RecognitionSection from '../common/RecognitionSection/RecognitionSection';
+import SignupPerksModal from '@/common/components/composites/SignupPerksModal';
+import { useOnceEverModal } from '@/common/hooks/useOnceEverModal';
+import { SIGNUP_PERKS_MODAL_STORAGE_KEY } from '@/common/components/composites/SignupPerksModal';
 
 const DesktopLanding = () => {
 
@@ -23,6 +26,12 @@ const DesktopLanding = () => {
   const { data: featuredTripsData, isLoading: isTripsLoading } = useFeaturedTrips();
   const { data: signupBonusData } = useSignupBonus();
   const { data: travelerStatsData } = useGetData<{ count: number }>(API_ENDPOINTS.LANDING_PAGE.TRAVELER_STATS);
+
+  const { show: showSignupModal, dismiss: dismissSignupModal } = useOnceEverModal(
+    60_000,
+    SIGNUP_PERKS_MODAL_STORAGE_KEY,
+    status === 'unauthenticated'
+  );
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchValue(e.target.value);
@@ -167,6 +176,13 @@ const DesktopLanding = () => {
       <RecognitionSection variant="desktop" />
 
       <Footer />
+
+      <SignupPerksModal
+        open={showSignupModal}
+        onClose={dismissSignupModal}
+        signupBonusEnabled={signupBonusData?.signupBonus?.isEnabled}
+        signupBonusAmount={signupBonusData?.signupBonus?.amount}
+      />
     </main>
   )
 }

@@ -16,6 +16,9 @@ import StatsBanner from './components/StatsBanner';
 import ExploreByDestination from '../common/ExploreByDestination/ExploreByDestination';
 import TrustSection from './components/TrustSection';
 import RecognitionSection from '../common/RecognitionSection/RecognitionSection';
+import SignupPerksModal from '@/common/components/composites/SignupPerksModal';
+import { useOnceEverModal } from '@/common/hooks/useOnceEverModal';
+import { SIGNUP_PERKS_MODAL_STORAGE_KEY } from '@/common/components/composites/SignupPerksModal';
 
 const MobileLanding = () => {
     const handleSearch = (value: string) => {};  // eslint-disable-line @typescript-eslint/no-unused-vars
@@ -25,6 +28,12 @@ const MobileLanding = () => {
     const { data: cities, isLoading: cityLoading } = useGetData<CitiesResponse>(API_ENDPOINTS.LANDING_PAGE.CITIES)
     const { data: signupBonusData, isLoading: isBonusLoading } = useSignupBonus();
     const { data: travelerStatsData } = useGetData<{ count: number }>(API_ENDPOINTS.LANDING_PAGE.TRAVELER_STATS);
+
+    const { show: showSignupModal, dismiss: dismissSignupModal } = useOnceEverModal(
+        60_000,
+        SIGNUP_PERKS_MODAL_STORAGE_KEY,
+        status === 'unauthenticated'
+    );
 
     const fullName = session?.user?.fullName || '';
     const firstName = fullName.split(' ')[0] || 'Traveler';
@@ -95,6 +104,13 @@ const MobileLanding = () => {
                 </div>
             )}
             <Footer />
+
+            <SignupPerksModal
+                open={showSignupModal}
+                onClose={dismissSignupModal}
+                signupBonusEnabled={signupBonusData?.signupBonus.isEnabled}
+                signupBonusAmount={signupBonusData?.signupBonus.amount}
+            />
         </>
     );
 };
