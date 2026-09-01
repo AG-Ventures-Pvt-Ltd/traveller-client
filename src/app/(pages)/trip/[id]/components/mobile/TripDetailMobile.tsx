@@ -374,6 +374,7 @@ export default function TripDetailMobile() {
                     displayPrice={displayPrice}
                     onBookNow={handleBookNow}
                     isLoading={isBooking}
+                    disabled={sortedBatches.length === 0}
                 />
 
                 <Footer />
