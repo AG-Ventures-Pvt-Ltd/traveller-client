@@ -7,6 +7,7 @@ export const API_ENDPOINTS = {
     HOST_TRIPS: (hostUsername: string) => `/api/client/v1/trips/user/${hostUsername}`,
     BATCH_DETAILS: (batchId: string) => `/api/client/v1/trips/host/trip/batch/${batchId}`,
     GET_METADATA : (id : string) => `/api/client/v1/trips/${id}/metadata`,
+    GET_CARD: (slug: string) => `/api/client/v1/trips/${slug}/card`,
     GET_SLUGS_FOR_SITEMAP :`/api/client/v1/trips/sitemap`,
     TRAVELER_STATS: (slug: string) => `/api/client/v1/trips/${slug}/traveler-stats`,
     RECORD_VIEW: (slug: string) => `api/client/v1/trips/${slug}/view`,
