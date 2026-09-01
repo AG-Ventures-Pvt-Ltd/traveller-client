@@ -69,7 +69,7 @@ const nextConfig: NextConfig = {
               "media-src 'self' https://d1hjk5b7z017su.cloudfront.net",
               `connect-src 'self' https:${isDev ? ' http://localhost:*' : ''}`,
               "font-src 'self' data:",
-              "frame-src https://checkout.razorpay.com https://sandbox.cashfree.com https://sdk.cashfree.com https://api.razorpay.com https://payments.cashfree.com https://payments-test.cashfree.com",
+              "frame-src https://checkout.razorpay.com https://sandbox.cashfree.com https://sdk.cashfree.com https://api.razorpay.com https://payments.cashfree.com https://payments-test.cashfree.com https://api.cashfree.com",
               "frame-ancestors 'self'",
             ].join('; '),
           },
