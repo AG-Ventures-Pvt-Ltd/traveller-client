@@ -26,6 +26,8 @@ import FactCards from './components/FactCards';
 import BookingPanel from './components/BookingPanel';
 import SectionTabNav from './components/SectionTabNav';
 import TripBreadcrumb from '../TripBreadcrumb';
+import WhatsAppHelpModal from '@/common/components/composites/WhatsAppHelpModal';
+import { useTimedModal } from '@/common/hooks/useTimedModal';
 
 const TripHighlights = dynamic(() => import('../mobile/components/TripHighlights'));
 const ItinerarySection = dynamic(() => import('../mobile/components/ItinerarySection'));
@@ -105,6 +107,8 @@ export default function TripDetailDesktop() {
     }, [generatedSlug, router]);
 
     const { isBookmarked, toggle: toggleBookmark } = useBookMarking(id || '', tripData?.isBookmarked ?? false);
+
+    const { show: showHelpModal, dismiss: dismissHelpModal } = useTimedModal(60_000, !!tripData);
 
     useEffect(() => {
         if (sortedBatches.length > 0) setSelectedBatch(0);
@@ -364,6 +368,13 @@ export default function TripDetailDesktop() {
             </div>
 
             <Footer />
+
+            <WhatsAppHelpModal
+                open={showHelpModal}
+                onClose={dismissHelpModal}
+                tripTitle={tripData.title}
+                tripSlug={id}
+            />
 
             {lightboxIndex !== null && (
                 <ImageLightbox images={images} title={tripData.title} initialIndex={lightboxIndex} onClose={closeLightbox} />

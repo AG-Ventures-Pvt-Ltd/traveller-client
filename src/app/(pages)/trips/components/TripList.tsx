@@ -1,56 +1,26 @@
 import React from 'react';
-import TripSearchCard from '../components/TripSearchCard';
-
-interface Trip {
-  title: string;
-  image: string;
-  address: string;
-  days:string;
-  rating: number;
-  price: number;
-  status: string;
-  hostName: string;
-  hostUsername?: string;
-  isBookmarked: boolean;
-  slug: string;
-  tripSlug?: string;
-}
+import TripSearchCard from './TripSearchCard';
+import { Trip } from '../types';
 
 interface TripListProps {
   trips: Trip[];
-  onBookNow: (slug: string) => void;
-  formatDate: (dateString: string) => string;
-  calculateDays: (startDate: string, endDate: string) => number;
 }
 
-const TripList: React.FC<TripListProps> = ({
-  trips,
-  onBookNow,
-}) => {
-
-  return (
-    <div className='space-y-4'>
-      {trips.map((trip) => {
-        return (
-          <TripSearchCard
-            key={trip.slug}
-            tripSlug={trip.slug}
-            tripUrl={trip.tripSlug || trip.slug}
-            imageUrl={trip.image}
-            title={trip.title}
-            location={trip.address}
-            days={trip.days}
-            rating={trip.rating}
-            price={trip.price}
-            hostName={trip.hostName}
-            hostUsername={trip.hostUsername}
-            isBookmarked={trip.isBookmarked}
-            onViewDetails={() => onBookNow(trip.slug)}
-          />
-        );
-      })}
-    </div>
-  );
-};
+/**
+ * Two cards per row from `xl`, one below it.
+ *
+ * The horizontal card needs roughly 400px to hold an image plus a readable detail column.
+ * Subtracting the page padding, the 288px filter rail and the gaps, a viewport only clears
+ * that at ~1280px — at 1024px two cards would be 296px each and the detail column would
+ * collapse to about 150px.
+ */
+const TripList: React.FC<TripListProps> = ({ trips }) => (
+  // No gap — the cards butt up against each other; their own p-3 keeps the content apart.
+  <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+    {trips.map((trip, index) => (
+      <TripSearchCard key={`${trip.slug}-${index}`} trip={trip} index={index} />
+    ))}
+  </div>
+);
 
 export default TripList;

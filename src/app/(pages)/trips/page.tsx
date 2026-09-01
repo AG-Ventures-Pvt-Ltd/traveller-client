@@ -2,24 +2,17 @@ import { headers } from 'next/headers';
 import { dehydrate, HydrationBoundary, QueryClient } from '@tanstack/react-query';
 import { getServerData } from '@/services/serverApi';
 import TripsPageClient from './TripsPageClient';
-import { buildTripsApiUrl, EMPTY_FILTERS } from './buildApiUrl';
+import { buildTripsApiUrl, parseFilters } from './buildApiUrl';
 import { TripsResponse } from './types';
 
 export const dynamic = 'force-dynamic';
 
 const MOBILE_UA = /Android.+Mobile|iPhone|iPod|Windows Phone|BlackBerry|Opera Mini|IEMobile|Mobile.+Firefox|Firefox.+Mobile/i;
 
-interface TripsPageSearchParams {
-  destination?: string;
-  q?: string;
-  host?: string;
-  status?: string;
-}
-
 export default async function Page({
   searchParams,
 }: {
-  searchParams: Promise<TripsPageSearchParams>;
+  searchParams: Promise<Record<string, string | undefined>>;
 }) {
   const sp = await searchParams;
   const destination = sp.destination || null;
@@ -30,7 +23,11 @@ export default async function Page({
   const ua = (await headers()).get('user-agent') || '';
   const initialIsMobile = MOBILE_UA.test(ua);
 
-  const apiUrl = buildTripsApiUrl(EMPTY_FILTERS, { destination, qParam, hostParam, statusParam, page: 1 });
+  // Filters come from the same URL the client reads, so the server renders the filtered
+  // list and the query key matches — otherwise the HydrationBoundary cache is bypassed
+  // and the client immediately refetches what was just rendered.
+  const filters = parseFilters(sp);
+  const apiUrl = buildTripsApiUrl(filters, { destination, qParam, hostParam, statusParam, page: 1 });
 
   const queryClient = new QueryClient();
   let initialData: TripsResponse | null = null;
@@ -48,6 +45,7 @@ export default async function Page({
       <TripsPageClient
         initialTrips={initialData?.trips || []}
         initialPagination={initialData?.pagination || null}
+        initialFilterMeta={initialData?.filterMeta || null}
         initialIsMobile={initialIsMobile}
         destination={destination}
         qParam={qParam}

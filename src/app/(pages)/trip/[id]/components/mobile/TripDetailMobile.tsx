@@ -25,6 +25,8 @@ import TravelOptions from './components/TravelOptions';
 import BookingBar from '@/app/(pages)/trip/common/ui/BookingBar';
 import WhatsAppButton from './components/WhatsAppButton';
 import TripBreadcrumb from '../TripBreadcrumb';
+import WhatsAppHelpModal from '@/common/components/composites/WhatsAppHelpModal';
+import { useTimedModal } from '@/common/hooks/useTimedModal';
 
 // Below-fold — code-split but still SSR'd so content is present for crawlers
 const TripHighlights = dynamic(() => import('./components/TripHighlights'));
@@ -115,6 +117,8 @@ export default function TripDetailMobile() {
     }, [generatedSlug, router]);
 
     const { isBookmarked, toggle: toggleBookmark } = useBookMarking(id || '', tripData?.isBookmarked ?? false);
+
+    const { show: showHelpModal, dismiss: dismissHelpModal } = useTimedModal(60_000, !!tripData);
 
     useEffect(() => {
         if (sortedBatches.length > 0) {
@@ -357,6 +361,13 @@ export default function TripDetailMobile() {
                     tripTitle={tripData.title}
                     tripSlug={id}
                     className="bottom-[104px]"
+                />
+
+                <WhatsAppHelpModal
+                    open={showHelpModal}
+                    onClose={dismissHelpModal}
+                    tripTitle={tripData.title}
+                    tripSlug={id}
                 />
 
                 <BookingBar
