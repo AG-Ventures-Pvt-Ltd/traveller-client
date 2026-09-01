@@ -23,7 +23,7 @@ const Button: React.FC<ButtonProps> = ({
   variant = 'primary',
   fullWidth = false,
 }) => {
-  const baseClass = `py-4 rounded-xl text-base font-normal text-center active:opacity-80 transition-opacity disabled:opacity-60 disabled:cursor-not-allowed disabled:active:opacity-60 ${fullWidth ? 'w-full' : ''} ${className}`;
+  const baseClass = `py-4 rounded-xl text-base font-normal text-center cursor-pointer active:opacity-80 transition-opacity disabled:opacity-60 disabled:cursor-not-allowed disabled:active:opacity-60 ${fullWidth ? 'w-full' : ''} ${className}`;
 
   const variantClass = variant === 'yellow'
     ? 'bg-yellow-400 text-black'
