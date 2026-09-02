@@ -69,7 +69,13 @@ const nextConfig: NextConfig = {
               "media-src 'self' https://d1hjk5b7z017su.cloudfront.net",
               `connect-src 'self' https:${isDev ? ' http://localhost:*' : ''}`,
               "font-src 'self' data:",
-              "frame-src https://checkout.razorpay.com https://sandbox.cashfree.com https://sdk.cashfree.com https://api.razorpay.com https://payments.cashfree.com https://payments-test.cashfree.com",
+              // Cashfree's Drop-in checkout (v3 SDK) pulls sub-resources across
+              // several *.cashfree.com hosts beyond the ones we'd anticipate
+              // (payments/payments-test/sandbox/sdk) — a fixed allowlist silently
+              // blocks whichever one isn't listed, and Cashfree's own iframe then
+              // shows a generic "Something went wrong" with no CSP hint on our
+              // side. Per Cashfree's own CSP guidance, wildcard the subdomain.
+              "frame-src https://checkout.razorpay.com https://api.razorpay.com https://*.cashfree.com",
               "frame-ancestors 'self'",
             ].join('; '),
           },

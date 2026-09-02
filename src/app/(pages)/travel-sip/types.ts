@@ -39,6 +39,9 @@ export interface SubscribeResponse {
 
 export interface PaymentConfig {
   gateway: 'razorpay' | 'cashfree';
+  // Independent from `gateway` — SIP subscriptions can run on a different
+  // gateway than one-time bookings/wallet top-ups.
+  subscriptionGateway: 'razorpay' | 'cashfree';
   razorpayKeyId?: string;
   cashfreeMode?: 'sandbox' | 'production';
 }

@@ -12,7 +12,7 @@ import { formatDate } from '@/common/utils/dateUtils'
 import { SipPlanCard } from './components/SipPlanCard'
 import { SubscribeSipModal } from './components/SubscribeSipModal'
 import { CancelSipModal } from './components/CancelSipModal'
-import type { SipPlan, SipSubscription } from './types'
+import type { SipPlan, SipSubscription, PaymentConfig } from './types'
 
 const STATUS_LABELS: Record<SipSubscription['status'], string> = {
   pending_auth: 'Awaiting authorization',
@@ -33,6 +33,14 @@ const TravelSipPage = () => {
 
   const { data: plansData, isLoading: plansLoading } = useGetData<SipPlan[]>(API_ENDPOINTS.SIP.PLANS, {
     queryKey: ['sip-plans'],
+  })
+
+  // Razorpay subscriptions can't bill more often than every 7 days, so it
+  // rejects period:'daily' at interval:1 — Daily cadence only works on
+  // Cashfree. Gate the option on the subscription gateway specifically —
+  // it's set independently from the one-time booking/wallet gateway.
+  const { data: paymentConfig } = useGetData<PaymentConfig>(API_ENDPOINTS.PAYMENTS.CONFIG, {
+    queryKey: ['payment-config'],
   })
 
   const { data: mySubsData, isLoading: subsLoading, refetch: refetchSubs } = useGetData<SipSubscription[]>(
@@ -165,6 +173,7 @@ const TravelSipPage = () => {
       <SubscribeSipModal
         isOpen={subscribeModal.open}
         plan={subscribeModal.plan}
+        activeGateway={paymentConfig?.subscriptionGateway}
         onClose={() => setSubscribeModal({ open: false, plan: null })}
         onSubscribed={() => refetchSubs()}
       />

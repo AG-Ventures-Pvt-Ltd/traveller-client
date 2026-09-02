@@ -21,6 +21,7 @@ interface SubscribeSipModalProps {
   isOpen: boolean
   onClose: () => void
   plan: SipPlan | null
+  activeGateway?: 'razorpay' | 'cashfree'
   onSubscribed: () => void
 }
 
@@ -28,10 +29,14 @@ interface ApiResponse {
   data: SubscribeResponse
 }
 
-export function SubscribeSipModal({ isOpen, onClose, plan, onSubscribed }: SubscribeSipModalProps) {
+export function SubscribeSipModal({ isOpen, onClose, plan, activeGateway, onSubscribed }: SubscribeSipModalProps) {
   const [cadence, setCadence] = useState<'daily' | 'weekly' | 'monthly'>('weekly')
   const [agreed, setAgreed] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
+
+  // Razorpay subscriptions reject period:'daily' at interval:1 (7-day
+  // minimum) — only offer Daily when Cashfree is the active gateway.
+  const availableCadences = activeGateway === 'razorpay' ? CADENCES.filter((c) => c.value !== 'daily') : CADENCES
 
   const { mutateAsync: subscribe } = usePostData<ApiResponse>({
     url: API_ENDPOINTS.SIP.SUBSCRIBE,
@@ -76,8 +81,8 @@ export function SubscribeSipModal({ isOpen, onClose, plan, onSubscribed }: Subsc
         <div className="flex flex-col gap-6">
           <div>
             <p className="text-xs text-gray-500 mb-2">Choose auto-pay frequency</p>
-            <div className="grid grid-cols-3 gap-2">
-              {CADENCES.map((c) => (
+            <div className={`grid gap-2 ${availableCadences.length === 2 ? 'grid-cols-2' : 'grid-cols-3'}`}>
+              {availableCadences.map((c) => (
                 <button
                   key={c.value}
                   type="button"
