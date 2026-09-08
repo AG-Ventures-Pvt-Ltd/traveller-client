@@ -16,13 +16,15 @@ const Policy = () => {
 
       <h2 className="text-2xl font-bold mb-4">Who We Are</h2>
       <p className="mb-4">
-        WONDRR TRIPS is currently owned and operated by <strong>Shreyansh Agrawal</strong>,
-        in his individual capacity as a sole proprietor, as the business has not yet been
-        incorporated as a separate legal entity. References to &quot;WONDRR TRIPS,&quot;
+        &quot;Wondrr&quot; is a brand name owned and operated by{' '}
+        <strong>Madhurmani Networks (OPC) Pvt. Ltd.</strong>, a company incorporated
+        under the Companies Act, 2013. References to &quot;Wondrr,&quot; &quot;WONDRR TRIPS,&quot;
         &quot;Company,&quot; &quot;we,&quot; &quot;us,&quot; or &quot;our&quot; in this
-        Privacy Policy refer to Shreyansh Agrawal, trading under the brand name &quot;WONDRR TRIPS.&quot;
+        Privacy Policy refer to Madhurmani Networks (OPC) Pvt. Ltd., operating under the
+        brand name &quot;Wondrr.&quot;
       </p>
       <p className="mb-6">
+        <strong>Legal Entity:</strong> Madhurmani Networks (OPC) Pvt. Ltd.<br />
         <strong>Contact Information:</strong><br />
         Email: support@wondrr.in<br />
         Privacy Inquiries: support@wondrr.in<br />
