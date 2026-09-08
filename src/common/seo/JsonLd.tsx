@@ -26,6 +26,7 @@ export const organizationSchema: JsonLdData = {
   '@type': 'TravelAgency',
   '@id': `${SITE_URL}/#organization`,
   name: 'Wondrr',
+  legalName: 'Madhurmani Networks (OPC) Pvt. Ltd.',
   url: SITE_URL,
   logo: {
     '@type': 'ImageObject',

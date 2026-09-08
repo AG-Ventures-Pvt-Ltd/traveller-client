@@ -99,39 +99,58 @@ const BookingDetails = () => {
   }
 
 
+  const actionButton = (
+    <Button
+      variant="yellow"
+      fullWidth
+      onClick={handleButtonClick}
+      disabled={isUpdating}
+    >
+      {isUpdating ? 'Updating...' : hasAnyChanges ? 'Update Details' : 'Done'}
+    </Button>
+  );
+
   return (
-    <div className='flex flex-col gap-4 pb-32 bg-[#FFF9F4]'>
-      <BackButton label='Booking Summary' className='mt-4' />
-      <TripOverviewCard
-        guests={bookingData.booking.numberOfPeople}
-        selectedMeetingPoint={bookingData.booking.meetingPoint}
-        batchDetails={{
-          startDateTime: bookingData.trip.startDateTime,
-          endDateTime: bookingData.trip.endDateTime,
-          meetingPoint: bookingData.booking.meetingPoint,
-          duration: bookingData.trip.duration
-        }}
-        gap={'3'}
-      />
-      <TripSummaryCard trip={bookingData.trip} booking={bookingData.booking} />
-      <TravelerSection 
-        bookingId={bookingId}
-        onDataChange={handleTravelerDataChange}
-        onReset={handleReset}
-      />
-      <ContactSection 
-        onDataChange={handleContactDataChange}
-        onReset={handleReset}
-      />
-      <div className="fixed bottom-0 left-0 right-0 px-5 py-5 bg-[#FFF9F4] z-50">
-        <Button
-          variant="yellow"
-          fullWidth
-          onClick={handleButtonClick}
-          disabled={isUpdating}
-        >
-          {isUpdating ? 'Updating...' : hasAnyChanges ? 'Update Details' : 'Done'}
-        </Button>
+    <div className='pb-32 md:pb-12 bg-[#FFF9F4]'>
+      <div className='mx-auto max-w-6xl flex flex-col gap-6'>
+        <BackButton label='Booking Summary' className='mt-4' />
+
+        <div className='flex flex-col gap-6 md:flex-row md:items-start'>
+          {/* Left: booking details */}
+          <div className='flex flex-col gap-6 md:w-1/2 md:sticky md:top-6 md:self-start'>
+            <TripOverviewCard
+              guests={bookingData.booking.numberOfPeople}
+              selectedMeetingPoint={bookingData.booking.meetingPoint}
+              batchDetails={{
+                startDateTime: bookingData.trip.startDateTime,
+                endDateTime: bookingData.trip.endDateTime,
+                meetingPoint: bookingData.booking.meetingPoint,
+                duration: bookingData.trip.duration
+              }}
+              gap={'3'}
+            />
+            <TripSummaryCard trip={bookingData.trip} booking={bookingData.booking} />
+          </div>
+
+          {/* Right: traveler + emergency contact */}
+          <div className='flex flex-col gap-6 md:w-1/2'>
+            <TravelerSection
+              bookingId={bookingId}
+              onDataChange={handleTravelerDataChange}
+              onReset={handleReset}
+            />
+            <ContactSection
+              onDataChange={handleContactDataChange}
+              onReset={handleReset}
+            />
+            <div className='hidden md:block'>{actionButton}</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile: sticky action bar */}
+      <div className="fixed md:hidden bottom-0 left-0 right-0 px-5 py-5 bg-[#FFF9F4] z-50">
+        {actionButton}
       </div>
     </div>
   );
