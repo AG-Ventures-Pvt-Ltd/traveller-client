@@ -49,7 +49,7 @@ const TripSearchCard: React.FC<TripSearchCardProps> = ({ trip, index }) => {
     >
       {/* Media. No fixed height — it stretches to the row, with min-h as the floor, so the
           image always fills the card instead of leaving a gap under a taller detail column. */}
-      <div className="relative w-[40%] max-w-[320px] min-h-[190px] shrink-0 overflow-hidden rounded-[18px]">
+      <div className="relative w-[45%] max-w-[380px] min-h-[190px] shrink-0 overflow-hidden rounded-[18px]">
         <TripImageCarousel
           images={images}
           alt={trip.title}

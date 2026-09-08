@@ -241,8 +241,9 @@ export default function OtpVerificationPage({
                 )}
             </div>
 
-            {/* Verify Button */}
-            <div className='fixed bottom-0 left-0 w-full px-6 pb-8'>
+            {/* Verify Button — sticky to the viewport bottom on mobile, in-flow on desktop
+                (fixed + w-full would span the whole screen and overlap the side banner) */}
+            <div className='fixed bottom-0 left-0 w-full px-6 pb-8 md:static md:px-0 md:pb-0 md:mt-4'>
                 <Button
                     variant="purple"
                     type="button"
