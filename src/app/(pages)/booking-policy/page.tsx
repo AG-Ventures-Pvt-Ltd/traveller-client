@@ -13,6 +13,14 @@ export default function BookingPolicy() {
                     By completing this booking, you acknowledge and agree to the following:
                 </p>
 
+                <p className="mb-6">
+                    &quot;Wondrr&quot; (also referred to as &quot;Wondrr Trips&quot;) is a brand name owned and
+                    operated by <strong>Madhurmani Networks (OPC) Pvt. Ltd.</strong> All references to
+                    &quot;Wondrr,&quot; &quot;Wondrr Trips,&quot; &quot;the platform,&quot; &quot;we,&quot; &quot;us,&quot; or
+                    &quot;our&quot; in this document refer to Madhurmani Networks (OPC) Pvt. Ltd.,
+                    operating under the brand name &quot;Wondrr.&quot;
+                </p>
+
                 <h2 className="text-2xl font-semibold mb-4">1. Booking Confirmation</h2>
                 <ul className="list-disc list-inside mb-6 space-y-2">
                     <li>Upon successful payment, you will receive a booking confirmation via email within 24 hours</li>

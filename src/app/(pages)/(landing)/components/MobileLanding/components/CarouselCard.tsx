@@ -52,7 +52,7 @@ const CarouselCard: React.FC<CarouselCardProps> = ({
           trackEvent('trip_card_click', { trip_id: slug, trip_title: title, source: 'landing' });
           onClick?.();
         }}
-        className="absolute inset-0 z-0"
+        className="absolute inset-0 z-[1]"
         aria-label={title}
       />
 

@@ -1,92 +1,139 @@
-import React from 'react'
-import Link from 'next/link'
-import MyImage from '@/common/ui/Image'
-import { StarIcon, MapPinIcon, HeartIcon } from '@phosphor-icons/react'
-import { useBookMarking } from '@/common/hooks/useBookMarking'
+'use client';
 
-export interface TripCardProps {
-  title: string
-  image: string
-  address: string
-  rating: number
-  price: number
-  hostName: string
-  hostUsername?: string
-  slug: string
-  tripSlug?: string
-  days: string
-  bgColor?: string
-  isBookmarked?: boolean
-  onClick?: (slug: string) => void
+import React from 'react';
+import Link from 'next/link';
+import {
+  StarIcon,
+  MapPinIcon,
+  HeartIcon,
+  CalendarBlankIcon,
+  ClockIcon,
+  SealCheckIcon,
+} from '@phosphor-icons/react';
+import TripImageCarousel from '../TripImageCarousel';
+import { useBookMarking } from '@/common/hooks/useBookMarking';
+import { trackEvent, setFunnelSource } from '@/common/utils/analytics';
+import { cardColor, cardImages, departureInfo } from '../cardUtils';
+import { Trip } from '../../types';
+
+interface TripCardProps {
+  trip: Trip;
+  index: number;
 }
 
-export function TripCard({ title, image, address, rating, price, hostName, hostUsername, slug, tripSlug, days, bgColor = '#FFD976', isBookmarked: initialIsBookmarked = false }: TripCardProps) {
-  const { isBookmarked, toggle } = useBookMarking(slug, initialIsBookmarked)
+/**
+ * Mobile trip card. Same shape as the desktop card — image left, detail right, detail
+ * centred against the media — with the media share and type scaled for a phone-width column.
+ */
+export function TripCard({ trip, index }: TripCardProps) {
+  const { isBookmarked, toggle } = useBookMarking(trip.slug, trip.isBookmarked);
 
-  const handleBookmarkClick = (e: React.MouseEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-    toggle(e)
-  }
+  const bg = cardColor(index);
+  const images = cardImages(trip);
+  const departure = departureInfo(trip);
+  const href = `/trip/${trip.tripSlug || trip.slug}`;
 
   return (
-    <Link
-      href={`/trip/${tripSlug || slug}`}
-      className="relative rounded-[20px] overflow-hidden active:scale-[0.98] transition-transform flex"
-      style={{ backgroundColor: bgColor }}
+    <article
+      className="relative flex gap-3 rounded-[22px] p-2.5 transition-transform active:scale-[0.99]"
+      style={{ backgroundColor: bg }}
     >
-      {/* Image */}
-      <div className="relative m-[10px] rounded-[12px] overflow-hidden w-[157px] min-h-[115px] shrink-0">
-        <MyImage src={image} alt={title} className="h-full w-full" objectFit="cover" />
+      {/* Media. No fixed height — stretches to the row with min-h as the floor. */}
+      <div className="relative min-h-[170px] w-[44%] max-w-[170px] shrink-0 overflow-hidden rounded-[16px]">
+        <TripImageCarousel
+          images={images}
+          alt={trip.title}
+          className="h-full w-full"
+          priority={index < 2}
+          sizes="40vw"
+        />
 
-        {/* Bookmark button */}
         <button
-          onClick={handleBookmarkClick}
-          className="absolute top-2 left-2 flex items-center justify-center w-8 h-8 rounded-full bg-black/70 hover:bg-black transition-colors z-10"
+          type="button"
+          aria-label={isBookmarked ? 'Remove bookmark' : 'Save trip'}
+          onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggle(e); }}
+          className="absolute left-2 top-2 z-20 flex h-8 w-8 items-center justify-center rounded-full bg-black/55"
         >
           <HeartIcon
-            size={18}
+            size={16}
             weight={isBookmarked ? 'fill' : 'regular'}
             className={isBookmarked ? 'text-red-500' : 'text-white'}
           />
         </button>
 
-        {/* Rating badge */}
-        <div className="absolute bottom-[5px] right-[5px] bg-white flex items-center gap-[4px] px-[7px] py-[5px] rounded-[8px]">
-          <StarIcon size={12} weight="fill" className="text-yellow-400" />
-          <span className="text-[10.5px] font-normal text-black tracking-tight">
-            {rating > 0 ? rating : 'New'}
+        <div className="absolute right-2 top-2 z-20 flex items-center gap-1 rounded-full bg-white px-1.5 py-0.5">
+          <StarIcon size={12} weight="fill" className="text-[#FFC107]" />
+          <span className="text-[11px] font-bold text-black">
+            {trip.rating > 0 ? trip.rating.toFixed(1) : 'New'}
+          </span>
+          {trip.totalReviews > 0 && (
+            <span className="text-[11px] font-medium text-neutral-500">({trip.totalReviews})</span>
+          )}
+        </div>
+      </div>
+
+      {/* Detail — centred against the image, matching the desktop card. */}
+      <div className="flex min-w-0 flex-1 flex-col justify-center py-1 pr-0.5">
+        <h2 className="line-clamp-2 text-[17px] font-bold leading-tight tracking-tight text-black">
+          {trip.title}
+        </h2>
+
+        {trip.hostName && (
+          <div className="mt-1.5 flex min-w-0 items-center gap-1">
+            <Link
+              href={trip.hostUsername ? `/${trip.hostUsername}` : '#'}
+              onClick={(e) => e.stopPropagation()}
+              className="relative z-20 truncate text-[13px] font-medium text-black/70 hover:underline"
+            >
+              by {trip.hostName}
+            </Link>
+            <SealCheckIcon size={16} weight="bold" className="shrink-0 text-black/45" />
+          </div>
+        )}
+
+        <div className="mt-2.5 flex items-center gap-2 py-0.5 text-[13px] font-medium text-black/70">
+          <span className="flex min-w-0 items-center gap-1.5">
+            <MapPinIcon size={16} weight="bold" className="shrink-0" />
+            <span className="truncate text-xs">
+              {[trip.address, trip.state].filter(Boolean).join(', ') || 'India'}
+            </span>
+          </span>
+        </div>
+
+        <span className="ml-0.5 flex shrink-0 items-center gap-1.5 py-0.5 text-black/70">
+          <ClockIcon size={14} weight="bold" className="shrink-0" />
+          <span className="text-xs">{trip.days}</span>
+        </span>
+
+        {departure && (
+          <span className="ml-0.5 flex shrink-0 items-center gap-1 py-0.5 text-black/70">
+            <CalendarBlankIcon size={14} weight="bold" />
+            <span className="text-xs">{departure.label}</span>
+          </span>
+        )}
+
+        <div className="mt-3 flex items-end justify-between gap-2">
+          <span className="flex min-w-0 items-baseline gap-1 text-black">
+            <span className="text-[11px] font-medium text-black/60">From</span>
+            <span className="text-xl font-bold leading-none">
+              ₹{(trip.price ?? 0).toLocaleString('en-IN')}
+            </span>
+            <span className="text-[11px] font-medium text-black/60">/person</span>
           </span>
         </div>
       </div>
 
-      {/* Content */}
-      <div className="flex flex-col justify-center gap-[3px] py-[10px] pr-[10px] flex-1 min-w-0">
-        <p className="font-semibold text-[18px] text-black tracking-tight leading-tight line-clamp-2">
-          {title}
-        </p>
-        <div className="flex items-center gap-[4px]">
-          <Link
-            href={hostUsername ? `/${hostUsername}` : '#'}
-            onClick={(e) => e.stopPropagation()}
-            className="text-[12.5px] font-normal text-black tracking-tight truncate hover:underline"
-          >
-            by {hostName}
-          </Link>
-        </div>
-        <div className="flex items-center gap-[2px]">
-          <span className="text-[12.5px] font-light text-black tracking-tight">{days || '3N • 2D'}</span>
-        </div>
-        <p className="text-[12.5px] text-black tracking-tight">
-          {'From '}
-          <span className="font-semibold">₹{price.toLocaleString('en-IN')}/</span>
-          {' adult'}
-        </p>
-        <div className="flex items-center gap-[7px]">
-          <MapPinIcon size={16} weight="thin" className="text-black shrink-0" />
-          <span className="text-[12.5px] font-normal text-black tracking-tight truncate">{address || 'India'}</span>
-        </div>
-      </div>
-    </Link>
-  )
+      {/* Stretched link last and above the body, so a tap anywhere on the card opens the
+          trip while the bookmark button, host link and carousel dots (z-20) stay tappable. */}
+      <Link
+        href={href}
+        aria-label={trip.title}
+        className="absolute inset-0 z-10 rounded-[22px]"
+        onClick={() => {
+          setFunnelSource('search');
+          trackEvent('trip_card_click', { trip_id: trip.slug, trip_title: trip.title, source: 'trips' });
+        }}
+      />
+    </article>
+  );
 }

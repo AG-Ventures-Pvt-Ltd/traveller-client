@@ -1,275 +1,54 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { SlidersHorizontal, ChevronDown, IndianRupee } from 'lucide-react';
-import Button from '@/common/components/atoms/Button';
-import StatesDropdown from './StatesDropdown';
+import React from 'react';
+import { SlidersHorizontal } from 'lucide-react';
+import TripFiltersPanel from './filters/TripFiltersPanel';
+import { EMPTY_FILTERS, countActiveFilters } from '../buildApiUrl';
+import { FilterMeta, FilterValues } from '../types';
 
 interface TripFiltersProps {
-  onFilterChange?: (filters: FilterValues) => void;
-  onApplyFilters?: () => void;
+  value: FilterValues;
+  onChange: (next: FilterValues) => void;
+  meta?: FilterMeta;
 }
 
-export interface FilterValues {
-  states: string[];
-  priceRange: number | null;
-  durations: string[];
-  durationRange: number | null;
-  difficulties: string[];
-  minRating: number | null;
-  international: boolean;
-}
-
-const TripFilters: React.FC<TripFiltersProps> = ({ onFilterChange, onApplyFilters }) => {
-  const [expandedSections, setExpandedSections] = useState<Set<string>>(
-    new Set(['destination', 'priceRange', 'duration', 'difficulty', 'international'])
-  );
-  const [states, setStates] = useState<string[]>([]);
-  const [priceRange, setPriceRange] = useState<number | null>(null);
-  const [durationRange, setDurationRange] = useState<number | null>(null);
-  const [difficulties, setDifficulties] = useState<string[]>([]);
-  const [international, setInternational] = useState<boolean>(false);
-
-  useEffect(() => {
-    if (onFilterChange) {
-      onFilterChange({
-        states,
-        priceRange,
-        durations: [],
-        durationRange,
-        difficulties,
-        minRating: null,
-        international,
-      });
-    }
-  }, [states, priceRange, durationRange, difficulties, international, onFilterChange]);
-
-  const toggleDifficulty = (level: string) => {
-    setDifficulties((prev) =>
-      prev.includes(level) ? prev.filter((d) => d !== level) : [...prev, level]
-    );
-  };
-
-  const toggleSection = (section: string) => {
-    setExpandedSections((prev) => {
-      const newSet = new Set(prev);
-      if (newSet.has(section)) newSet.delete(section);
-      else newSet.add(section);
-      return newSet;
-    });
-  };
-
-  const handleClearAll = () => {
-    setStates([]);
-    setPriceRange(null);
-    setDurationRange(null);
-    setDifficulties([]);
-    setInternational(false);
-  };
-
-  const DIFFICULTY_LEVELS = ['easy', 'moderate', 'challenging'];
+/**
+ * Desktop filter rail. No card, no border — it sits directly on the page background and
+ * stays put while the results scroll. Changes apply straight away: they go into the URL,
+ * which is what drives the query.
+ *
+ * `top-24` clears the sticky navbar (sticky top-0, py-5). No max-height or overflow of its
+ * own: every section is collapsed to a control, so the rail fits the viewport, and an
+ * `overflow-y-auto` here would clip the States and Month dropdown panels when they open.
+ */
+const TripFilters: React.FC<TripFiltersProps> = ({ value, onChange, meta }) => {
+  const active = countActiveFilters(value);
 
   return (
-    <div className="w-80 bg-white rounded-3xl border-2 border-gray-200 px-7 pt-7 pb-6 flex flex-col gap-3 sticky top-4">
-      {/* Header */}
-      <div className="flex justify-between items-center">
-        <div className="flex items-center gap-2.5">
-          <SlidersHorizontal className="w-5 h-5 text-neutral-900" />
-          <h2 className="text-neutral-900 text-xl font-bold">Filters</h2>
+    <aside className="sticky top-24 flex flex-col gap-4 pb-6">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <SlidersHorizontal className="h-4 w-4 text-neutral-900" />
+          <h2 className="text-base font-bold text-neutral-900">Filters</h2>
+          {active > 0 && (
+            <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-[#EEA0FF] px-1.5 text-[11px] font-bold text-black">
+              {active}
+            </span>
+          )}
         </div>
-        <button
-          onClick={handleClearAll}
-          className="text-neutral-900 text-xs font-bold hover:text-neutral-700 transition-colors"
-        >
-          Clear all
-        </button>
+        {active > 0 && (
+          <button
+            type="button"
+            onClick={() => onChange({ ...EMPTY_FILTERS, sort: value.sort })}
+            className="text-xs font-bold text-neutral-600 underline underline-offset-2 hover:text-neutral-900"
+          >
+            Clear all
+          </button>
+        )}
       </div>
 
-      <div className="flex flex-col gap-4">
-        {/* Destination (Indian States) */}
-        <div className="flex flex-col gap-2">
-          <button
-            onClick={() => toggleSection('destination')}
-            className="flex justify-between items-center"
-          >
-            <span className="text-neutral-900 text-base font-bold">Destination</span>
-            <ChevronDown
-              className={`w-4 h-4 text-neutral-700 transition-transform ${
-                expandedSections.has('destination') ? '' : '-rotate-90'
-              }`}
-            />
-          </button>
-          {expandedSections.has('destination') && (
-            <StatesDropdown selected={states} onChange={setStates} />
-          )}
-        </div>
-
-        <div className="h-px bg-gray-200" />
-
-        {/* International Trips */}
-        <div className="flex flex-col gap-2">
-          <button
-            onClick={() => toggleSection('international')}
-            className="flex justify-between items-center"
-          >
-            <span className="text-neutral-900 text-base font-bold">International</span>
-            <ChevronDown
-              className={`w-4 h-4 text-neutral-700 transition-transform ${
-                expandedSections.has('international') ? '' : '-rotate-90'
-              }`}
-            />
-          </button>
-          {expandedSections.has('international') && (
-            <label className="flex items-center gap-2.5 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={international}
-                onChange={(e) => setInternational(e.target.checked)}
-                className="w-4 h-4 rounded border-gray-300 text-neutral-900 focus:ring-neutral-900"
-              />
-              <span className="text-neutral-700 text-sm font-medium">Show international trips only</span>
-            </label>
-          )}
-        </div>
-
-        <div className="h-px bg-gray-200" />
-
-        {/* Price Range */}
-        <div className="flex flex-col gap-1">
-          <button
-            onClick={() => toggleSection('priceRange')}
-            className="flex justify-between items-center"
-          >
-            <span className="text-neutral-900 text-base font-bold">Price Range</span>
-            <ChevronDown
-              className={`w-4 h-4 text-neutral-700 transition-transform ${
-                expandedSections.has('priceRange') ? '' : '-rotate-90'
-              }`}
-            />
-          </button>
-          {expandedSections.has('priceRange') && (
-            <div className="flex flex-col gap-3">
-              <div className="flex justify-between items-center">
-                <span className="text-neutral-900 text-sm font-bold flex items-center">
-                  <IndianRupee className="w-3 h-3" />
-                  0
-                </span>
-                <span className="text-neutral-900 text-sm font-bold flex items-center">
-                  <IndianRupee className="w-3 h-3" />
-                  {(priceRange || 20000).toLocaleString()}
-                </span>
-              </div>
-              <div className="relative h-4">
-                <div className="absolute top-1/2 -translate-y-1/2 w-full h-1.5 bg-neutral-200 rounded-xl" />
-                <div
-                  className="absolute top-1/2 -translate-y-1/2 h-1.5 bg-black rounded-xl"
-                  style={{ width: `${((priceRange || 20000) / 20000) * 100}%` }}
-                />
-                <input
-                  type="range"
-                  min="0"
-                  max="20000"
-                  step="500"
-                  value={priceRange || 20000}
-                  onChange={(e) => setPriceRange(parseInt(e.target.value))}
-                  className="absolute top-0 w-full h-4 opacity-0 cursor-pointer"
-                />
-                <div
-                  className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-2.5 h-2.5 bg-neutral-700 rounded-full pointer-events-none"
-                  style={{ left: `${((priceRange || 20000) / 20000) * 100}%` }}
-                />
-              </div>
-            </div>
-          )}
-        </div>
-
-        <div className="h-[1px] bg-gray-200" />
-
-        {/* Duration */}
-        <div className="flex flex-col gap-1">
-          <button
-            onClick={() => toggleSection('duration')}
-            className="flex justify-between items-center"
-          >
-            <span className="text-neutral-900 text-base font-bold">Duration</span>
-            <ChevronDown
-              className={`w-4 h-4 text-neutral-700 transition-transform ${
-                expandedSections.has('duration') ? '' : '-rotate-90'
-              }`}
-            />
-          </button>
-          {expandedSections.has('duration') && (
-            <div className="flex flex-col gap-3">
-              <div className="flex justify-between items-center">
-                <span className="text-neutral-900 text-sm font-bold">1 day</span>
-                <span className="text-neutral-900 text-sm font-bold">
-                  {durationRange || 14} days
-                </span>
-              </div>
-              <div className="relative h-4">
-                <div className="absolute top-1/2 -translate-y-1/2 w-full h-1.5 bg-neutral-200 rounded-xl" />
-                <div
-                  className="absolute top-1/2 -translate-y-1/2 h-1.5 bg-black rounded-xl"
-                  style={{ width: `${(((durationRange || 14) - 1) / 13) * 100}%` }}
-                />
-                <input
-                  type="range"
-                  min="1"
-                  max="14"
-                  step="1"
-                  value={durationRange || 14}
-                  onChange={(e) => setDurationRange(parseInt(e.target.value))}
-                  className="absolute top-0 w-full h-4 opacity-0 cursor-pointer"
-                />
-                <div
-                  className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-2.5 h-2.5 bg-neutral-700 rounded-full pointer-events-none"
-                  style={{ left: `${(((durationRange || 14) - 1) / 13) * 100}%` }}
-                />
-              </div>
-            </div>
-          )}
-        </div>
-
-        <div className="h-[1px] bg-gray-200" />
-
-        {/* Difficulty */}
-        <div className="flex flex-col gap-2">
-          <button
-            onClick={() => toggleSection('difficulty')}
-            className="flex justify-between items-center"
-          >
-            <span className="text-neutral-900 text-base font-bold">Difficulty</span>
-            <ChevronDown
-              className={`w-4 h-4 text-neutral-700 transition-transform ${
-                expandedSections.has('difficulty') ? '' : '-rotate-90'
-              }`}
-            />
-          </button>
-          {expandedSections.has('difficulty') && (
-            <div className="flex flex-col gap-2">
-              {DIFFICULTY_LEVELS.map((level) => (
-                <label key={level} className="flex items-center gap-2.5 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={difficulties.includes(level)}
-                    onChange={() => toggleDifficulty(level)}
-                    className="w-4 h-4 rounded border-gray-300 text-neutral-900 focus:ring-neutral-900"
-                  />
-                  <span className="text-neutral-700 text-sm font-medium capitalize">{level}</span>
-                </label>
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
-
-      <Button
-        onClick={onApplyFilters}
-        className="w-full bg-neutral-900 hover:bg-neutral-800 text-white font-bold rounded-xl h-12"
-      >
-        Apply Filters
-      </Button>
-    </div>
+      <TripFiltersPanel value={value} onChange={onChange} meta={meta} />
+    </aside>
   );
 };
 

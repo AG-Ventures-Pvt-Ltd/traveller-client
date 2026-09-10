@@ -8,6 +8,7 @@ import { ArrowRight, Clock, Compass, List, Share2 } from 'lucide-react';
 import Footer from '../../(landing)/components/Footer/Footer';
 import CarouselSection from '../../(landing)/components/DesktopLanding/components/CarouselSection';
 import { ShareModal } from '@/common/components/composites/ShareModal';
+import RelatedTripsModal from './RelatedTripsModal';
 import type { Trip } from '../../(landing)/components/MobileLanding/types';
 import { sanitizeHtml } from '@/common/utils/sanitizeHtml';
 import { formatDate, normalizeContentToHtml, processContent, tintFor, type TocItem } from '../utils';
@@ -67,7 +68,14 @@ export default function BlogPostClient({ blog, image, relatedTrips }: Props) {
   const [progress, setProgress] = useState(0);
   const [activeId, setActiveId] = useState('');
   const [shareOpen, setShareOpen] = useState(false);
+  const [relatedTripsOpen, setRelatedTripsOpen] = useState(false);
   const shareUrl = typeof window !== 'undefined' ? window.location.href : `https://wondrr.in/blog/${blog.slug}`;
+
+  useEffect(() => {
+    if (relatedTrips.length === 0) return;
+    const timer = setTimeout(() => setRelatedTripsOpen(true), 30_000);
+    return () => clearTimeout(timer);
+  }, [relatedTrips.length]);
 
   useEffect(() => {
     const onScroll = () => {
@@ -243,8 +251,8 @@ export default function BlogPostClient({ blog, image, relatedTrips }: Props) {
       {relatedTrips.length > 0 && (
         <div className="mx-auto hidden max-w-6xl px-5 pb-16 sm:px-8 lg:block">
           <CarouselSection
-            title="Trips from this story"
-            description="Group trips mentioned in this article"
+            title="Trips from this blog"
+            description="Community trips mentioned in this article"
             trips={relatedTrips}
           />
         </div>
@@ -258,6 +266,13 @@ export default function BlogPostClient({ blog, image, relatedTrips }: Props) {
         title={blog.title}
         url={shareUrl}
         utmMedium="blog_post"
+      />
+
+      <RelatedTripsModal
+        open={relatedTripsOpen}
+        onClose={() => setRelatedTripsOpen(false)}
+        trips={relatedTrips}
+        blogTitle={blog.title}
       />
     </main>
   );

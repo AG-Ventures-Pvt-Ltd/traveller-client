@@ -1,276 +1,68 @@
 'use client';
 
-import React, { useState } from 'react';
-import { SlidersHorizontal, ChevronDown, IndianRupee } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
 import MobileModal from '@/common/ui/MobileModal';
-import Button from '@/common/components/atoms/Button';
-import { FilterValues } from './TripFilters';
-import StatesDropdown from './StatesDropdown';
+import TripFiltersPanel from './filters/TripFiltersPanel';
+import { EMPTY_FILTERS, countActiveFilters } from '../buildApiUrl';
+import { FilterMeta, FilterValues } from '../types';
 
 interface FilterModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onFilterChange: (filters: FilterValues) => void;
-  onApplyFilters: () => void;
+  value: FilterValues;
+  onApply: (next: FilterValues) => void;
+  meta?: FilterMeta;
+  /** Result count for the applied filters, shown on the apply button. */
+  resultCount?: number;
 }
 
+/**
+ * Mobile bottom-sheet shell around the shared filter panel.
+ *
+ * Unlike the desktop sidebar this holds a draft and commits on Apply, because the sheet
+ * covers the results — applying live would change a list the user cannot see. The draft
+ * starts from the applied filters every time it opens, so the sheet can never contribute
+ * a filter the user didn't choose.
+ */
 const FilterModal: React.FC<FilterModalProps> = ({
   isOpen,
   onClose,
-  onFilterChange,
-  onApplyFilters,
+  value,
+  onApply,
+  meta,
+  resultCount,
 }) => {
-  const [expandedSections, setExpandedSections] = useState<Set<string>>(
-    new Set(['destination', 'priceRange', 'duration', 'difficulty', 'international'])
-  );
+  const [draft, setDraft] = useState<FilterValues>(value);
 
-  const [states, setStates] = useState<string[]>([]);
-  const [priceRange, setPriceRange] = useState<number>(20000);
-  const [durationRange, setDurationRange] = useState<number>(14);
-  const [difficulties, setDifficulties] = useState<string[]>([]);
-  const [international, setInternational] = useState<boolean>(false);
+  useEffect(() => {
+    if (isOpen) setDraft(value);
+  }, [isOpen, value]);
 
-  const DIFFICULTY_LEVELS = ['easy', 'moderate', 'challenging'];
-
-  const toggleDifficulty = (level: string) => {
-    setDifficulties((prev) =>
-      prev.includes(level) ? prev.filter((d) => d !== level) : [...prev, level]
-    );
-  };
-
-  const toggleSection = (section: string) => {
-    setExpandedSections((prev) => {
-      const newSet = new Set(prev);
-      if (newSet.has(section)) newSet.delete(section);
-      else newSet.add(section);
-      return newSet;
-    });
-  };
-
-  const handleApply = () => {
-    onFilterChange({
-      states,
-      priceRange,
-      durations: [],
-      durationRange,
-      difficulties,
-      minRating: null,
-      international,
-    });
-    onApplyFilters();
-    onClose();
-  };
-
-  const handleClearAll = () => {
-    setStates([]);
-    setPriceRange(20000);
-    setDurationRange(14);
-    setDifficulties([]);
-    setInternational(false);
-  };
+  const active = countActiveFilters(draft);
 
   return (
     <MobileModal isOpen={isOpen} onClose={onClose} title="Filters">
-      <div className="flex flex-col min-h-0">
-        {/* Header */}
-        <div className="flex justify-between items-center mb-6 pb-4 border-b border-gray-200">
-          <div className="flex items-center gap-2.5">
-            <SlidersHorizontal className="w-5 h-5 text-neutral-900" />
-            <h2 className="text-neutral-900 text-lg font-bold">Filters</h2>
-          </div>
+      <div className="flex min-h-0 flex-col">
+        {active > 0 && (
           <button
-            onClick={handleClearAll}
-            className="text-neutral-900 text-sm font-bold hover:text-neutral-700 transition-colors"
+            type="button"
+            onClick={() => setDraft({ ...EMPTY_FILTERS, sort: draft.sort })}
+            className="mb-4 self-end text-sm font-bold text-neutral-900 underline underline-offset-2"
           >
-            Clear all
+            Clear all ({active})
           </button>
-        </div>
+        )}
 
-        <div className="flex flex-col gap-6 flex-1 overflow-y-auto">
-          {/* Destination (Indian States) */}
-          <div className="flex flex-col gap-3">
-            <button
-              onClick={() => toggleSection('destination')}
-              className="flex justify-between items-center w-full text-left"
-            >
-              <span className="text-neutral-900 text-base font-bold">Destination</span>
-              <ChevronDown
-                className={`w-4 h-4 text-neutral-700 transition-transform ${
-                  expandedSections.has('destination') ? '' : '-rotate-90'
-                }`}
-              />
-            </button>
-            {expandedSections.has('destination') && (
-              <div className="pl-4">
-                <StatesDropdown selected={states} onChange={setStates} />
-              </div>
-            )}
-          </div>
+        <TripFiltersPanel value={draft} onChange={setDraft} meta={meta} />
 
-          <div className="h-px bg-gray-200" />
-
-          {/* International Trips */}
-          <div className="flex flex-col gap-3">
-            <button
-              onClick={() => toggleSection('international')}
-              className="flex justify-between items-center w-full text-left"
-            >
-              <span className="text-neutral-900 text-base font-bold">International</span>
-              <ChevronDown
-                className={`w-4 h-4 text-neutral-700 transition-transform ${
-                  expandedSections.has('international') ? '' : '-rotate-90'
-                }`}
-              />
-            </button>
-            {expandedSections.has('international') && (
-              <label className="flex items-center gap-3 cursor-pointer pl-4">
-                <input
-                  type="checkbox"
-                  checked={international}
-                  onChange={(e) => setInternational(e.target.checked)}
-                  className="w-4 h-4 rounded border-gray-300 text-neutral-900 focus:ring-neutral-900"
-                />
-                <span className="text-neutral-700 text-sm font-medium">Show international trips only</span>
-              </label>
-            )}
-          </div>
-
-          <div className="h-px bg-gray-200" />
-
-          {/* Price Range */}
-          <div className="flex flex-col gap-3">
-            <button
-              onClick={() => toggleSection('priceRange')}
-              className="flex justify-between items-center w-full text-left"
-            >
-              <span className="text-neutral-900 text-base font-bold">Price Range</span>
-              <ChevronDown
-                className={`w-4 h-4 text-neutral-700 transition-transform ${
-                  expandedSections.has('priceRange') ? '' : '-rotate-90'
-                }`}
-              />
-            </button>
-            {expandedSections.has('priceRange') && (
-              <div className="flex flex-col gap-4 pl-4">
-                <div className="flex justify-between items-center">
-                  <span className="text-neutral-900 text-sm font-bold flex items-center">
-                    <IndianRupee className="w-3 h-3" />
-                    0
-                  </span>
-                  <span className="text-neutral-900 text-sm font-bold flex items-center">
-                    <IndianRupee className="w-3 h-3" />
-                    {priceRange.toLocaleString()}
-                  </span>
-                </div>
-                <div className="relative h-6">
-                  <div className="absolute top-1/2 -translate-y-1/2 w-full h-2 bg-neutral-200 rounded-xl" />
-                  <div
-                    className="absolute top-1/2 -translate-y-1/2 h-2 bg-black rounded-xl"
-                    style={{ width: `${(priceRange / 20000) * 100}%` }}
-                  />
-                  <input
-                    type="range"
-                    min="0"
-                    max="20000"
-                    step="500"
-                    value={priceRange}
-                    onChange={(e) => setPriceRange(parseInt(e.target.value))}
-                    className="absolute top-0 w-full h-6 opacity-0 cursor-pointer"
-                  />
-                  <div
-                    className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-3 h-3 bg-neutral-700 rounded-full pointer-events-none"
-                    style={{ left: `${(priceRange / 20000) * 100}%` }}
-                  />
-                </div>
-              </div>
-            )}
-          </div>
-
-          <div className="h-px bg-gray-200" />
-
-          {/* Duration */}
-          <div className="flex flex-col gap-3">
-            <button
-              onClick={() => toggleSection('duration')}
-              className="flex justify-between items-center w-full text-left"
-            >
-              <span className="text-neutral-900 text-base font-bold">Duration</span>
-              <ChevronDown
-                className={`w-4 h-4 text-neutral-700 transition-transform ${
-                  expandedSections.has('duration') ? '' : '-rotate-90'
-                }`}
-              />
-            </button>
-            {expandedSections.has('duration') && (
-              <div className="flex flex-col gap-4 pl-4">
-                <div className="flex justify-between items-center">
-                  <span className="text-neutral-900 text-sm font-bold">1 day</span>
-                  <span className="text-neutral-900 text-sm font-bold">{durationRange} days</span>
-                </div>
-                <div className="relative h-6">
-                  <div className="absolute top-1/2 -translate-y-1/2 w-full h-2 bg-neutral-200 rounded-xl" />
-                  <div
-                    className="absolute top-1/2 -translate-y-1/2 h-2 bg-black rounded-xl"
-                    style={{ width: `${((durationRange - 1) / 13) * 100}%` }}
-                  />
-                  <input
-                    type="range"
-                    min="1"
-                    max="14"
-                    step="1"
-                    value={durationRange}
-                    onChange={(e) => setDurationRange(parseInt(e.target.value))}
-                    className="absolute top-0 w-full h-6 opacity-0 cursor-pointer"
-                  />
-                  <div
-                    className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-3 h-3 bg-neutral-700 rounded-full pointer-events-none"
-                    style={{ left: `${((durationRange - 1) / 13) * 100}%` }}
-                  />
-                </div>
-              </div>
-            )}
-          </div>
-
-          <div className="h-px bg-gray-200" />
-
-          {/* Difficulty */}
-          <div className="flex flex-col gap-3">
-            <button
-              onClick={() => toggleSection('difficulty')}
-              className="flex justify-between items-center w-full text-left"
-            >
-              <span className="text-neutral-900 text-base font-bold">Difficulty</span>
-              <ChevronDown
-                className={`w-4 h-4 text-neutral-700 transition-transform ${
-                  expandedSections.has('difficulty') ? '' : '-rotate-90'
-                }`}
-              />
-            </button>
-            {expandedSections.has('difficulty') && (
-              <div className="flex flex-col gap-3 pl-4">
-                {DIFFICULTY_LEVELS.map((level) => (
-                  <label key={level} className="flex items-center gap-3 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={difficulties.includes(level)}
-                      onChange={() => toggleDifficulty(level)}
-                      className="w-4 h-4 rounded border-gray-300 text-neutral-900 focus:ring-neutral-900"
-                    />
-                    <span className="text-neutral-700 text-sm font-medium capitalize">{level}</span>
-                  </label>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-
-        <div className="mt-6 pt-4 border-t border-gray-200">
-          <Button
-            onClick={handleApply}
-            className="w-full bg-neutral-900 hover:bg-neutral-800 text-white font-bold rounded-xl h-12"
+        <div className="sticky bottom-0 -mx-6 mt-6 border-t border-neutral-200 bg-white px-6 pb-2 pt-4">
+          <button
+            type="button"
+            onClick={() => { onApply(draft); onClose(); }}
+            className="h-12 w-full rounded-xl bg-neutral-900 text-base font-bold text-white active:opacity-80"
           >
-            Apply Filters
-          </Button>
+            {resultCount === undefined ? 'Show trips' : `Show ${resultCount} trips`}
+          </button>
         </div>
       </div>
     </MobileModal>

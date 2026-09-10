@@ -59,7 +59,7 @@ const Footer = () => {
                 { label: 'LinkedIn', href: 'https://www.linkedin.com/company/wondrr' },
                 { label: 'YouTube', href: 'https://www.youtube.com/@wondrrtrips' }
             ],
-            copyright: '© 2026 Wondrr. All rights reserved.'
+            copyright: '© 2026 Madhurmani Networks (OPC) Pvt. Ltd. All rights reserved.'
         }
     }
     return (

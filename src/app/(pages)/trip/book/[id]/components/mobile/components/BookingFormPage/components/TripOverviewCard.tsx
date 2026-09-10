@@ -176,7 +176,7 @@ export default function TripOverviewCard(props: TripOverviewCardProps) {
                     )}
                 </div>
             )}
-            {!isMobile && <div>
+            {!isMobile && path.split('/')[1] !== 'profile' && <div>
                 <div className="rounded-2xl flex flex-col gap-2 mt-12">
                     <div>
                         <p className="text-xl font-bold text-black flex items-end">

@@ -1,8 +1,9 @@
 import { headers } from 'next/headers';
-import { redirect } from 'next/navigation';
+import { redirect, notFound } from 'next/navigation';
 import { dehydrate, HydrationBoundary, QueryClient } from '@tanstack/react-query';
 import { getServerData } from '@/services/serverApi';
 import { API_ENDPOINTS } from '@/common/constants/apiEndpoints';
+import { getHostMeta } from './serverFetch';
 import HostProfileClient from './HostProfileClient';
 
 export const dynamic = 'force-dynamic';
@@ -23,6 +24,10 @@ export default async function HostPage({ params }: { params: Promise<{ id: strin
 
   if (id !== lower) {
     redirect(`/${lower}`);
+  }
+
+  if (!(await getHostMeta(lower))) {
+    notFound();
   }
 
   const ua = (await headers()).get('user-agent') || '';

@@ -3,7 +3,6 @@ import { notFound } from 'next/navigation';
 import { getServerData } from '@/services/serverApi';
 import { API_ENDPOINTS } from '@/common/constants/apiEndpoints';
 import { JsonLd, SITE_URL } from '@/common/seo/JsonLd';
-import type { TripMetadata } from '../../trip/[id]/types';
 import type { Trip } from '../../(landing)/components/MobileLanding/types';
 import BlogPostClient from './BlogPostClient';
 
@@ -38,11 +37,22 @@ async function fetchBlog(slug: string): Promise<Blog | null> {
   }
 }
 
+interface TripCard {
+  tripSlug: string;
+  title: string;
+  image: string;
+  hostName: string;
+  hostUsername?: string;
+  days: string;
+  price: number;
+  rating: number;
+}
+
 async function fetchRelatedTrips(slugs: string[]): Promise<Trip[]> {
   if (!slugs?.length) return [];
 
   const results = await Promise.allSettled(
-    slugs.map((slug) => getServerData<TripMetadata>(API_ENDPOINTS.TRIPS.GET_METADATA(slug))),
+    slugs.map((slug) => getServerData<TripCard>(API_ENDPOINTS.TRIPS.GET_CARD(slug))),
   );
 
   return results.reduce<Trip[]>((trips, res, i) => {
@@ -50,14 +60,14 @@ async function fetchRelatedTrips(slugs: string[]): Promise<Trip[]> {
     const t = res.value;
     trips.push({
       id: slugs[i],
-      tripSlug: slugs[i],
+      tripSlug: t.tripSlug,
       image: t.image?.startsWith('http') ? t.image : `${process.env.NEXT_PUBLIC_CLOUDFRONT_URL}${t.image}`,
       title: t.title,
       provider: t.hostName,
       hostUsername: t.hostUsername,
-      duration: `${t.numberOfDays} Day${t.numberOfDays === 1 ? '' : 's'}`,
-      price: t.priceFrom ?? 0,
-      rating: t.rating ?? 0,
+      duration: t.days,
+      price: t.price,
+      rating: t.rating,
     });
     return trips;
   }, []);

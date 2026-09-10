@@ -1,14 +1,12 @@
 'use client'
 
 import React from 'react'
-import { useRouter } from 'next/navigation'
 import BackButton from '@/common/ui/BackButton'
 import { TripCard } from '../../trips/components/mobile/TripCard'
 import { useBookmarks } from './hooks/useBookmarks'
 import { BookmarkSimpleIcon } from '@phosphor-icons/react'
 import { BookmarkedTrip } from './types'
-
-const CARD_COLORS = ['#FFD976', '#EEA0FF', '#E2F4A6']
+import { Trip } from '../../trips/types'
 
 function BookmarkStatusBadge({ isActive }: { isActive: boolean }) {
   return (
@@ -21,26 +19,34 @@ function BookmarkStatusBadge({ isActive }: { isActive: boolean }) {
   )
 }
 
-function BookmarkCard({ trip, index }: { trip: BookmarkedTrip; index: number }) {
-  const router = useRouter()
-  const bgColor = CARD_COLORS[index % CARD_COLORS.length]
+/**
+ * The bookmarks endpoint returns a narrower payload than trip search does. TripCard
+ * degrades on its own for what's missing — no images array means no carousel, no
+ * nextStartDate means no departure strip.
+ */
+function toTrip(bookmark: BookmarkedTrip): Trip {
+  return {
+    title: bookmark.title,
+    image: bookmark.image,
+    address: bookmark.location,
+    days: bookmark.days ?? '',
+    rating: bookmark.rating ?? 0,
+    totalReviews: bookmark.reviewCount ?? 0,
+    price: bookmark.price || 0,
+    hostName: bookmark.hostName ?? '',
+    isBookmarked: true,
+    // Both keys carry tripSlug, matching what this page passed before: it is the bookmark
+    // toggle key and the /trip/<slug> href.
+    slug: bookmark.tripSlug,
+    tripSlug: bookmark.tripSlug,
+  };
+}
 
+function BookmarkCard({ trip, index }: { trip: BookmarkedTrip; index: number }) {
   return (
     <div className="relative">
       <BookmarkStatusBadge isActive={trip.isActive} />
-      <TripCard
-        title={trip.title}
-        image={trip.image}
-        address={trip.location}
-        rating={trip.rating ?? 0}
-        price={trip.price || 0}
-        hostName={trip.hostName ?? ''}
-        slug={trip.tripSlug}
-        days={trip.days ?? ''}
-        bgColor={bgColor}
-        isBookmarked={true}
-        onClick={(slug) => router.push(`/trip/${slug}`)}
-      />
+      <TripCard trip={toTrip(trip)} index={index} />
     </div>
   )
 }

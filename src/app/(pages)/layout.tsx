@@ -124,8 +124,14 @@ export default function RootLayout({ children }: RootLayoutProps) {
       </head>
       <body>
         <Providers>
-          <Navbar />
-          {children}
+          {/* Column so a page can fill the space *below* the navbar. The navbar is sticky,
+              not fixed, so it still takes flow height — a `min-h-screen` page under it adds
+              up to 100vh + navbar and scrolls even with no content to scroll. Pages that
+              still set their own min-h-screen behave exactly as before. */}
+          <div className="flex min-h-screen flex-col">
+            <Navbar />
+            <div className="flex flex-1 flex-col">{children}</div>
+          </div>
           <StickyNavigation />
         </Providers>
       </body>

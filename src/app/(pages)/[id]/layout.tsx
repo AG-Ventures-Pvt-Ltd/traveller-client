@@ -1,28 +1,11 @@
 import { Metadata } from "next";
-import { cache } from "react";
-import { getServerData } from "@/services/serverApi";
-
-interface HostMeta {
-    fullName: string;
-    bio?: string;
-    website?: string;
-    totalTrips: number;
-    avatar?: string;
-}
+import { notFound } from "next/navigation";
+import { getHostMeta } from "./serverFetch";
 
 interface LayoutProps {
     children: React.ReactNode;
     params: Promise<{ id: string }>;
 }
-
-// Deduped per-request: generateMetadata + Layout share one fetch.
-const getHostMeta = cache(async (id: string): Promise<HostMeta | null> => {
-    try {
-        return await getServerData<HostMeta>(`/api/client/v1/user/host/meta/${id}`);
-    } catch {
-        return null;
-    }
-});
 
 const resolveAvatar = (avatar?: string) =>
     avatar ? `${process.env.NEXT_PUBLIC_CLOUDFRONT_URL}${avatar}` : undefined;
@@ -38,9 +21,16 @@ export async function generateMetadata({
     const id = (await params).id.toLowerCase();
 
     const meta = await getHostMeta(id);
-    const fullName = meta?.fullName || id;
-    const totalTrips = meta?.totalTrips;
-    const avatar = resolveAvatar(meta?.avatar);
+
+    // 404 unknown hosts here (in generateMetadata) so the status is set before the
+    // response shell streams — calling notFound() during render leaves a soft 200.
+    if (!meta) {
+        notFound();
+    }
+
+    const fullName = meta.fullName;
+    const totalTrips = meta.totalTrips;
+    const avatar = resolveAvatar(meta.avatar);
 
     const title = `${fullName} - Verified Trips | Wondrr`;
     const generatedDescription = `${fullName} is a verified travel partner on Wondrr${totalTrips ? ` with ${totalTrips}+ trips` : ''} across India. Browse and book directly.`;

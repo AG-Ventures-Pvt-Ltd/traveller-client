@@ -45,5 +45,4 @@ next-env.d.ts
 
 blogs
 
-
-seo-plan
+/seo-plan/*

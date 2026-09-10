@@ -55,8 +55,8 @@ export default function BookingPanel({
                 {sortedBatches.length > 0 && (
                     <BatchSelection batches={sortedBatches} selectedBatch={selectedBatch} onSelect={onSelectBatch} bestTimeToVisit={bestTimeToVisit} />
                 )}
-                <Button variant='purple' fullWidth onClick={onBookNow} disabled={isBooking} className='font-semibold'>
-                    {isBooking ? 'Redirecting…' : 'Book Now'}
+                <Button variant='purple' fullWidth onClick={onBookNow} disabled={isBooking || sortedBatches.length === 0} className='font-semibold'>
+                    {sortedBatches.length === 0 ? 'No dates available' : isBooking ? 'Redirecting…' : 'Book Now'}
                 </Button>
                 <Button className='!bg-white flex justify-center gap-2 border border-[#D9D9D9]' onClick={handleWhatsApp} fullWidth>
                     <WhatsappLogoIcon size={24} weight="fill" className='text-[#1ba84e]' />

@@ -15,5 +15,7 @@ export const metadata: Metadata = {
 };
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  return <div className="bg-[#FFF9F4] min-h-screen">{children}</div>;
+  // flex-1 rather than min-h-screen: fills the space under the navbar instead of forcing a
+  // full viewport on top of it, which made the page scroll even with three trips.
+  return <div className="flex flex-1 flex-col bg-[#FFF9F4]">{children}</div>;
 }
