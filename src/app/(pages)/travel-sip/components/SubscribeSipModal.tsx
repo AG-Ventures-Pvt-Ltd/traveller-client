@@ -1,7 +1,9 @@
 'use client'
 
 import React, { useState } from 'react'
+import type { AxiosError } from 'axios'
 import MobileModal from '@/common/ui/MobileModal'
+import { notify } from '@/common/utils/notify'
 import Button from '@/common/ui/Buttons/Button'
 import usePostData from '@/services/usePostData'
 import { getData } from '@/services/baseApi'
@@ -65,11 +67,22 @@ export function SubscribeSipModal({ isOpen, onClose, plan, activeGateway, onSubs
         onSubscribed()
       }
 
-      if (gateway === 'cashfree' && subscriptionSessionId) {
+      if (gateway === 'cashfree') {
+        // Never fall through to Razorpay's widget for a Cashfree subscription —
+        // it would open checkout against an id Razorpay has never heard of.
+        if (!subscriptionSessionId) {
+          throw new Error('Missing Cashfree subscription session')
+        }
         await openCashfreeSubscription(subscriptionSessionId, config.cashfreeMode || 'sandbox', onComplete)
       } else {
         openRazorpaySubscription(gatewaySubscriptionId, config.razorpayKeyId || process.env.NEXT_PUBLIC_RAZORPAY_KEY!, onComplete)
       }
+    } catch (error) {
+      // usePostData runs with notifications off, so without this the user taps
+      // Confirm and nothing at all happens — a 409 (already has a live SIP) or a
+      // gateway error would be silent.
+      const message = (error as AxiosError<{ message?: string }>)?.response?.data?.message
+      notify.error(message || 'Could not start your SIP. Please try again.')
     } finally {
       setIsSubmitting(false)
     }

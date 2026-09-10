@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
+import type { AxiosError } from 'axios'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { useGetData } from '@/services/useGetData'
@@ -70,8 +71,11 @@ const TravelSipPage = () => {
       await baseAPI.post(API_ENDPOINTS.SIP.CANCEL(subId))
       notify.success('SIP cancelled')
       refetchSubs()
-    } catch {
-      notify.error('Failed to cancel SIP')
+    } catch (error) {
+      // A 502 here means the gateway refused to stop the mandate — the auto-pay
+      // is still live, so show what the server said rather than a generic line.
+      const message = (error as AxiosError<{ message?: string }>)?.response?.data?.message
+      notify.error(message || 'Failed to cancel SIP')
     }
   }
 
