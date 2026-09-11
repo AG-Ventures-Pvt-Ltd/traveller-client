@@ -115,9 +115,11 @@ export default function ItinerarySection({
                                 }`}
                         >
                             <div className="pl-20 pt-3">
-                                <p className="text-sm text-gray-700 pb-3 border-b border-[#d9d9d9] last:border-b-0">
-                                    {day.description}
-                                </p>
+                                <ul className="text-sm text-gray-700 pb-3 border-b border-[#d9d9d9] last:border-b-0 list-disc pl-4 space-y-1">
+                                    {(day.description ?? '').split('.').map(s => s.trim()).filter(Boolean).map((point, i) => (
+                                        <li key={i}>{point}</li>
+                                    ))}
+                                </ul>
                             </div>
                         </div>
                     </div>
