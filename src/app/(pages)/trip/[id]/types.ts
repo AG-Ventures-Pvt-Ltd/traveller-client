@@ -11,7 +11,7 @@ export interface TripHighlight {
 export interface ItineraryDay {
   day: number;
   title: string;
-  description?: string;
+  description?: string | string[];
   activities: (string | Activity)[];
   meals?: string[];
   duration?: string;

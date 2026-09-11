@@ -7,6 +7,12 @@ import { formatDate } from '../utils';
 import CollapsibleCard from '@/common/ui/CollapsibleCard';
 
 
+// ponytail: API sometimes sends description as an array of lines instead of a string
+function toPoints(description: ItineraryDay['description']): string[] {
+    const parts = Array.isArray(description) ? description : String(description ?? '').split('.');
+    return parts.map((s) => String(s).trim()).filter(Boolean);
+}
+
 export default function ItinerarySection({
     itinerary,
     selectedDay,
@@ -116,7 +122,7 @@ export default function ItinerarySection({
                         >
                             <div className="pl-20 pt-3">
                                 <ul className="text-sm text-gray-700 pb-3 border-b border-[#d9d9d9] last:border-b-0 list-disc pl-4 space-y-1">
-                                    {(day.description ?? '').split('.').map(s => s.trim()).filter(Boolean).map((point, i) => (
+                                    {toPoints(day.description).map((point, i) => (
                                         <li key={i}>{point}</li>
                                     ))}
                                 </ul>
