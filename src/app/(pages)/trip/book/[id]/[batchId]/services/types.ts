@@ -1,4 +1,4 @@
-export type PaymentType = 'booking' | 'wallet';
+export type PaymentType = 'booking' | 'wallet' | 'sip_upfront';
 
 export interface Order {
   amount: number;

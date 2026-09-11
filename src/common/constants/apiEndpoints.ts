@@ -124,6 +124,18 @@ export const API_ENDPOINTS = {
     SUBSCRIBE: '/api/client/v1/sip/subscribe',
     MY_SUBSCRIPTIONS: '/api/client/v1/sip/subscriptions/mine',
     CANCEL: (id: string) => `/api/client/v1/sip/subscriptions/${id}/cancel`,
+    GROUPS: {
+      CREATE: '/api/client/v1/sip/groups',
+      MINE: '/api/client/v1/sip/groups',
+      DETAIL: (id: string) => `/api/client/v1/sip/groups/${id}`,
+      INVITE: (id: string) => `/api/client/v1/sip/groups/${id}/invites`,
+      RESEND_INVITE: (id: string, memberId: string) => `/api/client/v1/sip/groups/${id}/invites/${memberId}/resend`,
+      REMOVE_MEMBER: (id: string, memberId: string) => `/api/client/v1/sip/groups/${id}/members/${memberId}`,
+      JOIN_PREVIEW: (code: string) => `/api/client/v1/sip/groups/join/${code}`,
+      JOIN: (code: string) => `/api/client/v1/sip/groups/join/${code}`,
+      LEAVE: (id: string) => `/api/client/v1/sip/groups/${id}/leave`,
+      ARCHIVE: (id: string) => `/api/client/v1/sip/groups/${id}/archive`,
+    },
   },
   BLOGS: {
     LIST: (page?: number, limit?: number, category?: string) => {

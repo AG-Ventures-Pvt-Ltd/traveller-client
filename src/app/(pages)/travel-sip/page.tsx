@@ -13,7 +13,8 @@ import { formatDate } from '@/common/utils/dateUtils'
 import { SipPlanCard } from './components/SipPlanCard'
 import { SubscribeSipModal } from './components/SubscribeSipModal'
 import { CancelSipModal } from './components/CancelSipModal'
-import type { SipPlan, SipSubscription, PaymentConfig } from './types'
+import { CreateGroupModal } from './components/CreateGroupModal'
+import type { SipPlan, SipSubscription, PaymentConfig, SipGroupSummary } from './types'
 
 const STATUS_LABELS: Record<SipSubscription['status'], string> = {
   pending_auth: 'Awaiting authorization',
@@ -25,12 +26,17 @@ const STATUS_LABELS: Record<SipSubscription['status'], string> = {
 
 const CURRENT_STATUSES: SipSubscription['status'][] = ['active', 'pending_auth']
 
+// IST calendar-day string ('2026-09-11'), so a lexical >= comparison works.
+const istDateStr = (d: Date | string) => new Date(d).toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' })
+
 const TravelSipPage = () => {
   const { status } = useSession()
   const router = useRouter()
 
   const [subscribeModal, setSubscribeModal] = useState<{ open: boolean; plan: SipPlan | null }>({ open: false, plan: null })
   const [cancelModal, setCancelModal] = useState<{ open: boolean; subscription: SipSubscription | null }>({ open: false, subscription: null })
+  const [createGroupOpen, setCreateGroupOpen] = useState(false)
+  const [joinCodeInput, setJoinCodeInput] = useState('')
 
   const { data: plansData, isLoading: plansLoading } = useGetData<SipPlan[]>(API_ENDPOINTS.SIP.PLANS, {
     queryKey: ['sip-plans'],
@@ -49,8 +55,16 @@ const TravelSipPage = () => {
     { queryKey: ['sip-subscriptions-mine'], enabled: status === 'authenticated' }
   )
 
+  const { data: groupsData } = useGetData<{ groups: SipGroupSummary[]; invited: SipGroupSummary[] }>(
+    API_ENDPOINTS.SIP.GROUPS.MINE,
+    { queryKey: ['sip-groups-mine'], enabled: status === 'authenticated' }
+  )
+
   const plans = plansData ?? []
   const mySubs = mySubsData ?? []
+  const myGroups = groupsData?.groups ?? []
+  const adminGroup = myGroups.find((g) => g.myRole === 'admin' && g.status === 'active')
+  const memberGroup = myGroups.find((g) => g.myRole === 'member')
   const currentSips = mySubs.filter((s) => CURRENT_STATUSES.includes(s.status))
   const pastSips = mySubs.filter((s) => !CURRENT_STATUSES.includes(s.status))
   // A user may only have one live SIP at a time (enforced server-side too) —
@@ -64,6 +78,12 @@ const TravelSipPage = () => {
       return
     }
     setSubscribeModal({ open: true, plan })
+  }
+
+  const handleJoinCode = () => {
+    const code = joinCodeInput.trim().toUpperCase()
+    if (!code) return
+    router.push(`/travel-sip/group/join/${code}`)
   }
 
   const handleCancel = async (subId: string) => {
@@ -102,7 +122,10 @@ const TravelSipPage = () => {
         </div>
         <div className="flex justify-between text-xs text-gray-600">
           <span>₹{sub.cumulativePaidAmount.toLocaleString('en-IN')} / ₹{target.toLocaleString('en-IN')}</span>
-          {sub.nextScheduleDate && sub.status === 'active' && (
+          {/* Guard against a stale nextScheduleDate (a missed installment webhook
+              before it advances again, or before the daily reconciliation worker
+              catches up) rendering an already-past date as "Next". */}
+          {sub.nextScheduleDate && sub.status === 'active' && istDateStr(sub.nextScheduleDate) >= istDateStr(new Date()) && (
             <span>Next: {formatDate(sub.nextScheduleDate)}</span>
           )}
         </div>
@@ -141,6 +164,53 @@ const TravelSipPage = () => {
               <div className="flex flex-col gap-3">
                 {currentSips.map(renderSipCard)}
               </div>
+            </div>
+          )}
+
+          {status === 'authenticated' && !subsLoading && (
+            <div className="mb-8 flex flex-col gap-3">
+              {(adminGroup || memberGroup) ? (
+                <div
+                  onClick={() => router.push(`/travel-sip/group/${(adminGroup || memberGroup)!.groupId}`)}
+                  className="border border-[#EEA0FF] rounded-2xl p-4 bg-[#EEA0FF]/10 cursor-pointer"
+                >
+                  <div className="flex justify-between items-center">
+                    <span className="font-semibold text-black">{(adminGroup || memberGroup)!.name}</span>
+                    <span className="text-xs text-gray-600">{(adminGroup || memberGroup)!.memberCount} member{(adminGroup || memberGroup)!.memberCount === 1 ? '' : 's'}</span>
+                  </div>
+                  <div className="flex justify-between text-xs text-gray-600 mt-1">
+                    <span>Your group</span>
+                    <span>₹{(adminGroup || memberGroup)!.groupTotalContributed.toLocaleString('en-IN')} raised</span>
+                  </div>
+                </div>
+              ) : currentSips.some((s) => s.status === 'active') && (
+                <button
+                  onClick={() => setCreateGroupOpen(true)}
+                  className="border border-dashed border-[#D9D9D9] rounded-2xl p-4 text-sm font-medium text-black text-left hover:border-[#EEA0FF]"
+                >
+                  Start a group — save toward this plan with friends
+                </button>
+              )}
+
+              {!hasBlockingSip && (
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={joinCodeInput}
+                    onChange={(e) => setJoinCodeInput(e.target.value.toUpperCase())}
+                    placeholder="Have a group code?"
+                    maxLength={6}
+                    className="flex-1 border border-[#D9D9D9] rounded-xl px-4 py-3 text-sm text-black outline-none focus:border-[#EEA0FF] tracking-widest"
+                  />
+                  <button
+                    onClick={handleJoinCode}
+                    disabled={!joinCodeInput.trim()}
+                    className="text-sm font-medium text-black border border-[#D9D9D9] rounded-xl px-4 disabled:opacity-50"
+                  >
+                    Join
+                  </button>
+                </div>
+              )}
             </div>
           )}
 
@@ -187,6 +257,12 @@ const TravelSipPage = () => {
         subscription={cancelModal.subscription}
         onClose={() => setCancelModal({ open: false, subscription: null })}
         onConfirm={handleCancel}
+      />
+
+      <CreateGroupModal
+        isOpen={createGroupOpen}
+        onClose={() => setCreateGroupOpen(false)}
+        onCreated={(groupId) => router.push(`/travel-sip/group/${groupId}`)}
       />
     </div>
   )

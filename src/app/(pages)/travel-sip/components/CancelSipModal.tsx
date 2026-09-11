@@ -50,7 +50,9 @@ export function CancelSipModal({ isOpen, onClose, subscription, onConfirm }: Can
         </div>
 
         <p className="text-xs text-gray-600">
-          Cancelling stops all future installments immediately and can&apos;t be undone or resumed. Since the target hasn&apos;t been reached, the completion bonus will not be credited — only what you&apos;ve already paid stays in your Wondrr Cash wallet.
+          {subscription?.status === 'pending_auth'
+            ? "No payment has been made yet — cancelling just clears this setup attempt so you can start a new SIP."
+            : "Cancelling stops all future installments immediately and can't be undone or resumed. Since the target hasn't been reached, the completion bonus will not be credited — only what you've already paid stays in your Wondrr Cash wallet."}
         </p>
 
         <PolicyAgreementCheckbox checked={agreed} onChange={setAgreed} />

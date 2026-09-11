@@ -14,7 +14,7 @@ export const openRazorpay = (
     currency: "INR",
     order_id: order.orderId,
     name: "Wondrr Trips",
-    description: paymentType === 'wallet' ? 'Add Wondrr Cash' : 'Trip Booking Payment',
+    description: paymentType === 'wallet' ? 'Add Wondrr Cash' : paymentType === 'sip_upfront' ? 'Travel SIP Group — Upfront Payment' : 'Trip Booking Payment',
     theme: {
       color: '#121212',
     },
