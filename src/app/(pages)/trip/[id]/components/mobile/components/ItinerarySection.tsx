@@ -9,8 +9,8 @@ import CollapsibleCard from '@/common/ui/CollapsibleCard';
 
 // ponytail: API sometimes sends description as an array of lines instead of a string
 function toPoints(description: ItineraryDay['description']): string[] {
-    const parts = Array.isArray(description) ? description : String(description ?? '').split('.');
-    return parts.map((s) => String(s).trim()).filter(Boolean);
+    const parts = Array.isArray(description) ? description : [description ?? ''];
+    return parts.flatMap((part) => String(part).split('.')).map((s) => s.trim()).filter(Boolean);
 }
 
 export default function ItinerarySection({
