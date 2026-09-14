@@ -17,6 +17,8 @@ function reasonLabel(reason: WalletTransaction['reason']): string {
     admin_adjustment: 'Admin Adjustment',
     referral_bonus: 'Referral Bonus',
     wallet_topup: 'Wallet Top-up',
+    sip_installment: 'SIP Installment',
+    sip_bonus: 'SIP Bonus',
   }
   return labels[reason] ?? reason
 }
