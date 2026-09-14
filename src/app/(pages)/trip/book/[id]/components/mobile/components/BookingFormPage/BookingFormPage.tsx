@@ -59,6 +59,8 @@ export default function BookingFormPage({ tripId, batchId, onViewCoupons }: Book
         selectedTransportAddOnIdx,
         selectedActivityAddOnIdx,
         appliedCoupon,
+        selectedMeetingPointIdx,
+        meetingPoints,
     } = useBookingFormStore();
 
     const { data: bookingOptionsData, isLoading: isBookingOptionsLoadingData } = useGetData<BookingOptionsResponse>(
@@ -100,6 +102,11 @@ export default function BookingFormPage({ tripId, batchId, onViewCoupons }: Book
             totalPerPerson += pricingTiers[selectedTravelIdx].pricePerPerson;
         }
 
+        // Add pickup price for selected depart-from location
+        if (meetingPoints[selectedMeetingPointIdx]) {
+            totalPerPerson += meetingPoints[selectedMeetingPointIdx].pickupPrice || 0;
+        }
+
         // Add selected add-ons
         if (selectedAddOnIdx !== null && addOns[selectedAddOnIdx]) {
             totalPerPerson += addOns[selectedAddOnIdx].pricePerPerson;
@@ -131,7 +138,7 @@ export default function BookingFormPage({ tripId, batchId, onViewCoupons }: Book
         }
 
         return Math.max(0, total);
-    }, [selectedTravelIdx, pricingTiers, guests, addOns, selectedAddOnIdx, selectedExtraAddOnIdx, selectedTransportAddOnIdx, selectedActivityAddOnIdx, appliedCoupon]);
+    }, [selectedTravelIdx, pricingTiers, guests, addOns, selectedAddOnIdx, selectedExtraAddOnIdx, selectedTransportAddOnIdx, selectedActivityAddOnIdx, appliedCoupon, selectedMeetingPointIdx, meetingPoints]);
 
     const handleButtonClick = () => {
         if (existingBookingId) {
