@@ -3,7 +3,7 @@ import { getServerData } from '@/services/serverApi';
 import { API_ENDPOINTS } from '@/common/constants/apiEndpoints';
 import BlogListClient from './BlogListClient';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 300;
 
 export const metadata: Metadata = {
   title: 'Travel Blog — Tips, Guides & Stories | Wondrr',
