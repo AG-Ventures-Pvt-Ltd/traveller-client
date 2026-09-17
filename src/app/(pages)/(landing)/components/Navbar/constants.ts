@@ -8,7 +8,7 @@ export interface NavItem {
 export const navItems: NavItem[] = [
   { title: 'Home', route: "/" },
   { title: 'Explore', route: "/trips" },
-  { title: 'Travel SIP', route: "/travel-sip" },
+  { title: 'Travel Pass', route: "/travel-pass" },
   { title: 'Contact', route: "/contact" },
   // { title: 'Partner With Us', route: '/partner-with-us' },
 ]

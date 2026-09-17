@@ -40,6 +40,12 @@ const nextConfig: NextConfig = {
         destination: '/about',
         permanent: true,
       },
+      {
+        // Renamed Travel SIP -> Travel Pass. 301 preserves SEO equity and old links/redirects.
+        source: '/travel-sip/:path*',
+        destination: '/travel-pass/:path*',
+        permanent: true,
+      },
     ];
   },
 

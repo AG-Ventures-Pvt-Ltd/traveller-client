@@ -126,7 +126,7 @@ export function SubscribeSipModal({ isOpen, onClose, plan, activeGateway, onSubs
       // Confirm and nothing at all happens — a 409 (already has a live SIP) or a
       // gateway error would be silent.
       const message = (error as AxiosError<{ message?: string }>)?.response?.data?.message
-      notify.error(message || 'Could not start your SIP. Please try again.')
+      notify.error(message || 'Could not start your Travel Pass. Please try again.')
     } finally {
       setIsSubmitting(false)
     }

@@ -31,12 +31,12 @@ const GroupJoinPage = () => {
 
   React.useEffect(() => {
     if (preview?.alreadyMember) {
-      router.replace(`/travel-sip/group/${preview.groupId}`)
+      router.replace(`/travel-pass/group/${preview.groupId}`)
     }
   }, [preview, router])
 
   const handleSignIn = () => {
-    router.push(`/auth?redirectUrl=${encodeURIComponent(`/travel-sip/group/join/${code}`)}`)
+    router.push(`/auth?redirectUrl=${encodeURIComponent(`/travel-pass/group/join/${code}`)}`)
   }
 
   const handleJoin = async () => {
@@ -67,8 +67,8 @@ const GroupJoinPage = () => {
       <div className="pt-8 px-4 pb-8">
         <div className="max-w-[600px] mx-auto flex flex-col gap-6">
           <div className="flex items-center gap-3">
-            <BackButton label="" to="/travel-sip" />
-            <h1 className="text-xl font-bold text-black">Join Travel SIP group</h1>
+            <BackButton label="" to="/travel-pass" />
+            <h1 className="text-xl font-bold text-black">Join Travel Pass group</h1>
           </div>
           {children}
         </div>
@@ -80,7 +80,7 @@ const GroupJoinPage = () => {
     return (
       <Shell>
         <div className="border border-[#D9D9D9] rounded-2xl p-6 bg-white text-center">
-          <p className="text-sm text-gray-600 mb-1">You&apos;ve been invited to join a Travel SIP group</p>
+          <p className="text-sm text-gray-600 mb-1">You&apos;ve been invited to join a Travel Pass group</p>
           <p className="text-3xl font-bold text-black tracking-widest my-4">{code}</p>
           <Button variant="purple" fullWidth onClick={handleSignIn}>Sign in to join</Button>
         </div>
@@ -101,7 +101,7 @@ const GroupJoinPage = () => {
       <Shell>
         <div className="border border-[#D9D9D9] rounded-2xl p-6 bg-white text-center">
           <p className="text-sm text-gray-600 mb-4">That group code isn&apos;t valid.</p>
-          <Button variant="primary" fullWidth onClick={() => router.push('/travel-sip')}>Back to Travel SIP</Button>
+          <Button variant="primary" fullWidth onClick={() => router.push('/travel-pass')}>Back to Travel Pass</Button>
         </div>
       </Shell>
     )
@@ -129,8 +129,8 @@ const GroupJoinPage = () => {
     return (
       <Shell>
         <div className="border border-[#D9D9D9] rounded-2xl p-6 bg-white text-center">
-          <p className="text-sm text-gray-600 mb-4">You already have a Travel SIP running. You can&apos;t join a group until it&apos;s cancelled or complete.</p>
-          <Button variant="primary" fullWidth onClick={() => router.push('/travel-sip')}>Go to my SIP</Button>
+          <p className="text-sm text-gray-600 mb-4">You already have a Travel Pass running. You can&apos;t join a group until it&apos;s cancelled or complete.</p>
+          <Button variant="primary" fullWidth onClick={() => router.push('/travel-pass')}>Go to my Travel Pass</Button>
         </div>
       </Shell>
     )
@@ -179,7 +179,7 @@ const GroupJoinPage = () => {
         activeGateway={paymentConfig?.subscriptionGateway}
         onClose={() => setSubscribeGroup(null)}
         onSubscribed={() => {
-          if (subscribeGroup) router.push(`/travel-sip/group/${subscribeGroup.groupId}`)
+          if (subscribeGroup) router.push(`/travel-pass/group/${subscribeGroup.groupId}`)
         }}
       />
     </Shell>

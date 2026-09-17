@@ -9,7 +9,7 @@ interface StickyNavigationProps {
   showProfile?: boolean;
 }
 
-const ACTIVE_ROUTES = ['/', '/profile', '/auth', '/trips', '/travel-sip', '/contact'];
+const ACTIVE_ROUTES = ['/', '/profile', '/auth', '/trips', '/travel-pass', '/contact'];
 
 const StickyNavigation: React.FC<StickyNavigationProps> = ({
   showProfile = true,
@@ -47,8 +47,8 @@ const isActiveRoute =
     router.push('/profile');
   };
 
-  const handleSipClick = () => {
-    router.push('/travel-sip');
+  const handlePassClick = () => {
+    router.push('/travel-pass');
   };
 
   const handleContactClick = () => {
@@ -88,15 +88,15 @@ const isActiveRoute =
           <CompassIcon size={24} weight="thin" />
         </button>
 
-        {/* Travel SIP Button */}
+        {/* Travel Pass Button */}
         <button
-          onClick={handleSipClick}
+          onClick={handlePassClick}
           className={`flex items-center justify-center w-12 h-12 rounded-full transition-colors ${
-            isActive('/travel-sip')
+            isActive('/travel-pass')
               ? 'bg-[#EEA0FF] text-black'
               : 'text-white hover:bg-white/10'
           }`}
-          aria-label="Travel SIP"
+          aria-label="Travel Pass"
         >
           <PiggyBankIcon size={24} weight="thin" />
         </button>

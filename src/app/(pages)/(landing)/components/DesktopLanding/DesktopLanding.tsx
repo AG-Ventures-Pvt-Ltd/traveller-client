@@ -4,15 +4,17 @@ import Footer from '../Footer/Footer'
 import { useSession } from 'next-auth/react'
 import { SearchIcon, Globe2, Plane, MapPin, Compass, Mountain, Waves, Camera, Sun, Anchor, Map } from 'lucide-react'
 import { useRouter } from 'next/navigation';
+import StatsBanner from './components/StatsBanner';
 import { useFeaturedTrips } from '@/common/hooks/useFeaturedTrips';
 import { useSignupBonus } from '@/common/hooks/useSignupBonus';
 import { useGetData } from '@/services/useGetData';
 import { API_ENDPOINTS } from '@/common/constants/apiEndpoints';
-import StatsBanner from './components/StatsBanner';
 import CarouselSection from './components/CarouselSection';
 import TrustSection from './components/TrustSection';
 import ExploreByDestination from '../common/ExploreByDestination/ExploreByDestination';
+import TravelPassBanner from '../common/TravelPassBanner/TravelPassBanner';
 import RecognitionSection from '../common/RecognitionSection/RecognitionSection';
+import ClosingCta from '../common/ClosingCta/ClosingCta';
 import SignupPerksModal from '@/common/components/composites/SignupPerksModal';
 import { useOnceEverModal } from '@/common/hooks/useOnceEverModal';
 import { SIGNUP_PERKS_MODAL_STORAGE_KEY } from '@/common/components/composites/SignupPerksModal';
@@ -26,6 +28,11 @@ const DesktopLanding = () => {
   const { data: featuredTripsData, isLoading: isTripsLoading } = useFeaturedTrips();
   const { data: signupBonusData } = useSignupBonus();
   const { data: travelerStatsData } = useGetData<{ count: number }>(API_ENDPOINTS.LANDING_PAGE.TRAVELER_STATS);
+  // useGetData derives `enabled` from the url, so an empty url skips the call for guests.
+  const { data: walletData } = useGetData<{ balance: number }>(
+    status === 'authenticated' ? API_ENDPOINTS.WALLET.BALANCE : '',
+    { queryKey: [API_ENDPOINTS.WALLET.BALANCE] }
+  );
 
   const { show: showSignupModal, dismiss: dismissSignupModal } = useOnceEverModal(
     60_000,
@@ -75,12 +82,13 @@ const DesktopLanding = () => {
 
   const showSignupBanner = status === 'unauthenticated' && signupBonusData?.signupBonus?.isEnabled;
   const showStatsBanner = (travelerStatsData?.count ?? 0) > 0;
+  const showWalletBanner = status === 'authenticated';
 
   return (
     <main className="flex flex-col items-center overflow-hidden bg-[#FFF9F4]">
 
       <div className='w-full'>
-        <div className='bg-[#D0EF65] mx-24 rounded-2xl flex flex-col items-center py-16 my-2 relative overflow-hidden min-h-[480px]'>
+        <div className='bg-[#D0EF65] mx-24 rounded-2xl flex flex-col items-center justify-center py-10 my-2 relative overflow-hidden min-h-[360px]'>
 
           <Plane        className="absolute top-5 left-8   w-16 h-16 text-neutral-800 opacity-[0.09] rotate-[20deg]  pointer-events-none" />
           <Compass      className="absolute top-4 right-10  w-14 h-14 text-neutral-800 opacity-[0.09] -rotate-6       pointer-events-none" />
@@ -98,7 +106,7 @@ const DesktopLanding = () => {
           <div className="relative z-10 flex flex-col items-center w-full">
             <h1 className='text-5xl font-bold text-center'>What&apos;s your next escape,<br />{status == 'authenticated' ? userData.user?.fullName : 'Traveller'} ?</h1>
             <p className='pt-4 text-center'>Safe group adventures for solo travelers who want to travel with like-minded strangers.</p>
-            <div className="relative mt-12 w-[60%]">
+            <div className="relative mt-8 w-[60%]">
               <SearchIcon className="absolute left-4 sm:left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-500" strokeWidth={2} />
               <input
                 type="text"
@@ -121,13 +129,17 @@ const DesktopLanding = () => {
         </div>
       </div>
 
-      {(showSignupBanner || showStatsBanner) && (
+      {/* Social proof + signup / Wondrr Cash offer, right under the search */}
+      {(showSignupBanner || showWalletBanner || showStatsBanner) && (
         <div className="w-full px-24 mt-4 flex gap-4">
           {showSignupBanner && (
             <StatsBanner
               variant="signup"
               amount={signupBonusData!.signupBonus.amount}
             />
+          )}
+          {showWalletBanner && (
+            <StatsBanner variant="wallet" amount={walletData?.balance} />
           )}
           {showStatsBanner && (
             <StatsBanner
@@ -167,13 +179,26 @@ const DesktopLanding = () => {
         </div>
       )}
 
-      <div className="w-full px-24 mt-2 mb-12">
-        <ExploreByDestination variant="desktop" />
-      </div>
-
+      {/* Story: trips → trust → afford → still deciding? → belief → go */}
       <TrustSection />
 
+      <div className="w-full px-24 mb-16">
+        <TravelPassBanner variant="desktop" />
+      </div>
+
+      <div className="w-full px-24 mb-4">
+        <ExploreByDestination
+          variant="desktop"
+          title="Still deciding? Start with a place."
+          subtitle="Group trips, sorted by where they’re headed."
+        />
+      </div>
+
       <RecognitionSection variant="desktop" />
+
+      <div className="w-full px-24 mb-16">
+        <ClosingCta variant="desktop" />
+      </div>
 
       <Footer />
 

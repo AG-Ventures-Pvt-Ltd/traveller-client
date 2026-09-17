@@ -34,13 +34,13 @@ export function CancelSipModal({ isOpen, onClose, subscription, onConfirm }: Can
   }
 
   return (
-    <MobileModal isOpen={isOpen} onClose={handleClose} title="Cancel SIP">
+    <MobileModal isOpen={isOpen} onClose={handleClose} title="Cancel Travel Pass">
       <div className="flex flex-col gap-6">
         <div className="bg-red-50 rounded-xl p-4 flex flex-col gap-2 text-sm">
           <div className="flex justify-between">
             <span className="text-gray-500">Plan</span>
             <span className="font-medium text-black">
-              {subscription && typeof subscription.planId === 'object' ? subscription.planId.name : 'SIP Plan'}
+              {subscription && typeof subscription.planId === 'object' ? subscription.planId.name : 'Travel Pass Plan'}
             </span>
           </div>
           <div className="flex justify-between">
@@ -51,7 +51,7 @@ export function CancelSipModal({ isOpen, onClose, subscription, onConfirm }: Can
 
         <p className="text-xs text-gray-600">
           {subscription?.status === 'pending_auth'
-            ? "No payment has been made yet — cancelling just clears this setup attempt so you can start a new SIP."
+            ? "No payment has been made yet — cancelling just clears this setup attempt so you can start a new Travel Pass."
             : "Cancelling stops all future installments immediately and can't be undone or resumed. Since the target hasn't been reached, the completion bonus will not be credited — only what you've already paid stays in your Wondrr Cash wallet."}
         </p>
 
@@ -64,7 +64,7 @@ export function CancelSipModal({ isOpen, onClose, subscription, onConfirm }: Can
             onClick={handleClose}
             className="!bg-white !text-black border border-[#D9D9D9]"
           >
-            Keep my SIP
+            Keep my Travel Pass
           </Button>
           <Button
             variant="primary"

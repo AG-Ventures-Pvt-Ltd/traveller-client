@@ -74,11 +74,11 @@ const GroupDashboardPage = () => {
 
   const handleLeave = async () => {
     if (!detail) return
-    if (!window.confirm('Leave this group? Your SIP will keep running on its own.')) return
+    if (!window.confirm('Leave this group? Your Travel Pass will keep running on its own.')) return
     try {
       await baseAPI.post(API_ENDPOINTS.SIP.GROUPS.LEAVE(detail.groupId))
       notify.success('Left the group')
-      router.push('/travel-sip')
+      router.push('/travel-pass')
     } catch {
       notify.error('Failed to leave group')
     }
@@ -86,7 +86,7 @@ const GroupDashboardPage = () => {
 
   const handleArchive = async () => {
     if (!detail) return
-    if (!window.confirm('Archive this group? The code will stop working — everyone keeps their own SIP.')) return
+    if (!window.confirm('Archive this group? The code will stop working — everyone keeps their own Travel Pass.')) return
     try {
       await baseAPI.post(API_ENDPOINTS.SIP.GROUPS.ARCHIVE(detail.groupId))
       notify.success('Group archived')
@@ -118,7 +118,7 @@ const GroupDashboardPage = () => {
       <div className="pt-8 px-4 pb-8">
         <div className="max-w-[600px] mx-auto flex flex-col gap-6">
           <div className="flex items-center gap-3">
-            <BackButton label="" to="/travel-sip" />
+            <BackButton label="" to="/travel-pass" />
             <h1 className="text-xl font-bold text-black truncate">{detail.groupName}</h1>
           </div>
 
@@ -156,7 +156,7 @@ const GroupDashboardPage = () => {
               disabled={preparingSetup}
               className="w-full bg-[#EEA0FF] text-black font-medium rounded-xl py-4 disabled:opacity-60"
             >
-              {preparingSetup ? 'Loading…' : 'Set up your SIP'}
+              {preparingSetup ? 'Loading…' : 'Set up your Travel Pass'}
             </button>
           )}
 

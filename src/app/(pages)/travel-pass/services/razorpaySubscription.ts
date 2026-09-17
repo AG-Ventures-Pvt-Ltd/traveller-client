@@ -9,7 +9,7 @@ export const openRazorpaySubscription = (
     key: razorpayKeyId,
     subscription_id: gatewaySubscriptionId,
     name: "Wondrr Trips",
-    description: "Travel SIP Auto-pay Setup",
+    description: "Travel Pass Auto-pay Setup",
     theme: {
       color: '#121212',
     },
