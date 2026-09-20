@@ -16,6 +16,7 @@ const rubik = Rubik({
 import Script from "next/script";
 import Navbar from './(landing)/components/Navbar/Navbar'
 import StickyNavigation from '@/common/components/composites/StickyNavigation';
+import PromoCouponBanner from './(landing)/components/common/PromoCouponBanner/PromoCouponBanner';
 import type { Metadata } from 'next';
 import Image from "next/image";
 import { JsonLd, organizationSchema, websiteSchema } from '@/common/seo/JsonLd';
@@ -129,7 +130,12 @@ export default function RootLayout({ children }: RootLayoutProps) {
               up to 100vh + navbar and scrolls even with no content to scroll. Pages that
               still set their own min-h-screen behave exactly as before. */}
           <div className="flex min-h-screen flex-col">
-            <Navbar />
+            {/* Promo strip and navbar stick as one block, so neither needs to know
+                the other's height. The strip renders null off the landing page. */}
+            <div className="sticky top-0 z-50">
+              <PromoCouponBanner />
+              <Navbar />
+            </div>
             <div className="flex flex-1 flex-col">{children}</div>
           </div>
           <StickyNavigation />

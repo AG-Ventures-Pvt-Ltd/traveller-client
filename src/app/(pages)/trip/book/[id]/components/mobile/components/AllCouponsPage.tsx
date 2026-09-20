@@ -69,7 +69,7 @@ export default function AllCouponsPage({ tripId, onDone }: AllCouponsPageProps) 
             <div className="border border-[#D9D9D9] rounded-2xl overflow-hidden">
                 {/* Header row */}
                 <div className="flex items-center justify-between px-3 py-[18px] border-b border-[#D9D9D9]">
-                    <p className="text-xs text-black tracking-[-0.36px]">Add a discount</p>
+                    <p className="text-xs text-black tracking-[-0.36px]">Apply coupon code</p>
                 </div>
 
                 {/* Coupon list */}

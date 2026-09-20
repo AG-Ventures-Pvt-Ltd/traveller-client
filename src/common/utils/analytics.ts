@@ -15,7 +15,9 @@ export function trackEvent(eventName: string, params: Record<string, unknown> = 
 // Cleared on purchase so repeat visits start fresh.
 const FUNNEL_SOURCE_KEY = 'wondrr_funnel_source';
 
-export function setFunnelSource(source: 'landing' | 'search' | 'direct') {
+export type FunnelSource = 'landing' | 'search' | 'direct' | 'explore';
+
+export function setFunnelSource(source: FunnelSource) {
   if (typeof sessionStorage !== 'undefined') {
     sessionStorage.setItem(FUNNEL_SOURCE_KEY, source);
   }

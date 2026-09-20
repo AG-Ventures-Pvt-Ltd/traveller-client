@@ -20,6 +20,8 @@ const CarouselCard: React.FC<CarouselCardProps> = ({
   rating,
   className,
   colorScheme = 'yellow',
+  nextDate,
+  source = 'landing',
   onClick,
   tripSlug,
   isBookmarked: initialIsBookmarked = false,
@@ -48,8 +50,8 @@ const CarouselCard: React.FC<CarouselCardProps> = ({
       <Link
         href={href}
         onClick={() => {
-          setFunnelSource('landing');
-          trackEvent('trip_card_click', { trip_id: slug, trip_title: title, source: 'landing' });
+          setFunnelSource(source);
+          trackEvent('trip_card_click', { trip_id: slug, trip_title: title, source });
           onClick?.();
         }}
         className="absolute inset-0 z-[1]"
@@ -101,6 +103,11 @@ const CarouselCard: React.FC<CarouselCardProps> = ({
           <p className="text-neutral-700 text-xs font-medium font-['Satoshi']">
             {duration}
           </p>
+          {nextDate && (
+            <p className="text-neutral-900 text-xs font-semibold font-['Satoshi']">
+              Next: {nextDate}
+            </p>
+          )}
           <div className="flex items-baseline">
             <span className="text-neutral-900 text-sm font-bold font-['Satoshi']">
               From ₹{price.toLocaleString('en-IN')}/

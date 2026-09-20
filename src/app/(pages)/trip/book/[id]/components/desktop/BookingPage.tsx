@@ -6,7 +6,6 @@ import { useBookingNavStore } from '../../[batchId]/store/useBookingNavStore';
 import BookingFormPage, { BookingFormData } from '../mobile/components/BookingFormPage/BookingFormPage';
 import ReviewInfo from '../mobile/components/ReviewInfo/ReviewInfo';
 import AllCouponsPage from '../mobile/components/AllCouponsPage';
-import type { Coupon } from '../mobile/components/BookingFormPage/types';
 
 
 type Step = 'reservation' | 'review' | 'coupons';
@@ -30,7 +29,6 @@ export default function BookingPage() {
     const { setHeaderLabel, setBackAction } = useBookingNavStore();
 
     const bookingDataRef = useRef<BookingFormData | null>(null);
-    const couponsRef = useRef<Coupon[]>([]);
 
     const goToStep = (nextStep: Step) => {
         const p = new URLSearchParams(searchParams.toString());
@@ -73,10 +71,7 @@ export default function BookingPage() {
         goToStep('review');
     };
 
-    const handleViewCoupons = (coupons: Coupon[]) => {
-        couponsRef.current = coupons;
-        goToStep('coupons');
-    };
+    const handleViewCoupons = () => goToStep('coupons');
 
     return (
         <div className="min-h-screen bg-[#FFF9F4]">

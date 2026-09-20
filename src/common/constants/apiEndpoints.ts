@@ -97,6 +97,7 @@ export const API_ENDPOINTS = {
     FEATURED_TRIPS: '/api/client/v1/landingpage/featuredTrips',
     CITIES : '/api/client/v1/landingpage/cities',
     SIGNUP_BONUS: '/api/client/v1/landingpage/signup-bonus',
+    PROMO_COUPON: '/api/client/v1/landingpage/promo-coupon',
     TRAVELER_STATS: '/api/client/v1/landingpage/traveler-stats',
     EXPLORE_STATES: '/api/client/v1/landingpage/explore-states',
     TRIPS_BY_STATE: (stateCode: string) => `/api/client/v1/landingpage/explore-states/${stateCode}/trips`,
