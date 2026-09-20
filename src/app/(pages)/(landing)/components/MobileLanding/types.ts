@@ -1,3 +1,5 @@
+import type { FunnelSource } from '@/common/utils/analytics';
+
 export interface Trip {
   id: string | number;
   image: string;
@@ -41,6 +43,10 @@ export interface CarouselCardProps {
   price: number;
   rating: number;
   colorScheme?: 'yellow' | 'green' | 'purple';
+  /** Next departure, already formatted. Landing cards omit it; explore shows it. */
+  nextDate?: string | null;
+  /** Funnel source recorded on click — the card is used outside the landing page. */
+  source?: FunnelSource;
   className?:string;
   onClick?: () => void;
   tripSlug?: string;

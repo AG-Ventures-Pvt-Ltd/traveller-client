@@ -19,6 +19,8 @@ const CarouselCard: React.FC<CarouselCardProps> = ({
   price,
   rating,
   colorScheme = 'yellow',
+  nextDate,
+  source = 'landing',
   onClick,
   tripSlug,
   isBookmarked: initialIsBookmarked = false,
@@ -45,8 +47,8 @@ const CarouselCard: React.FC<CarouselCardProps> = ({
       <Link
         href={href}
         onClick={() => {
-          setFunnelSource('landing');
-          trackEvent('trip_card_click', { trip_id: slug, trip_title: title, source: 'landing' });
+          setFunnelSource(source);
+          trackEvent('trip_card_click', { trip_id: slug, trip_title: title, source });
           onClick?.();
         }}
         className="absolute inset-0 z-[1]"
@@ -92,6 +94,10 @@ const CarouselCard: React.FC<CarouselCardProps> = ({
         </div>
 
         <p className=" text-xs font-medium">{duration}</p>
+
+        {nextDate && (
+          <p className="text-xs font-semibold text-neutral-900">Next: {nextDate}</p>
+        )}
 
         <div className="mt-auto flex flex-col">
           <div className="flex items-center">
