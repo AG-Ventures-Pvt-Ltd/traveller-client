@@ -15,7 +15,7 @@ import ActivityAddOnsSection from './components/ActivityAddOnsSection';
 import DiscountsSection from './components/DiscountsSection';
 import { ReservationSkeleton } from '../../BookingStepSkeletons';
 import { useBookingFormStore } from './hooks/useBookingFormStore';
-import type { BookingFormData, BookingOptionsResponse, Coupon } from './types';
+import type { BookingFormData, BookingOptionsResponse } from './types';
 import LoadExistingBookingDetails from './components/LoadExistingBookingDetails'
 import { useSearchParams } from 'next/navigation';
 import { useCreateBooking } from './hooks/useCreateBooking';
@@ -31,7 +31,7 @@ interface BookingFormPageProps {
     tripId: string;
     batchId: string;
     onContinue: (data: BookingFormData) => void;
-    onViewCoupons?: (coupons: Coupon[]) => void;
+    onViewCoupons?: () => void;
 }
 
 export default function BookingFormPage({ tripId, batchId, onViewCoupons }: BookingFormPageProps) {
@@ -184,8 +184,8 @@ export default function BookingFormPage({ tripId, batchId, onViewCoupons }: Book
 
                     <DiscountsSection
                         tripId={tripId}
-                        coupons={bookingOptions?.coupons}
-                        onViewCoupons={onViewCoupons ? () => onViewCoupons(bookingOptions?.coupons ?? []) : undefined}
+                        orderAmount={displayPrice}
+                        onViewCoupons={onViewCoupons}
                     />
                 </div>
 
@@ -229,8 +229,8 @@ export default function BookingFormPage({ tripId, batchId, onViewCoupons }: Book
 
             <DiscountsSection
                 tripId={tripId}
-                coupons={bookingOptions?.coupons}
-                onViewCoupons={onViewCoupons ? () => onViewCoupons(bookingOptions?.coupons ?? []) : undefined}
+                orderAmount={displayPrice}
+                onViewCoupons={onViewCoupons}
             />
             <BookingBar displayPrice={displayPrice} onBookNow={handleButtonClick} />
         </div>
