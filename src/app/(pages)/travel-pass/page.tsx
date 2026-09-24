@@ -72,8 +72,8 @@ const Highlight = ({ children }: { children: React.ReactNode }) => (
   </span>
 )
 
-const SectionTitle = ({ title, subtitle }: { title: React.ReactNode; subtitle?: string }) => (
-  <div className="flex flex-col gap-1.5 mb-6">
+const SectionTitle = ({ title, subtitle, center }: { title: React.ReactNode; subtitle?: string; center?: boolean }) => (
+  <div className={`flex flex-col gap-1.5 mb-6 ${center ? 'items-center text-center' : ''}`}>
     <h2 className="text-2xl md:text-[34px] font-semibold tracking-tight leading-tight text-neutral-900 font-['Satoshi']">{title}</h2>
     {subtitle && <p className="text-sm md:text-base text-neutral-500">{subtitle}</p>}
   </div>
@@ -219,7 +219,8 @@ const TravelPassPage = () => {
   return (
     <div className="w-full min-h-screen bg-[#FFF9F4]">
       <div className="pt-8 px-4 pb-16">
-        <div className="max-w-[600px] md:max-w-6xl mx-auto flex flex-col gap-14 md:gap-20">
+        {/* Pass holders get a narrow, centred column — no marketing grid to fill. */}
+        <div className={`max-w-[600px] mx-auto flex flex-col gap-14 md:gap-20 ${hasBlockingSip ? 'md:max-w-2xl' : 'md:max-w-6xl'}`}>
 
           {/* ── Hero ─────────────────────────────────────────────── */}
           <section>
@@ -228,6 +229,12 @@ const TravelPassPage = () => {
               <span className="rounded-full bg-[#EEA0FF]/25 px-3 py-1 text-xs font-medium text-neutral-800">Travel Pass</span>
             </div>
 
+            {/* Once a pass is live the pitch is noise — just head the page. */}
+            {hasBlockingSip ? (
+              <h1 className="text-[28px] md:text-[40px] font-bold leading-tight tracking-tight text-neutral-900 font-['Satoshi'] text-center">
+                Your Travel Pass
+              </h1>
+            ) : (
             <div className="grid md:grid-cols-[1.2fr_1fr] gap-10 md:gap-16 items-center">
               <div className="flex flex-col gap-5">
                 <h1 className="text-[34px] md:text-[52px] font-bold leading-[1.1] tracking-tight text-neutral-900 font-['Satoshi']">
@@ -238,8 +245,8 @@ const TravelPassPage = () => {
                   gang. Hit your target and we add a bonus on top.
                 </p>
                 <div className="flex flex-wrap gap-3">
-                  <a href={hasBlockingSip ? '#my-pass' : '#plans'} className={primaryBtn}>
-                    {hasBlockingSip ? 'View my pass' : 'See plans'} <ArrowRightIcon size={16} />
+                  <a href="#plans" className={primaryBtn}>
+                    See plans <ArrowRightIcon size={16} />
                   </a>
                   <a href="#groups" className={secondaryBtn}>
                     <UsersThreeIcon size={18} /> Save with friends
@@ -266,6 +273,7 @@ const TravelPassPage = () => {
                 </div>
               )}
             </div>
+            )}
           </section>
 
           {/* ── Your pass (signed in) ────────────────────────────── */}
@@ -275,8 +283,8 @@ const TravelPassPage = () => {
 
           {status === 'authenticated' && !subsLoading && (currentSips.length > 0 || myGroup) && (
             <section id="my-pass" className="scroll-mt-24">
-              <SectionTitle title="Your Travel Pass" />
-              <div className="grid md:grid-cols-2 gap-4">
+              <SectionTitle title={hasBlockingSip ? 'Active pass' : 'Your Travel Pass'} center={hasBlockingSip} />
+              <div className={`grid gap-4 ${hasBlockingSip ? '' : 'md:grid-cols-2'}`}>
                 {currentSips.map(renderSipCard)}
                 {myGroup ? (
                   <div
@@ -310,7 +318,7 @@ const TravelPassPage = () => {
                 )}
               </div>
               {hasBlockingSip && (
-                <p className="text-sm text-neutral-500 mt-4">New plans open up once your current pass is completed or cancelled.</p>
+                <p className="text-sm text-neutral-500 mt-4 text-center">New plans open up once your current pass is completed or cancelled.</p>
               )}
             </section>
           )}
@@ -346,7 +354,9 @@ const TravelPassPage = () => {
             </section>
           )}
 
+          {/* Marketing sections below are for people who don't have a pass yet. */}
           {/* ── How it works ─────────────────────────────────────── */}
+          {showPlans && (
           <section id="how" className="scroll-mt-24">
             <SectionTitle title={<>From savings to <Highlight>boarding.</Highlight></>} subtitle="Four steps. You only do the first one." />
             <ol className="relative grid md:grid-cols-4 gap-6 md:gap-4">
@@ -370,9 +380,10 @@ const TravelPassPage = () => {
               ))}
             </ol>
           </section>
+          )}
 
           {/* ── Calculator ───────────────────────────────────────── */}
-          {plans.length > 0 && (
+          {showPlans && plans.length > 0 && (
             <section id="calculator" className="scroll-mt-24">
               <SectionTitle
                 title={<>See what your pass <Highlight>becomes.</Highlight></>}
@@ -387,6 +398,7 @@ const TravelPassPage = () => {
           )}
 
           {/* ── Groups ───────────────────────────────────────────── */}
+          {showPlans && (
           <section id="groups" className="scroll-mt-24 rounded-3xl bg-[#FAEEFD] px-5 py-8 md:px-12 md:py-12">
             <div className="grid md:grid-cols-[1.1fr_1fr] gap-10 md:gap-14 items-center">
               <div>
@@ -470,8 +482,10 @@ const TravelPassPage = () => {
               </div>
             </div>
           </section>
+          )}
 
           {/* ── Why ──────────────────────────────────────────────── */}
+          {showPlans && (
           <section>
             <SectionTitle
               title={<>Trips rarely get cancelled. <Highlight>They get postponed.</Highlight></>}
@@ -502,8 +516,10 @@ const TravelPassPage = () => {
               </div>
             </div>
           </section>
+          )}
 
           {/* ── Where it takes you ───────────────────────────────── */}
+          {showPlans && (
           <section>
             <div className="md:hidden">
               <ExploreByDestination
@@ -520,19 +536,20 @@ const TravelPassPage = () => {
               />
             </div>
           </section>
+          )}
 
           {status === 'authenticated' && !subsLoading && pastSips.length > 0 && (
             <section>
-              <SectionTitle title="Past Travel Passes" />
-              <div className="grid md:grid-cols-2 gap-4 opacity-80">
+              <SectionTitle title="Past Travel Passes" center={hasBlockingSip} />
+              <div className={`grid gap-4 opacity-80 ${hasBlockingSip ? '' : 'md:grid-cols-2'}`}>
                 {pastSips.map(renderSipCard)}
               </div>
             </section>
           )}
 
           {/* ── FAQ ──────────────────────────────────────────────── */}
-          <section className="md:w-[80%] md:mx-auto w-full">
-            <SectionTitle title="Questions, answered" />
+          <section className={`w-full md:mx-auto ${hasBlockingSip ? '' : 'md:w-[80%]'}`}>
+            <SectionTitle title="Questions, answered" center={hasBlockingSip} />
             <div className="flex flex-col gap-2">
               {SIP_FAQS.map((faq, i) => {
                 const isOpen = openFaq === i

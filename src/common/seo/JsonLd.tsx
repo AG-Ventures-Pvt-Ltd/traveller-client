@@ -23,9 +23,10 @@ export const SITE_URL = 'https://wondrr.in';
 
 export const organizationSchema: JsonLdData = {
   '@context': 'https://schema.org',
-  '@type': 'TravelAgency',
+  '@type': 'Organization',
   '@id': `${SITE_URL}/#organization`,
   name: 'Wondrr',
+  alternateName: ['Wondrr Trips'],
   legalName: 'Madhurmani Networks (OPC) Pvt. Ltd.',
   url: SITE_URL,
   logo: {

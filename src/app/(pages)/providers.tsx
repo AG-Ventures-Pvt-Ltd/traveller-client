@@ -49,7 +49,7 @@ function ToastInitializer({ children }: { children: React.ReactNode }) {
 }
 
 export function Providers({ children }: { children: React.ReactNode }) {
-  const isProduction = process.env.NEXT_PUBLIC_ENV === 'PROD';
+  const isProduction = process.env.NEXT_PUBLIC_ENV === 'PRODUCTION';
   // Stable per-environment client: new each server request, singleton in browser.
   const [queryClient] = useState(getQueryClient);
 
