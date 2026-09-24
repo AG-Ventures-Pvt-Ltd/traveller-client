@@ -7,7 +7,7 @@ import MyImage from '@/common/ui/Image';
 import { CarouselCardProps } from '../../MobileLanding/types';
 import { useBookMarking } from '@/common/hooks/useBookMarking';
 import { generateSlug } from '@/app/(pages)/trip/utils';
-import { trackEvent, setFunnelSource } from '@/common/utils/analytics';
+import { trackEvent, toGaItem } from '@/common/utils/analytics';
 
 const CarouselCard: React.FC<CarouselCardProps> = ({
   id,
@@ -20,7 +20,8 @@ const CarouselCard: React.FC<CarouselCardProps> = ({
   rating,
   colorScheme = 'yellow',
   nextDate,
-  source = 'landing',
+  listName = 'home',
+  index,
   onClick,
   tripSlug,
   isBookmarked: initialIsBookmarked = false,
@@ -47,8 +48,10 @@ const CarouselCard: React.FC<CarouselCardProps> = ({
       <Link
         href={href}
         onClick={() => {
-          setFunnelSource(source);
-          trackEvent('trip_card_click', { trip_id: slug, trip_title: title, source });
+          trackEvent('select_item', {
+            item_list_name: listName,
+            items: [toGaItem({ slug, title, hostUsername, price, index, listName })],
+          });
           onClick?.();
         }}
         className="absolute inset-0 z-[1]"

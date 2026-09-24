@@ -10,6 +10,7 @@ const protectedRoutes = [
 const authRoutes = ['/auth'];
 
 export default async function proxy(request: NextRequest) {
+  
   const { pathname } = request.nextUrl;
 
   const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route));

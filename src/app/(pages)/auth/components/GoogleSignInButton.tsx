@@ -3,10 +3,14 @@
 import { signIn } from 'next-auth/react';
 import Button from '@/common/components/atoms/Button';
 import { GoogleSignInButtonProps } from '../types';
+import { rememberAuthIntent } from '@/common/components/AnalyticsIdentity';
 
 const GoogleSignInButton = ({ redirectTo, isLogin }: GoogleSignInButtonProps) => {
 
   const handleGoogleSignIn = () => {
+    // Google returns via a full page load, so the method is stashed for the
+    // login/sign_up event rather than fired here (the auth may still fail).
+    rememberAuthIntent('google', !isLogin);
     const postLoginUrl = `/auth/post-login?redirectUrl=${encodeURIComponent(redirectTo)}`;
     signIn('google', { callbackUrl: postLoginUrl });
   };

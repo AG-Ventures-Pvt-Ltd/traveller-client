@@ -78,7 +78,7 @@ const HostProfileDesktop = () => {
       {/* ── Upcoming trips ── */}
       {upcomingTrips.length > 0 && (
         <section className="mx-auto mt-16 max-w-6xl px-4 sm:px-8">
-          <DesktopCarouselSection title="Upcoming Trips" trips={upcomingTrips} carouselIndex={0} />
+          <DesktopCarouselSection title="Upcoming Trips" trips={upcomingTrips} carouselIndex={0} listName={`operator:${id}`} />
           {hasMoreUpcoming && (
             <button
               onClick={() => router.push(`/trips?host=${id}&status=published`)}
@@ -95,7 +95,7 @@ const HostProfileDesktop = () => {
           <div className="pl-4">
             <SectionEyebrow icon={SuitcaseRollingIcon}>Journeys completed</SectionEyebrow>
           </div>
-          <DesktopCarouselSection title="Past Trips" trips={pastTrips} carouselIndex={1} />
+          <DesktopCarouselSection title="Past Trips" trips={pastTrips} carouselIndex={1} listName={`operator:${id}`} />
           {hasMorePast && (
             <button
               onClick={() => router.push(`/trips?host=${id}&status=archived`)}

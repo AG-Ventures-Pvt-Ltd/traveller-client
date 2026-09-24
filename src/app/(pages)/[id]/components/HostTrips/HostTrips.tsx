@@ -8,6 +8,8 @@ import Button from "@/common/components/atoms/Button";
 import { useRouter } from "next/navigation";
 import { FilterType, FILTERS, LOCATION_OPTIONS } from "./constants";
 import { buildTripsUrl } from "./utils";
+import { trackEvent, toGaItem, type ListName } from "@/common/utils/analytics";
+import { useViewItemList } from "@/common/hooks/useViewItemList";
 
 interface HostTripsProps {
   hostUsername: string;
@@ -19,6 +21,8 @@ export function HostTrips({ hostUsername }: HostTripsProps) {
   const [location, setLocation] = useState('all');
   const [allTrips, setAllTrips] = useState<Trip[]>([]);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
+
+  const listName: ListName = `operator:${hostUsername}`;
 
   const tripsUrl = buildTripsUrl(hostUsername, filter, currentPage, location);
   const { data: tripsData, isLoading, error } = useGetData<{
@@ -65,8 +69,29 @@ export function HostTrips({ hostUsername }: HostTripsProps) {
   }, [trips, currentPage]);
 
   const handleViewDetails = (tripId: string) => {
+    const index = allTrips.findIndex((t) => t.slug === tripId);
+    const trip = allTrips[index];
+    if (trip) {
+      trackEvent('select_item', {
+        item_list_name: listName,
+        items: [toGaItem({
+          slug: trip.slug, title: trip.title, hostUsername,
+          category: trip.category, city: trip.location, price: trip.price,
+          index, listName,
+        })],
+      });
+    }
     router.push(`/trip/${tripId}`);
   };
+
+  useViewItemList(
+    listName,
+    allTrips.map((t) => ({
+      slug: t.slug, title: t.title, hostUsername,
+      category: t.category, city: t.location, price: t.price,
+    })),
+    `${listName}:${filter}:${location}`,
+  );
 
   const handleFilterChange = (newFilter: FilterType) => {
     setFilter(newFilter);
