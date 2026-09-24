@@ -63,6 +63,7 @@ const HostProfileMobile = () => {
             title="Upcoming Trips"
             trips={upcomingTrips}
             carouselIndex={0}
+            listName={`operator:${id}`}
             viewAllClick={hasMoreUpcoming ? () => router.push(`/trips?host=${id}&status=published`) : undefined}
           />
         </div>
@@ -74,6 +75,7 @@ const HostProfileMobile = () => {
             title="Past Trips"
             trips={pastTrips}
             carouselIndex={1}
+            listName={`operator:${id}`}
             viewAllClick={hasMorePast ? () => router.push(`/trips?host=${id}&status=archived`) : undefined}
           />
         </div>

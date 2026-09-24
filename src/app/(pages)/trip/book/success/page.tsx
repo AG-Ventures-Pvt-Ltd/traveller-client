@@ -14,7 +14,7 @@ export default function BookingSuccessPage() {
   const router = useRouter();
   const { isMobile, isHydrated } = useDevice();
   const orderId = searchParams.get('orderId');
-  const purchaseFiredRef = useRef(false);
+  const successFiredRef = useRef(false);
 
   useEffect(() => {
     if (!orderId) {
@@ -33,15 +33,13 @@ export default function BookingSuccessPage() {
   
   const bookingDetails = bookingResponse?.bookingDetails;
 
+  // `purchase` is sent by the server from the payment webhook, not here: this page
+  // is reachable without a confirmed payment (and reloadable), so a client-side
+  // purchase both missed real payments and double-counted the ones it caught.
   useEffect(() => {
-    if (bookingResponse?.bookingStatus === 'success' && bookingDetails && !purchaseFiredRef.current) {
-      purchaseFiredRef.current = true;
-      trackEvent('purchase', {
-        transaction_id: bookingDetails.transactionId,
-        value: parseFloat(bookingDetails.grandTotal) || 0,
-        currency: 'INR',
-        items: [{ item_name: bookingDetails.tripTitle, quantity: parseInt(bookingDetails.numberOfPeople) || 1 }],
-      });
+    if (bookingResponse?.bookingStatus === 'success' && bookingDetails && !successFiredRef.current) {
+      successFiredRef.current = true;
+      trackEvent('booking_success_view', { transaction_id: bookingDetails.transactionId });
     }
   }, [bookingResponse?.bookingStatus, bookingDetails]);
 

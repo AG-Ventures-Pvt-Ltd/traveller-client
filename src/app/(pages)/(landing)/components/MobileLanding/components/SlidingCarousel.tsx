@@ -3,6 +3,7 @@
 import React from 'react';
 import CarouselCard from './CarouselCard';
 import { SlidingCarouselProps } from '../types';
+import { useViewItemList } from '@/common/hooks/useViewItemList';
 
 const COLOR_PAIRS: Array<['yellow' | 'green' | 'purple', 'yellow' | 'green' | 'purple']> = [
   ['yellow', 'green'],
@@ -14,7 +15,15 @@ const SlidingCarousel: React.FC<SlidingCarouselProps> = ({
   isLoading = false,
   onCardClick,
   carouselIndex = 0,
+  listName = 'home',
 }) => {
+
+  useViewItemList(
+    listName,
+    trips.map((t) => ({ slug: t.tripSlug || String(t.id), title: t.title, hostUsername: t.hostUsername, price: t.price })),
+    `${listName}:${carouselIndex}`,
+  );
+
   if (isLoading) {
     return (
       <div className="w-full flex justify-center">
@@ -31,6 +40,8 @@ const SlidingCarousel: React.FC<SlidingCarouselProps> = ({
             {...trip}
             colorScheme={COLOR_PAIRS[carouselIndex % 2][index % 2]}
             onClick={() => onCardClick?.()}
+            listName={listName}
+            index={index}
             priority={carouselIndex === 0 && index === 0}
           />
         </div>

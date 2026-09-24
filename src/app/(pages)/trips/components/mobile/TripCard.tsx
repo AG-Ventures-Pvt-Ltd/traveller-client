@@ -12,20 +12,22 @@ import {
 } from '@phosphor-icons/react';
 import TripImageCarousel from '../TripImageCarousel';
 import { useBookMarking } from '@/common/hooks/useBookMarking';
-import { trackEvent, setFunnelSource } from '@/common/utils/analytics';
+import { trackEvent, toGaItem, type ListName } from '@/common/utils/analytics';
 import { cardColor, cardImages, departureInfo } from '../cardUtils';
 import { Trip } from '../../types';
 
 interface TripCardProps {
   trip: Trip;
   index: number;
+  /** GA4 item_list_name — 'trips' unless the card is reused elsewhere. */
+  listName?: ListName;
 }
 
 /**
  * Mobile trip card. Same shape as the desktop card — image left, detail right, detail
  * centred against the media — with the media share and type scaled for a phone-width column.
  */
-export function TripCard({ trip, index }: TripCardProps) {
+export function TripCard({ trip, index, listName = 'trips' }: TripCardProps) {
   const { isBookmarked, toggle } = useBookMarking(trip.slug, trip.isBookmarked);
 
   const bg = cardColor(index);
@@ -130,8 +132,13 @@ export function TripCard({ trip, index }: TripCardProps) {
         aria-label={trip.title}
         className="absolute inset-0 z-10 rounded-[22px]"
         onClick={() => {
-          setFunnelSource('search');
-          trackEvent('trip_card_click', { trip_id: trip.slug, trip_title: trip.title, source: 'trips' });
+          trackEvent('select_item', {
+            item_list_name: listName,
+            items: [toGaItem({
+              slug: trip.slug, title: trip.title, hostUsername: trip.hostUsername,
+              city: trip.state, price: trip.price, index, listName,
+            })],
+          });
         }}
       />
     </article>

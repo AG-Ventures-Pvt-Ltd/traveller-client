@@ -11,6 +11,7 @@ import DesktopCarouselCard from '../../(landing)/components/DesktopLanding/compo
 import { useGetData } from '@/services/useGetData';
 import { useDevice } from '@/common/hooks/useDevice';
 import { API_ENDPOINTS } from '@/common/constants/apiEndpoints';
+import { useViewItemList } from '@/common/hooks/useViewItemList';
 
 interface StateTrip {
   id: string;
@@ -65,6 +66,14 @@ export default function StateExplorePage() {
   const showSkeletons = isLoading || !isHydrated;
 
   const grid = 'grid grid-cols-2 gap-3 sm:gap-5 md:grid-cols-3 xl:grid-cols-4';
+
+  const listName = `explore:${stateCode.toLowerCase()}` as const;
+
+  useViewItemList(
+    listName,
+    trips.map((t) => ({ slug: t.tripSlug, title: t.title, hostUsername: t.hostUsername, city: t.location, price: t.price })),
+    listName,
+  );
 
   return (
     <main className="min-h-screen bg-[#FFF9F4]">
@@ -141,7 +150,8 @@ export default function StateExplorePage() {
                   isBookmarked={trip.isBookmarked}
                   colorScheme={COLOR_SCHEMES[i % COLOR_SCHEMES.length]}
                   nextDate={formatNextDate(trip.nextTripDate)}
-                  source="explore"
+                  listName={listName}
+                  index={i}
                   priority={i < 4}
                 />
               );
