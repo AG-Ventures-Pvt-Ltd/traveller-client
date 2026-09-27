@@ -41,7 +41,7 @@ export function TripCard({ trip, index, listName = 'trips' }: TripCardProps) {
       style={{ backgroundColor: bg }}
     >
       {/* Media. No fixed height — stretches to the row with min-h as the floor. */}
-      <div className="relative min-h-[170px] w-[44%] max-w-[170px] shrink-0 overflow-hidden rounded-[16px]">
+      <div className="relative min-h-[170px] w-[48.4%] max-w-[187px] shrink-0 overflow-hidden rounded-[16px]">
         <TripImageCarousel
           images={images}
           alt={trip.title}

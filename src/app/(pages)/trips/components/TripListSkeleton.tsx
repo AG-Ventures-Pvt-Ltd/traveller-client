@@ -7,7 +7,7 @@ const TripSearchCardSkeleton: React.FC<{ index: number }> = ({ index }) => (
     className="flex h-full gap-4 rounded-[24px] p-3"
     style={{ backgroundColor: cardColor(index) }}
   >
-    <div className="min-h-[190px] w-[40%] max-w-[320px] shrink-0 rounded-[18px] bg-black/10" />
+    <div className="min-h-[190px] w-[49.5%] max-w-[418px] shrink-0 rounded-[18px] bg-black/10" />
 
     <div className="flex min-w-0 flex-1 flex-col justify-center py-1 pr-1">
       <div className="h-6 w-4/5 rounded-lg bg-black/10" />

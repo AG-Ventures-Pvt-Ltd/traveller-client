@@ -9,7 +9,7 @@ const SkeletonCard: React.FC<{ index?: number }> = ({ index = 0 }) => (
     className="flex animate-pulse gap-3 rounded-[22px] p-2.5"
     style={{ backgroundColor: cardColor(index) }}
   >
-    <div className="min-h-[170px] w-[38%] max-w-[170px] shrink-0 rounded-[16px] bg-black/10" />
+    <div className="min-h-[170px] w-[48.4%] max-w-[187px] shrink-0 rounded-[16px] bg-black/10" />
 
     <div className="flex min-w-0 flex-1 flex-col justify-center py-1 pr-0.5">
       <div className="h-5 w-4/5 rounded bg-black/10" />
