@@ -194,10 +194,10 @@ const DesktopLanding = () => {
         />
       </div>
 
-      <RecognitionSection variant="desktop" />
-
-      <div className="w-full px-24 mb-16">
+      {/* Closing row: final push into trips beside belief (recognition). */}
+      <div className="w-full px-24 py-16 grid grid-cols-[1.5fr_1fr] items-center gap-14">
         <ClosingCta variant="desktop" />
+        <RecognitionSection variant="desktop" />
       </div>
 
       <Footer />

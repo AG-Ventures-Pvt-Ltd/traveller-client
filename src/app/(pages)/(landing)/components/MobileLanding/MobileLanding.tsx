@@ -125,7 +125,9 @@ const MobileLanding = () => {
                                 subtitle="Group trips, sorted by where they’re headed."
                             />
                         </div>
-                        <RecognitionSection variant="mobile" />
+                        <div className='px-4 py-10'>
+                            <RecognitionSection variant="mobile" />
+                        </div>
                         <div className='px-4'>
                             <ClosingCta variant="mobile" />
                         </div>
