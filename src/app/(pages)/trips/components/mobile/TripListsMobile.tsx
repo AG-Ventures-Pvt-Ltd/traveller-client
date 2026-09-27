@@ -11,6 +11,7 @@ import SortDropdown from '../filters/SortDropdown';
 import { EMPTY_FILTERS, countActiveFilters, hasActiveFilters } from '../../buildApiUrl';
 import { useTripFeed } from '../../useTripFeed';
 import { FilterMeta, FilterValues, Pagination, Trip } from '../../types';
+import { useTripsListTracking } from '../../useTripsListTracking';
 
 interface TripListsMobileProps {
   initialTrips: Trip[];
@@ -50,6 +51,8 @@ const TripListsMobile = ({
   });
 
   const activeCount = countActiveFilters(filters);
+  useTripsListTracking(feed.trips);
+
   const showEmpty = !feed.isInitialLoading && feed.trips.length === 0;
 
   return (

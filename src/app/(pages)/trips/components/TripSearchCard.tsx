@@ -12,7 +12,7 @@ import {
 } from '@phosphor-icons/react';
 import TripImageCarousel from './TripImageCarousel';
 import { useBookMarking } from '@/common/hooks/useBookMarking';
-import { trackEvent, setFunnelSource } from '@/common/utils/analytics';
+import { trackEvent, toGaItem, type ListName } from '@/common/utils/analytics';
 import { cardColor, cardImages, departureInfo } from './cardUtils';
 import { Trip } from '../types';
 
@@ -20,6 +20,8 @@ interface TripSearchCardProps {
   trip: Trip;
   /** List position — drives which brand colour the card takes. */
   index: number;
+  /** GA4 item_list_name — 'trips' unless the card is reused elsewhere. */
+  listName?: ListName;
 }
 
 /**
@@ -31,7 +33,7 @@ interface TripSearchCardProps {
  * rows pair a truncating left item with a fixed-width right one to stay readable when the
  * text column is at its narrowest.
  */
-const TripSearchCard: React.FC<TripSearchCardProps> = ({ trip, index }) => {
+const TripSearchCard: React.FC<TripSearchCardProps> = ({ trip, index, listName = 'trips' }) => {
   const { isBookmarked, toggle } = useBookMarking(trip.slug, trip.isBookmarked);
   const [hovered, setHovered] = useState(false);
 
@@ -147,8 +149,13 @@ const TripSearchCard: React.FC<TripSearchCardProps> = ({ trip, index }) => {
         aria-label={trip.title}
         className="absolute inset-0 z-10 rounded-[24px]"
         onClick={() => {
-          setFunnelSource('search');
-          trackEvent('trip_card_click', { trip_id: trip.slug, trip_title: trip.title, source: 'trips' });
+          trackEvent('select_item', {
+            item_list_name: listName,
+            items: [toGaItem({
+              slug: trip.slug, title: trip.title, hostUsername: trip.hostUsername,
+              city: trip.state, price: trip.price, index, listName,
+            })],
+          });
         }}
       />
     </article>

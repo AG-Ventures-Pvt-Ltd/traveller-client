@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { signIn } from 'next-auth/react';
+import { rememberAuthIntent } from '@/common/components/AnalyticsIdentity';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Button from '@/common/ui/Buttons/Button';
 import { notify } from '@/common/utils/notify';
@@ -98,6 +99,9 @@ export default function OtpVerificationPage({
         }
 
         setIsVerifying(true);
+        // Stashed rather than tracked here: the session — and so the login /
+        // sign_up event — only exists once signIn succeeds.
+        rememberAuthIntent('otp', mode === 'signup');
         try {
             const result = await signIn('credentials', {
                 email,

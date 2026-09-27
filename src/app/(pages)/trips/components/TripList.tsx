@@ -1,6 +1,7 @@
 import React from 'react';
 import TripSearchCard from './TripSearchCard';
 import { Trip } from '../types';
+import { useTripsListTracking } from '../useTripsListTracking';
 
 interface TripListProps {
   trips: Trip[];
@@ -14,13 +15,17 @@ interface TripListProps {
  * that at ~1280px — at 1024px two cards would be 296px each and the detail column would
  * collapse to about 150px.
  */
-const TripList: React.FC<TripListProps> = ({ trips }) => (
-  // No gap — the cards butt up against each other; their own p-3 keeps the content apart.
-  <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
-    {trips.map((trip, index) => (
-      <TripSearchCard key={`${trip.slug}-${index}`} trip={trip} index={index} />
-    ))}
-  </div>
-);
+const TripList: React.FC<TripListProps> = ({ trips }) => {
+  useTripsListTracking(trips);
+
+  return (
+    // No gap — the cards butt up against each other; their own p-3 keeps the content apart.
+    <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+      {trips.map((trip, index) => (
+        <TripSearchCard key={`${trip.slug}-${index}`} trip={trip} index={index} />
+      ))}
+    </div>
+  );
+};
 
 export default TripList;

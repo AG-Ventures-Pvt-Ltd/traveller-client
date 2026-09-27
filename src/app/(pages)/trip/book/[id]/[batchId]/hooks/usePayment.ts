@@ -6,7 +6,8 @@ import { getData } from "@/services/baseApi";
 import { API_ENDPOINTS } from "@/common/constants/apiEndpoints";
 import { useRouter } from "next/navigation";
 import { useParams } from "next/navigation";
-import { trackEvent, getFunnelSource, clearFunnelSource } from "@/common/utils/analytics";
+import { useRef } from "react";
+import { trackEvent, toGaItem, getGaIds } from "@/common/utils/analytics";
 import { openRazorpay } from "../services/razorpay";
 import { openCashfree } from "../services/cashfree";
 import type { Order, PaymentType } from "../services/types";
@@ -37,6 +38,7 @@ export const usePayment = ({ onWalletSuccess }: UsePaymentOptions = {}) => {
 
   const router = useRouter()
   const params = useParams();
+  const inFlight = useRef(false);
   const tripId = params?.id as string | undefined;
 
   const { mutateAsync: mutateBooking } = usePostData({
@@ -54,18 +56,18 @@ export const usePayment = ({ onWalletSuccess }: UsePaymentOptions = {}) => {
       onWalletSuccess?.();
     } else {
       if (tripId) localStorage.removeItem(`booking_${tripId.split('-').pop()}`)
-      clearFunnelSource();
       router.push(`/trip/book/success?orderId=${orderId}`)
     }
   };
 
   const openPayment = async (order: Order, paymentType: PaymentType) => {
     if (paymentType === 'booking') {
-      trackEvent('payment_initiated', {
-        order_id: order.orderId,
-        amount: order.amount,
+      trackEvent('add_payment_info', {
         currency: 'INR',
-        funnel_source: getFunnelSource(),
+        value: order.amount,
+        payment_type: order.gateway,
+        transaction_id: order.orderId,
+        items: [toGaItem({ slug: tripId || '', price: order.amount })],
       });
     }
 
@@ -79,8 +81,20 @@ export const usePayment = ({ onWalletSuccess }: UsePaymentOptions = {}) => {
   };
 
   const startPayment = async (payload: PaymentPayload) => {
+    // A second click before the order comes back used to create a second order
+    // and a second payment_initiated — which is why that event always came in pairs.
+    if (inFlight.current) return;
+    inFlight.current = true;
     try {
-      const response = await mutateBooking(payload as unknown as Record<string, unknown>) as ApiResponse;
+      // GA client/session id travel with the order so the server can attribute
+      // the purchase it sends from the payment webhook to this same session.
+      const { clientId, sessionId } = await getGaIds();
+
+      const response = await mutateBooking({
+        ...payload,
+        ...(clientId && { gaClientId: clientId }),
+        ...(sessionId && { gaSessionId: sessionId }),
+      } as unknown as Record<string, unknown>) as ApiResponse;
       await openPayment(response.data, 'booking');
     } catch (error) {
       logError({
@@ -88,6 +102,8 @@ export const usePayment = ({ onWalletSuccess }: UsePaymentOptions = {}) => {
         location: "traveller-client/src/app/trip/book/[id]/hooks/usePayment.ts",
         when: "starting booking payment",
       });
+    } finally {
+      inFlight.current = false;
     }
   };
 

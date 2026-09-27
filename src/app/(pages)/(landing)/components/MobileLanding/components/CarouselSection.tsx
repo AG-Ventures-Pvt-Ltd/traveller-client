@@ -11,7 +11,8 @@ const CarouselSection: React.FC<SlidingCarouselSectionProps> = ({
   trips,
   isLoading = false,
   carouselIndex = 0,
-  viewAllClick
+  viewAllClick,
+  listName,
 }) => {
 
   const handleCardClick = () => {};
@@ -40,6 +41,7 @@ const CarouselSection: React.FC<SlidingCarouselSectionProps> = ({
         isLoading={isLoading}
         onCardClick={handleCardClick}
         carouselIndex={carouselIndex}
+        listName={listName}
       />
     </div>
   );

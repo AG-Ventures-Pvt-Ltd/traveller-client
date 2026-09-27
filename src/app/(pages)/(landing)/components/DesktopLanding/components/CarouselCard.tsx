@@ -7,7 +7,7 @@ import MyImage from '@/common/ui/Image';
 import { CarouselCardProps } from '../../MobileLanding/types';
 import { useBookMarking } from '@/common/hooks/useBookMarking';
 import { generateSlug } from '@/app/(pages)/trip/utils';
-import { trackEvent, setFunnelSource } from '@/common/utils/analytics';
+import { trackEvent, toGaItem } from '@/common/utils/analytics';
 
 const CarouselCard: React.FC<CarouselCardProps> = ({
   id,
@@ -19,6 +19,9 @@ const CarouselCard: React.FC<CarouselCardProps> = ({
   price,
   rating,
   colorScheme = 'yellow',
+  nextDate,
+  listName = 'home',
+  index,
   onClick,
   tripSlug,
   isBookmarked: initialIsBookmarked = false,
@@ -45,8 +48,10 @@ const CarouselCard: React.FC<CarouselCardProps> = ({
       <Link
         href={href}
         onClick={() => {
-          setFunnelSource('landing');
-          trackEvent('trip_card_click', { trip_id: slug, trip_title: title, source: 'landing' });
+          trackEvent('select_item', {
+            item_list_name: listName,
+            items: [toGaItem({ slug, title, hostUsername, price, index, listName })],
+          });
           onClick?.();
         }}
         className="absolute inset-0 z-[1]"
@@ -92,6 +97,10 @@ const CarouselCard: React.FC<CarouselCardProps> = ({
         </div>
 
         <p className=" text-xs font-medium">{duration}</p>
+
+        {nextDate && (
+          <p className="text-xs font-semibold text-neutral-900">Next: {nextDate}</p>
+        )}
 
         <div className="mt-auto flex flex-col">
           <div className="flex items-center">

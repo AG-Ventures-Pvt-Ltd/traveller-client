@@ -41,7 +41,6 @@ export interface BookingOptionsResponse {
     pricingTiers: PricingTier[];
     addOns: AddOn[];
     currency: string;
-    coupons: Coupon[];
     meetingPoints: BatchMeetingPoint[];
     batchDetails: BatchDetails;
 }

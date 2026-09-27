@@ -11,6 +11,7 @@ const CarouselSection: React.FC<SlidingCarouselSectionProps> = ({
   trips,
   isLoading = false,
   carouselIndex = 0,
+  listName,
 }) => {
 
   const [atStart, setAtStart] = useState(true);
@@ -60,6 +61,7 @@ const CarouselSection: React.FC<SlidingCarouselSectionProps> = ({
         trips={trips}
         isLoading={isLoading}
         carouselIndex={carouselIndex}
+        listName={listName}
         onPrevRef={handlePrevRef}
         onNextRef={handleNextRef}
         onBoundsChange={handleBoundsChange}

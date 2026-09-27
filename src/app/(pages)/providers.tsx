@@ -9,6 +9,7 @@ import { useEffect, useState } from 'react';
 import { Analytics } from "@vercel/analytics/next"
 import { DeviceProvider } from "@/common/context/DeviceContext";
 import { getQueryClient } from '@/services/getQueryClient';
+import AnalyticsIdentity from '@/common/components/AnalyticsIdentity';
 
 
 
@@ -62,6 +63,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
             refetchInterval={0}
             refetchOnWindowFocus={false}
           >
+            <AnalyticsIdentity />
             <ToastProvider>
               <ToastInitializer>
                 {children}

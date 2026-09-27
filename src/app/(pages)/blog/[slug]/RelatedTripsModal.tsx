@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { X } from 'lucide-react';
 import CarouselCard from '../../(landing)/components/DesktopLanding/components/CarouselCard';
 import type { Trip } from '../../(landing)/components/MobileLanding/types';
+import { useViewItemList } from '@/common/hooks/useViewItemList';
 
 interface Props {
   open: boolean;
@@ -25,6 +26,13 @@ export default function RelatedTripsModal({ open, onClose, trips, blogTitle }: P
     document.body.style.overflow = 'hidden';
     return () => { document.body.style.overflow = 'unset'; };
   }, [open]);
+
+  // Empty while closed so the impression is only counted when the sheet is open.
+  useViewItemList(
+    'blog',
+    open ? trips.map((t) => ({ slug: t.tripSlug || String(t.id), title: t.title, hostUsername: t.hostUsername, price: t.price })) : [],
+    'blog',
+  );
 
   if (!open || !mounted) return null;
 
@@ -53,6 +61,8 @@ export default function RelatedTripsModal({ open, onClose, trips, blogTitle }: P
                 {...trip}
                 colorScheme={COLOR_SCHEMES[index % COLOR_SCHEMES.length]}
                 onClick={onClose}
+                listName="blog"
+                index={index}
               />
             ))}
           </div>

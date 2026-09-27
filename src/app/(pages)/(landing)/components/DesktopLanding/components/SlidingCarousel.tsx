@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import CarouselCard from './CarouselCard';
 import { SlidingCarouselProps } from '../../MobileLanding/types';
+import { useViewItemList } from '@/common/hooks/useViewItemList';
 
 const COLOR_PAIRS: Array<['yellow' | 'green' | 'purple', 'yellow' | 'green' | 'purple']> = [
   ['yellow', 'green'],
@@ -23,6 +24,7 @@ const SlidingCarousel: React.FC<DesktopSlidingCarouselProps> = ({
   isLoading = false,
   onCardClick,
   carouselIndex = 0,
+  listName = 'home',
   onPrevRef,
   onNextRef,
   onBoundsChange,
@@ -34,6 +36,12 @@ const SlidingCarousel: React.FC<DesktopSlidingCarouselProps> = ({
   const [scrollLeft, setScrollLeft] = useState(0);
   const [containerWidth, setContainerWidth] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  useViewItemList(
+    listName,
+    trips.map((t) => ({ slug: t.tripSlug || String(t.id), title: t.title, hostUsername: t.hostUsername, price: t.price })),
+    `${listName}:${carouselIndex}`,
+  );
 
   useEffect(() => {
     const el = containerRef.current;
@@ -126,6 +134,8 @@ const SlidingCarousel: React.FC<DesktopSlidingCarouselProps> = ({
               {...trip}
               colorScheme={COLOR_PAIRS[carouselIndex % 2][index % 2]}
               onClick={() => onCardClick?.()}
+              listName={listName}
+              index={index}
             />
           </div>
         ))}

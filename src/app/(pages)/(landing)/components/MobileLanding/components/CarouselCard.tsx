@@ -7,7 +7,7 @@ import MyImage from '@/common/ui/Image';
 import { CarouselCardProps } from '../types';
 import { useBookMarking } from '@/common/hooks/useBookMarking';
 import { generateSlug } from '@/app/(pages)/trip/utils';
-import { trackEvent, setFunnelSource } from '@/common/utils/analytics';
+import { trackEvent, toGaItem } from '@/common/utils/analytics';
 
 const CarouselCard: React.FC<CarouselCardProps> = ({
   id,
@@ -20,6 +20,9 @@ const CarouselCard: React.FC<CarouselCardProps> = ({
   rating,
   className,
   colorScheme = 'yellow',
+  nextDate,
+  listName = 'home',
+  index,
   onClick,
   tripSlug,
   isBookmarked: initialIsBookmarked = false,
@@ -48,8 +51,10 @@ const CarouselCard: React.FC<CarouselCardProps> = ({
       <Link
         href={href}
         onClick={() => {
-          setFunnelSource('landing');
-          trackEvent('trip_card_click', { trip_id: slug, trip_title: title, source: 'landing' });
+          trackEvent('select_item', {
+            item_list_name: listName,
+            items: [toGaItem({ slug, title, hostUsername, price, index, listName })],
+          });
           onClick?.();
         }}
         className="absolute inset-0 z-[1]"
@@ -101,6 +106,11 @@ const CarouselCard: React.FC<CarouselCardProps> = ({
           <p className="text-neutral-700 text-xs font-medium font-['Satoshi']">
             {duration}
           </p>
+          {nextDate && (
+            <p className="text-neutral-900 text-xs font-semibold font-['Satoshi']">
+              Next: {nextDate}
+            </p>
+          )}
           <div className="flex items-baseline">
             <span className="text-neutral-900 text-sm font-bold font-['Satoshi']">
               From ₹{price.toLocaleString('en-IN')}/

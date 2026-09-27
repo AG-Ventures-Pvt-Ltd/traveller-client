@@ -1,9 +1,12 @@
 import { signIn } from 'next-auth/react';
 import { LoginValues, AuthResponse } from '../types';
+import { rememberAuthIntent } from '@/common/components/AnalyticsIdentity';
 
 export const handleAuthSubmit = async (values: LoginValues, method: string = 'password'): Promise<AuthResponse> => {
 
   const loginValues = values;
+
+  rememberAuthIntent(method === 'otp' ? 'otp' : 'password');
 
   try {
     if (method === 'otp') {

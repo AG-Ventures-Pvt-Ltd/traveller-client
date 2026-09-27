@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { TagIcon, X } from '@phosphor-icons/react';
 import CollapsibleCard from '@/common/ui/CollapsibleCard';
 import Button from '@/common/ui/Buttons/Button';
@@ -8,11 +8,13 @@ import CustomInput from '@/common/ui/CustomInput';
 import { useBookingFormStore } from '../hooks/useBookingFormStore';
 import type { Coupon } from '../types';
 import { baseAPI } from '@/services/baseApi';
+import { useGetData } from '@/services/useGetData';
 import { API_ENDPOINTS } from '@/common/constants/apiEndpoints';
 
 interface DiscountsSectionProps {
     tripId: string;
-    coupons: Coupon[] | undefined;
+    /** Order total before any coupon, used to preview the best available saving. */
+    orderAmount?: number;
     onViewCoupons?: () => void;
     isOpen?: boolean;
     onToggle?: () => void;
@@ -20,12 +22,19 @@ interface DiscountsSectionProps {
 
 export default function DiscountsSection({
     tripId,
-    coupons,
+    orderAmount,
     onViewCoupons,
     isOpen,
     onToggle,
 }: DiscountsSectionProps) {
-    const { appliedCoupon, setAppliedCoupon } = useBookingFormStore();
+    const { email, appliedCoupon, setAppliedCoupon } = useBookingFormStore();
+
+    // Same endpoint and query key as AllCouponsPage, so React Query serves both
+    // from one request. booking-options does not return coupons.
+    const { data: coupons } = useGetData<Coupon[]>(
+        API_ENDPOINTS.DISCOUNTS.GET_AVAILABLE(tripId, email),
+        { queryKey: ['discounts', tripId, email] }
+    );
     const [inputValue, setInputValue] = useState('');
     const [isValidating, setIsValidating] = useState(false);
     const [couponError, setCouponError] = useState('');
@@ -69,8 +78,45 @@ export default function DiscountsSection({
         }
     }, [appliedCoupon])
 
+    // The card is collapsed by default, so without this the section reads as
+    // "no offers here" and people skip it entirely.
+    const bestSaving = useMemo(() => {
+        if (!coupons?.length || !orderAmount) return 0;
+
+        return coupons.reduce((best, c) => {
+            if (orderAmount < (c.minOrderAmount || 0)) return best;
+            // ponytail: people_count coupons scale with guest count, which this
+            // component doesn't have — they fall back to the "N available" pill.
+            if (c.discountType !== 'fixed' && c.discountType !== 'percentage') return best;
+
+            const amount = c.discountType === 'percentage'
+                ? Math.min((orderAmount * c.discountValue) / 100, c.maxDiscountAmount || Infinity)
+                : c.discountValue;
+
+            return Math.max(best, amount);
+        }, 0);
+    }, [coupons, orderAmount]);
+
+    // Once a coupon is applied the card shows it directly, and orderAmount is
+    // already net of that discount — so no preview.
+    const preview = appliedCoupon || !coupons?.length
+        ? null
+        : bestSaving > 0
+            ? `Save up to ₹${Math.round(bestSaving).toLocaleString('en-IN')}`
+            : `${coupons.length} available`;
+
     return (
-        <CollapsibleCard title="Add a discount" defaultOpen={false} isOpen={isOpen} onToggle={onToggle}>
+        <CollapsibleCard
+            title="Apply coupon code"
+            defaultOpen={false}
+            isOpen={isOpen}
+            onToggle={onToggle}
+            headerRight={preview && (
+                <span className="text-xs font-semibold text-[#3F6212] bg-[#E2F4A6] rounded-full px-2.5 py-1">
+                    {preview}
+                </span>
+            )}
+        >
             <div className="flex flex-col gap-2 px-4 pb-4">
                 {appliedCoupon ? (
                     // Applied coupon state

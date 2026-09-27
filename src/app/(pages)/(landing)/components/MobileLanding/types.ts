@@ -1,3 +1,5 @@
+import type { ListName } from '@/common/utils/analytics';
+
 export interface Trip {
   id: string | number;
   image: string;
@@ -41,6 +43,12 @@ export interface CarouselCardProps {
   price: number;
   rating: number;
   colorScheme?: 'yellow' | 'green' | 'purple';
+  /** Next departure, already formatted. Landing cards omit it; explore shows it. */
+  nextDate?: string | null;
+  /** GA4 item_list_name — the card is used outside the landing page. */
+  listName?: ListName;
+  /** Position in the list, sent as items[].index on select_item. */
+  index?: number;
   className?:string;
   onClick?: () => void;
   tripSlug?: string;
@@ -53,10 +61,14 @@ export interface SlidingCarouselProps {
   isLoading?: boolean;
   onCardClick?: () => void;
   carouselIndex?: number;
+  /** GA4 item_list_name for the cards in this carousel. */
+  listName?: ListName;
 }
 
 export interface SlidingCarouselSectionProps {
   title: string;
+  /** GA4 item_list_name for the cards in this section. */
+  listName?: ListName;
   description?: string;
   trips: Trip[];
   isLoading?: boolean;
