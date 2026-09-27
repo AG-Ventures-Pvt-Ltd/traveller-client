@@ -28,7 +28,9 @@ const ExploreByDestination: React.FC<ExploreByDestinationProps> = ({
     API_ENDPOINTS.LANDING_PAGE.EXPLORE_STATES
   );
 
-  const states = data?.states ?? [];
+  // API returns every admin-picked state, including ones with no upcoming
+  // bookable trips (tripCount 0) — those would lead to an empty explore page.
+  const states = (data?.states ?? []).filter((s) => s.tripCount > 0);
   const compact = variant === 'mobile';
 
   if (!isLoading && states.length === 0) return null;
