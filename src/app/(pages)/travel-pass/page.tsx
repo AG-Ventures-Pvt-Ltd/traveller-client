@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import type { AxiosError } from 'axios'
 import {
   CaretDownIcon, PiggyBankIcon, CalendarCheckIcon, ChartLineUpIcon, GiftIcon, WalletIcon, ShieldCheckIcon,
-  UsersThreeIcon, AirplaneTiltIcon, CheckCircleIcon, XCircleIcon, ArrowRightIcon, LinkSimpleIcon,
+  UsersThreeIcon, AirplaneTiltIcon, ArrowRightIcon, LinkSimpleIcon, CaretRightIcon,
 } from '@phosphor-icons/react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
@@ -14,7 +14,6 @@ import { notify } from '@/common/utils/notify'
 import { API_ENDPOINTS } from '@/common/constants/apiEndpoints'
 import BackButton from '@/common/ui/BackButton'
 import Footer from '../(landing)/components/Footer/Footer'
-import ExploreByDestination from '../(landing)/components/common/ExploreByDestination/ExploreByDestination'
 import { formatDate } from '@/common/utils/dateUtils'
 import { SipPlanCard } from './components/SipPlanCard'
 import { SubscribeSipModal } from './components/SubscribeSipModal'
@@ -23,7 +22,7 @@ import { CreateGroupModal } from './components/CreateGroupModal'
 import { JoinGroupModal } from './components/JoinGroupModal'
 import { SavingsCalculator } from './components/SavingsCalculator'
 import { PassTicket } from './components/PassTicket'
-import { SIP_FAQS, getPlanHighlights } from './constants'
+import { SIP_FAQS, CADENCE_UNIT, getPlanHighlights } from './constants'
 import type { SipPlan, SipSubscription, PaymentConfig, SipGroupSummary } from './types'
 
 const STATUS_LABELS: Record<SipSubscription['status'], string> = {
@@ -37,32 +36,23 @@ const STATUS_LABELS: Record<SipSubscription['status'], string> = {
 const CURRENT_STATUSES: SipSubscription['status'][] = ['active', 'pending_auth']
 
 const HOW_IT_WORKS = [
-  { icon: PiggyBankIcon, title: 'Pick a plan', text: 'Choose a target amount and bonus that fits your next trip.' },
-  { icon: CalendarCheckIcon, title: 'Auto-pay on schedule', text: 'Daily, weekly or monthly installments are debited automatically.' },
-  { icon: ChartLineUpIcon, title: 'Watch it add up', text: 'Every installment lands in your Wondrr Cash wallet instantly.' },
-  { icon: GiftIcon, title: 'Get your bonus, go', text: 'Reach the target, the bonus is credited on top — then book your trip.' },
+  { icon: PiggyBankIcon, title: 'Pick a plan' },
+  { icon: CalendarCheckIcon, title: 'Auto-pay every {unit}' },
+  { icon: WalletIcon, title: 'Lands in Wondrr Cash' },
+  { icon: GiftIcon, title: 'Hit target, get bonus' },
 ]
 
 const TRUST_POINTS = [
   { icon: WalletIcon, text: 'Credited to your wallet instantly' },
   { icon: ShieldCheckIcon, text: 'Cancel anytime, keep what you paid' },
   { icon: GiftIcon, text: 'Bonus credited automatically' },
-  { icon: UsersThreeIcon, text: 'Save together in a group' },
 ]
 
 // Mechanics mirror CreateGroupModal / group join flow (see SIP_FAQS).
 const GROUP_STEPS = [
-  { title: 'Start your pass, then a group', text: 'Once your Travel Pass is active, create a group in one tap.' },
-  { title: 'Share your 6-character code', text: 'Send the code or link to the friends you’re travelling with.' },
-  { title: 'Friends join within 7 days', text: 'They save on the same plan, schedule and amount as you. Joining a few days late? They pay the missed installments once and stay in sync.' },
-  { title: 'Track it together', text: 'See every member and the group’s total on one shared page.' },
-]
-
-const COMPARISON = [
-  { alone: 'Remember to move money every time', pass: 'Auto-pay does it for you on schedule' },
-  { alone: 'Savings quietly get spent on other things', pass: 'Credited to Wondrr Cash, set aside for travel' },
-  { alone: 'No reward for sticking with it', pass: 'A bonus on top when you hit your target' },
-  { alone: 'Everyone in the gang saves separately', pass: 'One group, one plan, one shared total' },
+  { icon: UsersThreeIcon, title: 'Start a group', text: 'Once your pass is active' },
+  { icon: LinkSimpleIcon, title: 'Share the code', text: 'Friends join within 7 days' },
+  { icon: ChartLineUpIcon, title: 'Save together', text: 'Same plan, one shared total' },
 ]
 
 const Highlight = ({ children }: { children: React.ReactNode }) => (
@@ -79,8 +69,17 @@ const SectionTitle = ({ title, subtitle, center }: { title: React.ReactNode; sub
   </div>
 )
 
-const primaryBtn = 'inline-flex items-center justify-center gap-2 rounded-xl bg-[#EEA0FF] px-6 py-3 font-semibold text-neutral-900 hover:opacity-90 transition-opacity'
-const secondaryBtn = 'inline-flex items-center justify-center gap-2 rounded-xl border border-neutral-300 bg-white px-6 py-3 font-medium text-neutral-900 hover:border-[#EEA0FF] transition-colors'
+const primaryBtn = 'inline-flex items-center justify-center gap-2 rounded-xl bg-[#EEA0FF] px-4 md:px-6 py-3 text-sm md:text-base whitespace-nowrap font-semibold text-neutral-900 hover:opacity-90 transition-opacity'
+const secondaryBtn = 'inline-flex items-center justify-center gap-2 rounded-xl border border-neutral-300 bg-white px-4 md:px-6 py-3 text-sm md:text-base whitespace-nowrap font-medium text-neutral-900 hover:border-[#EEA0FF] transition-colors'
+
+// Smooth in-page jump; keeps the href so it still works without JS.
+const smoothTo = (e: React.MouseEvent<HTMLAnchorElement>) => {
+  const target = document.querySelector(e.currentTarget.hash)
+  if (!target) return
+  e.preventDefault()
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  target.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' })
+}
 
 // IST calendar-day string ('2026-09-11'), so a lexical >= comparison works.
 const istDateStr = (d: Date | string) => new Date(d).toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' })
@@ -119,14 +118,18 @@ const TravelPassPage = () => {
 
   const dailyAvailable = paymentConfig?.subscriptionGateway !== 'razorpay'
   const plans = plansData ?? []
-  const stats = getPlanHighlights(plans)
+  const stats = getPlanHighlights(plans, dailyAvailable)
   const mySubs = mySubsData ?? []
   const myGroups = groupsData?.groups ?? []
-  const adminGroup = myGroups.find((g) => g.myRole === 'admin' && g.status === 'active')
-  const memberGroup = myGroups.find((g) => g.myRole === 'member')
-  const myGroup = adminGroup || memberGroup
   const currentSips = mySubs.filter((s) => CURRENT_STATUSES.includes(s.status))
   const pastSips = mySubs.filter((s) => !CURRENT_STATUSES.includes(s.status))
+  // A group is "previous" once the pass it was saving on has ended (subs carry
+  // groupId) or its admin archived it. Anything else is the live group.
+  const endedGroupIds = new Set(pastSips.map((s) => s.groupId).filter(Boolean))
+  const isPreviousGroup = (g: SipGroupSummary) => g.status === 'archived' || endedGroupIds.has(g.groupId)
+  const previousGroups = myGroups.filter(isPreviousGroup)
+  const liveGroups = myGroups.filter((g) => !isPreviousGroup(g))
+  const myGroup = liveGroups.find((g) => g.myRole === 'admin') || liveGroups[0]
   const hasActiveSip = currentSips.some((s) => s.status === 'active')
   // A user may only have one live SIP at a time (enforced server-side too) —
   // once one is pending_auth/active, hide the plan list instead of letting
@@ -168,70 +171,137 @@ const TravelPassPage = () => {
     }
   }
 
-  const renderSipCard = (sub: SipSubscription) => {
+  const planName = (sub: SipSubscription) => (typeof sub.planId === 'object' ? sub.planId.name : 'Travel Pass Plan')
+  const inr = (n: number) => `₹${n.toLocaleString('en-IN')}`
+
+  const renderActivePass = (sub: SipSubscription) => {
     // Locked in at subscribe time (sip.controller.js) — stays fixed for this
     // subscription even if the plan's live cadenceAmounts/target change later.
     const target = sub.planSnapshot.targetAmount
-    const bonus = sub.planSnapshot.totalPayout - sub.planSnapshot.targetAmount
+    const bonus = sub.planSnapshot.totalPayout - target
     const pct = Math.min(100, Math.round((sub.cumulativePaidAmount / target) * 100))
+    // Guard against a stale nextScheduleDate (a missed installment webhook
+    // before it advances again, or before the daily reconciliation worker
+    // catches up) rendering an already-past date as "Next".
+    const showNext = sub.nextScheduleDate && sub.status === 'active' && istDateStr(sub.nextScheduleDate) >= istDateStr(new Date())
+    const tiles = [
+      { icon: CalendarCheckIcon, label: 'Next debit', value: showNext ? formatDate(sub.nextScheduleDate!) : '—' },
+      { icon: WalletIcon, label: `Per ${CADENCE_UNIT[sub.cadence]}`, value: inr(sub.installmentAmount) },
+      { icon: GiftIcon, label: 'Bonus at finish', value: inr(bonus) },
+    ]
     return (
-      <div key={sub._id} className="border border-[#D9D9D9] rounded-2xl p-5 bg-white">
-        <div className="flex justify-between items-center mb-2">
-          <span className="font-semibold text-neutral-900">
-            {typeof sub.planId === 'object' ? sub.planId.name : 'Travel Pass Plan'}
-          </span>
-          <span className="text-xs rounded-full bg-[#EEA0FF]/20 px-2.5 py-1 text-neutral-800">{STATUS_LABELS[sub.status]}</span>
+      <div key={sub._id} className="rounded-3xl bg-neutral-900 text-white p-6 md:p-8 flex flex-col gap-6">
+        <div className="flex justify-between items-center gap-3">
+          <span className="font-semibold text-lg">{planName(sub)}</span>
+          <span className="text-xs rounded-full bg-[#D0EF65] px-3 py-1 font-medium text-neutral-900">{STATUS_LABELS[sub.status]}</span>
         </div>
-        <div className="flex justify-between text-xs text-neutral-500 mb-3 capitalize">
-          <span>{sub.cadence} · ₹{sub.installmentAmount.toLocaleString('en-IN')}/installment</span>
-          <span>Bonus: ₹{bonus.toLocaleString('en-IN')}</span>
+
+        <div>
+          <p className="text-sm text-white/60">Saved so far</p>
+          <p className="text-[34px] md:text-[52px] font-bold leading-none tracking-tight font-['Satoshi'] mt-1">
+            {inr(sub.cumulativePaidAmount)}
+            <span className="text-lg font-normal text-white/50"> / {inr(target)}</span>
+          </p>
         </div>
-        <div className="relative w-full bg-neutral-100 rounded-full h-3 mb-2">
-          <div className="bg-[#EEA0FF] h-3 rounded-full" style={{ width: `${pct}%` }} />
-          <AirplaneTiltIcon
-            size={18}
-            weight="fill"
-            className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 text-neutral-800"
-            style={{ left: `${Math.max(pct, 3)}%` }}
-          />
+
+        <div>
+          <div className="relative w-full bg-white/15 rounded-full h-3">
+            <div className="bg-[#EEA0FF] h-3 rounded-full" style={{ width: `${pct}%` }} />
+            <AirplaneTiltIcon
+              size={22}
+              weight="fill"
+              className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 text-white"
+              style={{ left: `${Math.max(pct, 3)}%` }}
+            />
+          </div>
+          <div className="flex justify-between text-xs text-white/60 mt-2">
+            <span>{pct}% · {sub.installmentsPaidCount} installment{sub.installmentsPaidCount === 1 ? '' : 's'} paid</span>
+            <span>{inr(Math.max(0, target - sub.cumulativePaidAmount))} to go</span>
+          </div>
         </div>
-        <div className="flex justify-between text-xs text-neutral-600">
-          <span>₹{sub.cumulativePaidAmount.toLocaleString('en-IN')} / ₹{target.toLocaleString('en-IN')} · {pct}%</span>
-          {/* Guard against a stale nextScheduleDate (a missed installment webhook
-              before it advances again, or before the daily reconciliation worker
-              catches up) rendering an already-past date as "Next". */}
-          {sub.nextScheduleDate && sub.status === 'active' && istDateStr(sub.nextScheduleDate) >= istDateStr(new Date()) && (
-            <span>Next: {formatDate(sub.nextScheduleDate)}</span>
-          )}
+
+        <div className="grid grid-cols-3 gap-2">
+          {tiles.map((t) => (
+            <div key={t.label} className="rounded-2xl bg-white/10 p-2.5 md:p-3 flex flex-col gap-1 md:gap-1.5">
+              <t.icon size={18} className="text-[#EEA0FF]" />
+              <span className="text-[11px] text-white/60 capitalize">{t.label}</span>
+              <span className="text-[13px] md:text-base font-semibold leading-tight">{t.value}</span>
+            </div>
+          ))}
         </div>
-        {(sub.status === 'active' || sub.status === 'pending_auth') && (
-          <button
-            onClick={() => setCancelModal({ open: true, subscription: sub })}
-            className="text-xs text-red-500 mt-3 underline"
-          >
-            Cancel
-          </button>
-        )}
+
+        <button
+          onClick={() => setCancelModal({ open: true, subscription: sub })}
+          className="self-start text-xs text-white/50 underline hover:text-red-400"
+        >
+          Cancel pass
+        </button>
       </div>
     )
   }
 
+  const renderPastSip = (sub: SipSubscription) => {
+    const target = sub.planSnapshot.targetAmount
+    const pct = Math.min(100, Math.round((sub.cumulativePaidAmount / target) * 100))
+    const done = sub.status === 'completed'
+    return (
+      <div key={sub._id} className="rounded-2xl border border-[#D9D9D9] bg-white p-4 flex items-center gap-4">
+        <span className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full ${done ? 'bg-[#D0EF65]' : 'bg-neutral-100'}`}>
+          {done ? <GiftIcon size={20} className="text-neutral-900" /> : <AirplaneTiltIcon size={20} className="text-neutral-400" />}
+        </span>
+        <div className="flex-1 min-w-0">
+          <div className="flex justify-between items-center gap-2">
+            <span className="font-semibold text-neutral-900 truncate">{planName(sub)}</span>
+            <span className="text-xs text-neutral-500 shrink-0">{STATUS_LABELS[sub.status]}</span>
+          </div>
+          <div className="mt-2 h-1.5 rounded-full bg-neutral-100">
+            <div className={`h-1.5 rounded-full ${done ? 'bg-[#D0EF65]' : 'bg-neutral-300'}`} style={{ width: `${pct}%` }} />
+          </div>
+          <p className="text-xs text-neutral-500 mt-1.5">{inr(sub.cumulativePaidAmount)} of {inr(target)}</p>
+        </div>
+      </div>
+    )
+  }
+
+  const renderGroupCard = (group: SipGroupSummary, previous = false) => (
+    <button
+      key={group.groupId}
+      onClick={() => router.push(`/travel-pass/group/${group.groupId}`)}
+      className={`w-full rounded-2xl p-4 flex items-center gap-4 text-left transition-colors ${
+        previous ? 'border border-[#D9D9D9] bg-white hover:border-[#EEA0FF]' : 'bg-[#EEA0FF]/20 border border-[#EEA0FF] hover:bg-[#EEA0FF]/30'
+      }`}
+    >
+      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#EEA0FF]">
+        <UsersThreeIcon size={20} className="text-neutral-900" />
+      </span>
+      <span className="flex-1 min-w-0">
+        <span className="block font-semibold text-neutral-900 truncate">{group.name}</span>
+        <span className="block text-xs text-neutral-600">
+          {group.memberCount} member{group.memberCount === 1 ? '' : 's'} · {inr(group.groupTotalContributed)} raised
+        </span>
+      </span>
+      <CaretRightIcon size={18} className="text-neutral-500 shrink-0" />
+    </button>
+  )
+
+  const hasHistory = pastSips.length > 0 || previousGroups.length > 0
+
   return (
     <div className="w-full min-h-screen bg-[#FFF9F4]">
       <div className="pt-8 px-4 pb-16">
-        {/* Pass holders get a narrow, centred column — no marketing grid to fill. */}
-        <div className={`max-w-[600px] mx-auto flex flex-col gap-14 md:gap-20 ${hasBlockingSip ? 'md:max-w-2xl' : 'md:max-w-6xl'}`}>
+        {/* Pass holders get a narrow, centred column with only their pass. */}
+        <div className={`max-w-[600px] mx-auto flex flex-col ${hasBlockingSip ? 'gap-6 md:max-w-xl' : 'gap-12 md:gap-20 md:max-w-6xl'}`}>
 
           {/* ── Hero ─────────────────────────────────────────────── */}
           <section>
-            <div className="flex items-center gap-3 mb-6 md:mb-8">
+            {/* Mobile only — desktop has the navbar. */}
+            <div className="flex items-center gap-3 mb-6 md:hidden">
               <BackButton label="" />
-              <span className="rounded-full bg-[#EEA0FF]/25 px-3 py-1 text-xs font-medium text-neutral-800">Travel Pass</span>
+              <span className="rounded-full bg-[#EEA0FF]/25 px-4 py-1.5 text-base font-semibold text-neutral-900">Travel Pass</span>
             </div>
 
-            {/* Once a pass is live the pitch is noise — just head the page. */}
             {hasBlockingSip ? (
-              <h1 className="text-[28px] md:text-[40px] font-bold leading-tight tracking-tight text-neutral-900 font-['Satoshi'] text-center">
+              <h1 className="text-[28px] md:text-[36px] font-bold leading-tight tracking-tight text-neutral-900 font-['Satoshi']">
                 Your Travel Pass
               </h1>
             ) : (
@@ -241,22 +311,22 @@ const TravelPassPage = () => {
                   Your next trip, one small step <Highlight>at a time.</Highlight>
                 </h1>
                 <p className="text-base md:text-lg text-neutral-600 leading-relaxed max-w-lg">
-                  Auto-save a little every day, week or month into your Wondrr Cash wallet — alone or with your travel
-                  gang. Hit your target and we add a bonus on top.
+                  {stats ? `Just ₹${stats.fromAmount.toLocaleString('en-IN')} a ${stats.unit}` : 'A little every day'}, auto-saved into
+                  Wondrr Cash. Hit your target, get a bonus on top.
                 </p>
-                <div className="flex flex-wrap gap-3">
-                  <a href="#plans" className={primaryBtn}>
+                <div className="grid grid-cols-2 gap-3 md:flex md:flex-wrap">
+                  <a href="#plans" onClick={smoothTo} className={primaryBtn}>
                     See plans <ArrowRightIcon size={16} />
                   </a>
-                  <a href="#groups" className={secondaryBtn}>
+                  <a href="#groups" onClick={smoothTo} className={secondaryBtn}>
                     <UsersThreeIcon size={18} /> Save with friends
                   </a>
                 </div>
                 {stats && (
                   <dl className="flex flex-wrap gap-x-8 gap-y-3 pt-2">
                     {[
+                      [`₹${stats.fromAmount.toLocaleString('en-IN')}/${stats.unit}`, 'plans starting at'],
                       [`Up to ${stats.maxBonusPct}%`, 'bonus on completion'],
-                      [`₹${stats.minWeekly.toLocaleString('en-IN')}/week`, 'plans starting at'],
                     ].map(([value, label]) => (
                       <div key={label} className="flex flex-col-reverse">
                         <dt className="text-xs text-neutral-500">{label}</dt>
@@ -268,7 +338,7 @@ const TravelPassPage = () => {
               </div>
 
               {stats && (
-                <div className="flex justify-center md:rotate-2">
+                <div className="flex justify-center px-3 md:px-0 md:rotate-2">
                   <PassTicket plan={stats.featured} dailyAvailable={dailyAvailable} />
                 </div>
               )}
@@ -276,54 +346,40 @@ const TravelPassPage = () => {
             )}
           </section>
 
-          {/* ── Your pass (signed in) ────────────────────────────── */}
           {status === 'authenticated' && subsLoading && (
             <p className="text-sm text-neutral-500 -mt-6">Loading your Travel Pass…</p>
           )}
 
-          {status === 'authenticated' && !subsLoading && (currentSips.length > 0 || myGroup) && (
-            <section id="my-pass" className="scroll-mt-24">
-              <SectionTitle title={hasBlockingSip ? 'Active pass' : 'Your Travel Pass'} center={hasBlockingSip} />
-              <div className={`grid gap-4 ${hasBlockingSip ? '' : 'md:grid-cols-2'}`}>
-                {currentSips.map(renderSipCard)}
-                {myGroup ? (
-                  <div
-                    onClick={() => router.push(`/travel-pass/group/${myGroup.groupId}`)}
-                    className="rounded-2xl p-5 bg-[#EEA0FF]/20 border border-[#EEA0FF] cursor-pointer flex flex-col justify-between gap-3 hover:bg-[#EEA0FF]/30"
-                  >
-                    <div className="flex justify-between items-center">
-                      <span className="font-semibold text-neutral-900">{myGroup.name}</span>
-                      <span className="text-xs text-neutral-600">{myGroup.memberCount} member{myGroup.memberCount === 1 ? '' : 's'}</span>
-                    </div>
-                    <div className="flex justify-between items-end">
-                      <span className="text-xs text-neutral-600">Your group</span>
-                      <span className="text-xl font-semibold text-neutral-900 font-['Satoshi']">
-                        ₹{myGroup.groupTotalContributed.toLocaleString('en-IN')} <span className="text-xs font-normal text-neutral-600">raised</span>
-                      </span>
-                    </div>
-                  </div>
-                ) : hasActiveSip && (
-                  <button
-                    onClick={() => setCreateGroupOpen(true)}
-                    className="border-2 border-dashed border-[#D9D9D9] rounded-2xl p-5 text-left hover:border-[#EEA0FF] flex items-center gap-4"
-                  >
-                    <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#D0EF65]">
-                      <UsersThreeIcon size={22} className="text-neutral-900" />
-                    </span>
-                    <span>
-                      <span className="block font-semibold text-neutral-900">Start a group</span>
-                      <span className="block text-sm text-neutral-500">Invite friends to save toward this plan with you.</span>
-                    </span>
-                  </button>
-                )}
-              </div>
-              {hasBlockingSip && (
-                <p className="text-sm text-neutral-500 mt-4 text-center">New plans open up once your current pass is completed or cancelled.</p>
+          {/* ── Active pass: the only thing a holder sees ────────── */}
+          {hasBlockingSip && (
+            <section id="my-pass" className="flex flex-col gap-4">
+              {currentSips.map(renderActivePass)}
+              {myGroup ? renderGroupCard(myGroup) : hasActiveSip && (
+                <button
+                  onClick={() => setCreateGroupOpen(true)}
+                  className="border-2 border-dashed border-[#D9D9D9] rounded-2xl p-4 text-left hover:border-[#EEA0FF] flex items-center gap-4"
+                >
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#D0EF65]">
+                    <UsersThreeIcon size={20} className="text-neutral-900" />
+                  </span>
+                  <span>
+                    <span className="block font-semibold text-neutral-900">Start a group</span>
+                    <span className="block text-sm text-neutral-500">Invite friends to save on this plan with you.</span>
+                  </span>
+                </button>
               )}
             </section>
           )}
 
-          {/* ── Plans (kept high so users see them early) ────────── */}
+          {/* A live group without a live pass (joined, not yet subscribed). */}
+          {!hasBlockingSip && status === 'authenticated' && myGroup && (
+            <section>
+              <SectionTitle title="Your group" />
+              {renderGroupCard(myGroup)}
+            </section>
+          )}
+
+          {/* ── Plans ────────────────────────────────────────────── */}
           {showPlans && (
             <section id="plans" className="scroll-mt-24">
               <SectionTitle title="Pick your pass" subtitle="Every plan comes with a completion bonus." />
@@ -334,15 +390,17 @@ const TravelPassPage = () => {
               ) : plans.length === 0 ? (
                 <p className="text-sm text-neutral-500">No Travel Pass plans available right now.</p>
               ) : (
-                <div className="flex flex-col gap-4 md:grid md:grid-cols-3 md:items-stretch">
+                <div className="-mx-4 flex gap-3 overflow-x-auto snap-x snap-mandatory scrollbar-hide px-4 pb-1 md:mx-0 md:grid md:grid-cols-3 md:gap-4 md:overflow-visible md:px-0">
                   {plans.map((plan) => (
-                    <SipPlanCard key={plan._id} plan={plan} onSubscribe={handleSubscribeClick} />
+                    <div key={plan._id} className="w-[82%] shrink-0 snap-center md:w-auto">
+                      <SipPlanCard plan={plan} onSubscribe={handleSubscribeClick} dailyAvailable={dailyAvailable} />
+                    </div>
                   ))}
                 </div>
               )}
 
               {plans.length > 0 && (
-                <ul className="mt-5 flex flex-wrap justify-center gap-x-6 gap-y-2">
+                <ul className="mt-5 flex flex-col items-center gap-2 md:flex-row md:flex-wrap md:justify-center md:gap-x-6">
                   {TRUST_POINTS.map((point) => (
                     <li key={point.text} className="flex items-center gap-1.5 text-sm text-neutral-600">
                       <point.icon size={16} className="text-[#b35cc8]" />
@@ -354,28 +412,22 @@ const TravelPassPage = () => {
             </section>
           )}
 
-          {/* Marketing sections below are for people who don't have a pass yet. */}
           {/* ── How it works ─────────────────────────────────────── */}
           {showPlans && (
           <section id="how" className="scroll-mt-24">
-            <SectionTitle title={<>From savings to <Highlight>boarding.</Highlight></>} subtitle="Four steps. You only do the first one." />
-            <ol className="relative grid md:grid-cols-4 gap-6 md:gap-4">
-              <div className="hidden md:block absolute left-[12%] right-[12%] top-7 border-t-2 border-dashed border-neutral-300" />
-              <div className="md:hidden absolute top-4 bottom-4 left-7 border-l-2 border-dashed border-neutral-300" />
+            <SectionTitle title={<>From savings to <Highlight>boarding.</Highlight></>} center />
+            <ol className="relative grid grid-cols-4 gap-2">
+              <div className="absolute left-[12%] right-[12%] top-6 md:top-7 border-t-2 border-dashed border-neutral-300" />
               {HOW_IT_WORKS.map((step, i) => (
-                <li key={step.title} className="relative flex md:flex-col md:items-center md:text-center gap-4">
+                <li key={step.title} className="relative flex flex-col items-center text-center gap-2">
                   <span
-                    className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-full border-4 border-[#FFF9F4] ${
+                    className={`flex h-12 w-12 md:h-14 md:w-14 shrink-0 items-center justify-center rounded-full border-4 border-[#FFF9F4] ${
                       i === HOW_IT_WORKS.length - 1 ? 'bg-[#D0EF65]' : 'bg-[#EEA0FF]'
                     }`}
                   >
-                    <step.icon size={24} className="text-neutral-900" />
+                    <step.icon size={22} className="text-neutral-900" />
                   </span>
-                  <div>
-                    <p className="text-xs text-neutral-400 mb-1">Step {i + 1}</p>
-                    <p className="font-semibold text-neutral-900">{step.title}</p>
-                    <p className="text-sm text-neutral-500 leading-relaxed mt-1 md:max-w-[220px]">{step.text}</p>
-                  </div>
+                  <p className="text-[11px] leading-tight md:text-sm font-medium text-neutral-900 max-w-[120px]">{step.title.replace('{unit}', stats?.unit ?? 'day')}</p>
                 </li>
               ))}
             </ol>
@@ -385,171 +437,58 @@ const TravelPassPage = () => {
           {/* ── Calculator ───────────────────────────────────────── */}
           {showPlans && plans.length > 0 && (
             <section id="calculator" className="scroll-mt-24">
-              <SectionTitle
-                title={<>See what your pass <Highlight>becomes.</Highlight></>}
-                subtitle="Pick a plan and a pace — these are the real numbers."
-              />
-              <SavingsCalculator
-                plans={plans}
-                dailyAvailable={dailyAvailable}
-                onStart={showPlans ? handleSubscribeClick : undefined}
-              />
+              <SectionTitle title={<>See what your pass <Highlight>becomes.</Highlight></>} />
+              <SavingsCalculator plans={plans} dailyAvailable={dailyAvailable} onStart={handleSubscribeClick} />
             </section>
           )}
 
           {/* ── Groups ───────────────────────────────────────────── */}
           {showPlans && (
-          <section id="groups" className="scroll-mt-24 rounded-3xl bg-[#FAEEFD] px-5 py-8 md:px-12 md:py-12">
-            <div className="grid md:grid-cols-[1.1fr_1fr] gap-10 md:gap-14 items-center">
-              <div>
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1 text-xs font-medium text-neutral-700 mb-4">
-                  <UsersThreeIcon size={14} /> Travel Pass Groups
-                </span>
-                <SectionTitle
-                  title={<>Trips are better together. <Highlight>So is saving.</Highlight></>}
-                  subtitle="Planning Goa with the gang? Save for it as a group, so nobody drops out at the last minute."
-                />
-                <ol className="flex flex-col gap-4">
-                  {GROUP_STEPS.map((step, i) => (
-                    <li key={step.title} className="flex gap-3">
-                      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white text-sm font-medium text-neutral-900">
-                        {i + 1}
-                      </span>
-                      <div>
-                        <p className="font-medium text-neutral-900">{step.title}</p>
-                        <p className="text-sm text-neutral-600 leading-relaxed">{step.text}</p>
-                      </div>
-                    </li>
-                  ))}
-                </ol>
-                <div className="flex flex-wrap gap-3 mt-6">
-                  {status === 'authenticated' && hasActiveSip && !myGroup ? (
-                    <button onClick={() => setCreateGroupOpen(true)} className={primaryBtn}>
-                      Start a group <ArrowRightIcon size={16} />
-                    </button>
-                  ) : myGroup ? (
-                    <button onClick={() => router.push(`/travel-pass/group/${myGroup.groupId}`)} className={primaryBtn}>
-                      Open my group <ArrowRightIcon size={16} />
-                    </button>
-                  ) : showPlans && (
-                    <a href="#plans" className={primaryBtn}>
-                      Pick a plan to start <ArrowRightIcon size={16} />
-                    </a>
-                  )}
-                  {!myGroup && !hasBlockingSip && (
-                    <button onClick={handleJoinClick} className={secondaryBtn}>
-                      <LinkSimpleIcon size={18} /> I have a group code
-                    </button>
-                  )}
-                </div>
+          <section id="groups" className="scroll-mt-24 rounded-3xl bg-[#FAEEFD] px-5 py-8 md:px-12 md:py-10">
+            <SectionTitle title={<>Trips are better together. <Highlight>So is saving.</Highlight></>} center />
+            <ol className="grid gap-2.5 md:grid-cols-3 md:gap-6">
+              {GROUP_STEPS.map((step) => (
+                <li key={step.title} className="grid grid-cols-[auto_1fr] items-center gap-x-3 rounded-2xl bg-white p-3.5 md:flex md:flex-col md:text-center md:gap-2 md:p-4">
+                  <span className="row-span-2 flex h-11 w-11 items-center justify-center rounded-full bg-[#EEA0FF]">
+                    <step.icon size={20} className="text-neutral-900" />
+                  </span>
+                  <p className="text-sm font-medium text-neutral-900">{step.title}</p>
+                  <p className="text-xs text-neutral-500">{step.text}</p>
+                </li>
+              ))}
+            </ol>
+            {!myGroup && (
+              <div className="flex justify-center mt-6">
+                <button onClick={handleJoinClick} className={secondaryBtn}>
+                  <LinkSimpleIcon size={18} /> I have a group code
+                </button>
               </div>
-
-              {/* Illustrative group card — no real data */}
-              <div className="rounded-3xl bg-white p-6 shadow-sm flex flex-col gap-5 md:-rotate-1">
-                <div className="flex justify-between items-center">
-                  <div>
-                    <p className="text-xs text-neutral-400">Example group</p>
-                    <p className="font-semibold text-neutral-900">Goa Gang 🌴</p>
-                  </div>
-                  <span className="rounded-full bg-[#F4F4F4] px-3 py-1.5 font-mono text-sm tracking-widest text-neutral-800">GOA24X</span>
-                </div>
-                <div className="flex items-center">
-                  {['A', 'R', 'S', 'P', 'K'].map((initial, i) => (
-                    <span
-                      key={initial}
-                      className={`-ml-2 first:ml-0 flex h-10 w-10 items-center justify-center rounded-full border-2 border-white text-sm font-medium text-neutral-900 ${
-                        i % 2 ? 'bg-[#D0EF65]' : 'bg-[#EEA0FF]'
-                      }`}
-                    >
-                      {initial}
-                    </span>
-                  ))}
-                  <span className="ml-3 text-sm text-neutral-500">5 friends, one plan</span>
-                </div>
-                <div className="flex flex-col gap-2.5">
-                  {[['You', 72], ['Rhea', 72], ['Sam', 64]].map(([name, pct]) => (
-                    <div key={name} className="flex items-center gap-3 text-sm">
-                      <span className="w-12 text-neutral-600">{name}</span>
-                      <div className="flex-1 h-2 rounded-full bg-neutral-100">
-                        <div className="h-2 rounded-full bg-[#EEA0FF]" style={{ width: `${pct}%` }} />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                <div className="rounded-2xl bg-[#FFF9F4] px-4 py-3 text-sm text-neutral-600">
-                  Everyone&apos;s on the same schedule — the trip happens when the group&apos;s ready.
-                </div>
-              </div>
-            </div>
+            )}
           </section>
           )}
 
-          {/* ── Why ──────────────────────────────────────────────── */}
-          {showPlans && (
-          <section>
-            <SectionTitle
-              title={<>Trips rarely get cancelled. <Highlight>They get postponed.</Highlight></>}
-              subtitle="Usually because the money went somewhere else first. Travel Pass fixes that."
-            />
-            <div className="grid md:grid-cols-2 gap-4">
-              <div className="rounded-3xl border border-[#D9D9D9] bg-white p-6">
-                <p className="font-medium text-neutral-500 mb-4">Saving on your own</p>
-                <ul className="flex flex-col gap-4">
-                  {COMPARISON.map((row) => (
-                    <li key={row.alone} className="flex gap-3 text-neutral-500">
-                      <XCircleIcon size={22} className="shrink-0 text-neutral-300" />
-                      {row.alone}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div className="rounded-3xl bg-[#EEA0FF] p-6">
-                <p className="font-semibold text-neutral-900 mb-4">With Travel Pass</p>
-                <ul className="flex flex-col gap-4">
-                  {COMPARISON.map((row) => (
-                    <li key={row.pass} className="flex gap-3 text-neutral-900">
-                      <CheckCircleIcon size={22} weight="fill" className="shrink-0 text-white" />
-                      {row.pass}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          </section>
-          )}
-
-          {/* ── Where it takes you ───────────────────────────────── */}
-          {showPlans && (
-          <section>
-            <div className="md:hidden">
-              <ExploreByDestination
-                variant="mobile"
-                title="Where your pass can take you"
-                subtitle="Spend your Wondrr Cash on group trips across these destinations."
-              />
-            </div>
-            <div className="hidden md:block">
-              <ExploreByDestination
-                variant="desktop"
-                title="Where your pass can take you"
-                subtitle="Spend your Wondrr Cash on group trips across these destinations."
-              />
-            </div>
-          </section>
-          )}
-
-          {status === 'authenticated' && !subsLoading && pastSips.length > 0 && (
-            <section>
-              <SectionTitle title="Past Travel Passes" center={hasBlockingSip} />
-              <div className={`grid gap-4 opacity-80 ${hasBlockingSip ? '' : 'md:grid-cols-2'}`}>
-                {pastSips.map(renderSipCard)}
-              </div>
+          {/* ── History: finished passes + the groups they belonged to ── */}
+          {!hasBlockingSip && status === 'authenticated' && !subsLoading && hasHistory && (
+            <section className="grid md:grid-cols-2 gap-8">
+              {pastSips.length > 0 && (
+                <div>
+                  <SectionTitle title="Past passes" />
+                  <div className="flex flex-col gap-3">{pastSips.map(renderPastSip)}</div>
+                </div>
+              )}
+              {previousGroups.length > 0 && (
+                <div>
+                  <SectionTitle title="Your previous groups" />
+                  <div className="flex flex-col gap-3">{previousGroups.map((g) => renderGroupCard(g, true))}</div>
+                </div>
+              )}
             </section>
           )}
 
-          {/* ── FAQ ──────────────────────────────────────────────── */}
-          <section className={`w-full md:mx-auto ${hasBlockingSip ? '' : 'md:w-[80%]'}`}>
-            <SectionTitle title="Questions, answered" center={hasBlockingSip} />
+          {/* ── FAQ (also feeds FAQPage JSON-LD in layout.tsx) ───── */}
+          {showPlans && (
+          <section className="w-full md:mx-auto md:w-[80%]">
+            <SectionTitle title="Questions, answered" />
             <div className="flex flex-col gap-2">
               {SIP_FAQS.map((faq, i) => {
                 const isOpen = openFaq === i
@@ -577,23 +516,6 @@ const TravelPassPage = () => {
               })}
             </div>
           </section>
-
-          {/* ── Closing CTA ──────────────────────────────────────── */}
-          {showPlans && plans.length > 0 && (
-            <section className="relative overflow-hidden rounded-3xl bg-[#D0EF65] px-6 py-10 md:px-14 md:py-12 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-              <AirplaneTiltIcon size={220} weight="thin" className="absolute -right-8 -bottom-12 text-neutral-900/10 pointer-events-none" />
-              <div className="relative">
-                <h2 className="text-[28px] md:text-[40px] font-semibold tracking-tight leading-[1.15] text-neutral-900 font-['Satoshi']">
-                  The trip won&apos;t plan itself.
-                  <br />
-                  The saving can.
-                </h2>
-                <p className="text-neutral-700 mt-2">Set it up once — takes about a minute.</p>
-              </div>
-              <a href="#plans" className={`relative whitespace-nowrap ${primaryBtn}`}>
-                Start my Travel Pass <ArrowRightIcon size={16} />
-              </a>
-            </section>
           )}
         </div>
       </div>

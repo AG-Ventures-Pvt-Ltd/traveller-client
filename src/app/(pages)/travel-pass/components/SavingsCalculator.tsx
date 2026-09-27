@@ -24,9 +24,11 @@ const inr = (n: number) => `₹${n.toLocaleString('en-IN')}`
 
 export function SavingsCalculator({ plans, dailyAvailable, onStart }: SavingsCalculatorProps) {
   const [planId, setPlanId] = useState(plans[0]._id)
-  const [cadence, setCadence] = useState<Cadence>('weekly')
+  const [picked, setCadence] = useState<Cadence | null>(null)
   const plan = plans.find((p) => p._id === planId) ?? plans[0]
   const cadences: Cadence[] = dailyAvailable ? ['daily', 'weekly', 'monthly'] : ['weekly', 'monthly']
+  // Lead with daily; derived (not initial state) so it follows paymentConfig once it loads.
+  const cadence = picked && cadences.includes(picked) ? picked : cadences[0]
 
   const amount = plan.cadenceAmounts[cadence]
   const installments = Math.ceil(plan.targetAmount / amount)
@@ -39,7 +41,7 @@ export function SavingsCalculator({ plans, dailyAvailable, onStart }: SavingsCal
 
   return (
     <div className="grid md:grid-cols-2 gap-4">
-      <div className="rounded-3xl border border-[#D9D9D9] bg-white p-6 flex flex-col gap-6">
+      <div className="rounded-3xl border border-[#D9D9D9] bg-white p-5 md:p-6 flex flex-col gap-5 md:gap-6">
         <div>
           <p className="text-xs font-semibold uppercase tracking-wide text-neutral-500 mb-3">1 · Pick a plan</p>
           <div className="flex flex-wrap gap-2">
@@ -72,7 +74,7 @@ export function SavingsCalculator({ plans, dailyAvailable, onStart }: SavingsCal
         </div>
       </div>
 
-      <div className="rounded-3xl bg-[#EEA0FF] p-6 flex flex-col gap-5">
+      <div className="rounded-3xl bg-[#EEA0FF] p-5 md:p-6 flex flex-col gap-5">
         <p className="text-xs font-semibold uppercase tracking-wide text-neutral-800">3 · What it becomes</p>
         <div>
           <p className="text-sm text-neutral-800">Wondrr Cash for your trip</p>

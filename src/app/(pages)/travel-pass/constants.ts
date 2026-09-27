@@ -2,17 +2,24 @@ import type { SipPlan } from './types'
 
 export const bonusPct = (plan: SipPlan) => Math.round((plan.bonusAmount / plan.targetAmount) * 100)
 
-// Headline numbers for marketing copy (landing banner + page hero). Weekly is
-// used for "from ₹X" because Daily isn't offered on the Razorpay gateway.
-export const getPlanHighlights = (plans: SipPlan[]) =>
-  plans.length === 0
-    ? null
-    : {
-        maxBonusPct: Math.max(...plans.map(bonusPct)),
-        minWeekly: Math.min(...plans.map((p) => p.cadenceAmounts.weekly)),
-        // Plan with the best bonus % — the one we showcase on the ticket visual.
-        featured: plans.reduce((a, b) => (bonusPct(b) > bonusPct(a) ? b : a)),
-      }
+export const CADENCE_UNIT = { daily: 'day', weekly: 'week', monthly: 'month' } as const
+
+// Daily is the cadence we lead with everywhere. Razorpay can't bill daily
+// (7-day minimum), so fall back to weekly when it's the subscription gateway.
+export const leadCadence = (dailyAvailable: boolean) => (dailyAvailable ? 'daily' : 'weekly') as 'daily' | 'weekly'
+
+// Headline numbers for marketing copy (landing banner + page hero).
+export const getPlanHighlights = (plans: SipPlan[], dailyAvailable: boolean) => {
+  if (plans.length === 0) return null
+  const lead = leadCadence(dailyAvailable)
+  return {
+    maxBonusPct: Math.max(...plans.map(bonusPct)),
+    fromAmount: Math.min(...plans.map((p) => p.cadenceAmounts[lead])),
+    unit: CADENCE_UNIT[lead],
+    // Plan with the best bonus % — the one we showcase on the ticket visual.
+    featured: plans.reduce((a, b) => (bonusPct(b) > bonusPct(a) ? b : a)),
+  }
+}
 
 /**
  * Plain-text FAQ reused by both the on-page accordion (page.tsx) and the

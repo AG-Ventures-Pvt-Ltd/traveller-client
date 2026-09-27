@@ -64,13 +64,16 @@ const runUpfrontCheckout = (
 })
 
 export function SubscribeSipModal({ isOpen, onClose, plan, activeGateway, onSubscribed, group }: SubscribeSipModalProps) {
-  const [cadence, setCadence] = useState<'daily' | 'weekly' | 'monthly'>('weekly')
+  const [picked, setCadence] = useState<'daily' | 'weekly' | 'monthly' | null>(null)
   const [agreed, setAgreed] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   // Razorpay subscriptions reject period:'daily' at interval:1 (7-day
   // minimum) — only offer Daily when Cashfree is the active gateway.
   const availableCadences = activeGateway === 'razorpay' ? CADENCES.filter((c) => c.value !== 'daily') : CADENCES
+  // Default to the first offered cadence (daily unless razorpay); derived so a
+  // late-loading gateway can't leave an unsupported cadence selected.
+  const cadence = availableCadences.find((c) => c.value === picked)?.value ?? availableCadences[0].value
 
   const { mutateAsync: subscribe } = usePostData<ApiResponse>({
     url: API_ENDPOINTS.SIP.SUBSCRIBE,
@@ -83,7 +86,7 @@ export function SubscribeSipModal({ isOpen, onClose, plan, activeGateway, onSubs
   const title = group ? `Join ${group.planName}` : plan ? `Subscribe: ${plan.name}` : 'Subscribe'
 
   const handleClose = () => {
-    setCadence('weekly')
+    setCadence(null)
     setAgreed(false)
     onClose()
   }

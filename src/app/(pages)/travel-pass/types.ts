@@ -28,6 +28,7 @@ export interface SipSubscription {
   startDate?: string;
   completedAt?: string;
   cancelledAt?: string;
+  groupId?: string | null;
 }
 
 export interface UpfrontCheckoutHandle {
