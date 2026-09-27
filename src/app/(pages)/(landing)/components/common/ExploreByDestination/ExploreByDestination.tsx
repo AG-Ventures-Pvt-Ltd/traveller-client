@@ -15,9 +15,15 @@ export interface ExploreStateItem {
 
 interface ExploreByDestinationProps {
   variant?: 'desktop' | 'mobile';
+  title?: string;
+  subtitle?: string;
 }
 
-const ExploreByDestination: React.FC<ExploreByDestinationProps> = ({ variant = 'desktop' }) => {
+const ExploreByDestination: React.FC<ExploreByDestinationProps> = ({
+  variant = 'desktop',
+  title = 'Explore by Destination',
+  subtitle = 'Browse upcoming group trips by where they’re headed.',
+}) => {
   const { data, isLoading } = useGetData<{ states: ExploreStateItem[] }>(
     API_ENDPOINTS.LANDING_PAGE.EXPLORE_STATES
   );
@@ -32,11 +38,9 @@ const ExploreByDestination: React.FC<ExploreByDestinationProps> = ({ variant = '
       {/* Header — matches CarouselSection */}
       <div className="flex flex-col gap-1">
         <h2 className={`font-bold text-neutral-900 ${compact ? 'text-xl' : 'text-3xl'}`}>
-          Explore by Destination
+          {title}
         </h2>
-        <p className="text-sm font-medium text-neutral-500">
-          Browse upcoming group trips by where they&apos;re headed.
-        </p>
+        <p className="text-sm font-medium text-neutral-500">{subtitle}</p>
       </div>
 
       {compact ? (

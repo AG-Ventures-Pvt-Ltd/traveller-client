@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { HouseIcon, PaperPlaneTiltIcon, UserCircleIcon } from '@phosphor-icons/react';
+import { HouseIcon, CompassIcon, PiggyBankIcon, HeadsetIcon, UserCircleIcon } from '@phosphor-icons/react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useDevice } from '@/common/hooks/useDevice';
 
@@ -9,7 +9,7 @@ interface StickyNavigationProps {
   showProfile?: boolean;
 }
 
-const ACTIVE_ROUTES = ['/','/profile','/auth' ];
+const ACTIVE_ROUTES = ['/', '/profile', '/auth', '/trips', '/travel-pass', '/contact'];
 
 const StickyNavigation: React.FC<StickyNavigationProps> = ({
   showProfile = true,
@@ -47,6 +47,14 @@ const isActiveRoute =
     router.push('/profile');
   };
 
+  const handlePassClick = () => {
+    router.push('/travel-pass');
+  };
+
+  const handleContactClick = () => {
+    router.push('/contact');
+  };
+
   if (!isHydrated || isDesktop) {
     return null;
   }
@@ -75,9 +83,35 @@ const isActiveRoute =
               ? 'bg-[#EEA0FF] text-black' 
               : 'text-white hover:bg-white/10'
           }`}
-          aria-label="Trips"
+          aria-label="Explore"
         >
-          <PaperPlaneTiltIcon size={24} weight="thin" />
+          <CompassIcon size={24} weight="thin" />
+        </button>
+
+        {/* Travel Pass Button */}
+        <button
+          onClick={handlePassClick}
+          className={`flex items-center justify-center w-12 h-12 rounded-full transition-colors ${
+            isActive('/travel-pass')
+              ? 'bg-[#EEA0FF] text-black'
+              : 'text-white hover:bg-white/10'
+          }`}
+          aria-label="Travel Pass"
+        >
+          <PiggyBankIcon size={24} weight="thin" />
+        </button>
+
+        {/* Contact Button */}
+        <button
+          onClick={handleContactClick}
+          className={`flex items-center justify-center w-12 h-12 rounded-full transition-colors ${
+            isActive('/contact')
+              ? 'bg-[#EEA0FF] text-black'
+              : 'text-white hover:bg-white/10'
+          }`}
+          aria-label="Contact"
+        >
+          <HeadsetIcon size={24} weight="thin" />
         </button>
 
         {/* Profile Button */}

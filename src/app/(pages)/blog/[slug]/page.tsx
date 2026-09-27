@@ -6,7 +6,7 @@ import { JsonLd, SITE_URL } from '@/common/seo/JsonLd';
 import type { Trip } from '../../(landing)/components/MobileLanding/types';
 import BlogPostClient from './BlogPostClient';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 300;
 
 interface Blog {
   _id: string;
