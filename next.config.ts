@@ -46,6 +46,8 @@ const nextConfig: NextConfig = {
   async headers() {
     // Next dev mode needs 'unsafe-eval' for HMR/react-refresh stack traces — prod stays strict.
     const isDev = process.env.NODE_ENV !== 'production';
+    // Razorpay/Cashfree spread checkout across many subdomains — allow them wholesale.
+    const PAY = 'https://*.razorpay.com https://razorpay.com https://*.cashfree.com https://cashfree.com';
 
     return [
       {
@@ -62,14 +64,14 @@ const nextConfig: NextConfig = {
             key: 'Content-Security-Policy',
             value: [
               "default-src 'self'",
-              `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ''} https://checkout.razorpay.com https://cdn.razorpay.com https://sdk.cashfree.com https://www.googletagmanager.com https://www.clarity.ms https://scripts.clarity.ms https://connect.facebook.net`,
-              `script-src-elem 'self' 'unsafe-inline' https://checkout.razorpay.com https://cdn.razorpay.com https://sdk.cashfree.com https://www.googletagmanager.com https://www.clarity.ms https://scripts.clarity.ms https://connect.facebook.net`,
-              "style-src 'self' 'unsafe-inline'",
-              "img-src 'self' data: blob: https://d1hjk5b7z017su.cloudfront.net https://www.facebook.com https://lh3.googleusercontent.com https://images.unsplash.com",
+              `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ''} ${PAY} https://www.googletagmanager.com https://www.clarity.ms https://scripts.clarity.ms https://connect.facebook.net`,
+              `script-src-elem 'self' 'unsafe-inline' ${PAY} https://www.googletagmanager.com https://www.clarity.ms https://scripts.clarity.ms https://connect.facebook.net`,
+              `style-src 'self' 'unsafe-inline' https://fonts.googleapis.com ${PAY}`,
+              `img-src 'self' data: blob: https://d1hjk5b7z017su.cloudfront.net https://www.facebook.com https://lh3.googleusercontent.com https://images.unsplash.com ${PAY}`,
               "media-src 'self' https://d1hjk5b7z017su.cloudfront.net",
               `connect-src 'self' https:${isDev ? ' http://localhost:*' : ''}`,
-              "font-src 'self' data:",
-              "frame-src https://checkout.razorpay.com https://sandbox.cashfree.com https://sdk.cashfree.com https://api.razorpay.com https://payments.cashfree.com https://payments-test.cashfree.com https://api.cashfree.com",
+              `font-src 'self' data: https://fonts.gstatic.com ${PAY}`,
+              `frame-src ${PAY}`,
               "frame-ancestors 'self'",
             ].join('; '),
           },
