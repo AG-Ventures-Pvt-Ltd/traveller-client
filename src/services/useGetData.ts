@@ -13,7 +13,7 @@ export const useGetData = <T>(
     ...options,
     queryKey,
     queryFn: () => getData<T>(url),
-    enabled: !!url,
+    enabled: !!url && (options?.enabled ?? true),
     refetchOnWindowFocus: false,
     refetchOnMount: false,
     staleTime: Infinity,
