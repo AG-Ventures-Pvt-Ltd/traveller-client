@@ -8,7 +8,7 @@ import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { generateSlug } from '../../../utils';
 import Loader from '@/common/ui/Loader/Loader';
 import { TripData } from '../../types';
-import { sortBatchesByDate } from '../utils';
+import { sortBatchesByDate, getDurationDisplay } from '../utils';
 import { NAV_SECTION_IDS, PANEL_STICKY_TOP } from '../constants';
 import { NavSection } from '../types';
 import { getSeatsDisplay } from '@/common/utils/seatsDisplay';
@@ -254,7 +254,7 @@ export default function TripDetailDesktop() {
                             <div className=" pb-2">
                                 <FactCards
                                     location={basicData?.location}
-                                    duration={basicData?.duration}
+                                    duration={getDurationDisplay(basicData?.duration, selectedBatchData ?? sortedBatches[0])}
                                     difficulty={basicData?.difficulty}
                                     boardingPoint={boardingPoint}
                                     seats={seatsDisplay}
