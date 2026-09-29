@@ -7,29 +7,32 @@ import { useCallback } from 'react';
 interface WhatsAppButton {
     tripTitle : string
     tripSlug : string
+    isEvent?: boolean
 }
 // WhatsApp Configuration
 const WHATSAPP_PHONE_NUMBER = '919667427187'; // WhatsApp Business Number (country code + number, no + or spaces)
 
-const generateWhatsAppMessage = ({tripTitle, tripSlug }: WhatsAppButton): string => {
+const generateWhatsAppMessage = ({tripTitle, tripSlug, isEvent }: WhatsAppButton): string => {
 
-    return `https://wondrr.in/trip/${tripSlug}?utm_location=button\n\n Hi, I want to book the "${tripTitle}" trip. \nPlease help me confirm my spot.`;
+    return `https://wondrr.in/trip/${tripSlug}?utm_location=button\n\n Hi, I want to book the "${tripTitle}" ${isEvent ? 'event' : 'trip'}. \nPlease help me confirm my spot.`;
 };
 
 interface WhatsAppButtonProps {
     tripTitle: string;
     tripSlug : string;
     className?: string;
+    isEvent?: boolean;
 }
 
 export default function WhatsAppButton({
     tripTitle,
     tripSlug ,
     className = '',
+    isEvent,
 }: WhatsAppButtonProps) {
 
     const handleWhatsAppClick = useCallback(() => {
-        const message = generateWhatsAppMessage({tripTitle, tripSlug });
+        const message = generateWhatsAppMessage({tripTitle, tripSlug, isEvent });
         const encodedMessage = encodeURIComponent(message);
         const whatsappUrl = `https://wa.me/${WHATSAPP_PHONE_NUMBER}?text=${encodedMessage}`;
 
@@ -37,7 +40,7 @@ export default function WhatsAppButton({
         if (typeof window !== 'undefined') {
             window.open(whatsappUrl, '_blank');
         }
-    }, [tripTitle, tripSlug]);
+    }, [tripTitle, tripSlug, isEvent]);
 
     return (
         <button

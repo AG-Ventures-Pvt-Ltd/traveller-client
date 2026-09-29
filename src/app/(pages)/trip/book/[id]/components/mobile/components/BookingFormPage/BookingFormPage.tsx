@@ -5,6 +5,7 @@ import TravelOptionsList from '@/app/(pages)/trip/common/ui/TravelOptionsList';
 import CollapsibleCard from '@/common/ui/CollapsibleCard';
 import { useGetData } from '@/services/useGetData';
 import { API_ENDPOINTS } from '@/common/constants/apiEndpoints';
+import { useIsBookingEvent } from '@/app/(pages)/trip/api';
 import TripOverviewCard from './components/TripOverviewCard';
 import TravelerDetailsCard from './components/TravelerDetailsCard';
 import StayOptionsSection from './components/StayOptionsSection';
@@ -35,6 +36,7 @@ interface BookingFormPageProps {
 }
 
 export default function BookingFormPage({ tripId, batchId, onViewCoupons }: BookingFormPageProps) {
+    const isEvent = useIsBookingEvent();
 
     const searchParams = useSearchParams();
     const { isMobile } = useDevice();
@@ -162,7 +164,7 @@ export default function BookingFormPage({ tripId, batchId, onViewCoupons }: Book
 
                     {pricingTiers.length > 0 && (
                         <CollapsibleCard
-                            title="Package Options"
+                            title={isEvent ? 'Pass Options' : 'Package Options'}
                             overflow="visible"
                         >
                             <div className="px-4 pb-4">
@@ -207,7 +209,7 @@ export default function BookingFormPage({ tripId, batchId, onViewCoupons }: Book
 
             {pricingTiers.length > 0 && (
                 <CollapsibleCard
-                    title="Package Options"
+                    title={isEvent ? 'Pass Options' : 'Package Options'}
                     overflow="visible"
                 >
                     <div className="px-4 pb-4">

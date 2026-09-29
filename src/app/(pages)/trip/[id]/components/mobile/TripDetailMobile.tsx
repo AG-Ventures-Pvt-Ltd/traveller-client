@@ -86,6 +86,7 @@ export default function TripDetailMobile() {
     );
 
     const selectedBatchData = selectedBatch !== null && sortedBatches[selectedBatch] ? sortedBatches[selectedBatch] : null;
+    const isEvent = basicData?.type === 'single_day_event';
     const seatsDisplay = selectedBatchData ? getSeatsDisplay(selectedBatchData.totalSeats) : '';
 
     const boardingPoint = selectedBatchData?.meetingPoint && selectedBatchData.meetingPoint.length > 0
@@ -156,7 +157,7 @@ export default function TripDetailMobile() {
             sections.push({ id: NAV_SECTION_IDS.REVIEWS, label: 'Reviews' });
         }
 
-        sections.push({ id: NAV_SECTION_IDS.TRIP_SUPPORT, label: 'Trip Support' });
+        sections.push({ id: NAV_SECTION_IDS.TRIP_SUPPORT, label: isEvent ? 'Event Support' : 'Trip Support' });
 
         if (tripData?.faqs && tripData.faqs.length > 0) {
             sections.push({ id: NAV_SECTION_IDS.FAQS, label: 'FAQs' });
@@ -164,7 +165,7 @@ export default function TripDetailMobile() {
 
         sections.push({ id: NAV_SECTION_IDS.CANCELLATION, label: 'Cancellation' });
         return sections;
-    }, [tripData]);
+    }, [tripData, isEvent]);
 
 
     const pricingList = useMemo(() => {
@@ -268,6 +269,7 @@ export default function TripDetailMobile() {
                     <div ref={overviewRef} className="space-y-6 scroll-mt-24">
                         {sortedBatches.length > 0 && (
                             <BatchSelection
+                                isEvent={isEvent}
                                 batches={sortedBatches}
                                 selectedBatch={selectedBatch}
                                 onSelect={setSelectedBatch}
@@ -281,7 +283,8 @@ export default function TripDetailMobile() {
                             description={{
                                 destination: basicData?.location?.split(',')[0] || '',
                                 seats: seatsDisplay,
-                                duration: getDurationDisplay(basicData?.duration, selectedBatchData ?? sortedBatches[0]),
+                                duration: getDurationDisplay(basicData?.duration, selectedBatchData ?? sortedBatches[0], isEvent),
+                                isEvent,
                                 difficulty: basicData?.difficulty || "",
                                 boardingPoint,
                                 certificates: detailedData?.host?.certificates || []
@@ -348,7 +351,7 @@ export default function TripDetailMobile() {
                     </div>
 
                     <div ref={tripSupportRef} className="scroll-mt-20 my-6">
-                        <SafetySupportSection />
+                        <SafetySupportSection isEvent={isEvent} />
                     </div>
 
                     {tripData.faqs && tripData.faqs.length > 0 && (
@@ -367,6 +370,7 @@ export default function TripDetailMobile() {
                 </div>
 
                 <WhatsAppButton
+                    isEvent={isEvent}
                     tripTitle={tripData.title}
                     tripSlug={id}
                     className="bottom-[104px]"

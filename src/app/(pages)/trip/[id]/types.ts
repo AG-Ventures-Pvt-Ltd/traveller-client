@@ -73,6 +73,7 @@ export interface TripData {
   title: string;
   description: string;
   duration : string;
+  type?: 'group_tour' | 'group_trek' | 'bike_trip' | 'group_run' | 'single_day_event';
   difficulty : string;
   images?: string[];
   highlights?: TripHighlight[];

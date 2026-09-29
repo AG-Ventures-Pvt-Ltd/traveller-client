@@ -34,6 +34,7 @@ export interface BatchSelectionProps {
     selectedBatch: number | null;
     onSelect: (index: number) => void;
     bestTimeToVisit?: string;
+    isEvent?: boolean;
 }
 
 export interface Pricing {
