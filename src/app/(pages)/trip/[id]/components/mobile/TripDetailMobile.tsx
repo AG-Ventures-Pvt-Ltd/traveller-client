@@ -8,6 +8,7 @@ import { generateSlug } from '../../../utils';
 import Loader from '@/common/ui/Loader/Loader';
 import { TripData } from '../../types';
 import { sortBatchesByDate } from './utils';
+import { getDurationDisplay } from '../utils';
 import { NAV_SECTION_IDS } from './constants';
 import { NavSection, SectionRefs } from './types';
 import { getSeatsDisplay } from '@/common/utils/seatsDisplay';
@@ -280,7 +281,7 @@ export default function TripDetailMobile() {
                             description={{
                                 destination: basicData?.location?.split(',')[0] || '',
                                 seats: seatsDisplay,
-                                duration: basicData?.duration || "",
+                                duration: getDurationDisplay(basicData?.duration, selectedBatchData ?? sortedBatches[0]),
                                 difficulty: basicData?.difficulty || "",
                                 boardingPoint,
                                 certificates: detailedData?.host?.certificates || []

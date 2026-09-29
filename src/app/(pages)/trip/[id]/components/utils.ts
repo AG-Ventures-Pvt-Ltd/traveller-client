@@ -52,3 +52,10 @@ export const findClosestBatchIndex = (batches: AvailableDate[]): number => {
 
     return closestIndex;
 };
+
+// "1D 0N" trips are same-day events: show batch start–end time in IST instead of the duration
+export const getDurationDisplay = (duration: string | undefined, batch: AvailableDate | null | undefined): string => {
+    if (!duration || !batch?.startDateTime || Number(duration.match(/(\d+)\s*N/i)?.[1]) !== 0) return duration || '';
+    const fmt = (d: Date | string) => new Date(d).toLocaleTimeString('en-IN', { hour: 'numeric', minute: '2-digit', hour12: true, timeZone: 'Asia/Kolkata' }).toUpperCase();
+    return batch.endDateTime ? `${fmt(batch.startDateTime)} - ${fmt(batch.endDateTime)}` : fmt(batch.startDateTime);
+};
