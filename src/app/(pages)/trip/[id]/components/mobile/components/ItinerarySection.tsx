@@ -41,6 +41,21 @@ export default function ItinerarySection({
             </CollapsibleCard>
         );
     }
+    if (isEvent) {
+        const day = itinerary[0];
+        return (
+            <CollapsibleCard overflow="visible" className="bg-[#e2f4a6] border border-[#d9d9d9] rounded-[16px] scroll-mt-24 mt-6" title="Event Schedule">
+                <div className="bg-[#e2f4a6] px-4 pb-4 rounded-[16px]">
+                    {day?.title && <p className="font-bold text-black mb-2">{day.title}</p>}
+                    <ul className="text-sm text-gray-700 list-disc pl-4 space-y-1">
+                        {(day?.description ?? []).map((point, i) => (
+                            <li key={i}>{point}</li>
+                        ))}
+                    </ul>
+                </div>
+            </CollapsibleCard>
+        );
+    }
     const getDayDate = (dayIndex: number): string => {
         if (!batchStartDate) return '';
         try {
@@ -90,10 +105,10 @@ export default function ItinerarySection({
                         className="relative scroll-mt-40"
                         ref={(el) => { dayRefs.current[dayIndex] = el; }}
                     >
-                        <span className="absolute left-9.5 top-11 -bottom-4 border-l-1 z-0" style={{
+                        {dayIndex < itinerary.length - 1 && <span className="absolute left-9.5 top-11 -bottom-4 border-l-1 z-0" style={{
                             borderLeftStyle: 'dashed',
                             borderImage: 'repeating-linear-gradient(transparent, transparent 4px, black 4px, black 10px) 1',
-                        }} />
+                        }} />}
                         <button
                             onClick={() => onDayToggle(dayIndex)}
                             className="w-full flex items-center justify-between gap-3 hover:opacity-80 transition-opacity relative z-10 my-2 rounded-lg"
