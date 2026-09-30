@@ -42,7 +42,7 @@ export default function DiscountsSection({
     const subtotal = orderAmount ?? 0;
     const eligibleCoupons = useMemo(() => coupons?.filter(c => isCouponEligible(c, subtotal)) ?? [], [coupons, subtotal]);
     const minOrderError = (c: Coupon) =>
-        `Add ₹${Math.ceil(c.minOrderAmount - subtotal).toLocaleString('en-IN')} more to use this coupon (min order ₹${c.minOrderAmount.toLocaleString('en-IN')})`;
+        `Coupon valid on a minimum booking of ₹${c.minOrderAmount.toLocaleString('en-IN')}`;
 
     const applyIfEligible = (coupon: Coupon) => {
         if (!isCouponEligible(coupon, subtotal)) {
