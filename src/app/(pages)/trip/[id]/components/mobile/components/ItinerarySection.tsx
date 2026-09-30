@@ -125,15 +125,6 @@ export default function ItinerarySection({
                         </div>
                     </div>
                 ))}
-                {/* End marker */}
-                <div className="flex items-center gap-3">
-                    <span className="bg-yellow-400 text-black rounded-full px-6 py-2 text-lg font-medium flex-shrink-0">
-                        End
-                    </span>
-                    <span className='font-black'>
-                        ---------
-                    </span>
-                </div>
             </div>
         </CollapsibleCard>
     );
