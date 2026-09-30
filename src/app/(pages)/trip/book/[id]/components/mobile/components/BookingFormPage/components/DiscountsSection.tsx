@@ -5,7 +5,7 @@ import { TagIcon, X } from '@phosphor-icons/react';
 import CollapsibleCard from '@/common/ui/CollapsibleCard';
 import Button from '@/common/ui/Buttons/Button';
 import CustomInput from '@/common/ui/CustomInput';
-import { useBookingFormStore } from '../hooks/useBookingFormStore';
+import { useBookingFormStore, isCouponEligible } from '../hooks/useBookingFormStore';
 import type { Coupon } from '../types';
 import { baseAPI } from '@/services/baseApi';
 import { useGetData } from '@/services/useGetData';
@@ -13,7 +13,7 @@ import { API_ENDPOINTS } from '@/common/constants/apiEndpoints';
 
 interface DiscountsSectionProps {
     tripId: string;
-    /** Order total before any coupon, used to preview the best available saving. */
+    /** Order subtotal before any coupon — the amount a coupon's minOrderAmount is checked against. */
     orderAmount?: number;
     onViewCoupons?: () => void;
     isOpen?: boolean;
@@ -39,6 +39,20 @@ export default function DiscountsSection({
     const [isValidating, setIsValidating] = useState(false);
     const [couponError, setCouponError] = useState('');
 
+    const subtotal = orderAmount ?? 0;
+    const eligibleCoupons = useMemo(() => coupons?.filter(c => isCouponEligible(c, subtotal)) ?? [], [coupons, subtotal]);
+    const minOrderError = (c: Coupon) =>
+        `Add ₹${Math.ceil(c.minOrderAmount - subtotal).toLocaleString('en-IN')} more to use this coupon (min order ₹${c.minOrderAmount.toLocaleString('en-IN')})`;
+
+    const applyIfEligible = (coupon: Coupon) => {
+        if (!isCouponEligible(coupon, subtotal)) {
+            setCouponError(minOrderError(coupon));
+            return;
+        }
+        setAppliedCoupon(coupon);
+        setInputValue('');
+    };
+
     const handleApplyCoupon = async () => {
         const code = inputValue.trim();
         if (!code) return;
@@ -47,8 +61,7 @@ export default function DiscountsSection({
         // Check local list first (public coupons — no round-trip needed)
         const localCoupon = coupons?.find(c => c.code.toLowerCase() === code.toLowerCase());
         if (localCoupon) {
-            setAppliedCoupon(localCoupon);
-            setInputValue('');
+            applyIfEligible(localCoupon);
             return;
         }
 
@@ -56,8 +69,7 @@ export default function DiscountsSection({
         setIsValidating(true);
         try {
             const response = await baseAPI.get(API_ENDPOINTS.DISCOUNTS.VALIDATE_COUPON(tripId, code));
-            setAppliedCoupon(response.data.data);
-            setInputValue('');
+            applyIfEligible(response.data.data);
         } catch (err) {
             const msg = (err as { response?: { data?: { message?: string } } })?.response?.data?.message || 'Invalid coupon code';
             setCouponError(msg);
@@ -81,10 +93,9 @@ export default function DiscountsSection({
     // The card is collapsed by default, so without this the section reads as
     // "no offers here" and people skip it entirely.
     const bestSaving = useMemo(() => {
-        if (!coupons?.length || !orderAmount) return 0;
+        if (!eligibleCoupons.length || !orderAmount) return 0;
 
-        return coupons.reduce((best, c) => {
-            if (orderAmount < (c.minOrderAmount || 0)) return best;
+        return eligibleCoupons.reduce((best, c) => {
             // ponytail: people_count coupons scale with guest count, which this
             // component doesn't have — they fall back to the "N available" pill.
             if (c.discountType !== 'fixed' && c.discountType !== 'percentage') return best;
@@ -95,15 +106,14 @@ export default function DiscountsSection({
 
             return Math.max(best, amount);
         }, 0);
-    }, [coupons, orderAmount]);
+    }, [eligibleCoupons, orderAmount]);
 
-    // Once a coupon is applied the card shows it directly, and orderAmount is
-    // already net of that discount — so no preview.
-    const preview = appliedCoupon || !coupons?.length
+    // Once a coupon is applied the card shows it directly — so no preview.
+    const preview = appliedCoupon || !eligibleCoupons.length
         ? null
         : bestSaving > 0
             ? `Save up to ₹${Math.round(bestSaving).toLocaleString('en-IN')}`
-            : `${coupons.length} available`;
+            : `${eligibleCoupons.length} available`;
 
     return (
         <CollapsibleCard
@@ -136,11 +146,14 @@ export default function DiscountsSection({
                             </button>
 
                         </div>
+                        {!isCouponEligible(appliedCoupon, subtotal) && (
+                            <p className="text-xs text-red-500 px-1">{minOrderError(appliedCoupon)}</p>
+                        )}
                         <button
                             onClick={onViewCoupons}
                             className="text-xs text-[#448AFF] text-left px-1 self-start"
                         >
-                            view all coupons {coupons && coupons.length > 0 ? `(${coupons.length})` : ''} &gt;
+                            view all coupons {eligibleCoupons.length > 0 ? `(${eligibleCoupons.length})` : ''} &gt;
                         </button>
                     </>
                 ) : (
@@ -159,7 +172,7 @@ export default function DiscountsSection({
                             onClick={onViewCoupons}
                             className="text-xs text-[#448AFF] text-left px-1 self-start"
                         >
-                            view all coupons {coupons && coupons.length > 0 ? `(${coupons.length})` : ''} &gt;
+                            view all coupons {eligibleCoupons.length > 0 ? `(${eligibleCoupons.length})` : ''} &gt;
                         </button>
                         <Button
                             variant="purple"
