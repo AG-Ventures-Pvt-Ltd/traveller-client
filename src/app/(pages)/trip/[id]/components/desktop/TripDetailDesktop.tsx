@@ -123,7 +123,7 @@ export default function TripDetailDesktop() {
     const availableSections = useMemo<NavSection[]>(() => {
         const s: NavSection[] = [{ id: NAV_SECTION_IDS.OVERVIEW, label: 'Overview' }];
         if (tripData?.highlights?.length) s.push({ id: NAV_SECTION_IDS.HIGHLIGHTS, label: 'Highlights' });
-        if (tripData?.itinerary?.length) s.push({ id: NAV_SECTION_IDS.ITINERARY, label: 'Itinerary' });
+        if (tripData?.itinerary?.length) s.push({ id: NAV_SECTION_IDS.ITINERARY, label: isEvent ? 'Schedule' : 'Itinerary' });
         if (tripData?.inclusions?.length || tripData?.exclusions?.length) s.push({ id: NAV_SECTION_IDS.INCLUSIONS, label: 'Inclusions' });
         if (tripData?.reviews?.length) s.push({ id: NAV_SECTION_IDS.REVIEWS, label: 'Reviews' });
         s.push({ id: NAV_SECTION_IDS.TRIP_SUPPORT, label: isEvent ? 'Event Support' : 'Trip Support' });
@@ -260,6 +260,7 @@ export default function TripDetailDesktop() {
                                     boardingPoint={boardingPoint}
                                     seats={seatsDisplay}
                                     certificates={detailedData?.host?.certificates || []}
+                                    isEvent={isEvent}
                                 />
                             </div>
                             {/* Group travel highlight */}
@@ -269,7 +270,7 @@ export default function TripDetailDesktop() {
                                     <UsersThreeIcon size={28} weight="duotone" className="text-[#D0EF65]" />
                                 </div>
                                 <div className="relative z-10">
-                                    <p className="text-lg font-semibold text-black leading-tight">Travel with like-minded strangers</p>
+                                    <p className="text-lg font-semibold text-black leading-tight">{isEvent ? 'Meet' : 'Travel'} with like-minded strangers</p>
                                     <p className="text-sm font-medium text-black/70 mt-0.5">Small, capped groups — solo-friendly, vetted hosts, real connections.</p>
                                 </div>
                             </div>
@@ -285,7 +286,7 @@ export default function TripDetailDesktop() {
                         {/* Highlights */}
                         {tripData.highlights && tripData.highlights.length > 0 && (
                             <div ref={highlightsRef} className="scroll-mt-[140px]">
-                                <TripHighlights highlights={tripData.highlights} />
+                                <TripHighlights highlights={tripData.highlights} isEvent={isEvent} />
                             </div>
                         )}
 
@@ -293,6 +294,7 @@ export default function TripDetailDesktop() {
                         {(isDetailedLoading || (tripData.itinerary && tripData.itinerary.length > 0)) && (
                             <div ref={itineraryRef} className="scroll-mt-[140px] [&_.sticky]:!top-[128px] [&_.sticky]:!z-20">
                                 <ItinerarySection
+                                    isEvent={isEvent}
                                     itinerary={tripData.itinerary || []}
                                     selectedDay={selectedDay}
                                     expandedDays={expandedDays}
@@ -359,7 +361,7 @@ export default function TripDetailDesktop() {
                                 sortedBatches={sortedBatches}
                                 selectedBatch={selectedBatch}
                                 onSelectBatch={setSelectedBatch}
-                                bestTimeToVisit={basicData?.bestTimeToVisit}
+                                bestTimeToVisit={isEvent ? undefined : basicData?.bestTimeToVisit}
                                 pricingList={pricingList}
                                 selectedPricing={selectedPricing}
                                 pricingInfoIndex={pricingInfoIndex}

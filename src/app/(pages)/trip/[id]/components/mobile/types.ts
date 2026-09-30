@@ -60,6 +60,7 @@ export interface ItinerarySectionProps {
     onDaySelect: (index: number) => void;
     onDayToggle: (index: number) => void;
     isLoading?: boolean;
+    isEvent?: boolean;
 }
 
 export interface InclusionsSectionProps {

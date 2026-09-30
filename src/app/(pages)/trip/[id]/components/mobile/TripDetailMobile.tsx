@@ -146,7 +146,7 @@ export default function TripDetailMobile() {
         }
 
         if (tripData?.itinerary && tripData.itinerary.length > 0) {
-            sections.push({ id: NAV_SECTION_IDS.ITINERARY, label: 'Itinerary' });
+            sections.push({ id: NAV_SECTION_IDS.ITINERARY, label: isEvent ? 'Schedule' : 'Itinerary' });
         }
 
         if ((tripData?.inclusions && tripData.inclusions.length > 0) || (tripData?.exclusions && tripData.exclusions.length > 0)) {
@@ -273,7 +273,7 @@ export default function TripDetailMobile() {
                                 batches={sortedBatches}
                                 selectedBatch={selectedBatch}
                                 onSelect={setSelectedBatch}
-                                bestTimeToVisit={basicData?.bestTimeToVisit}
+                                bestTimeToVisit={isEvent ? undefined : basicData?.bestTimeToVisit}
                             />
                         )}
                         {tripData?.host && (
@@ -307,12 +307,13 @@ export default function TripDetailMobile() {
                     </div>
                     {tripData.highlights && tripData.highlights.length > 0 && (
                         <div ref={highlightsRef} className="scroll-mt-20">
-                            <TripHighlights highlights={tripData.highlights} />
+                            <TripHighlights highlights={tripData.highlights} isEvent={isEvent} />
                         </div>
                     )}
                     {(isDetailedLoading || (tripData.itinerary && tripData.itinerary.length > 0)) && (
                         <div ref={itineraryRef} className="scroll-mt-20 mb-6">
                             <ItinerarySection
+                                isEvent={isEvent}
                                 itinerary={tripData.itinerary || []}
                                 selectedDay={selectedDay}
                                 expandedDays={expandedDays}
