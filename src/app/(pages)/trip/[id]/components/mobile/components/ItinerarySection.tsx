@@ -16,10 +16,11 @@ export default function ItinerarySection({
     onDaySelect,
     onDayToggle,
     isLoading = false,
+    isEvent,
 }: ItinerarySectionProps) {
     if (isLoading) {
         return (
-            <CollapsibleCard overflow="visible" className="bg-[#e2f4a6] border border-[#d9d9d9] rounded-[16px] scroll-mt-24 mt-6" title='Trip Itinerary'>
+            <CollapsibleCard overflow="visible" className="bg-[#e2f4a6] border border-[#d9d9d9] rounded-[16px] scroll-mt-24 mt-6" title={isEvent ? 'Event Schedule' : 'Trip Itinerary'}>
                 <div className="bg-[#e2f4a6] sticky top-16 z-15 px-3 py-2">
                     <div className="flex gap-3 overflow-x-auto bg-white p-3 rounded-xl scrollbar-hide">
                         <div className="flex gap-3 pr-3">
@@ -53,7 +54,7 @@ export default function ItinerarySection({
         }
     };
     return (
-        <CollapsibleCard overflow="visible" className="bg-[#e2f4a6] border border-[#d9d9d9] rounded-[16px] scroll-mt-24 mt-6" title='Trip Itinerary'>
+        <CollapsibleCard overflow="visible" className="bg-[#e2f4a6] border border-[#d9d9d9] rounded-[16px] scroll-mt-24 mt-6" title={isEvent ? 'Event Schedule' : 'Trip Itinerary'}>
             <div className="bg-[#e2f4a6] sticky top-16 z-15 px-3 py-2">
                 <div className="flex gap-3 overflow-x-auto bg-white p-3 rounded-xl scrollbar-hide">
                     {/* Fixes trailing padding clip in overflow scroll */}
@@ -124,15 +125,6 @@ export default function ItinerarySection({
                         </div>
                     </div>
                 ))}
-                {/* End marker */}
-                <div className="flex items-center gap-3">
-                    <span className="bg-yellow-400 text-black rounded-full px-6 py-2 text-lg font-medium flex-shrink-0">
-                        End
-                    </span>
-                    <span className='font-black'>
-                        ---------
-                    </span>
-                </div>
             </div>
         </CollapsibleCard>
     );

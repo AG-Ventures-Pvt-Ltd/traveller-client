@@ -132,13 +132,13 @@ export default function TripOverviewCard(props: TripOverviewCardProps) {
                         </div>)
                 }
             </div>
-            {props.selectedMeetingPoint && (
+            {!isEvent && props.selectedMeetingPoint && (
                 <div className='flex items-center gap-2 text-xs text-black'>
                     <p className=" tracking-[-0.36px] whitespace-nowrap">Depart from :</p>
                     <p className='font-medium'>{props.selectedMeetingPoint}</p>
                 </div>
             )}
-            {(meetingPoints.length > 0) && (path.split('/')[1] !== 'profile') && (
+            {!isEvent && (meetingPoints.length > 0) && (path.split('/')[1] !== 'profile') && (
                 <div className="flex flex-col gap-2">
                     <div className="flex items-center gap-2 flex-wrap">
                         <p className="text-xs text-black tracking-[-0.36px] whitespace-nowrap">Depart from :</p>
