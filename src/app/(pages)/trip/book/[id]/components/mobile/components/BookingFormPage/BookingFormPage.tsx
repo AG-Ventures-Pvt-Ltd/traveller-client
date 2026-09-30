@@ -15,7 +15,7 @@ import ActivityAddOnsSection from './components/ActivityAddOnsSection';
 // import FoodPreferenceSection from './components/FoodPreferenceSection';
 import DiscountsSection from './components/DiscountsSection';
 import { ReservationSkeleton } from '../../BookingStepSkeletons';
-import { useBookingFormStore } from './hooks/useBookingFormStore';
+import { useBookingFormStore, getOrderSubtotal, selectEffectiveCoupon } from './hooks/useBookingFormStore';
 import type { BookingFormData, BookingOptionsResponse } from './types';
 import LoadExistingBookingDetails from './components/LoadExistingBookingDetails'
 import { useSearchParams } from 'next/navigation';
@@ -54,15 +54,6 @@ export default function BookingFormPage({ tripId, batchId, onViewCoupons }: Book
         setBookingOptions,
         setIsBookingOptionsLoading,
         setSelectedTravelIdx,
-        guests,
-        addOns,
-        selectedAddOnIdx,
-        selectedExtraAddOnIdx,
-        selectedTransportAddOnIdx,
-        selectedActivityAddOnIdx,
-        appliedCoupon,
-        selectedMeetingPointIdx,
-        meetingPoints,
     } = useBookingFormStore();
 
     const { data: bookingOptionsData, isLoading: isBookingOptionsLoadingData } = useGetData<BookingOptionsResponse>(
@@ -95,52 +86,18 @@ export default function BookingFormPage({ tripId, batchId, onViewCoupons }: Book
         }
     }, [pricingTiers, selectedTravelIdx, setSelectedTravelIdx]);
 
-    // Calculate total price based on all selected options
+    const subtotal = useBookingFormStore(getOrderSubtotal);
+    const effectiveCoupon = useBookingFormStore(selectEffectiveCoupon);
+
     const displayPrice = useMemo(() => {
-        let totalPerPerson = 0;
-
-        // Add base pricing tier price
-        if (selectedTravelIdx !== null && pricingTiers[selectedTravelIdx]) {
-            totalPerPerson += pricingTiers[selectedTravelIdx].pricePerPerson;
+        let discount = 0;
+        if (effectiveCoupon) {
+            discount = effectiveCoupon.discountType === 'percentage'
+                ? Math.min((subtotal * effectiveCoupon.discountValue) / 100, effectiveCoupon.maxDiscountAmount || Infinity)
+                : effectiveCoupon.discountValue;
         }
-
-        // Add pickup price for selected depart-from location
-        if (meetingPoints[selectedMeetingPointIdx]) {
-            totalPerPerson += meetingPoints[selectedMeetingPointIdx].pickupPrice || 0;
-        }
-
-        // Add selected add-ons
-        if (selectedAddOnIdx !== null && addOns[selectedAddOnIdx]) {
-            totalPerPerson += addOns[selectedAddOnIdx].pricePerPerson;
-        }
-        if (selectedExtraAddOnIdx !== null && addOns[selectedExtraAddOnIdx]) {
-            totalPerPerson += addOns[selectedExtraAddOnIdx].pricePerPerson;
-        }
-        if (selectedTransportAddOnIdx !== null && addOns[selectedTransportAddOnIdx]) {
-            totalPerPerson += addOns[selectedTransportAddOnIdx].pricePerPerson;
-        }
-        if (selectedActivityAddOnIdx !== null && addOns[selectedActivityAddOnIdx]) {
-            totalPerPerson += addOns[selectedActivityAddOnIdx].pricePerPerson;
-        }
-
-        // Calculate total for all guests
-        let total = totalPerPerson * guests;
-
-        // Apply coupon discount
-        if (appliedCoupon) {
-            if (appliedCoupon.discountType === 'percentage') {
-                const discountAmount = Math.min(
-                    (total * appliedCoupon.discountValue) / 100,
-                    appliedCoupon.maxDiscountAmount || Infinity
-                );
-                total -= discountAmount;
-            } else {
-                total -= appliedCoupon.discountValue;
-            }
-        }
-
-        return Math.max(0, total);
-    }, [selectedTravelIdx, pricingTiers, guests, addOns, selectedAddOnIdx, selectedExtraAddOnIdx, selectedTransportAddOnIdx, selectedActivityAddOnIdx, appliedCoupon, selectedMeetingPointIdx, meetingPoints]);
+        return Math.max(0, subtotal - discount);
+    }, [subtotal, effectiveCoupon]);
 
     const handleButtonClick = () => {
         if (existingBookingId) {
@@ -186,7 +143,7 @@ export default function BookingFormPage({ tripId, batchId, onViewCoupons }: Book
 
                     <DiscountsSection
                         tripId={tripId}
-                        orderAmount={displayPrice}
+                        orderAmount={subtotal}
                         onViewCoupons={onViewCoupons}
                     />
                 </div>
@@ -231,7 +188,7 @@ export default function BookingFormPage({ tripId, batchId, onViewCoupons }: Book
 
             <DiscountsSection
                 tripId={tripId}
-                orderAmount={displayPrice}
+                orderAmount={subtotal}
                 onViewCoupons={onViewCoupons}
             />
             <BookingBar displayPrice={displayPrice} onBookNow={handleButtonClick} />
