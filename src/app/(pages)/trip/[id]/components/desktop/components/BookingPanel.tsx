@@ -27,14 +27,15 @@ export interface BookingPanelProps {
     tripSlug: string;
     host?: TripData['host'];
     seatsLeft?: number;
+    isEvent?: boolean;
 }
 
 export default function BookingPanel({
     displayPrice, sortedBatches, selectedBatch, onSelectBatch, bestTimeToVisit,
-    onBookNow, isBooking, tripTitle, tripSlug, host,
+    onBookNow, isBooking, tripTitle, tripSlug, host, isEvent,
 }: BookingPanelProps) {
     const handleWhatsApp = () => {
-        const msg = `https://wondrr.in/trip/${tripSlug}\n\n Hi, I want to book the "${tripTitle}" trip. \nPlease help me confirm my spot.`;
+        const msg = `https://wondrr.in/trip/${tripSlug}\n\n Hi, I want to book the "${tripTitle}" ${isEvent ? 'event' : 'trip'}. \nPlease help me confirm my spot.`;
         window.open(`https://wa.me/${WHATSAPP_PHONE_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
     };
 
@@ -53,7 +54,7 @@ export default function BookingPanel({
 
             <div className="p-4 space-y-3.5">
                 {sortedBatches.length > 0 && (
-                    <BatchSelection batches={sortedBatches} selectedBatch={selectedBatch} onSelect={onSelectBatch} bestTimeToVisit={bestTimeToVisit} />
+                    <BatchSelection batches={sortedBatches} selectedBatch={selectedBatch} onSelect={onSelectBatch} bestTimeToVisit={bestTimeToVisit} isEvent={isEvent} />
                 )}
                 <Button variant='purple' fullWidth onClick={onBookNow} disabled={isBooking || sortedBatches.length === 0} className='font-semibold'>
                     {sortedBatches.length === 0 ? 'No dates available' : isBooking ? 'Redirecting…' : 'Book Now'}

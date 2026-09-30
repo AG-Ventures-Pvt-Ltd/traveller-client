@@ -3,6 +3,7 @@
 import { useEffect, useRef } from 'react';
 import { useParams, useSearchParams, useRouter } from 'next/navigation';
 import { useBookingNavStore } from '../../[batchId]/store/useBookingNavStore';
+import { useIsBookingEvent } from '@/app/(pages)/trip/api';
 import BookingFormPage, { BookingFormData } from './components/BookingFormPage/BookingFormPage';
 import ReviewInfo from './components/ReviewInfo/ReviewInfo';
 import AllCouponsPage from './components/AllCouponsPage';
@@ -27,6 +28,7 @@ export default function BookingPage() {
     const step = (searchParams.get('step') || 'reservation') as Step;
 
     const { setHeaderLabel, setBackAction } = useBookingNavStore();
+    const isEvent = useIsBookingEvent();
 
     const bookingDataRef = useRef<BookingFormData | null>(null);
 
@@ -38,8 +40,8 @@ export default function BookingPage() {
 
     useEffect(() => {
         const config = STEP_CONFIG[step] ?? STEP_CONFIG.reservation;
-        setHeaderLabel(config.headerLabel);
-    }, [step, setHeaderLabel]);
+        setHeaderLabel(isEvent && step === 'reservation' ? 'Book your event' : config.headerLabel);
+    }, [step, setHeaderLabel, isEvent]);
 
     useEffect(() => {
         if (step === 'reservation') {

@@ -1,6 +1,7 @@
 import { CalendarCheckIcon, UsersIcon, XIcon } from '@phosphor-icons/react';
 import MyImage from '@/common/ui/Image';
 import type { ElementType } from 'react';
+import { useIsBookingEvent } from '@/app/(pages)/trip/api';
 
 interface BookingDetailsItem {
     key: string;
@@ -43,6 +44,7 @@ interface TripSummaryCardProps {
 }
 
 const TripSummaryCard: React.FC<TripSummaryCardProps> = ({ trip, booking }) => {
+    const isEvent = useIsBookingEvent();
     const formattedDate = trip.startDateTime
         ? new Date(trip.startDateTime).toLocaleDateString('en-GB', {
             day: '2-digit',
@@ -55,7 +57,7 @@ const TripSummaryCard: React.FC<TripSummaryCardProps> = ({ trip, booking }) => {
         {
             key: 'travelers',
             icon: UsersIcon,
-            getValue: (booking) => `${booking.numberOfPeople} Traveler${booking.numberOfPeople > 1 ? 's' : ''}`,
+            getValue: (booking) => `${booking.numberOfPeople} ${isEvent ? 'Attendee' : 'Traveler'}${booking.numberOfPeople > 1 ? 's' : ''}`,
             condition: () => true,
             className: '',
         },

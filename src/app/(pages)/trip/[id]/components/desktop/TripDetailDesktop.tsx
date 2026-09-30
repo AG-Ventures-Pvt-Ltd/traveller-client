@@ -86,6 +86,7 @@ export default function TripDetailDesktop() {
     );
 
     const selectedBatchData = selectedBatch !== null ? sortedBatches[selectedBatch] ?? null : null;
+    const isEvent = basicData?.type === 'single_day_event';
     const seatsDisplay = selectedBatchData ? getSeatsDisplay(selectedBatchData.totalSeats) : '';
 
     const boardingPoint = selectedBatchData?.meetingPoint?.length
@@ -125,11 +126,11 @@ export default function TripDetailDesktop() {
         if (tripData?.itinerary?.length) s.push({ id: NAV_SECTION_IDS.ITINERARY, label: 'Itinerary' });
         if (tripData?.inclusions?.length || tripData?.exclusions?.length) s.push({ id: NAV_SECTION_IDS.INCLUSIONS, label: 'Inclusions' });
         if (tripData?.reviews?.length) s.push({ id: NAV_SECTION_IDS.REVIEWS, label: 'Reviews' });
-        s.push({ id: NAV_SECTION_IDS.TRIP_SUPPORT, label: 'Trip Support' });
+        s.push({ id: NAV_SECTION_IDS.TRIP_SUPPORT, label: isEvent ? 'Event Support' : 'Trip Support' });
         if (tripData?.faqs?.length) s.push({ id: NAV_SECTION_IDS.FAQS, label: 'FAQs' });
         s.push({ id: NAV_SECTION_IDS.CANCELLATION, label: 'Cancellation' });
         return s;
-    }, [tripData]);
+    }, [tripData, isEvent]);
 
     const pricingList = useMemo(() => tripData?.pricing?.pricings || [], [tripData?.pricing]);
     const closeLightbox = useCallback(() => setLightboxIndex(null), []);
@@ -254,7 +255,7 @@ export default function TripDetailDesktop() {
                             <div className=" pb-2">
                                 <FactCards
                                     location={basicData?.location}
-                                    duration={getDurationDisplay(basicData?.duration, selectedBatchData ?? sortedBatches[0])}
+                                    duration={getDurationDisplay(basicData?.duration, selectedBatchData ?? sortedBatches[0], isEvent)}
                                     difficulty={basicData?.difficulty}
                                     boardingPoint={boardingPoint}
                                     seats={seatsDisplay}
@@ -273,7 +274,7 @@ export default function TripDetailDesktop() {
                                 </div>
                             </div>
                             {tripData.description && (
-                                <CollapsibleCard title='Vibe of the trip' className='mt-6'>
+                                <CollapsibleCard title={isEvent ? 'Vibe of the event' : 'Vibe of the trip'} className='mt-6'>
                                     <p className="text-[15px] pl-4 pr-6 pb-2 text-justify">
                                         {tripData.description}
                                     </p>
@@ -329,7 +330,7 @@ export default function TripDetailDesktop() {
 
                         {/* Safety */}
                         <div ref={tripSupportRef} className="scroll-mt-[140px]">
-                            <SafetySupportSection />
+                            <SafetySupportSection isEvent={isEvent} />
                         </div>
 
                         {/* FAQs */}
@@ -353,6 +354,7 @@ export default function TripDetailDesktop() {
                     <div className="w-[390px] shrink-0">
                         <div style={{ position: 'sticky', top: `${PANEL_STICKY_TOP}px` }}>
                             <BookingPanel
+                                isEvent={isEvent}
                                 displayPrice={displayPrice}
                                 sortedBatches={sortedBatches}
                                 selectedBatch={selectedBatch}
