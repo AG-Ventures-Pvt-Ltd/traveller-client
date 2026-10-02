@@ -262,8 +262,8 @@ export default function BookingPolicy() {
                 <div className="bg-blue-50 p-6 rounded-lg">
                     <h3 className="text-xl font-semibold mb-4">Need Help?</h3>
                     <ul className="space-y-2">
-                        <li>📧 support@wondrr.com</li>
-                        <li>📞 +91-8217728508 / 9151315550</li>
+                        <li>📧 support@wondrr.in</li>
+                        <li>📞 +91-9667427187 / 9151315550</li>
                         <li>💬 Live Chat Available: 9 AM - 9 PM IST</li>
                     </ul>
                 </div>
