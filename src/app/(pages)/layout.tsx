@@ -31,9 +31,6 @@ export const metadata: Metadata = {
   title: "Group Trips from India's Top Travel Brands | Wondrr",
   description:
     "Browse and book group trips from India's top verified travel brands — all on one platform. Fixed departures across the best destinations, zero hassle.",
-  alternates: {
-    canonical: '/',
-  },
   openGraph: {
     title: "Group Trips from India's Top Travel Brands | Wondrr",
     description:
