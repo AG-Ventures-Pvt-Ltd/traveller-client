@@ -81,9 +81,7 @@ const ImageInput: React.FC<ImageInputProps> = ({
                   <MyImage
                     src={result.success ? result.url : URL.createObjectURL(result.originalFile)}
                     alt={`Preview ${index + 1}`}
-                    className="w-full h-32 object-cover rounded"
-                    fill={false}
-                    style={{ width: '100%', height: '128px' }}
+                    className="w-full h-32 rounded"
                   />
                   <button
                     onClick={(e) => {
@@ -107,8 +105,7 @@ const ImageInput: React.FC<ImageInputProps> = ({
                   <MyImage
                     src={URL.createObjectURL(image)}
                     alt={`Preview ${index + 1}`}
-                    className="w-full h-20 object-cover rounded"
-                    fill={false}
+                    className="w-full h-20 rounded"
                   />
                   <button
                     onClick={(e) => {

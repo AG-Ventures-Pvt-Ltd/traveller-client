@@ -108,6 +108,8 @@ export const API_ENDPOINTS = {
   REVIEW : {
     PROFILE : (id: string) => `/api/client/v1/user/reviews/${id}`,
     TRIP : (id: string) => `/api/client/v1/trips/reviews/${id}`,
+    BY_TOKEN: (token: string) => `/api/client/v1/trips/reviews/token/${token}`,
+    SUBMIT: '/api/client/v1/trips/reviews',
   },
   WALLET: {
     BALANCE: '/api/client/v1/wallet/balance',
