@@ -16,8 +16,9 @@ const rubik = Rubik({
 import Script from "next/script";
 import Navbar from './(landing)/components/Navbar/Navbar'
 import StickyNavigation from '@/common/components/composites/StickyNavigation';
+import ServiceWorkerRegister from '@/common/components/composites/ServiceWorkerRegister';
 import PromoCouponBanner from './(landing)/components/common/PromoCouponBanner/PromoCouponBanner';
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import Image from "next/image";
 import { JsonLd, organizationSchema, websiteSchema } from '@/common/seo/JsonLd';
 import { GA_ID, ALLOWED_HOSTS } from '@/common/utils/analytics';
@@ -55,6 +56,19 @@ export const metadata: Metadata = {
       "Browse and book group trips from India's top verified travel brands — all on one platform.",
     images: [`https://wondrr.in/png/metadata.png`],
   },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'Wondrr',
+  },
+  icons: {
+    icon: '/png/favicon.png',
+    apple: '/icons/apple-touch-icon.png',
+  },
+}
+
+export const viewport: Viewport = {
+  themeColor: '#171717',
 }
 
 
@@ -151,6 +165,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
             <div className="flex flex-1 flex-col">{children}</div>
           </div>
           <StickyNavigation />
+          <ServiceWorkerRegister />
         </Providers>
       </body>
     </html>
