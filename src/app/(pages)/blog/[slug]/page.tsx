@@ -44,7 +44,7 @@ interface TripCard {
   hostName: string;
   hostUsername?: string;
   days: string;
-  price: number;
+  price: number | null;
   rating: number;
 }
 
@@ -58,6 +58,9 @@ async function fetchRelatedTrips(slugs: string[]): Promise<Trip[]> {
   return results.reduce<Trip[]>((trips, res, i) => {
     if (res.status !== 'fulfilled' || !res.value) return trips;
     const t = res.value;
+    // No pricing on the trip (e.g. archived without a price) — the card has nowhere
+    // honest to show a price, so drop it rather than render "₹0/person".
+    if (typeof t.price !== 'number' || t.price <= 0) return trips;
     trips.push({
       id: slugs[i],
       tripSlug: t.tripSlug,

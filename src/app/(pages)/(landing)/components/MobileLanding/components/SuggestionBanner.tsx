@@ -35,9 +35,9 @@ const SuggestionBanner: React.FC<SuggestionBannerProps> = ({
             <div className="flex flex-col gap-4">
                 <div className="flex items-center gap-2">
                     <SparkleIcon className="w-8 h-8 text-neutral-900" fill="currentColor" />
-                    <p className="text-neutral-900 text-lg sm:text-xl font-bold ">
+                    <h1 className="text-neutral-900 text-lg sm:text-xl font-bold ">
                         {suggestion}
-                    </p>
+                    </h1>
                 </div>
                 <div className="relative">
                     <Search className="absolute left-4 sm:left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-500" strokeWidth={2} />

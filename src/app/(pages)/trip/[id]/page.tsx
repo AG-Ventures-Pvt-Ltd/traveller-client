@@ -9,6 +9,7 @@ import { HydrationBoundary, dehydrate } from '@tanstack/react-query';
 import { getQueryClient } from '@/services/getQueryClient';
 import { getTripBasicDetails, getTripDetailedDetails } from './serverFetch';
 import { generateSlug } from '../utils';
+import { sortBatchesByDate } from './components/utils';
 
 // cache() dedupes the fetch across generateMetadata + Page within one request.
 const getTripMeta = cache(async (id: string): Promise<{ slug: string; trip: TripMetadata } | null> => {
@@ -76,11 +77,27 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
   const url = `${SITE_URL}/trip/${generateSlug(trip.title, slug)}`;
   const image = `${process.env.NEXT_PUBLIC_CLOUDFRONT_URL}${trip.image}`;
 
+  // The trip-meta endpoint (`trip.priceFrom` etc.) rarely sends enrichment fields.
+  // Derive the same data from BASIC_DETAILS/DETAILED_DETAILS instead — already
+  // prefetched below, cache()-deduped, so this costs no extra request.
+  const [basic, detailedForSchema] = await Promise.all([
+    getTripBasicDetails(slug) as Promise<Partial<TripData> | null>,
+    getTripDetailedDetails(slug) as Promise<Partial<TripData> | null>,
+  ]);
+  const merged: Partial<TripData> = { ...basic, ...detailedForSchema };
+
+  const upcomingBatches = (merged.tripBatches || []).filter((b) => (b.seatsAvailable ?? 0) > 0);
+  const sortedBatches = sortBatchesByDate(upcomingBatches.length ? upcomingBatches : merged.tripBatches || []);
+  const nextBatch = sortedBatches[0];
+  const lowestPrice = (merged.tripBatches || []).reduce<number | undefined>((min, b) => {
+    return typeof b.price === 'number' && (min === undefined || b.price < min) ? b.price : min;
+  }, undefined) ?? merged.pricing?.pricings?.[0]?.pricePerPerson;
+
   const touristTrip: Record<string, unknown> = {
     '@context': 'https://schema.org',
     '@type': 'TouristTrip',
     name: trip.title,
-    description: `${trip.numberOfDays}-day group trip to ${trip.location} with ${trip.hostName} on Wondrr.`,
+    description: merged.description || `${trip.numberOfDays}-day group trip to ${trip.location} with ${trip.hostName} on Wondrr.`,
     url,
     image,
     touristType: 'Group travellers',
@@ -95,24 +112,29 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
     },
   };
 
-  if (typeof trip.priceFrom === 'number') {
+  if (typeof lowestPrice === 'number') {
     touristTrip.offers = {
       '@type': 'Offer',
-      price: trip.priceFrom,
+      price: lowestPrice,
       priceCurrency: trip.priceCurrency || 'INR',
-      availability: 'https://schema.org/InStock',
+      availability: upcomingBatches.length > 0 ? 'https://schema.org/InStock' : 'https://schema.org/SoldOut',
+      ...(nextBatch?.startDate && { validFrom: new Date(nextBatch.startDate).toISOString() }),
       url,
     };
   }
 
-  if (trip.startDate) touristTrip.startDate = trip.startDate;
-  if (trip.endDate) touristTrip.endDate = trip.endDate;
+  const startDate = nextBatch?.startDate ?? trip.startDate;
+  const endDate = nextBatch?.endDate ?? trip.endDate;
+  if (startDate) touristTrip.startDate = new Date(startDate).toISOString().slice(0, 10);
+  if (endDate) touristTrip.endDate = new Date(endDate).toISOString().slice(0, 10);
 
-  if (typeof trip.rating === 'number' && typeof trip.reviewCount === 'number' && trip.reviewCount > 0) {
+  const rating = merged.rating ?? trip.rating;
+  const reviewCount = merged.totalReviews ?? trip.reviewCount;
+  if (typeof rating === 'number' && typeof reviewCount === 'number' && reviewCount > 0) {
     touristTrip.aggregateRating = {
       '@type': 'AggregateRating',
-      ratingValue: trip.rating,
-      reviewCount: trip.reviewCount,
+      ratingValue: rating,
+      reviewCount,
     };
   }
 
@@ -138,15 +160,13 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
     }),
   ]);
 
-  // cache() dedupes this call — no extra network request since prefetchQuery already fetched it.
-  const detailed = await getTripDetailedDetails(slug) as Partial<TripData> | null;
   const schemas: Record<string, unknown>[] = [touristTrip, breadcrumb];
 
-  if (detailed?.faqs && detailed.faqs.length > 0) {
+  if (detailedForSchema?.faqs && detailedForSchema.faqs.length > 0) {
     schemas.push({
       '@context': 'https://schema.org',
       '@type': 'FAQPage',
-      mainEntity: detailed.faqs.map((faq) => ({
+      mainEntity: detailedForSchema.faqs.map((faq) => ({
         '@type': 'Question',
         name: faq.question,
         acceptedAnswer: { '@type': 'Answer', text: faq.answer },

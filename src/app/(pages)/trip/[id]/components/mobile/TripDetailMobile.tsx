@@ -255,7 +255,7 @@ export default function TripDetailMobile() {
 
                 <div className='px-6'>
                     <div className='flex justify-between'>
-                        <p className='font-bold text-2xl max-w-[85%]'>{basicData?.title}</p>
+                        <h1 className='font-bold text-2xl max-w-[85%]'>{basicData?.title}</h1>
                         <div className='bg-[#616161] text-white flex items-center my-0 px-2 rounded-xl max-h-fit py-1'>
                             <StarIcon weight='fill' className='text-[#FFC107] mr-1' />
                             <span className='font-bold'>{averageRating}

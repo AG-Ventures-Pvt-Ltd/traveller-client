@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { AnimatePresence, motion } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { Plus } from 'lucide-react'
 import { FAQS, FAQ_SECTION } from '../constants'
 import { SectionHead, fadeUp, stagger } from './_shared'
@@ -44,18 +44,16 @@ const FaqSection = () => {
                   <Plus size={18} className="text-neutral-900" strokeWidth={3} />
                 </span>
               </button>
-              <AnimatePresence initial={false}>
-                {isOpen && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: 'auto', opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-                  >
-                    <p className="px-5 pb-5 text-sm leading-relaxed text-neutral-600 sm:text-base">{faq.a}</p>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+              {/* Always mounted (not conditional on isOpen) so every FAQ answer is in the
+                  server-rendered HTML for crawlers/AI bots that don't click to expand —
+                  animation is pure CSS collapse, not a mount/unmount. */}
+              <motion.div
+                animate={{ height: isOpen ? 'auto' : 0, opacity: isOpen ? 1 : 0 }}
+                transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                className="overflow-hidden"
+              >
+                <p className="px-5 pb-5 text-sm leading-relaxed text-neutral-600 sm:text-base">{faq.a}</p>
+              </motion.div>
             </motion.div>
           )
         })}

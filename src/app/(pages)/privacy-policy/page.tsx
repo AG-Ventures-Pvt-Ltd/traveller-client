@@ -1,5 +1,12 @@
 import React from 'react'
 import { X, Check, AlertTriangle } from 'lucide-react'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Privacy Policy | Wondrr',
+  description: 'How Wondrr collects, uses, stores, and protects your personal data.',
+  alternates: { canonical: 'https://wondrr.in/privacy-policy' },
+}
 
 const Policy = () => {
   return (

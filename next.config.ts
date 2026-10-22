@@ -1,4 +1,19 @@
 import type { NextConfig } from 'next';
+import withPWAInit from 'next-pwa';
+
+const withPWA = withPWAInit({
+  dest: 'public',
+  // Service worker only makes sense against a real deployed origin — skip it
+  // in dev so it doesn't fight Turbopack's own HMR/caching.
+  disable: process.env.NODE_ENV !== 'production',
+  // next-pwa's auto-register only knows how to patch pages/_app.js — this is an
+  // App Router project, so registration happens manually (see ServiceWorkerRegister).
+  register: false,
+  skipWaiting: true,
+  // Precaching these build-internal manifests 404s, since they're dev/SSR-only
+  // artifacts — same workaround every next-pwa + App Router setup needs.
+  buildExcludes: [/middleware-manifest\.json$/, /app-build-manifest\.json$/, /_middleware\.js$/],
+});
 
 const nextConfig: NextConfig = {
   devIndicators: false,
@@ -83,4 +98,4 @@ const nextConfig: NextConfig = {
 
 };
 
-export default nextConfig;
+export default withPWA(nextConfig);

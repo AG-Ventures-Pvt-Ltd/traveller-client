@@ -1,14 +1,13 @@
 import React, { useState } from 'react'
 import MobileModal from "@/common/ui/MobileModal"
 import { StarIcon } from '@phosphor-icons/react'
-import CustomInput from '@/common/ui/CustomInput'
 import Button from '../atoms/Button'
 import ImageInput from '@/common/ui/ImageInput'
 
 interface ReviewModalProps {
     isOpen: boolean
     onClose: () => void
-    onSubmit: (rating: number, review: string) => void
+    onSubmit: (rating: number, review: string, images: string[]) => void
     initialRating?: number
     initialReview?: string
     title?: string
@@ -24,9 +23,14 @@ const ReviewModal: React.FC<ReviewModalProps> = ({
 }) => {
     const [rating, setRating] = useState(initialRating)
     const [review, setReview] = useState(initialReview)
+    const [imageUrls, setImageUrls] = useState<string[]>([])
+
+    const handleImagesChange = (urls: string[] | File[]) => {
+        setImageUrls(urls.filter((url): url is string => typeof url === 'string'))
+    }
 
     const handleSubmit = () => {
-        onSubmit(rating, review)
+        onSubmit(rating, review, imageUrls)
         onClose()
     }
 
@@ -48,7 +52,7 @@ const ReviewModal: React.FC<ReviewModalProps> = ({
 
     return (
         <MobileModal isOpen={isOpen} onClose={onClose} title={title}>
-            <div>
+            <div className="w-full md:w-[420px]">
                 <div className="mb-4 flex justify-center">
                     <div className="flex gap-1">
                         {renderStars()}
@@ -57,10 +61,16 @@ const ReviewModal: React.FC<ReviewModalProps> = ({
 
                 <div className="mb-3">
                     <label className="block text-sm font-medium mb-2">Write a review</label>
-                    <CustomInput type='textarea' value={review} onChange={(d) => setReview(d.target.value)} />
+                    <textarea
+                        value={review}
+                        onChange={(e) => setReview(e.target.value)}
+                        placeholder="Share your experience..."
+                        rows={5}
+                        className="w-full px-3 py-3 rounded-xl border border-zinc-300 text-sm text-black placeholder-black/40 outline-none focus:border-neutral-900 resize-none"
+                    />
                 </div>
                 <div className='mb-6'>
-                    <ImageInput text={'Share us your memories !'} onImagesChange={() => { }} />
+                    <ImageInput text={'Share us your memories !'} onImagesChange={handleImagesChange} autoUpload />
                 </div>
                 <Button
                     onClick={handleSubmit}

@@ -92,15 +92,15 @@ const BookedTripCard: React.FC<BookedTripCardProps> = ({
             return <></>
         }
 
-        if (tripStatus === 'completed' && !hasReview) {
+        if (tripStatus === 'completed') {
             return (
                 <>
                     <button
                         onClick={() => hasReview ? onEditReview?.(tripSlug) : onWriteReview?.(tripSlug)}
-                        className="flex-1 py-2.5 rounded-xl bg-[#FFC107] text-sm font-normal flex items-center justify-center gap-2 hover:bg-neutral-800 transition-colors"
+                        className="flex-1 py-2.5 rounded-xl bg-[#FFC107] text-sm font-normal flex items-center justify-center gap-2 cursor-pointer"
                     >
                         <PencilSimpleIcon size={16} weight="thin" />
-                        Write a Review
+                        {hasReview ? 'Edit Review' : 'Write a Review'}
                     </button>
                 </>
             )
@@ -112,7 +112,7 @@ const BookedTripCard: React.FC<BookedTripCardProps> = ({
                 <>
                     <button
                         onClick={() => onPayNow?.(tripSlug)}
-                        className="flex-1 py-2.5 rounded-xl bg-[#448AFF] text-white text-sm font-normal flex items-center justify-center gap-2 hover:bg-blue-700 transition-colors"
+                        className="flex-1 py-2.5 rounded-xl bg-[#448AFF] text-white text-sm font-normal flex items-center justify-center gap-2 cursor-pointer hover:bg-blue-700 transition-colors"
                     >
                         <CurrencyInrIcon size={16} weight="thin" />
                         Pay Now
@@ -127,7 +127,7 @@ const BookedTripCard: React.FC<BookedTripCardProps> = ({
                 <>
                     <button
                         onClick={() => onFillDetails?.(tripSlug)}
-                        className="flex-1 py-2.5 rounded-xl bg-[#FFC107] text-black text-sm font-normal flex items-center justify-center gap-2 hover:bg-blue-700 transition-colors"
+                        className="flex-1 py-2.5 rounded-xl bg-[#FFC107] text-black text-sm font-normal flex items-center justify-center gap-2 cursor-pointer hover:bg-blue-700 transition-colors"
                     >
                         <PencilSimpleIcon size={16} weight="thin" />
                         Fill in Details
@@ -212,7 +212,7 @@ const BookedTripCard: React.FC<BookedTripCardProps> = ({
                     {renderActions()}
                     <button
                         onClick={() => onViewDetails()}
-                        className="flex-1 py-2.5 rounded-xl border border-neutral-900 text-sm font-normal text-neutral-900 flex items-center justify-center hover:bg-neutral-50 transition-colors"
+                        className="flex-1 py-2.5 rounded-xl border border-neutral-900 text-sm font-normal text-neutral-900 flex items-center justify-center cursor-pointer hover:bg-neutral-50 transition-colors"
                     >
                         View Details
                     </button>
