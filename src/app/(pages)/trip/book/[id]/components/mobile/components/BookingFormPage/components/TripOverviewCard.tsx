@@ -22,6 +22,7 @@ interface TripOverviewCardProps {
     gap?: string
     displayPrice?:number
     isFree?: boolean
+    isEvent?: boolean
     isLoading?: boolean
     handleBookNowClick?:() => void
 }
@@ -41,7 +42,8 @@ export default function TripOverviewCard(props: TripOverviewCardProps) {
     const store = useBookingFormStore();
 
     const { isMobile } = useDevice()
-    const isEvent = useIsBookingEvent();
+    const hookIsEvent = useIsBookingEvent();
+    const isEvent = props.isEvent ?? hookIsEvent;
 
     const guests = store.guests || props.guests || 1;
     const setGuests = useMemo(() =>

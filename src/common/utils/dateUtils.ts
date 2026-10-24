@@ -28,15 +28,17 @@ export const formatDateTime = (date: Date | string): string => {
   });
 };
 
+// "1D" for a same-day trip/event, else "3D/2N"
+const duration = (days: number) => (days === 1 ? '1D' : `${days}D/${days - 1}N`);
+
 export const formatDateRangeWithDuration = (startDate: string, endDate: string): string => {
   const [sy, sm, sd] = parseISTDate(startDate);
   const [ey, em, ed] = parseISTDate(endDate);
   const start = new Date(sy, sm - 1, sd);
   const end = new Date(ey, em - 1, ed);
   const diffDays = Math.round((end.getTime() - start.getTime()) / 86400000) + 1;
-  const nights = diffDays - 1;
   const fmt = (d: Date) => `${d.toLocaleDateString('en-US', { month: 'short' })} ${d.getDate()}, ${d.getFullYear()}`;
-  return `${fmt(start)} - ${fmt(end)} • ${diffDays}D/${nights}N`;
+  return `${fmt(start)} - ${fmt(end)} • ${duration(diffDays)}`;
 };
 
 export const formatDurationOnly = (startDate: string, endDate: string): string => {
@@ -45,8 +47,7 @@ export const formatDurationOnly = (startDate: string, endDate: string): string =
   const start = new Date(sy, sm - 1, sd);
   const end = new Date(ey, em - 1, ed);
   const diffDays = Math.round((end.getTime() - start.getTime()) / 86400000) + 1;
-  const nights = diffDays - 1;
-  return `${diffDays}D/${nights}N`;
+  return duration(diffDays);
 };
 
 export const formatTimeTo12Hour = (timeString: string): string => {

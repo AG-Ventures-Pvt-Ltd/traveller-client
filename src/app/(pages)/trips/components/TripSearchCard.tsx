@@ -130,11 +130,15 @@ const TripSearchCard: React.FC<TripSearchCardProps> = ({ trip, index, listName =
         {/* Price and departure share a line, anchored to opposite corners. */}
         <div className="mt-3 flex items-end justify-between gap-2">
           <span className="flex min-w-0 items-baseline gap-1 text-black">
-            <span className="text-[11px] font-medium text-black/60">From</span>
-            <span className="text-2xl font-bold leading-none">
-              ₹{(trip.price ?? 0).toLocaleString('en-IN')}
-            </span>
-            <span className="text-[11px] font-medium text-black/60">/person</span>
+            {trip.price === 0 ? (
+              <span className="text-xl font-bold leading-none">Free Entry</span>
+            ) : (<>
+              <span className="text-[11px] font-medium text-black/60">From</span>
+              <span className="text-2xl font-bold leading-none">
+                ₹{(trip.price ?? 0).toLocaleString('en-IN')}
+              </span>
+              <span className="text-[11px] font-medium text-black/60">/person</span>
+            </>)}
           </span>
 
 

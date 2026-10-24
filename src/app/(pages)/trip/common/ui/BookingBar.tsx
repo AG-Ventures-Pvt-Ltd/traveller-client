@@ -8,6 +8,7 @@ interface BookingBarProps {
     isLoading?: boolean;
     disabled?: boolean;
     isFree?: boolean;
+    buttonLabel?: string;
 }
 
 export default function BookingBar({
@@ -16,12 +17,16 @@ export default function BookingBar({
     isLoading = false,
     disabled = false,
     isFree = false,
+    buttonLabel,
 }: BookingBarProps) {
     return (
         <div className="fixed bottom-0 left-0 right-0 bg-[#EEA0FF] pl-8 pr-4 py-5 flex items-center justify-between shadow-lg rounded-t-3xl z-20">
             <div>
                 {isFree ? (
-                    <p className="text-xl font-bold text-black">Free</p>
+                    <>
+                        <p className="text-xs font-medium text-black/60">Entry</p>
+                        <p className="text-xl font-bold text-black">Free</p>
+                    </>
                 ) : (<>
                     <p className="text-xl font-bold text-black flex items-end">
                         <span className='flex items-center'><CurrencyInrIcon weight='bold' /> {displayPrice}/</span>
@@ -35,7 +40,7 @@ export default function BookingBar({
                 disabled={isLoading || disabled}
                 className="bg-black text-white px-4 py-2 rounded-full font-semibold text-lg hover:bg-gray-800 transition-colors whitespace-nowrap disabled:opacity-70 disabled:cursor-not-allowed"
             >
-                {disabled ? 'No dates available' : isLoading ? 'Loading…' : isFree ? 'Confirm Booking' : 'Book Now'}
+                {disabled ? 'No dates available' : isLoading ? 'Loading…' : buttonLabel ?? (isFree ? 'Confirm Booking' : 'Book Now')}
             </button>
         </div>
     );

@@ -180,6 +180,7 @@ export default function TripDetailMobile() {
 
     const images = tripData.images || [];
 
+    const isFree = selectedPricing !== null && pricingList[selectedPricing]?.pricePerPerson === 0;
     const displayPrice = selectedPricing !== null && pricingList.length > 0
         ? pricingList[selectedPricing].pricePerPerson.toLocaleString('en-IN')
         : 0;
@@ -386,6 +387,8 @@ export default function TripDetailMobile() {
 
                 <BookingBar
                     displayPrice={displayPrice}
+                    isFree={isFree}
+                    buttonLabel='Book Now'
                     onBookNow={handleBookNow}
                     isLoading={isBooking}
                     disabled={sortedBatches.length === 0}
