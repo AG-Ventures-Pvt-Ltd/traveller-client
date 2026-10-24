@@ -164,7 +164,7 @@ export default function BookingFormPage({ tripId, batchId, onViewCoupons }: Book
     return (
         <div className="px-4 pb-20 flex flex-col gap-4">
             <LoadExistingBookingDetails />
-            <TripOverviewCard />
+            <TripOverviewCard isFree={isFree} />
             <TravelerDetailsCard />
 
             {pricingTiers.length > 0 && (
