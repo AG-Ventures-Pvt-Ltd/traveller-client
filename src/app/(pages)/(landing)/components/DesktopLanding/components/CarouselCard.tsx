@@ -105,6 +105,7 @@ const CarouselCard: React.FC<CarouselCardProps> = ({
         )}
 
         <div className="mt-auto flex flex-col">
+          {price === 0 ? <span className="text-neutral-900 text-xl font-bold">Free Entry</span> :
           <div className="flex items-center">
             <span className='font-semibold mr-1.5'>From</span>
             <CurrencyInrIcon size={18} weight='bold'/>
@@ -114,7 +115,7 @@ const CarouselCard: React.FC<CarouselCardProps> = ({
             </span>
             <span className=" text-sm font-medium">/person</span>
             </div>
-          </div>
+          </div>}
         </div>
       </div>
     </div>

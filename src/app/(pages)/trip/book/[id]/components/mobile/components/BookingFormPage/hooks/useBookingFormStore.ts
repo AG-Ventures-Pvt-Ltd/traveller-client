@@ -149,6 +149,10 @@ export const getOrderSubtotal = (s: PricingState): number => {
     return perPerson * s.guests;
 };
 
+// Free = a tier is picked and nothing selected costs anything. Server re-checks; no gateway for these.
+export const isOrderFree = (s: BookingFormState): boolean =>
+    s.selectedTravelIdx !== null && !!s.pricingTiers[s.selectedTravelIdx] && getOrderSubtotal(s) === 0;
+
 export const isCouponEligible = (coupon: Coupon, subtotal: number): boolean => subtotal >= (coupon.minOrderAmount || 0);
 
 // The applied coupon only while the order meets its minimum; price and booking payloads use this, never appliedCoupon directly.

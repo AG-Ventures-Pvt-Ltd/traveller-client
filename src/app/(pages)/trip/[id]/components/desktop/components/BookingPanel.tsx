@@ -12,6 +12,7 @@ import { sortBatchesByDate } from '../../utils';
 
 export interface BookingPanelProps {
     displayPrice: string | number;
+    isFree?: boolean;
     sortedBatches: ReturnType<typeof sortBatchesByDate>;
     selectedBatch: number | null;
     onSelectBatch: (index: number) => void;
@@ -31,7 +32,7 @@ export interface BookingPanelProps {
 }
 
 export default function BookingPanel({
-    displayPrice, sortedBatches, selectedBatch, onSelectBatch, bestTimeToVisit,
+    displayPrice, isFree, sortedBatches, selectedBatch, onSelectBatch, bestTimeToVisit,
     onBookNow, isBooking, tripTitle, tripSlug, host, isEvent,
 }: BookingPanelProps) {
     const handleWhatsApp = () => {
@@ -44,12 +45,16 @@ export default function BookingPanel({
             {/* Price header */}
             <div className="bg-[#EEA0FF] px-6 pt-5 pb-6 relative overflow-hidden">
                 <Plane className="absolute -right-3 -top-2 w-20 h-20 text-black opacity-[0.07] rotate-[25deg] pointer-events-none" />
-                <p className="text-[11px] font-bold text-black/55 mb-1">Starting from</p>
-                <p className="text-[2.1rem] font-bold text-black flex items-baseline gap-0.5 leading-none">
-                    <CurrencyInrIcon weight="bold" size={26} className="self-center" />
-                    {displayPrice}
-                    <span className="text-base font-semibold ml-1 text-black/70">/person</span>
-                </p>
+                <p className="text-[11px] font-bold text-black/55 mb-1">{isFree ? 'Entry' : 'Starting from'}</p>
+                {isFree ? (
+                    <p className="text-[2.1rem] font-bold text-black leading-none">Free</p>
+                ) : (
+                    <p className="text-[2.1rem] font-bold text-black flex items-baseline gap-0.5 leading-none">
+                        <CurrencyInrIcon weight="bold" size={26} className="self-center" />
+                        {displayPrice}
+                        <span className="text-base font-semibold ml-1 text-black/70">/person</span>
+                    </p>
+                )}
             </div>
 
             <div className="p-4 space-y-3.5">

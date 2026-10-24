@@ -12,6 +12,7 @@ export interface BookingData {
         startDateTime: string;
         endDateTime: string;
         duration : string
+        isEvent?: boolean;
     };
     booking: {
         numberOfPeople: number;

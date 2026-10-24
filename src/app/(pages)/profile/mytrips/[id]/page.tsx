@@ -140,6 +140,7 @@ const BookingDetails = () => {
                 duration: bookingData.trip.duration
               }}
               gap={'3'}
+              isEvent={bookingData.trip.isEvent}
             />
             <TripSummaryCard trip={bookingData.trip} booking={bookingData.booking} />
           </div>
@@ -154,7 +155,7 @@ const BookingDetails = () => {
             {isDetailsLocked && (
               <div className='flex items-center gap-2 px-4 py-3 bg-amber-50 border border-amber-200 rounded-xl text-amber-800 text-sm'>
                 <LockSimpleIcon className='w-4 h-4 flex-shrink-0' weight='bold' />
-                Traveler and emergency contact details are locked now that the trip has started.
+                {bookingData.trip.isEvent ? 'Attendee' : 'Traveler'} and emergency contact details are locked now that the {bookingData.trip.isEvent ? 'event' : 'trip'} has started.
               </div>
             )}
             <TravelerSection
@@ -162,6 +163,7 @@ const BookingDetails = () => {
               onDataChange={handleTravelerDataChange}
               onReset={handleReset}
               locked={isDetailsLocked}
+              isEvent={bookingData.trip.isEvent}
             />
             <ContactSection
               onDataChange={handleContactDataChange}
