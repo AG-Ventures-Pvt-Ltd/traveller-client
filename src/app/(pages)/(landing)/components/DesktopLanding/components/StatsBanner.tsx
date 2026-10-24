@@ -1,11 +1,11 @@
 'use client';
 
 import React from 'react';
-import { ConfettiIcon, RocketLaunchIcon, UsersThreeIcon } from '@phosphor-icons/react';
+import { ConfettiIcon, RocketLaunchIcon, UsersThreeIcon, WalletIcon } from '@phosphor-icons/react';
 import { useRouter } from 'next/navigation';
 
 interface StatsBannerProps {
-  variant: 'signup' | 'stats';
+  variant: 'signup' | 'stats' | 'wallet';
   amount?: number;
   count?: number;
 }
@@ -32,6 +32,38 @@ const StatsBanner: React.FC<StatsBannerProps> = ({ variant, amount, count }) => 
           className="flex-shrink-0 bg-[#FFC107] text-black text-sm font-bold px-5 py-2.5 rounded-xl hover:bg-[#e6ad06] transition-colors whitespace-nowrap"
         >
           Sign Up Free →
+        </button>
+      </div>
+    );
+  }
+
+  // Logged-in counterpart of the signup card: nudge them to spend or grow their Wondrr Cash.
+  if (variant === 'wallet') {
+    const hasCash = (amount ?? 0) > 0;
+    return (
+      <div className="flex-1 bg-[#111111] rounded-2xl px-8 py-6 flex items-center justify-between gap-6">
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 rounded-xl bg-[#FFC107]/10 flex items-center justify-center flex-shrink-0">
+            <WalletIcon size={24} className="text-[#FFC107]" weight="thin" />
+          </div>
+          <div className="flex flex-col gap-0.5">
+            <p className="text-neutral-400 text-sm font-medium">
+              {hasCash ? 'Your Wondrr Cash is waiting' : 'Grow your Wondrr Cash'}
+            </p>
+            <p className="text-white text-base font-semibold">
+              {hasCash ? (
+                <>You have <span className="text-[#FFC107] text-2xl font-black">₹{amount!.toLocaleString('en-IN')}</span> to use on your next trip</>
+              ) : (
+                <>Save with Travel Pass and get a <span className="text-[#FFC107]">bonus</span> on top</>
+              )}
+            </p>
+          </div>
+        </div>
+        <button
+          onClick={() => router.push(hasCash ? '/trips' : '/travel-pass')}
+          className="flex-shrink-0 bg-[#FFC107] text-black text-sm font-bold px-5 py-2.5 rounded-xl hover:bg-[#e6ad06] transition-colors whitespace-nowrap"
+        >
+          {hasCash ? 'Use it now →' : 'See Travel Pass →'}
         </button>
       </div>
     );
