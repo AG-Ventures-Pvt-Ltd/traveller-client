@@ -38,6 +38,15 @@ export const organizationSchema: JsonLdData = {
   image: `${SITE_URL}/png/metadata.png`,
   description:
     "Wondrr is a travel marketplace to discover and book fixed-departure group trips from India's top verified travel brands.",
+  telephone: '+91-9667427187',
+  email: 'support@wondrr.in',
+  contactPoint: {
+    '@type': 'ContactPoint',
+    telephone: '+91-9667427187',
+    email: 'support@wondrr.in',
+    contactType: 'customer support',
+    areaServed: 'IN',
+  },
   areaServed: { '@type': 'Country', name: 'India' },
   address: {
     '@type': 'PostalAddress',

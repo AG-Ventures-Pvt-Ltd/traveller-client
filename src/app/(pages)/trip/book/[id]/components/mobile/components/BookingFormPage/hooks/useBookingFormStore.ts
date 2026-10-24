@@ -134,3 +134,23 @@ export const useBookingFormStore = create<BookingFormState>((set, get) => ({
     setIsBookingOptionsLoading: (isBookingOptionsLoading) => set({ isBookingOptionsLoading }),
     reset: () => set(initialState),
 }));
+type PricingState = Pick<BookingFormState,
+    'guests' | 'pricingTiers' | 'addOns' | 'meetingPoints' | 'selectedTravelIdx' | 'selectedMeetingPointIdx'
+    | 'selectedAddOnIdx' | 'selectedExtraAddOnIdx' | 'selectedTransportAddOnIdx' | 'selectedActivityAddOnIdx'>;
+
+// Pre-coupon, pre-GST total. The server checks a coupon's minOrderAmount against this same subtotal.
+export const getOrderSubtotal = (s: PricingState): number => {
+    let perPerson = 0;
+    if (s.selectedTravelIdx !== null && s.pricingTiers[s.selectedTravelIdx]) perPerson += s.pricingTiers[s.selectedTravelIdx].pricePerPerson;
+    perPerson += s.meetingPoints[s.selectedMeetingPointIdx]?.pickupPrice || 0;
+    for (const idx of [s.selectedAddOnIdx, s.selectedExtraAddOnIdx, s.selectedTransportAddOnIdx, s.selectedActivityAddOnIdx]) {
+        if (idx !== null && s.addOns[idx]) perPerson += s.addOns[idx].pricePerPerson;
+    }
+    return perPerson * s.guests;
+};
+
+export const isCouponEligible = (coupon: Coupon, subtotal: number): boolean => subtotal >= (coupon.minOrderAmount || 0);
+
+// The applied coupon only while the order meets its minimum; price and booking payloads use this, never appliedCoupon directly.
+export const selectEffectiveCoupon = (s: BookingFormState): Coupon | null =>
+    s.appliedCoupon && isCouponEligible(s.appliedCoupon, getOrderSubtotal(s)) ? s.appliedCoupon : null;

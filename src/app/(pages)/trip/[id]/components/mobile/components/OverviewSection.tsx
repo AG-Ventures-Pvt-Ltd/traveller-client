@@ -7,11 +7,11 @@ import { GenderFemaleIcon, HeartIcon } from '@phosphor-icons/react';
 export default function OverviewSection({ description }: OverviewSectionProps) {
 
     const overviewFields = [
-        { label: 'Destination', value: description.destination },
-        { label: 'Boarding Point', value: description.boardingPoint },
+        { label: description.isEvent ? 'Venue' : 'Destination', value: description.destination },
+        ...(description.isEvent ? [] : [{ label: 'Boarding Point', value: description.boardingPoint }]),
         { label: "Difficulty", value: description.difficulty },
         { label: 'Avg. Group Size', value: description.seats },
-        { label: 'Duration of trip', value: description.duration },
+        { label: description.isEvent ? 'Duration of event' : 'Duration of trip', value: description.duration },
     ];
 
     const certificateMap = {

@@ -34,6 +34,7 @@ export interface BatchSelectionProps {
     selectedBatch: number | null;
     onSelect: (index: number) => void;
     bestTimeToVisit?: string;
+    isEvent?: boolean;
 }
 
 export interface Pricing {
@@ -59,6 +60,7 @@ export interface ItinerarySectionProps {
     onDaySelect: (index: number) => void;
     onDayToggle: (index: number) => void;
     isLoading?: boolean;
+    isEvent?: boolean;
 }
 
 export interface InclusionsSectionProps {

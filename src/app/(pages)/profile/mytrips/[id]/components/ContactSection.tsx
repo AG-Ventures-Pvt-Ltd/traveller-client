@@ -15,10 +15,11 @@ export interface EmergencyContact {
 interface ContactSectionProps {
   onDataChange?: (hasChanges: boolean, data: EmergencyContact | null) => void;
   onReset?: () => void;
+  locked?: boolean;
 }
 
 
-const ContactSection: React.FC<ContactSectionProps> = ({ onDataChange, onReset }) => {
+const ContactSection: React.FC<ContactSectionProps> = ({ onDataChange, onReset, locked = false }) => {
 
     const [name, setName] = useState('');
     const [contactNumber, setContactNumber] = useState('');
@@ -51,8 +52,9 @@ const ContactSection: React.FC<ContactSectionProps> = ({ onDataChange, onReset }
     }, [emergencyContact]);
 
     const hasChanges = () => {
-        const hasDataChanges = name !== originalData.name || 
-               contactNumber !== originalData.contactNumber || 
+        if (locked) return false;
+        const hasDataChanges = name !== originalData.name ||
+               contactNumber !== originalData.contactNumber ||
                countryCode !== originalData.countryCode;
         return hasDataChanges && !validationErrors.contactNumber;
     };
@@ -74,7 +76,7 @@ const ContactSection: React.FC<ContactSectionProps> = ({ onDataChange, onReset }
             const currentData = getCurrentData();
             onDataChange(hasChanges(), currentData);
         }
-    }, [name, contactNumber, countryCode, validationErrors, onDataChange]);
+    }, [name, contactNumber, countryCode, validationErrors, onDataChange, locked]);
 
     // Reset to original data when parent requests
     useEffect(() => {
@@ -112,24 +114,28 @@ const ContactSection: React.FC<ContactSectionProps> = ({ onDataChange, onReset }
     }
 
     return (
-        <CollapsibleCard title='Emergency Contact'>
-            <div className='px-4 pb-5 flex flex-col gap-1.5'>
-                <CustomInput 
-                    value={name} 
-                    onChange={(e) => handleFieldChange('name', e.target.value)} 
-                    placeholder='Full Name' 
-                    icon={UserIcon}
-                />
-                <CustomInput 
-                    value={contactNumber} 
-                    onChange={(e) => handleFieldChange('contactNumber', e.target.value)} 
-                    placeholder='Phone Number' 
-                    icon={PhoneIcon}
-                    type="tel"
-                    error={!!validationErrors.contactNumber}
-                />
-            </div>
-        </CollapsibleCard>
+        <div className='flex flex-col gap-4'>
+            <CollapsibleCard title='Emergency Contact'>
+                <div className='px-4 pb-5 flex flex-col gap-1.5'>
+                    <CustomInput
+                        value={name}
+                        onChange={(e) => handleFieldChange('name', e.target.value)}
+                        placeholder='Full Name'
+                        icon={UserIcon}
+                        readOnly={locked}
+                    />
+                    <CustomInput
+                        value={contactNumber}
+                        onChange={(e) => handleFieldChange('contactNumber', e.target.value)}
+                        placeholder='Phone Number'
+                        icon={PhoneIcon}
+                        type="tel"
+                        error={!!validationErrors.contactNumber}
+                        readOnly={locked}
+                    />
+                </div>
+            </CollapsibleCard>
+        </div>
     );
 };
 

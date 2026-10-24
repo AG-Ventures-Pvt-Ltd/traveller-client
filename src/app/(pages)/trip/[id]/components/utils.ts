@@ -52,3 +52,12 @@ export const findClosestBatchIndex = (batches: AvailableDate[]): number => {
 
     return closestIndex;
 };
+
+export const formatTimeRangeIST = (start: Date | string, end?: Date | string | null): string => {
+    const fmt = (d: Date | string) => new Date(d).toLocaleTimeString('en-IN', { hour: 'numeric', minute: '2-digit', hour12: true, timeZone: 'Asia/Kolkata' }).toUpperCase();
+    return end ? `${fmt(start)} - ${fmt(end)}` : fmt(start);
+};
+
+// Single-day events show the batch start–end time (IST) instead of the "1D 0N" duration
+export const getDurationDisplay = (duration: string | undefined, batch: AvailableDate | null | undefined, isEvent: boolean): string =>
+    isEvent && batch?.startDateTime ? formatTimeRangeIST(batch.startDateTime, batch.endDateTime) : duration || '';

@@ -9,7 +9,7 @@ import MobileModal from '@/common/ui/MobileModal';
 const TripCalendar = dynamic(() => import('@/common/ui/TripCalendar'), { ssr: false });
 import { CalendarDotsIcon } from '@phosphor-icons/react';
 
-export default function BatchSelection({ batches, selectedBatch, onSelect, bestTimeToVisit }: BatchSelectionProps) {
+export default function BatchSelection({ batches, selectedBatch, onSelect, bestTimeToVisit, isEvent }: BatchSelectionProps) {
     const items = batches.map((batch: AvailableDate) => ({
         id: batch.batchId,
         date: batch.startDate || batch.startDateTime,
@@ -29,7 +29,7 @@ export default function BatchSelection({ batches, selectedBatch, onSelect, bestT
     return (
         <div className="border border-[#d9d9d9] rounded-[16px] p-4">
             <div className='flex justify-between items-start mb-4'>
-                <p className="text-xs font-medium text-black mb-3">Choose your Departure Dates</p>
+                <p className="text-xs font-medium text-black mb-3">{isEvent ? 'Choose event date' : 'Choose your Departure Dates'}</p>
                 <div className='flex items-center gap-1 border border-[#D9D9D9] px-2 py-1 rounded-lg text-xs' onClick={() => setShowCalendarModal(true)}>
                     <CalendarDotsIcon size={16} /> Later Month
                 </div>
@@ -47,7 +47,7 @@ export default function BatchSelection({ batches, selectedBatch, onSelect, bestT
             <MobileModal
                 isOpen={showCalendarModal}
                 onClose={() => setShowCalendarModal(false)}
-                title="Select Departure Date"
+                title={isEvent ? 'Select Event Date' : 'Select Departure Date'}
             >
                 <TripCalendar
                     batches={batches}

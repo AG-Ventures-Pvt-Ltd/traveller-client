@@ -10,15 +10,16 @@ export interface FactCardsProps {
     boardingPoint?: string;
     seats?: string;
     certificates?: string[];
+    isEvent?: boolean;
 }
 
-export default function FactCards({ location, duration, difficulty, boardingPoint, seats, certificates }: FactCardsProps) {
+export default function FactCards({ location, duration, difficulty, boardingPoint, seats, certificates, isEvent }: FactCardsProps) {
     const facts = [
-        { Icon: MapPinIcon, label: 'Destination', value: location, bg: '#D0EF65' },
+        { Icon: MapPinIcon, label: isEvent ? 'Venue' : 'Destination', value: location, bg: '#D0EF65' },
         { Icon: ClockIcon, label: 'Duration', value: duration, bg: '#EEA0FF' },
         { Icon: MountainsIcon, label: 'Difficulty', value: difficulty, bg: '#FFD976' },
         { Icon: UsersThreeIcon, label: 'Group Size', value: seats, bg: '#E2F4A6' },
-        { Icon: SignpostIcon, label: 'Boarding', value: boardingPoint, bg: '#FFEAB2' },
+        { Icon: SignpostIcon, label: 'Boarding', value: isEvent ? undefined : boardingPoint, bg: '#FFEAB2' },
     ].filter((f): f is { Icon: typeof MapPinIcon; label: string; value: string; bg: string } => !!f.value);
 
     const certMap: Record<string, { label: string; Icon: typeof GenderFemaleIcon; color: string }> = {

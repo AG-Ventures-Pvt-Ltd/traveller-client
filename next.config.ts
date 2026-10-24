@@ -1,4 +1,19 @@
 import type { NextConfig } from 'next';
+import withPWAInit from 'next-pwa';
+
+const withPWA = withPWAInit({
+  dest: 'public',
+  // Service worker only makes sense against a real deployed origin — skip it
+  // in dev so it doesn't fight Turbopack's own HMR/caching.
+  disable: process.env.NODE_ENV !== 'production',
+  // next-pwa's auto-register only knows how to patch pages/_app.js — this is an
+  // App Router project, so registration happens manually (see ServiceWorkerRegister).
+  register: false,
+  skipWaiting: true,
+  // Precaching these build-internal manifests 404s, since they're dev/SSR-only
+  // artifacts — same workaround every next-pwa + App Router setup needs.
+  buildExcludes: [/middleware-manifest\.json$/, /app-build-manifest\.json$/, /_middleware\.js$/],
+});
 
 const nextConfig: NextConfig = {
   devIndicators: false,
@@ -52,6 +67,8 @@ const nextConfig: NextConfig = {
   async headers() {
     // Next dev mode needs 'unsafe-eval' for HMR/react-refresh stack traces — prod stays strict.
     const isDev = process.env.NODE_ENV !== 'production';
+    // Razorpay/Cashfree spread checkout across many subdomains — allow them wholesale.
+    const PAY = 'https://*.razorpay.com https://razorpay.com https://*.cashfree.com https://cashfree.com';
 
     return [
       {
@@ -68,20 +85,14 @@ const nextConfig: NextConfig = {
             key: 'Content-Security-Policy',
             value: [
               "default-src 'self'",
-              `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ''} https://checkout.razorpay.com https://cdn.razorpay.com https://sdk.cashfree.com https://www.googletagmanager.com https://www.clarity.ms https://scripts.clarity.ms https://connect.facebook.net`,
-              `script-src-elem 'self' 'unsafe-inline' https://checkout.razorpay.com https://cdn.razorpay.com https://sdk.cashfree.com https://www.googletagmanager.com https://www.clarity.ms https://scripts.clarity.ms https://connect.facebook.net`,
-              "style-src 'self' 'unsafe-inline'",
-              "img-src 'self' data: blob: https://d1hjk5b7z017su.cloudfront.net https://www.facebook.com https://lh3.googleusercontent.com https://images.unsplash.com",
+              `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ''} ${PAY} https://www.googletagmanager.com https://www.clarity.ms https://scripts.clarity.ms https://connect.facebook.net`,
+              `script-src-elem 'self' 'unsafe-inline' ${PAY} https://www.googletagmanager.com https://www.clarity.ms https://scripts.clarity.ms https://connect.facebook.net`,
+              `style-src 'self' 'unsafe-inline' https://fonts.googleapis.com ${PAY}`,
+              `img-src 'self' data: blob: https://d1hjk5b7z017su.cloudfront.net https://www.facebook.com https://lh3.googleusercontent.com https://images.unsplash.com ${PAY}`,
               "media-src 'self' https://d1hjk5b7z017su.cloudfront.net",
               `connect-src 'self' https:${isDev ? ' http://localhost:*' : ''}`,
-              "font-src 'self' data:",
-              // Cashfree's Drop-in checkout (v3 SDK) pulls sub-resources across
-              // several *.cashfree.com hosts beyond the ones we'd anticipate
-              // (payments/payments-test/sandbox/sdk) — a fixed allowlist silently
-              // blocks whichever one isn't listed, and Cashfree's own iframe then
-              // shows a generic "Something went wrong" with no CSP hint on our
-              // side. Per Cashfree's own CSP guidance, wildcard the subdomain.
-              "frame-src https://checkout.razorpay.com https://api.razorpay.com https://*.cashfree.com",
+              `font-src 'self' data: https://fonts.gstatic.com ${PAY}`,
+              `frame-src ${PAY}`,
               "frame-ancestors 'self'",
             ].join('; '),
           },
@@ -93,4 +104,4 @@ const nextConfig: NextConfig = {
 
 };
 
-export default nextConfig;
+export default withPWA(nextConfig);

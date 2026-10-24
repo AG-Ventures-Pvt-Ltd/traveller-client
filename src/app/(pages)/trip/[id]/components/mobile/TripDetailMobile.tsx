@@ -8,6 +8,7 @@ import { generateSlug } from '../../../utils';
 import Loader from '@/common/ui/Loader/Loader';
 import { TripData } from '../../types';
 import { sortBatchesByDate } from './utils';
+import { getDurationDisplay } from '../utils';
 import { NAV_SECTION_IDS } from './constants';
 import { NavSection, SectionRefs } from './types';
 import { getSeatsDisplay } from '@/common/utils/seatsDisplay';
@@ -85,6 +86,7 @@ export default function TripDetailMobile() {
     );
 
     const selectedBatchData = selectedBatch !== null && sortedBatches[selectedBatch] ? sortedBatches[selectedBatch] : null;
+    const isEvent = basicData?.type === 'single_day_event';
     const seatsDisplay = selectedBatchData ? getSeatsDisplay(selectedBatchData.totalSeats) : '';
 
     const boardingPoint = selectedBatchData?.meetingPoint && selectedBatchData.meetingPoint.length > 0
@@ -144,7 +146,7 @@ export default function TripDetailMobile() {
         }
 
         if (tripData?.itinerary && tripData.itinerary.length > 0) {
-            sections.push({ id: NAV_SECTION_IDS.ITINERARY, label: 'Itinerary' });
+            sections.push({ id: NAV_SECTION_IDS.ITINERARY, label: isEvent ? 'Schedule' : 'Itinerary' });
         }
 
         if ((tripData?.inclusions && tripData.inclusions.length > 0) || (tripData?.exclusions && tripData.exclusions.length > 0)) {
@@ -155,7 +157,7 @@ export default function TripDetailMobile() {
             sections.push({ id: NAV_SECTION_IDS.REVIEWS, label: 'Reviews' });
         }
 
-        sections.push({ id: NAV_SECTION_IDS.TRIP_SUPPORT, label: 'Trip Support' });
+        sections.push({ id: NAV_SECTION_IDS.TRIP_SUPPORT, label: isEvent ? 'Event Support' : 'Trip Support' });
 
         if (tripData?.faqs && tripData.faqs.length > 0) {
             sections.push({ id: NAV_SECTION_IDS.FAQS, label: 'FAQs' });
@@ -163,7 +165,7 @@ export default function TripDetailMobile() {
 
         sections.push({ id: NAV_SECTION_IDS.CANCELLATION, label: 'Cancellation' });
         return sections;
-    }, [tripData]);
+    }, [tripData, isEvent]);
 
 
     const pricingList = useMemo(() => {
@@ -253,7 +255,7 @@ export default function TripDetailMobile() {
 
                 <div className='px-6'>
                     <div className='flex justify-between'>
-                        <p className='font-bold text-2xl max-w-[85%]'>{basicData?.title}</p>
+                        <h1 className='font-bold text-2xl max-w-[85%]'>{basicData?.title}</h1>
                         <div className='bg-[#616161] text-white flex items-center my-0 px-2 rounded-xl max-h-fit py-1'>
                             <StarIcon weight='fill' className='text-[#FFC107] mr-1' />
                             <span className='font-bold'>{averageRating}
@@ -267,10 +269,11 @@ export default function TripDetailMobile() {
                     <div ref={overviewRef} className="space-y-6 scroll-mt-24">
                         {sortedBatches.length > 0 && (
                             <BatchSelection
+                                isEvent={isEvent}
                                 batches={sortedBatches}
                                 selectedBatch={selectedBatch}
                                 onSelect={setSelectedBatch}
-                                bestTimeToVisit={basicData?.bestTimeToVisit}
+                                bestTimeToVisit={isEvent ? undefined : basicData?.bestTimeToVisit}
                             />
                         )}
                         {tripData?.host && (
@@ -280,7 +283,8 @@ export default function TripDetailMobile() {
                             description={{
                                 destination: basicData?.location?.split(',')[0] || '',
                                 seats: seatsDisplay,
-                                duration: basicData?.duration || "",
+                                duration: getDurationDisplay(basicData?.duration, selectedBatchData ?? sortedBatches[0], isEvent),
+                                isEvent,
                                 difficulty: basicData?.difficulty || "",
                                 boardingPoint,
                                 certificates: detailedData?.host?.certificates || []
@@ -303,12 +307,13 @@ export default function TripDetailMobile() {
                     </div>
                     {tripData.highlights && tripData.highlights.length > 0 && (
                         <div ref={highlightsRef} className="scroll-mt-20">
-                            <TripHighlights highlights={tripData.highlights} />
+                            <TripHighlights highlights={tripData.highlights} isEvent={isEvent} />
                         </div>
                     )}
                     {(isDetailedLoading || (tripData.itinerary && tripData.itinerary.length > 0)) && (
                         <div ref={itineraryRef} className="scroll-mt-20 mb-6">
                             <ItinerarySection
+                                isEvent={isEvent}
                                 itinerary={tripData.itinerary || []}
                                 selectedDay={selectedDay}
                                 expandedDays={expandedDays}
@@ -347,7 +352,7 @@ export default function TripDetailMobile() {
                     </div>
 
                     <div ref={tripSupportRef} className="scroll-mt-20 my-6">
-                        <SafetySupportSection />
+                        <SafetySupportSection isEvent={isEvent} />
                     </div>
 
                     {tripData.faqs && tripData.faqs.length > 0 && (
@@ -366,6 +371,7 @@ export default function TripDetailMobile() {
                 </div>
 
                 <WhatsAppButton
+                    isEvent={isEvent}
                     tripTitle={tripData.title}
                     tripSlug={id}
                     className="bottom-[104px]"

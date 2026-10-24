@@ -1,8 +1,15 @@
 import { headers } from 'next/headers';
 import { dehydrate, HydrationBoundary, QueryClient } from '@tanstack/react-query';
+import type { Metadata } from 'next';
 import { getServerData } from '@/services/serverApi';
 import { API_ENDPOINTS } from '@/common/constants/apiEndpoints';
 import LandingClient from './(landing)/LandingClient';
+
+// Lives here, not in the shared layout — the layout's metadata applies to every
+// route under (pages), so a canonical there wrongly makes every page point at "/".
+export const metadata: Metadata = {
+  alternates: { canonical: '/' },
+};
 
 // SSR fresh on every request so trip cards, destinations, copy and internal links
 // are present in the initial HTML (fixes the CSR empty-shell / slow-LCP problem).

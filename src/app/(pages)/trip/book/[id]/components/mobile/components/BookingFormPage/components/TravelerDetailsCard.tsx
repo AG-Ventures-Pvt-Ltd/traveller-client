@@ -12,6 +12,7 @@ import { API_ENDPOINTS } from '@/common/constants/apiEndpoints';
 import { useBookingFormStore } from '../hooks/useBookingFormStore';
 import { useSession } from 'next-auth/react';
 import { useGetData } from '@/services/useGetData';
+import { useIsBookingEvent } from '@/app/(pages)/trip/api';
 
 interface TravelerDetailsCardProps {
     isOpen?: boolean;
@@ -32,6 +33,7 @@ export default function TravelerDetailsCard({
     isOpen,
     onToggle,
 }: TravelerDetailsCardProps) {
+    const isEvent = useIsBookingEvent();
     const {
         fullName,
         email: emailValue,
@@ -102,7 +104,7 @@ export default function TravelerDetailsCard({
     };
 
     return (
-        <CollapsibleCard title="Traveler Details" isOpen={isOpen} onToggle={onToggle}>
+        <CollapsibleCard title={isEvent ? 'Attendee Details' : 'Traveler Details'} isOpen={isOpen} onToggle={onToggle}>
 
             <div className="flex flex-col gap-1.5 px-4 pb-5">
                 <CustomInput
@@ -147,7 +149,7 @@ export default function TravelerDetailsCard({
 
                 <div className='flex items-center gap-2 text-xs'>
                     <InfoIcon weight='thin' size={20}/>
-                    you can fill other passenger details later
+                    you can fill other {isEvent ? 'attendee' : 'passenger'} details later
                 </div>
 
                 {emailExists === true && (

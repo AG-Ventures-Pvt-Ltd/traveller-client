@@ -4,7 +4,9 @@ import React, { useState } from 'react'
 import BookedTripCard from './components/BookedTripCard'
 import BackButton from '@/common/ui/BackButton'
 import { useRouter } from 'next/navigation'
+import { useQueryClient } from '@tanstack/react-query'
 import { useGetData } from '@/services/useGetData'
+import usePostData from '@/services/usePostData'
 import { API_ENDPOINTS } from '@/common/constants/apiEndpoints'
 import { BookedTrip } from './constants'
 import { usePayment } from '../../trip/book/[id]/[batchId]/hooks/usePayment'
@@ -14,12 +16,26 @@ import ReviewModal from '@/common/components/composites/ReviewModal'
 const MyTrips = () => {
 
     const router = useRouter()
+    const queryClient = useQueryClient()
 
-    const [ openModal, setOpenModal ] = useState<boolean>(false)
+    const [ reviewTarget, setReviewTarget ] = useState<BookedTrip | null>(null)
 
     const { data } = useGetData<BookedTrip[]>(API_ENDPOINTS.USER.MY_TRIPS)
 
     const { startPayment } = usePayment()
+
+    const { mutate: submitReview } = usePostData({
+      url: API_ENDPOINTS.REVIEW.SUBMIT,
+      onSuccess: () => {
+        setReviewTarget(null)
+        queryClient.invalidateQueries({ queryKey: [API_ENDPOINTS.USER.MY_TRIPS] })
+      },
+    })
+
+    const handleReviewSubmit = (rating: number, comment: string, images: string[]) => {
+      if (!reviewTarget) return
+      submitReview({ bookingId: reviewTarget._id, rating, comment, images })
+    }
 
 
   return (
@@ -41,14 +57,22 @@ const MyTrips = () => {
               onViewQRTicket={() => router.push(`/profile/mytrips/${trip.tripSlug}/ticket`)}
               onFillDetails={() => router.push(`/profile/mytrips/${trip._id}`)}
               onPayNow={() => startPayment({ bookingId : trip._id })}
-              onWriteReview={() => setOpenModal(true)}
-              onEditReview={() => {}}
+              onWriteReview={() => setReviewTarget(trip)}
+              onEditReview={() => setReviewTarget(trip)}
               onViewDetails={() => router.push(`/profile/mytrips/${trip._id}`)}
             />
           ))
         )}
       </div>
-      <ReviewModal isOpen={openModal} onClose={() => setOpenModal(false)} onSubmit={() => {}}/>
+      <ReviewModal
+        key={reviewTarget?._id ?? 'closed'}
+        isOpen={!!reviewTarget}
+        onClose={() => setReviewTarget(null)}
+        onSubmit={handleReviewSubmit}
+        initialRating={reviewTarget?.reviewRating ?? 0}
+        initialReview={reviewTarget?.reviewComment ?? ''}
+        title={reviewTarget?.hasReview ? 'Edit Your Review' : 'Write a Review'}
+      />
     </div>
   )
 }

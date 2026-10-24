@@ -6,7 +6,7 @@ import { CouponsSkeleton } from '../BookingStepSkeletons';
 import type { Coupon } from './BookingFormPage/types';
 import { API_ENDPOINTS } from '@/common/constants/apiEndpoints';
 import { useGetData } from '@/services/useGetData';
-import { useBookingFormStore } from './BookingFormPage/hooks/useBookingFormStore';
+import { useBookingFormStore, getOrderSubtotal, isCouponEligible } from './BookingFormPage/hooks/useBookingFormStore';
 import Button from '@/common/ui/Buttons/Button';
 
 
@@ -41,9 +41,12 @@ export default function AllCouponsPage({ tripId, onDone }: AllCouponsPageProps) 
 
     const [selectedCode, setSelectedCode] = useState<string>(appliedCoupon?.code ?? '');
 
-    const { data : coupons , isLoading } = useGetData<Coupon[]>(API_ENDPOINTS.DISCOUNTS.GET_AVAILABLE(tripId, email), {
+    const { data : allCoupons , isLoading } = useGetData<Coupon[]>(API_ENDPOINTS.DISCOUNTS.GET_AVAILABLE(tripId, email), {
         queryKey: ['discounts', tripId, email],
     });
+    // Only coupons the current order qualifies for (same minOrderAmount check the server applies)
+    const subtotal = useBookingFormStore(getOrderSubtotal);
+    const coupons = allCoupons?.filter(c => isCouponEligible(c, subtotal));
 
     const onDoneRef = useRef(onDone);
     onDoneRef.current = onDone;

@@ -1,4 +1,4 @@
-import { useBookingFormStore } from './useBookingFormStore';
+import { useBookingFormStore, selectEffectiveCoupon } from './useBookingFormStore';
 import usePostData from '@/services/usePostData';
 import { API_ENDPOINTS } from '@/common/constants/apiEndpoints';
 import { validators } from '@/common/utils/formValidators';
@@ -16,7 +16,6 @@ export function useCreateBooking(tripId: string) {
         selectedActivityAddOnIdx,
         selectedTravelIdx,
         foodPreference,
-        appliedCoupon,
         referralInput,
         fullName,
         email,
@@ -27,6 +26,7 @@ export function useCreateBooking(tripId: string) {
         addOns,
         meetingPoints,
     } = useBookingFormStore();
+    const appliedCoupon = useBookingFormStore(selectEffectiveCoupon);
 
     const router = useRouter();
     const searchParams = useSearchParams();

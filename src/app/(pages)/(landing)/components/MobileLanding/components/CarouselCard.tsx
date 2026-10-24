@@ -62,12 +62,15 @@ const CarouselCard: React.FC<CarouselCardProps> = ({
       />
 
       <div className="relative h-32 overflow-hidden rounded-3xl">
+        {/* Fixed 200px carousel card (SlidingCarousel w-[200px]) — overrides MyImage's
+            100vw-on-mobile default, which would request a full-viewport image for this. */}
         <MyImage
           src={image}
           alt={title}
           className="w-full h-full"
           rounded={false}
           priority={priority}
+          sizes="200px"
         />
         <button
           onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggle(e); }}

@@ -13,10 +13,13 @@ export default function HostAvatar({ avatar, fullName, className = "" }: HostAva
   if (avatar) {
     return (
       <div className={`w-22 h-22 md:w-28 md:h-28 rounded-full flex items-center justify-center shadow-lg flex-shrink-0 overflow-hidden bg-neutral-100 ${className}`}>
+        {/* Avatar never renders larger than 112px (md:w-28) — overrides MyImage's
+            100vw-on-mobile default, which would request a full-viewport image for this. */}
         <MyImage
           src={avatar}
           alt={fullName}
           className="w-full h-full object-cover"
+          sizes="112px"
         />
       </div>
     );

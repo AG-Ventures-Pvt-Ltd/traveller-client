@@ -28,14 +28,14 @@ export const THINGS_TO_KNOW = [
     },
 ];
 
-export default function SafetySupportSection() {
+export default function SafetySupportSection({ isEvent }: { isEvent?: boolean }) {
     return (
-        <CollapsibleCard title="Safety & On-Trip Support">
+        <CollapsibleCard title={isEvent ? 'Safety & On-Event Support' : 'Safety & On-Trip Support'}>
             <div className="px-4 pb-4 space-y-4">
                 {THINGS_TO_KNOW.map((item, index) => (
                     <div key={index} className="pb-2 last:border-b-0 flex items-center">
                         <item.icon size={24} className={`mr-4 flex-shrink-0 ${item.iconClass}`} weight='duotone'/>
-                        <p className="font-medium text-xs">{item.description}</p>
+                        <p className="font-medium text-xs">{isEvent ? item.description.replaceAll('trip', 'event') : item.description}</p>
                     </div>
                 ))}
             </div>

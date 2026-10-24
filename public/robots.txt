@@ -1,31 +1,7 @@
-# *
-User-agent: *
-Disallow: /verify/*
-Disallow: /auth/
-
 User-agent: *
 Allow: /llms.txt
-
-User-agent: GPTBot
-Allow: /
-
-User-agent: ClaudeBot
-Allow: /
-
-User-agent: Google-Extended
-Allow: /
-
-User-agent: PerplexityBot
-Allow: /
-
-User-agent: Googlebot
-Allow: /
-
-User-agent: OAI-SearchBot
-Allow: /
-
-User-agent: anthropic-ai
-Allow: /
+Disallow: /verify/*
+Disallow: /auth/
 
 # Sitemaps
 Sitemap: https://wondrr.in/sitemap.xml

@@ -3,9 +3,9 @@ export const CAROUSEL_RESUME_DELAY = 5000;
 export const OVERVIEW_PREVIEW_LENGTH = 100;
 
 export const STATIC_CANCELLATION_POLICY: Array<{ daysBeforeCancellation: string; refundPercentage: string }> = [
-    { daysBeforeCancellation: 'More than 7 days before', refundPercentage: '90' },
-    { daysBeforeCancellation: '3-6 days before', refundPercentage: '50' },
-    { daysBeforeCancellation: 'Less than 3 days before', refundPercentage: '10' },
+    { daysBeforeCancellation: 'More than 7 days before the trip', refundPercentage: '90' },
+    { daysBeforeCancellation: '3-6 days before the trip', refundPercentage: '50' },
+    { daysBeforeCancellation: 'Less than 3 days before the trip', refundPercentage: '10' },
     { daysBeforeCancellation: 'No show', refundPercentage: '0' },
 ];
 

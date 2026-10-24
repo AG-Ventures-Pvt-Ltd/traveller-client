@@ -1,87 +1,74 @@
-'use client';
-
-import React from 'react';
+import { headers } from 'next/headers';
 import Link from 'next/link';
-import { useParams, useRouter } from 'next/navigation';
-import { ArrowLeft, ChevronRight } from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
 import MyImage from '@/common/ui/Image';
 import Footer from '../../(landing)/components/Footer/Footer';
-import MobileCarouselCard from '../../(landing)/components/MobileLanding/components/CarouselCard';
-import DesktopCarouselCard from '../../(landing)/components/DesktopLanding/components/CarouselCard';
-import { useGetData } from '@/services/useGetData';
-import { useDevice } from '@/common/hooks/useDevice';
-import { API_ENDPOINTS } from '@/common/constants/apiEndpoints';
-import { useViewItemList } from '@/common/hooks/useViewItemList';
+import { JsonLd, SITE_URL } from '@/common/seo/JsonLd';
+import { getStateTrips } from './serverFetch';
+import ExploreStateGrid from './ExploreStateGrid';
 
-interface StateTrip {
-  id: string;
-  tripSlug: string;
-  title: string;
-  image: string;
-  location: string;
-  hostName: string;
-  hostUsername: string;
-  rating: number;
-  price: number;
-  days: string;
-  nextTripDate: string | null;
-  isBookmarked: boolean;
-}
+// Trip list and prices change often enough (batches sell out, new ones open) that a
+// cached page would go stale — matches the same tradeoff made on the home page.
+export const dynamic = 'force-dynamic';
 
-interface StateTripsResponse {
-  state: { stateCode: string; name: string; imageUrl: string };
-  trips: StateTrip[];
-}
+// Phones (incl. mobile-first Googlebot) report a UA with one of these tokens.
+const MOBILE_UA = /Android.+Mobile|iPhone|iPod|Windows Phone|BlackBerry|Opera Mini|IEMobile|Mobile.+Firefox|Firefox.+Mobile/i;
 
-// Same rotation the landing carousels use, so a trip looks the same in both places.
-const COLOR_SCHEMES: Array<'yellow' | 'green' | 'purple'> = ['yellow', 'green', 'purple'];
+export default async function StateExplorePage({ params }: { params: Promise<{ stateCode: string }> }) {
+  const { stateCode: rawStateCode } = await params;
+  const stateCode = rawStateCode.toUpperCase();
 
-const formatNextDate = (iso: string | null): string | null => {
-  if (!iso) return null;
-  const d = new Date(iso);
-  if (Number.isNaN(d.getTime())) return null;
-  return d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
-};
+  const ua = (await headers()).get('user-agent') || '';
+  const initialIsMobile = MOBILE_UA.test(ua);
 
-const CardSkeleton = () => (
-  <div className="aspect-[3/4] animate-pulse rounded-3xl bg-black/5" />
-);
-
-export default function StateExplorePage() {
-  const params = useParams();
-  const router = useRouter();
-  const { isMobile, isHydrated } = useDevice();
-  const stateCode = String(params?.stateCode || '').toUpperCase();
-
-  const { data, isLoading, isError } = useGetData<StateTripsResponse>(
-    API_ENDPOINTS.LANDING_PAGE.TRIPS_BY_STATE(stateCode)
-  );
-
+  const data = await getStateTrips(stateCode);
   const stateName = data?.state?.name || stateCode;
   const stateImage = data?.state?.imageUrl;
   const trips = data?.trips ?? [];
 
-  // Cards differ per device the same way the landing page's do, so hold the grid
-  // until the device is known rather than rendering the wrong one and swapping.
-  const showSkeletons = isLoading || !isHydrated;
+  const url = `${SITE_URL}/explore/${stateCode}`;
+  const tripCountLine =
+    trips.length > 0
+      ? `${trips.length} ${trips.length === 1 ? 'group trip' : 'group trips'} for solo travellers`
+      : 'No upcoming trips right now';
 
-  const grid = 'grid grid-cols-2 gap-3 sm:gap-5 md:grid-cols-3 xl:grid-cols-4';
+  // Generic, honest copy — no state-specific claims we can't back with real data
+  // (ratings, "best time to visit" etc. would need a backend field we don't have).
+  const introCopy = `Wondrr lists fixed-departure group trips in ${stateName} run by verified Indian travel operators. Every trip shown below has a confirmed departure date, upfront pricing and a published refund policy — book with a group of solo travellers, not a private tour.`;
 
-  const listName = `explore:${stateCode.toLowerCase()}` as const;
+  const breadcrumb = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: SITE_URL },
+      { '@type': 'ListItem', position: 2, name: 'Explore', item: `${SITE_URL}/explore` },
+      { '@type': 'ListItem', position: 3, name: stateName, item: url },
+    ],
+  };
 
-  useViewItemList(
-    listName,
-    trips.map((t) => ({ slug: t.tripSlug, title: t.title, hostUsername: t.hostUsername, city: t.location, price: t.price })),
-    listName,
-  );
+  const schemas: Record<string, unknown>[] = [breadcrumb];
+
+  if (trips.length > 0) {
+    schemas.push({
+      '@context': 'https://schema.org',
+      '@type': 'ItemList',
+      itemListElement: trips.map((trip, i) => ({
+        '@type': 'ListItem',
+        position: i + 1,
+        url: `${SITE_URL}/trip/${trip.tripSlug}`,
+        name: trip.title,
+      })),
+    });
+  }
 
   return (
     <main className="min-h-screen bg-[#FFF9F4]">
+      <JsonLd data={schemas} />
       <header className="mx-auto max-w-[1440px] px-4 pt-4 sm:px-9 sm:pt-8">
         <nav className="flex items-center gap-1.5 text-xs text-neutral-500 sm:text-sm">
-          <button onClick={() => router.push('/')} className="transition-colors hover:text-neutral-900">
+          <Link href="/" className="transition-colors hover:text-neutral-900">
             Home
-          </button>
+          </Link>
           <ChevronRight size={13} className="shrink-0" />
           <span className="truncate font-semibold text-neutral-900">{stateName}</span>
         </nav>
@@ -91,7 +78,7 @@ export default function StateExplorePage() {
         <div className="mt-4 flex items-center gap-4 sm:mt-7 sm:gap-6">
           {stateImage && (
             <div className="h-20 w-20 shrink-0 overflow-hidden rounded-2xl border-4 border-[#FFD976] sm:h-28 sm:w-28">
-              <MyImage src={stateImage} alt={stateName} className="h-full w-full" rounded={false} />
+              <MyImage src={stateImage} alt={stateName} className="h-full w-full" rounded={false} sizes="112px" />
             </div>
           )}
           <div className="min-w-0">
@@ -101,63 +88,15 @@ export default function StateExplorePage() {
             <h1 className="mt-1 break-words text-2xl font-bold leading-tight text-neutral-900 sm:text-4xl lg:text-5xl">
               {stateName}
             </h1>
-            {!isLoading && (
-              <p className="mt-1.5 text-xs font-medium text-neutral-500 sm:text-base">
-                {trips.length > 0
-                  ? `${trips.length} ${trips.length === 1 ? 'group trip' : 'group trips'} for solo travellers`
-                  : 'No upcoming trips right now'}
-              </p>
-            )}
+            <p className="mt-1.5 text-xs font-medium text-neutral-500 sm:text-base">{tripCountLine}</p>
           </div>
         </div>
+
+        <p className="mt-4 max-w-3xl text-sm leading-relaxed text-neutral-600 sm:text-base">{introCopy}</p>
       </header>
 
       <div className="mx-auto max-w-[1440px] px-4 py-6 sm:px-9 sm:py-10">
-        {showSkeletons ? (
-          <div className={grid}>
-            {[0, 1, 2, 3].map((i) => <CardSkeleton key={i} />)}
-          </div>
-        ) : isError || trips.length === 0 ? (
-          <div className="flex flex-col items-center justify-center gap-4 py-20 text-center sm:py-24">
-            <span className="text-5xl">🧭</span>
-            <h2 className="text-xl font-bold text-neutral-900 sm:text-2xl">Nothing here yet</h2>
-            <p className="max-w-md text-sm text-neutral-500 sm:text-base">
-              No upcoming trips in {stateName} right now. Check back soon or explore another destination.
-            </p>
-            <Link
-              href="/"
-              className="mt-2 inline-flex items-center gap-2 rounded-full bg-neutral-900 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-neutral-700"
-            >
-              <ArrowLeft size={14} /> Back to home
-            </Link>
-          </div>
-        ) : (
-          <div className={grid}>
-            {trips.map((trip, i) => {
-              const Card = isMobile ? MobileCarouselCard : DesktopCarouselCard;
-              return (
-                <Card
-                  key={trip.id}
-                  id={trip.id}
-                  tripSlug={trip.tripSlug}
-                  image={trip.image}
-                  title={trip.title}
-                  provider={trip.hostName}
-                  hostUsername={trip.hostUsername}
-                  duration={trip.days}
-                  price={trip.price}
-                  rating={trip.rating}
-                  isBookmarked={trip.isBookmarked}
-                  colorScheme={COLOR_SCHEMES[i % COLOR_SCHEMES.length]}
-                  nextDate={formatNextDate(trip.nextTripDate)}
-                  listName={listName}
-                  index={i}
-                  priority={i < 4}
-                />
-              );
-            })}
-          </div>
-        )}
+        <ExploreStateGrid trips={trips} stateName={stateName} initialIsMobile={initialIsMobile} />
       </div>
 
       <Footer />

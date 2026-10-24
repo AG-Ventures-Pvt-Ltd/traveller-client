@@ -10,6 +10,7 @@ interface TravelerSectionProps {
   bookingId : string;
   onDataChange?: (hasChanges: boolean, data: TravelerUpdatePayload | null) => void;
   onReset?: () => void;
+  locked?: boolean;
 }
 
 interface BookingTravelersApiResponse {
@@ -47,7 +48,7 @@ interface TravelerUpdatePayload {
 
 
 
-const TravelerSection: React.FC<TravelerSectionProps> = ({bookingId, onDataChange, onReset}) => {
+const TravelerSection: React.FC<TravelerSectionProps> = ({bookingId, onDataChange, onReset, locked = false}) => {
 
   const { data : travelers } = useGetData<BookingTravelersApiResponse>(API_ENDPOINTS.BOOKINGS.GET_TRAVELERS(bookingId))
 
@@ -148,6 +149,7 @@ const TravelerSection: React.FC<TravelerSectionProps> = ({bookingId, onDataChang
   }, [travelers]);
 
   const hasChanges = () => {
+    if (locked) return false;
     const mainChanged = JSON.stringify(mainTravelerData) !== JSON.stringify(originalData.mainTraveler);
     const guestsChanged = JSON.stringify(guestTravelersData) !== JSON.stringify(originalData.guests);
     const hasErrors = validationErrors.main.phoneNumber || validationErrors.main.governmentIdNumber ||
@@ -186,7 +188,7 @@ const TravelerSection: React.FC<TravelerSectionProps> = ({bookingId, onDataChang
       const currentData = getCurrentData();
       onDataChange(hasChanges(), currentData);
     }
-  }, [mainTravelerData, guestTravelersData, validationErrors, onDataChange, travelers]);
+  }, [mainTravelerData, guestTravelersData, validationErrors, onDataChange, travelers, locked]);
 
   // Reset to original data when parent requests
   useEffect(() => {
@@ -280,32 +282,35 @@ const TravelerSection: React.FC<TravelerSectionProps> = ({bookingId, onDataChang
 
       <CollapsibleCard title={`Primary Traveler`}>
           <div className='px-4 pb-5 flex flex-col gap-1.5'>
-            <CustomInput 
-              placeholder='Full Name' 
-              icon={UserIcon} 
-              value={mainTravelerData.fullName} 
+            <CustomInput
+              placeholder='Full Name'
+              icon={UserIcon}
+              value={mainTravelerData.fullName}
               onChange={(e) => handleFieldChange('main', 0, 'fullName', e.target.value)}
+              readOnly={locked}
             />
-            <CustomInput 
-              placeholder='Email' 
-              icon={EnvelopeIcon} 
-              value={mainTravelerData.email} 
+            <CustomInput
+              placeholder='Email'
+              icon={EnvelopeIcon}
+              value={mainTravelerData.email}
               onChange={(e) => handleFieldChange('main', 0, 'email', e.target.value)}
-              readOnly 
+              readOnly
             />
-            <CustomInput 
-              placeholder='Phone Number' 
-              icon={PhoneIcon} 
-              value={mainTravelerData.phoneNumber} 
+            <CustomInput
+              placeholder='Phone Number'
+              icon={PhoneIcon}
+              value={mainTravelerData.phoneNumber}
               onChange={(e) => handleFieldChange('main', 0, 'phoneNumber', e.target.value)}
               error={!!validationErrors.main.phoneNumber}
+              readOnly={locked}
             />
-            <CustomInput 
-              placeholder='Govt. ID Number (Adhaar)' 
-              icon={IdentificationCardIcon} 
-              value={mainTravelerData.governmentIdNumber} 
+            <CustomInput
+              placeholder='Govt. ID Number (Adhaar)'
+              icon={IdentificationCardIcon}
+              value={mainTravelerData.governmentIdNumber}
               onChange={(e) => handleFieldChange('main', 0, 'governmentIdNumber', e.target.value)}
               error={!!validationErrors.main.governmentIdNumber}
+              readOnly={locked}
             />
           </div>
         </CollapsibleCard>
@@ -315,25 +320,28 @@ const TravelerSection: React.FC<TravelerSectionProps> = ({bookingId, onDataChang
         return (
           <CollapsibleCard title={`Traveler ${idx + 2}`} key={`traveler-${idx + 2}`}>
             <div className='px-4 pb-5 flex flex-col gap-1.5'>
-              <CustomInput 
-                placeholder='Full Name' 
-                icon={UserIcon} 
-                value={guestData.fullName} 
+              <CustomInput
+                placeholder='Full Name'
+                icon={UserIcon}
+                value={guestData.fullName}
                 onChange={(e) => handleFieldChange('guest', idx, 'fullName', e.target.value)}
+                readOnly={locked}
               />
-              <CustomInput 
-                placeholder='Phone Number' 
-                icon={PhoneIcon} 
-                value={guestData.phoneNumber} 
+              <CustomInput
+                placeholder='Phone Number'
+                icon={PhoneIcon}
+                value={guestData.phoneNumber}
                 onChange={(e) => handleFieldChange('guest', idx, 'phoneNumber', e.target.value)}
                 error={!!validationErrors.guests[idx]?.phoneNumber}
+                readOnly={locked}
               />
-              <CustomInput 
-                placeholder='Govt. ID Number (Adhaar)' 
-                icon={IdentificationCardIcon} 
-                value={guestData.governmentIdNumber} 
+              <CustomInput
+                placeholder='Govt. ID Number (Adhaar)'
+                icon={IdentificationCardIcon}
+                value={guestData.governmentIdNumber}
                 onChange={(e) => handleFieldChange('guest', idx, 'governmentIdNumber', e.target.value)}
                 error={!!validationErrors.guests[idx]?.governmentIdNumber}
+                readOnly={locked}
               />
             </div>
           </CollapsibleCard>

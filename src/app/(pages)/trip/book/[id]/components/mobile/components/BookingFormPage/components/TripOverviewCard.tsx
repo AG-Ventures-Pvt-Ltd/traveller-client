@@ -7,6 +7,8 @@ import { usePathname } from 'next/navigation';
 import { useDevice } from '@/common/hooks/useDevice';
 import { CurrencyInrIcon } from '@phosphor-icons/react';
 import Button from '@/common/ui/Buttons/Button';
+import { useIsBookingEvent } from '@/app/(pages)/trip/api';
+import { formatTimeRangeIST } from '@/app/(pages)/trip/[id]/components/utils';
 
 
 interface TripOverviewCardProps {
@@ -37,6 +39,7 @@ export default function TripOverviewCard(props: TripOverviewCardProps) {
     const store = useBookingFormStore();
 
     const { isMobile } = useDevice()
+    const isEvent = useIsBookingEvent();
 
     const guests = store.guests || props.guests || 1;
     const setGuests = useMemo(() =>
@@ -84,17 +87,17 @@ export default function TripOverviewCard(props: TripOverviewCardProps) {
                 </div>
                 <div className={`bg-[#FFD976] rounded-full px-2.5 py-1`}>
                     <p className="text-xs text-black tracking-[-0.36px]">
-                        {batchDetails?.duration ? batchDetails?.duration : '—'}
+                        {isEvent && startDate ? formatTimeRangeIST(startDate, endDate) : batchDetails?.duration || '—'}
                     </p>
                 </div>
-                <div className="flex flex-col gap-0.5 items-end">
+                {!isEvent && <div className="flex flex-col gap-0.5 items-end">
                     <p className="text-xs font-medium text-black tracking-[-0.36px]">
                         {endDate ? formatDate(endDate) : '—'}
                     </p>
                     <p className="text-xs text-black tracking-[-0.36px]">
                         {endDate ? formatDay(endDate) : ''}
                     </p>
-                </div>
+                </div>}
             </div>
             <div className="flex items-center gap-2">
                 <p className="text-xs text-black tracking-[-0.36px] whitespace-nowrap">No. of Pax :</p>
@@ -129,13 +132,13 @@ export default function TripOverviewCard(props: TripOverviewCardProps) {
                         </div>)
                 }
             </div>
-            {props.selectedMeetingPoint && (
+            {!isEvent && props.selectedMeetingPoint && (
                 <div className='flex items-center gap-2 text-xs text-black'>
                     <p className=" tracking-[-0.36px] whitespace-nowrap">Depart from :</p>
                     <p className='font-medium'>{props.selectedMeetingPoint}</p>
                 </div>
             )}
-            {(meetingPoints.length > 0) && (path.split('/')[1] !== 'profile') && (
+            {!isEvent && (meetingPoints.length > 0) && (path.split('/')[1] !== 'profile') && (
                 <div className="flex flex-col gap-2">
                     <div className="flex items-center gap-2 flex-wrap">
                         <p className="text-xs text-black tracking-[-0.36px] whitespace-nowrap">Depart from :</p>

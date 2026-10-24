@@ -16,5 +16,7 @@ export interface BookedTrip {
   isCompleted : boolean
   hasFilledDetails: boolean
   hasReview: boolean
+  reviewRating?: number
+  reviewComment?: string
 }
 

@@ -15,7 +15,7 @@ export default function PostLoginPage() {
     const searchParams = useSearchParams();
     const redirectUrl = searchParams.get('redirectUrl') || '/';
 
-    const { data: phoneData, isLoading: phoneLoading } = useGetData<{ exists: boolean }>(
+    const { data: phoneData, isLoading: phoneLoading, isError: phoneError } = useGetData<{ exists: boolean }>(
         API_ENDPOINTS.USER.VALIDATE_PHONE,
         { enabled: status === 'authenticated', queryKey: [API_ENDPOINTS.USER.VALIDATE_PHONE] }
     );
@@ -33,10 +33,11 @@ export default function PostLoginPage() {
     }, [status]);
 
     useEffect(() => {
-        if (phoneData?.exists) {
+        // On a failed phone check, move on rather than leave a blank page.
+        if (phoneData?.exists || phoneError) {
             router.replace(redirectUrl);
         }
-    }, [phoneData, redirectUrl, router]);
+    }, [phoneData, phoneError, redirectUrl, router]);
 
     if (status === 'loading' || phoneLoading || phoneData?.exists) {
         return null;

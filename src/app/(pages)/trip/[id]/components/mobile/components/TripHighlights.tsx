@@ -8,9 +8,10 @@ import CollapsibleCard from '@/common/ui/CollapsibleCard';
 
 interface TripHighlightsProps {
   highlights: TripHighlight[];
+  isEvent?: boolean;
 }
 
-export default function TripHighlights({ highlights }: TripHighlightsProps) {
+export default function TripHighlights({ highlights, isEvent }: TripHighlightsProps) {
   const [showAll, setShowAll] = useState(false);
 
   if (!highlights || highlights.length === 0) {
@@ -22,7 +23,7 @@ export default function TripHighlights({ highlights }: TripHighlightsProps) {
   const remainingCount = highlights.length - 3;
 
   return (
-    <CollapsibleCard className="" title='Trip Highlights'>
+    <CollapsibleCard className="" title={isEvent ? 'Event Highlights' : 'Trip Highlights'}>
       <div className="px-4 pb-4 flex flex-col gap-3">
         {displayedHighlights.map((highlight, index) => (
           <div

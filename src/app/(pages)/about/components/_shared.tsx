@@ -97,11 +97,16 @@ export const ScatterIcons = ({ opacity = 0.06 }: { opacity?: number }) => (
   </div>
 )
 
-/** Counts up to `target` once the element scrolls into view. */
+/**
+ * Counts up to `target` once the element scrolls into view.
+ * Initial (server-rendered) value is `target`, not 0 — crawlers and anyone
+ * without JS must see the real stat, not "0+". The animation resets to 0 and
+ * counts back up client-side after mount, as a visual flourish on top.
+ */
 export function useCountUp(target: number, duration = 1500) {
   const ref = useRef<HTMLSpanElement>(null)
   const inView = useInView(ref, { once: true, margin: '-60px' })
-  const [value, setValue] = useState(0)
+  const [value, setValue] = useState(target)
 
   useEffect(() => {
     if (!inView) return
@@ -114,6 +119,7 @@ export function useCountUp(target: number, duration = 1500) {
       setValue(Math.round(eased * target))
       if (p < 1) raf = requestAnimationFrame(tick)
     }
+    setValue(0)
     raf = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(raf)
   }, [inView, target, duration])

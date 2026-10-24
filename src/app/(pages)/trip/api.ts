@@ -2,9 +2,17 @@ import { useGetData } from '../../../services/useGetData';
 import usePostData from '../../../services/usePostData';
 import { API_ENDPOINTS } from '../../../common/constants/apiEndpoints';
 import { TripData } from './[id]/types';
+import { useParams, usePathname } from 'next/navigation';
 
 export const useTripBasicDetails = (id: string) => {
   return useGetData<Partial<TripData>>(API_ENDPOINTS.TRIPS.BASIC_DETAILS(id));
+};
+
+// Booking pages (/trip/book/<title-slug>) reuse the cached basic-details query; elsewhere (e.g. profile) the empty slug disables the fetch
+export const useIsBookingEvent = () => {
+  const { id } = useParams();
+  const slug = usePathname().startsWith('/trip/book/') ? String(id ?? '').split('-').pop() || '' : '';
+  return useGetData<Partial<TripData>>(slug ? API_ENDPOINTS.TRIPS.BASIC_DETAILS(slug) : '').data?.type === 'single_day_event';
 };
 
 export const useTripDetailedDetails = (id: string, enabled: boolean = true) => {
