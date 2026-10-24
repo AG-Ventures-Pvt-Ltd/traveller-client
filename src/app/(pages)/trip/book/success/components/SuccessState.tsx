@@ -17,11 +17,13 @@ export default function SuccessState({ bookingDetails, handleViewBookings }: Suc
         ? new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long' })
         : '—';
 
+    const isFree = !!bookingDetails && Number(bookingDetails.grandTotal) === 0;
+
     const rows = [
         { label: 'Transaction ID', value: bookingDetails?.transactionId || '—' },
         { label: 'Payment Date', value: paymentDate },
-        { label: 'Payment Method', value: bookingDetails?.method || '—' },
-        { label: 'Total Amount', value: bookingDetails?.grandTotal || '—' },
+        { label: 'Payment Method', value: bookingDetails?.method || (isFree ? 'Free' : '—') },
+        { label: 'Total Amount', value: isFree ? 'Free' : bookingDetails?.grandTotal || '—' },
         { label: 'Status', value: 'Successful', valueClassName: 'text-[#43a047]' },
     ];
 
