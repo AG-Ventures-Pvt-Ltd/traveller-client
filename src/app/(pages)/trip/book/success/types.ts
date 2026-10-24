@@ -10,6 +10,7 @@ export interface BookingDetails {
     grandTotal: string;
     bookingDate: string;
     method: string;
+    isEvent?: boolean;
 }
 
 export interface BookingResponse {

@@ -33,9 +33,14 @@ export function useCreateBooking(tripId: string) {
 
     const params = new URLSearchParams(searchParams.toString());
 
-    const createBookingMutation = usePostData<{ data: { bookingId: string } }>({
+    const createBookingMutation = usePostData<{ data: { bookingId: string; isFree?: boolean; orderId?: string } }>({
         url: API_ENDPOINTS.BOOKINGS.START,
         onSuccess: (data) => {
+            // Free (₹0) bookings are already confirmed server-side — straight to confirmation.
+            if (data?.data?.isFree && data.data.orderId) {
+                router.push(`/trip/book/success?orderId=${encodeURIComponent(data.data.orderId)}`);
+                return;
+            }
             const newBookingId: string = data?.data?.bookingId;
 
             localStorage.setItem(`booking_${tripId}`, newBookingId);

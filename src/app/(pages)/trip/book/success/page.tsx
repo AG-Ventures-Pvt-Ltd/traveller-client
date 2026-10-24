@@ -67,7 +67,7 @@ export default function BookingSuccessPage() {
   const showMobileNotice = !isLoading && !isFailed;
 
   return (
-    <DesktopBookingSuccess showMobileNotice={showMobileNotice}>
+    <DesktopBookingSuccess showMobileNotice={showMobileNotice} isEvent={!!bookingDetails?.isEvent}>
       {content}
     </DesktopBookingSuccess>
   );
