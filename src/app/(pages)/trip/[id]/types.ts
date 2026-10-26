@@ -71,6 +71,8 @@ export interface RefundTerm {
 
 export interface TripData {
   title: string;
+  /** Optional short (3-5 word) name used in SEO titles; falls back to `title`. */
+  seoName?: string;
   description: string;
   duration : string;
   type?: 'group_tour' | 'group_trek' | 'bike_trip' | 'group_run' | 'single_day_event';

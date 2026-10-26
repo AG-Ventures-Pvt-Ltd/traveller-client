@@ -26,13 +26,15 @@ export const organizationSchema: JsonLdData = {
   '@type': 'TravelAgency',
   '@id': `${SITE_URL}/#organization`,
   name: 'Wondrr',
+  alternateName: ['Wondrr.in', 'Wondrr Trips'],
   legalName: 'Madhurmani Networks (OPC) Pvt. Ltd.',
   url: SITE_URL,
   logo: {
     '@type': 'ImageObject',
-    url: `${SITE_URL}/png/metadata.png`,
-    width: 3944,
-    height: 1584,
+    // Square (>=112px) as Google's logo guidelines require; metadata.png is a wide banner.
+    url: `${SITE_URL}/png/favicon.png`,
+    width: 513,
+    height: 513,
   },
   image: `${SITE_URL}/png/metadata.png`,
   description:
@@ -64,13 +66,6 @@ export const websiteSchema: JsonLdData = {
   '@id': `${SITE_URL}/#website`,
   url: SITE_URL,
   name: 'Wondrr',
+  alternateName: ['Wondrr.in'],
   publisher: { '@id': `${SITE_URL}/#organization` },
-  potentialAction: {
-    '@type': 'SearchAction',
-    target: {
-      '@type': 'EntryPoint',
-      urlTemplate: `${SITE_URL}/search?q={search_term_string}`,
-    },
-    'query-input': 'required name=search_term_string',
-  },
 };

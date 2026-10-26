@@ -29,13 +29,13 @@ interface RootLayoutProps {
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://wondrr.in'),
-  title: "Group Trips from India's Top Travel Brands | Wondrr",
+  title: "Wondrr: Group Trips, Treks & Weekend Getaways in India",
   description:
-    "Browse and book group trips from India's top verified travel brands — all on one platform. Fixed departures across the best destinations, zero hassle.",
+    "Book fixed-departure group trips, Himalayan treks and weekend getaways from 50+ verified operators. Small groups of 15 or fewer, upfront prices.",
   openGraph: {
-    title: "Group Trips from India's Top Travel Brands | Wondrr",
+    title: "Wondrr: Group Trips, Treks & Weekend Getaways in India",
     description:
-      "Browse and book group trips from India's top verified travel brands — all on one platform. Fixed departures across the best destinations, zero hassle.",
+      "Book fixed-departure group trips, Himalayan treks and weekend getaways from 50+ verified operators. Small groups of 15 or fewer, upfront prices.",
     url: "https://wondrr.in",
     siteName: "Wondrr",
     images: [
@@ -51,9 +51,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: "Group Trips from India's Top Travel Brands | Wondrr",
+    title: "Wondrr: Group Trips, Treks & Weekend Getaways in India",
     description:
-      "Browse and book group trips from India's top verified travel brands — all on one platform.",
+      "Book fixed-departure group trips, Himalayan treks and weekend getaways from 50+ verified operators. Small groups of 15 or fewer, upfront prices.",
     images: [`https://wondrr.in/png/metadata.png`],
   },
   appleWebApp: {

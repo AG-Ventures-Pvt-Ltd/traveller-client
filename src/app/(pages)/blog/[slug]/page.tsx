@@ -4,6 +4,7 @@ import { getServerData } from '@/services/serverApi';
 import { API_ENDPOINTS } from '@/common/constants/apiEndpoints';
 import { JsonLd, SITE_URL } from '@/common/seo/JsonLd';
 import type { Trip } from '../../(landing)/components/MobileLanding/types';
+import Link from 'next/link';
 import BlogPostClient from './BlogPostClient';
 
 export const dynamic = 'force-dynamic';
@@ -23,6 +24,9 @@ interface Blog {
   metaDescription: string;
   readTime: number;
   relatedTrips: string[];
+  /** Optional; /explore link renders only when the backend sends it. */
+  stateCode?: string;
+  stateName?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -190,6 +194,26 @@ export default async function BlogPostPage({
     <>
       <JsonLd data={[articleSchema, breadcrumbSchema]} />
       <BlogPostClient blog={blog} image={image} relatedTrips={relatedTrips} />
+      {/* Plain server-rendered <a> links so Explore / trip pages get crawlable internal links. */}
+      {(blog.stateCode || relatedTrips.length > 0) && (
+        <nav aria-label="Book this as a group trip" className="mx-auto max-w-3xl px-4 pb-10">
+          <h2 className="text-lg font-bold text-neutral-900">Book this as a group trip</h2>
+          <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-[#C4532A]">
+            {blog.stateCode && (
+              <li>
+                <Link href={`/explore/${blog.stateCode.toUpperCase()}`} className="underline">
+                  {blog.stateName ?? blog.stateCode} group trips
+                </Link>
+              </li>
+            )}
+            {relatedTrips.slice(0, 3).map((t) => (
+              <li key={t.tripSlug}>
+                <Link href={`/trip/${t.tripSlug}`} className="underline">{t.title} package</Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      )}
     </>
   );
 }

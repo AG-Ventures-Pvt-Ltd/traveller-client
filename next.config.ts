@@ -40,11 +40,6 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       {
-        source: '/girls-trips',
-        destination: '/trips',
-        permanent: true,
-      },
-      {
         source: '/trip',
         destination: '/trips',
         permanent: true,
@@ -65,6 +60,13 @@ const nextConfig: NextConfig = {
     const PAY = 'https://*.razorpay.com https://razorpay.com https://*.cashfree.com https://cashfree.com';
 
     return [
+      // Private / transactional pages: noindex via header (their layouts are client
+      // components, so they can't export metadata). Deliberately NOT in robots.txt —
+      // a Disallow would stop Google seeing this header and leave them indexed.
+      {
+        source: '/:path(auth/post-login|welcome|profile|wallet|review|verify|trip/book|referral|referral-policy)/:rest*',
+        headers: [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }],
+      },
       {
         source: '/:path*',
         headers: [
