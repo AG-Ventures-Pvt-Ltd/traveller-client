@@ -11,6 +11,7 @@ interface TravelerSectionProps {
   onDataChange?: (hasChanges: boolean, data: TravelerUpdatePayload | null) => void;
   onReset?: () => void;
   locked?: boolean;
+  isEvent?: boolean;
 }
 
 interface BookingTravelersApiResponse {
@@ -48,7 +49,7 @@ interface TravelerUpdatePayload {
 
 
 
-const TravelerSection: React.FC<TravelerSectionProps> = ({bookingId, onDataChange, onReset, locked = false}) => {
+const TravelerSection: React.FC<TravelerSectionProps> = ({bookingId, onDataChange, onReset, locked = false, isEvent = false}) => {
 
   const { data : travelers } = useGetData<BookingTravelersApiResponse>(API_ENDPOINTS.BOOKINGS.GET_TRAVELERS(bookingId))
 
@@ -280,7 +281,7 @@ const TravelerSection: React.FC<TravelerSectionProps> = ({bookingId, onDataChang
   return (
     <div className='flex flex-col gap-4'>
 
-      <CollapsibleCard title={`Primary Traveler`}>
+      <CollapsibleCard title={isEvent ? 'Primary Attendee' : 'Primary Traveler'}>
           <div className='px-4 pb-5 flex flex-col gap-1.5'>
             <CustomInput
               placeholder='Full Name'
@@ -318,7 +319,7 @@ const TravelerSection: React.FC<TravelerSectionProps> = ({bookingId, onDataChang
       {Array.from({ length: travelers.numberOfPeople - 1 }, (_, idx) => {
         const guestData = guestTravelersData[idx] || { fullName: '', phoneNumber: '', governmentIdNumber: '' };
         return (
-          <CollapsibleCard title={`Traveler ${idx + 2}`} key={`traveler-${idx + 2}`}>
+          <CollapsibleCard title={`${isEvent ? 'Attendee' : 'Traveler'} ${idx + 2}`} key={`traveler-${idx + 2}`}>
             <div className='px-4 pb-5 flex flex-col gap-1.5'>
               <CustomInput
                 placeholder='Full Name'

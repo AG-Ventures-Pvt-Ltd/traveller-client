@@ -115,12 +115,16 @@ const CarouselCard: React.FC<CarouselCardProps> = ({
             </p>
           )}
           <div className="flex items-baseline">
-            <span className="text-neutral-900 text-sm font-bold font-['Satoshi']">
-              From ₹{price.toLocaleString('en-IN')}/
-            </span>
-            <span className="text-neutral-700 text-sm font-medium font-['Satoshi']">
-              adult
-            </span>
+            {price === 0 ? (
+              <span className="text-neutral-900 text-sm font-bold font-['Satoshi']">Free Entry</span>
+            ) : (<>
+              <span className="text-neutral-900 text-sm font-bold font-['Satoshi']">
+                From ₹{price.toLocaleString('en-IN')}/
+              </span>
+              <span className="text-neutral-700 text-sm font-medium font-['Satoshi']">
+                adult
+              </span>
+            </>)}
           </div>
         </div>
       </div>

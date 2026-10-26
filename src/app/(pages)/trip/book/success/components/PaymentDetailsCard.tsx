@@ -4,12 +4,13 @@ import type { PaymentDetailRow } from '../types';
 
 interface PaymentDetailsCardProps {
     rows: PaymentDetailRow[];
+    title?: string;
 }
 
-export default function PaymentDetailsCard({ rows }: PaymentDetailsCardProps) {
+export default function PaymentDetailsCard({ rows, title = 'Payment Details' }: PaymentDetailsCardProps) {
     return (
         <div className="flex flex-col gap-3.5">
-            <p className="text-[15px] font-medium text-black tracking-tight">Payment Details</p>
+            <p className="text-[15px] font-medium text-black tracking-tight">{title}</p>
             <div className="border border-[#d9d9d9] rounded-2xl overflow-hidden">
                 <div className="flex flex-col gap-2.5 px-3 py-5">
                     {rows.map((row, i) => (

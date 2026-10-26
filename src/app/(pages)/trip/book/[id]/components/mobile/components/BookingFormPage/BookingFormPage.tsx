@@ -15,7 +15,7 @@ import ActivityAddOnsSection from './components/ActivityAddOnsSection';
 // import FoodPreferenceSection from './components/FoodPreferenceSection';
 import DiscountsSection from './components/DiscountsSection';
 import { ReservationSkeleton } from '../../BookingStepSkeletons';
-import { useBookingFormStore, getOrderSubtotal, selectEffectiveCoupon } from './hooks/useBookingFormStore';
+import { useBookingFormStore, getOrderSubtotal, selectEffectiveCoupon, isOrderFree } from './hooks/useBookingFormStore';
 import type { BookingFormData, BookingOptionsResponse } from './types';
 import LoadExistingBookingDetails from './components/LoadExistingBookingDetails'
 import { useSearchParams } from 'next/navigation';
@@ -23,7 +23,6 @@ import { useCreateBooking } from './hooks/useCreateBooking';
 import { useUpdateBooking } from './hooks/useUpdateBooking';
 import BookingBar from '@/app/(pages)/trip/common/ui/BookingBar';
 import { useDevice } from '@/common/hooks/useDevice';
-import { CurrencyInrIcon } from '@phosphor-icons/react';
 
 
 export type { BookingFormData };
@@ -64,7 +63,7 @@ export default function BookingFormPage({ tripId, batchId, onViewCoupons }: Book
         }
     );
 
-    const { handleContinue } = useCreateBooking(tripId)
+    const { handleContinue, isLoading: isBooking } = useCreateBooking(tripId)
     const { handleUpdate } = useUpdateBooking(existingBookingId || '')
 
     // Keep a ref to always call the latest handleContinue without it being a useEffect dependency
@@ -88,6 +87,7 @@ export default function BookingFormPage({ tripId, batchId, onViewCoupons }: Book
 
     const subtotal = useBookingFormStore(getOrderSubtotal);
     const effectiveCoupon = useBookingFormStore(selectEffectiveCoupon);
+    const isFree = useBookingFormStore(isOrderFree);
 
     const displayPrice = useMemo(() => {
         let discount = 0;
@@ -100,7 +100,8 @@ export default function BookingFormPage({ tripId, batchId, onViewCoupons }: Book
     }, [subtotal, effectiveCoupon]);
 
     const handleButtonClick = () => {
-        if (existingBookingId) {
+        // Free orders never use the pending-booking update path.
+        if (existingBookingId && !isFree) {
             handleUpdateRef.current();
         } else {
             handleContinueRef.current();
@@ -141,17 +142,19 @@ export default function BookingFormPage({ tripId, batchId, onViewCoupons }: Book
                     <ExtraAddOnsSection />
                     {/* <FoodPreferenceSection /> */}
 
-                    <DiscountsSection
-                        tripId={tripId}
-                        orderAmount={subtotal}
-                        onViewCoupons={onViewCoupons}
-                    />
+                    {!isFree && (
+                        <DiscountsSection
+                            tripId={tripId}
+                            orderAmount={subtotal}
+                            onViewCoupons={onViewCoupons}
+                        />
+                    )}
                 </div>
 
                 {/* Right: floating sticky trip overview + pricing */}
                 <div className="w-[360px] shrink-0 sticky top-24">
                     <div className="flex flex-col gap-4">
-                        <TripOverviewCard displayPrice={displayPrice} handleBookNowClick={() => handleButtonClick()}/>
+                        <TripOverviewCard displayPrice={displayPrice} isFree={isFree} isLoading={isBooking} handleBookNowClick={() => handleButtonClick()}/>
                     </div>
                 </div>
             </div>
@@ -161,7 +164,7 @@ export default function BookingFormPage({ tripId, batchId, onViewCoupons }: Book
     return (
         <div className="px-4 pb-20 flex flex-col gap-4">
             <LoadExistingBookingDetails />
-            <TripOverviewCard />
+            <TripOverviewCard isFree={isFree} />
             <TravelerDetailsCard />
 
             {pricingTiers.length > 0 && (
@@ -186,12 +189,14 @@ export default function BookingFormPage({ tripId, batchId, onViewCoupons }: Book
             <ExtraAddOnsSection />
             {/* <FoodPreferenceSection /> */}
 
-            <DiscountsSection
-                tripId={tripId}
-                orderAmount={subtotal}
-                onViewCoupons={onViewCoupons}
-            />
-            <BookingBar displayPrice={displayPrice} onBookNow={handleButtonClick} />
+            {!isFree && (
+                <DiscountsSection
+                    tripId={tripId}
+                    orderAmount={subtotal}
+                    onViewCoupons={onViewCoupons}
+                />
+            )}
+            <BookingBar displayPrice={displayPrice} isFree={isFree} isLoading={isBooking} onBookNow={handleButtonClick} />
         </div>
     );
 }

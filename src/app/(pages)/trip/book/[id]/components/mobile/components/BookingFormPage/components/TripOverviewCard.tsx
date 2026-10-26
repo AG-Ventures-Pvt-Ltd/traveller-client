@@ -21,6 +21,9 @@ interface TripOverviewCardProps {
     batchDetails?: any;
     gap?: string
     displayPrice?:number
+    isFree?: boolean
+    isEvent?: boolean
+    isLoading?: boolean
     handleBookNowClick?:() => void
 }
 
@@ -39,7 +42,8 @@ export default function TripOverviewCard(props: TripOverviewCardProps) {
     const store = useBookingFormStore();
 
     const { isMobile } = useDevice()
-    const isEvent = useIsBookingEvent();
+    const hookIsEvent = useIsBookingEvent();
+    const isEvent = props.isEvent ?? hookIsEvent;
 
     const guests = store.guests || props.guests || 1;
     const setGuests = useMemo(() =>
@@ -62,6 +66,13 @@ export default function TripOverviewCard(props: TripOverviewCardProps) {
 
     const selectedPoint = meetingPoints[selectedMeetingPointIdx] ?? null;
     const hasExtraPrice = selectedPoint && selectedPoint.pickupPrice > 0;
+
+    // free bookings are 1 person each (server enforces too); keep in sync with BOOKING_CONSTANTS.MAX_PEOPLE_PAID
+    const MAX_PAID_GUESTS = 3;
+    const hidePax = !!props.isFree && !props.guests;
+    useEffect(() => {
+        if (hidePax && guests !== 1) setGuests(1);
+    }, [hidePax, guests, setGuests]);
 
     useEffect(() => {
         if (meetingPoints.length > 0) {
@@ -99,7 +110,7 @@ export default function TripOverviewCard(props: TripOverviewCardProps) {
                     </p>
                 </div>}
             </div>
-            <div className="flex items-center gap-2">
+            {!hidePax && <div className="flex items-center gap-2">
                 <p className="text-xs text-black tracking-[-0.36px] whitespace-nowrap">No. of Pax :</p>
                 {
                     props.guests ? <div>{props.guests}</div> :
@@ -118,7 +129,9 @@ export default function TripOverviewCard(props: TripOverviewCardProps) {
                             <button
                                 type="button"
                                 onClick={() => {
-                                    if (guests + 1 <= (batchDetails?.availableSeats || 0)) {
+                                    if (guests + 1 > MAX_PAID_GUESTS) {
+                                        notify.error(`Maximum ${MAX_PAID_GUESTS} people per booking`);
+                                    } else if (guests + 1 <= (batchDetails?.availableSeats || 0)) {
                                         setGuests(guests + 1);
                                     } else {
                                         notify.error(`Maximum available seats: ${batchDetails?.availableSeats || 0}`);
@@ -131,7 +144,7 @@ export default function TripOverviewCard(props: TripOverviewCardProps) {
                             </button>
                         </div>)
                 }
-            </div>
+            </div>}
             {!isEvent && props.selectedMeetingPoint && (
                 <div className='flex items-center gap-2 text-xs text-black'>
                     <p className=" tracking-[-0.36px] whitespace-nowrap">Depart from :</p>
@@ -182,18 +195,23 @@ export default function TripOverviewCard(props: TripOverviewCardProps) {
             {!isMobile && path.split('/')[1] !== 'profile' && <div>
                 <div className="rounded-2xl flex flex-col gap-2 mt-12">
                     <div>
-                        <p className="text-xl font-bold text-black flex items-end">
-                            <span className="flex items-center"><CurrencyInrIcon weight="bold" /> {props.displayPrice}/</span>
-                            <span className="text-sm font-medium pl-1"> person</span>
-                        </p>
-                        <p className="font-medium">+5% GST</p>
+                        {props.isFree ? (
+                            <p className="text-xl font-bold text-black">Free</p>
+                        ) : (<>
+                            <p className="text-xl font-bold text-black flex items-end">
+                                <span className="flex items-center"><CurrencyInrIcon weight="bold" /> {props.displayPrice}/</span>
+                                <span className="text-sm font-medium pl-1"> person</span>
+                            </p>
+                            <p className="font-medium">+5% GST</p>
+                        </>)}
                     </div>
                     <Button 
                         onClick={props.handleBookNowClick || (() => { })}
                         variant='purple'
                         className="font-semibold"
+                        disabled={props.isLoading}
                     >
-                        Book Now
+                        {props.isFree ? (props.isLoading ? 'Confirming…' : 'Confirm Booking') : 'Book Now'}
                     </Button>
                 </div>
             </div>}

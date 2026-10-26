@@ -17,6 +17,7 @@ interface TripSummaryCardProps {
         hostName?: string;
         tripImage?: string;
         startDateTime: string;
+        isEvent?: boolean;
     };
     booking: {
         numberOfPeople: number;
@@ -44,7 +45,9 @@ interface TripSummaryCardProps {
 }
 
 const TripSummaryCard: React.FC<TripSummaryCardProps> = ({ trip, booking }) => {
-    const isEvent = useIsBookingEvent();
+    const hookIsEvent = useIsBookingEvent();
+    const isEvent = trip.isEvent ?? hookIsEvent;
+    const isFree = booking.pricingSnapshot.grandTotal === 0;
     const formattedDate = trip.startDateTime
         ? new Date(trip.startDateTime).toLocaleDateString('en-GB', {
             day: '2-digit',
@@ -126,6 +129,7 @@ const TripSummaryCard: React.FC<TripSummaryCardProps> = ({ trip, booking }) => {
                 })}
             </div>
 
+            {!isFree && <>
             <div className="mx-4 border-t border-zinc-300" />
 
             <div className="flex justify-between items-center px-4 pt-4">
@@ -175,6 +179,7 @@ const TripSummaryCard: React.FC<TripSummaryCardProps> = ({ trip, booking }) => {
                     <span className="text-black text-xl font-semibold">₹{booking.pricingSnapshot.grandTotal}</span>
                 </div>
             </div>
+            </>}
         </div>
     );
 };
