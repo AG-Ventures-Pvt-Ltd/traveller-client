@@ -16,7 +16,7 @@ const RecognitionSection: React.FC<RecognitionSectionProps> = ({ variant = 'desk
   const compact = variant === 'mobile';
 
   return (
-    <section className={compact ? 'w-full px-4 py-10' : 'w-full px-24 py-16'}>
+    <section className="w-full">
       <div className={`flex flex-col items-center ${compact ? 'gap-6' : 'gap-10'}`}>
         <p className={`font-semibold uppercase tracking-wide text-neutral-600 ${compact ? 'text-sm' : 'text-md'}`}>
           Recognized by

@@ -1,9 +1,9 @@
 export interface WalletTransaction {
   _id: string
   type: 'credit' | 'debit'
-  reason: 'signup_bonus' | 'trip_cashback' | 'booking_payment' | 'refund' | 'admin_adjustment' | 'referral_bonus' | 'wallet_topup'
+  reason: 'signup_bonus' | 'trip_cashback' | 'booking_payment' | 'refund' | 'admin_adjustment' | 'referral_bonus' | 'wallet_topup' | 'sip_installment' | 'sip_bonus'
   amount: number
-  refType: 'TripBatch' | 'Booking' | 'Referral' | 'Payment' | null
+  refType: 'TripBatch' | 'Booking' | 'Referral' | 'Payment' | 'SipSubscription' | null
   refId: { title?: string; name?: string } | null
   status: 'pending' | 'active' | 'used' | 'expired'
   createdAt: string
