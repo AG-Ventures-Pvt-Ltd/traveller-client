@@ -22,7 +22,7 @@ const ExploreByDestination: React.FC<ExploreByDestinationProps> = ({ variant = '
     API_ENDPOINTS.LANDING_PAGE.EXPLORE_STATES
   );
 
-  const states = data?.states ?? [];
+  const states = (data?.states ?? []).filter((s) => s.tripCount > 0);
   const compact = variant === 'mobile';
 
   if (!isLoading && states.length === 0) return null;

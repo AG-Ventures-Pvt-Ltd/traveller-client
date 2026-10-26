@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getHostMeta } from "./serverFetch";
+import { hostMeta } from "@/common/seo/meta";
 
 interface LayoutProps {
     children: React.ReactNode;
@@ -32,8 +33,13 @@ export async function generateMetadata({
     const totalTrips = meta.totalTrips;
     const avatar = resolveAvatar(meta.avatar);
 
-    const title = `${fullName} - Verified Trips | Wondrr`;
-    const generatedDescription = `${fullName} is a verified travel partner on Wondrr${totalTrips ? ` with ${totalTrips}+ trips` : ''} across India. Browse and book directly.`;
+    // The profile page renders host reviews, so "Reviews" is honest in the title.
+    // Meta has no city / rating fields yet; hostMeta omits those clauses.
+    const { title, description: generatedDescription } = hostMeta({
+        name: fullName,
+        trips: totalTrips,
+        hasReviews: true,
+    });
     const url = `https://wondrr.in/${id}`;
 
     // Host pages with no bio are thin content (~35 words). Noindex until content is enriched.

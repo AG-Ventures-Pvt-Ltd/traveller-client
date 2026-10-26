@@ -1,17 +1,21 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'All Group Trips | Browse & Book Verified Adventures — Wondrr',
+  title: 'Group Trips in India: Treks, Road Trips & Weekend Getaways',
   description:
-    'Explore curated group trips across India and abroad. Verified operators, groups capped at 15. Treks, road trips, weekend getaways and more. Book on Wondrr.',
+    'Browse fixed-departure group trips across India and abroad. Filter treks, road trips and weekend getaways by state, month and budget.',
   alternates: { canonical: 'https://wondrr.in/trips' },
   openGraph: {
-    title: 'All Group Trips | Browse & Book Verified Adventures — Wondrr',
+    title: 'Group Trips in India: Treks, Road Trips & Weekend Getaways',
     description:
-      'Explore curated group trips across India and abroad. Verified operators, groups capped at 15. Book on Wondrr.',
+      'Browse fixed-departure group trips across India and abroad. Filter treks, road trips and weekend getaways by state, month and budget.',
     url: 'https://wondrr.in/trips',
     type: 'website',
+    siteName: 'Wondrr',
+    locale: 'en_IN',
+    images: [{ url: 'https://wondrr.in/png/metadata.png', width: 3944, height: 1584, alt: 'Wondrr — group trips from India\'s top travel brands' }],
   },
+  twitter: { card: 'summary_large_image', title: 'Group Trips in India: Treks, Road Trips & Weekend Getaways', images: ['https://wondrr.in/png/metadata.png'] },
 };
 
 export default function Layout({ children }: { children: React.ReactNode }) {

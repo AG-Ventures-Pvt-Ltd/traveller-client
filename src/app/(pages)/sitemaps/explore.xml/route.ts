@@ -1,5 +1,7 @@
 import { getServerData } from "@/services/serverApi";
 import { API_ENDPOINTS } from "@/common/constants/apiEndpoints";
+import { getStateTrips } from "../../explore/[stateCode]/serverFetch";
+import { MIN_INDEXABLE_TRIPS } from "../../explore/[stateCode]/stateContent";
 
 interface ExploreState {
     stateCode: string;
@@ -19,6 +21,11 @@ export async function GET() {
             API_ENDPOINTS.LANDING_PAGE.EXPLORE_STATES
         );
         states = data?.states ?? [];
+        // Same rule as the page's noindex: thin states stay out of the sitemap.
+        const counts = await Promise.all(
+            states.map(async (s) => (await getStateTrips(s.stateCode.toUpperCase()))?.trips.filter((t) => t.nextTripDate).length ?? 0)
+        );
+        states = states.filter((_, i) => counts[i] >= MIN_INDEXABLE_TRIPS);
     } catch {
         // Return empty sitemap on API failure rather than breaking
     }

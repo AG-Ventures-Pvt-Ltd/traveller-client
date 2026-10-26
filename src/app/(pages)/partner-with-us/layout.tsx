@@ -3,23 +3,23 @@ import { JsonLd, SITE_URL } from '@/common/seo/JsonLd';
 import { FAQS, STEPS } from './constants';
 
 export const metadata: Metadata = {
-  title: 'Partner With Us | List Your Trips on Wondrr',
+  title: 'List Your Group Trips on Wondrr | For Tour Operators',
   description:
-    'Are you a travel operator? Partner with Wondrr to list your fixed-departure group trips and reach thousands of solo travelers actively looking to book.',
+    'Sell your treks and group tours to high-intent travellers. Brand-first listings, fair commissions, secure payouts and a batch dashboard. Join in 3 steps.',
   alternates: { canonical: 'https://wondrr.in/partner-with-us' },
   openGraph: {
-    title: 'Partner With Us | List Your Trips on Wondrr',
+    title: 'List Your Group Trips on Wondrr | For Tour Operators',
     description:
-      'Partner with Wondrr to list your fixed-departure group trips and reach thousands of solo travelers actively looking to book.',
+      'Sell your treks and group trips to high-intent travellers. Brand-first listings, fair commissions, secure payouts and clean dashboard for managing everything at one place. Join in 3 steps.',
     url: 'https://wondrr.in/partner-with-us',
     type: 'website',
     images: [{ url: 'https://wondrr.in/png/metadata.png', width: 3944, height: 1584, alt: 'Partner with Wondrr' }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Partner With Us | List Your Trips on Wondrr',
+    title: 'List Your Group Trips on Wondrr | For Tour Operators',
     description:
-      'Partner with Wondrr to list your fixed-departure group trips and reach travelers across India.',
+      'Sell your treks and group tours to high-intent travellers. Brand-first listings, fair commissions, secure payouts and clean dashboard for managing everything at one place. Join in 3 steps.',
     images: ['https://wondrr.in/png/metadata.png'],
   },
 };

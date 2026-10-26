@@ -6,6 +6,7 @@ import Footer from '../../(landing)/components/Footer/Footer';
 import { JsonLd, SITE_URL } from '@/common/seo/JsonLd';
 import { getStateTrips } from './serverFetch';
 import ExploreStateGrid from './ExploreStateGrid';
+import { STATE_CONTENT } from './stateContent';
 
 // Trip list and prices change often enough (batches sell out, new ones open) that a
 // cached page would go stale — matches the same tradeoff made on the home page.
@@ -47,6 +48,19 @@ export default async function StateExplorePage({ params }: { params: Promise<{ s
   };
 
   const schemas: Record<string, unknown>[] = [breadcrumb];
+  const content = STATE_CONTENT[stateCode];
+
+  if (content?.faqs.length) {
+    schemas.push({
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: content.faqs.map((f) => ({
+        '@type': 'Question',
+        name: f.question,
+        acceptedAnswer: { '@type': 'Answer', text: f.answer },
+      })),
+    });
+  }
 
   if (trips.length > 0) {
     schemas.push({
@@ -98,6 +112,26 @@ export default async function StateExplorePage({ params }: { params: Promise<{ s
       <div className="mx-auto max-w-[1440px] px-4 py-6 sm:px-9 sm:py-10">
         <ExploreStateGrid trips={trips} stateName={stateName} initialIsMobile={initialIsMobile} />
       </div>
+
+      {content && (
+        <section className="mx-auto max-w-3xl px-4 pb-10 sm:px-9">
+          <h2 className="text-xl font-bold text-neutral-900 sm:text-2xl">About {stateName} group trips</h2>
+          <p className="mt-3 whitespace-pre-line text-sm leading-relaxed text-neutral-600 sm:text-base">{content.intro}</p>
+          {content.faqs.length > 0 && (
+            <>
+              <h2 className="mt-8 text-xl font-bold text-neutral-900 sm:text-2xl">{stateName} trips: FAQs</h2>
+              <dl className="mt-3 space-y-4">
+                {content.faqs.map((f) => (
+                  <div key={f.question}>
+                    <dt className="font-semibold text-neutral-900">{f.question}</dt>
+                    <dd className="mt-1 text-sm leading-relaxed text-neutral-600 sm:text-base">{f.answer}</dd>
+                  </div>
+                ))}
+              </dl>
+            </>
+          )}
+        </section>
+      )}
 
       <Footer />
     </main>

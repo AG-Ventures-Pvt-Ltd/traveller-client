@@ -3,24 +3,24 @@ import { JsonLd, SITE_URL } from '@/common/seo/JsonLd';
 import { FAQS } from './constants';
 
 export const metadata: Metadata = {
-  title: "About Wondrr — India's Verified Group Travel Marketplace",
+  title: "About Wondrr: India's Verified Group Trip Marketplace",
   description:
-    "Wondrr is a trust-first platform connecting travelers with verified Indian travel operators. Learn how we bring structure and transparency to group travel.",
+    "How Wondrr works: 50+ verified travel brands, groups of 15 or fewer and upfront pricing. Who we are, how operators are vetted, and FAQs.",
   alternates: {
     canonical: 'https://wondrr.in/about',
   },
   openGraph: {
-    title: "About Wondrr — India's Verified Group Travel Marketplace",
+    title: "About Wondrr: India's Verified Group Trip Marketplace",
     description:
-      "Wondrr is a trust-first platform connecting travelers with verified Indian travel operators. Learn how we bring structure and transparency to group travel.",
+      "How Wondrr works: 50+ verified travel brands, groups of 15 or fewer and upfront pricing. Who we are, how operators are vetted, and FAQs.",
     url: 'https://wondrr.in/about',
     type: 'website',
     images: [{ url: 'https://wondrr.in/png/metadata.png', width: 3944, height: 1584, alt: "Wondrr — India's Verified Group Travel Marketplace" }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: "About Wondrr — India's Verified Group Travel Marketplace",
-    description: "Wondrr is a trust-first platform connecting travelers with verified Indian travel operators. Learn how we bring structure and transparency to group travel.",
+    title: "About Wondrr: India's Verified Group Trip Marketplace",
+    description: "How Wondrr works: 50+ verified travel brands, groups of 15 or fewer and upfront pricing. Who we are, how operators are vetted, and FAQs.",
     images: ['https://wondrr.in/png/metadata.png'],
   },
 };
@@ -30,7 +30,7 @@ const aboutPageSchema = {
   '@type': 'AboutPage',
   '@id': `${SITE_URL}/about#aboutpage`,
   url: `${SITE_URL}/about`,
-  name: "About Wondrr — India's Verified Group Travel Marketplace",
+  name: "About Wondrr: India's Verified Group Trip Marketplace",
   description:
     "Wondrr is a trust-first marketplace connecting travelers with verified Indian travel operators offering fixed-departure group trips.",
   inLanguage: 'en-IN',
