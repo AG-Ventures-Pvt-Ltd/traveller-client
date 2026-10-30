@@ -1,4 +1,5 @@
 import { FilterValues, MONTH_NAMES } from './types';
+import type { LatLng } from '@/common/utils/locationQuery';
 
 export const TRIPS_PAGE_SIZE = 12;
 
@@ -57,6 +58,8 @@ export interface TripsSearchParams {
   hostParam?: string | null;
   statusParam?: string | null;
   page?: number;
+  /** Visitor location — the API filters to trips departing from the nearest active city. */
+  loc?: LatLng | null;
 }
 
 /** Splits a sort value like 'price_asc' into the API's sortBy/sortOrder pair. */
@@ -136,7 +139,7 @@ export function filtersToQuery(f: FilterValues): URLSearchParams {
 // pagination, mobile infinite scroll) so the query key always matches — a
 // mismatched key would bypass the HydrationBoundary cache and refetch.
 export function buildTripsApiUrl(filters: FilterValues, params: TripsSearchParams): string {
-  const { destination, qParam, hostParam, statusParam, page = 1 } = params;
+  const { destination, qParam, hostParam, statusParam, page = 1, loc } = params;
   const search = new URLSearchParams();
 
   if (filters.minBudget !== null) search.append('minBudget', String(filters.minBudget));
@@ -168,6 +171,10 @@ export function buildTripsApiUrl(filters: FilterValues, params: TripsSearchParam
   // react-query key, same cached object, and the infinite scroll silently stalled.
   search.append('page', page.toString());
   search.append('limit', TRIPS_PAGE_SIZE.toString());
+  if (loc) {
+    search.append('lat', String(loc.lat));
+    search.append('lng', String(loc.lng));
+  }
 
   if (qParam) {
     search.append('q', qParam);

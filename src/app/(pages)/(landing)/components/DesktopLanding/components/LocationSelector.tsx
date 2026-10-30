@@ -6,28 +6,15 @@ import { useLocation } from '@/common/hooks/useLocation';
 import { useGetData } from '@/services/useGetData';
 import { API_ENDPOINTS } from '@/common/constants/apiEndpoints';
 import { CitiesResponse } from '../../MobileLanding/components/LocationSelector';
-
-const DELHI_DEFAULT = {
-  latitude: 28.6139,
-  longitude: 77.209,
-  city: 'Delhi',
-  state: 'Delhi',
-  country: 'India',
-  postalCode: '110001',
-  address: 'Delhi, India',
-};
+import { useDepartureCity } from '@/common/hooks/useTripLocation';
 
 const LocationSelector: React.FC = () => {
-  const { locationDetails, setLocationDetails, setCityLocation, isLoading } = useLocation();
+  const { setCityLocation, isLoading } = useLocation();
   const { data: cities, isLoading: cityLoading } = useGetData<CitiesResponse>(
     API_ENDPOINTS.LANDING_PAGE.CITIES
   );
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!locationDetails && !isLoading) setLocationDetails(DELHI_DEFAULT);
-  }, [locationDetails, setLocationDetails, isLoading]);
 
   useEffect(() => {
     if (!open) return;
@@ -38,9 +25,8 @@ const LocationSelector: React.FC = () => {
     return () => document.removeEventListener('mousedown', onClick);
   }, [open]);
 
-  const displayCity = locationDetails?.city || DELHI_DEFAULT.city;
-  const displayState = locationDetails?.state || DELHI_DEFAULT.state;
   const cityList = cities?.cities ?? [];
+  const { city: displayCity, state: displayState } = useDepartureCity(cityList, cities?.departureCity);
 
   if (isLoading) {
     return <div className="h-9 w-32 animate-pulse rounded-full bg-neutral-200" />;

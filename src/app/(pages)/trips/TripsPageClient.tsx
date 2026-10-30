@@ -10,12 +10,13 @@ import ActiveFilterChips from './components/filters/ActiveFilterChips';
 import SortDropdown from './components/filters/SortDropdown';
 import { EMPTY_FILTERS, filtersToQuery, hasActiveFilters, parseFilters } from './buildApiUrl';
 import { useTripFeed } from './useTripFeed';
-import { FilterMeta, FilterValues, Pagination, Trip } from './types';
+import { DepartureCity, FilterMeta, FilterValues, Pagination, Trip } from './types';
 
 interface TripsPageClientProps {
   initialTrips: Trip[];
   initialPagination: Pagination | null;
   initialFilterMeta: FilterMeta | null;
+  initialDepartureCity: DepartureCity | null;
   /** Device guess from the request User-Agent so SSR renders the right variant. */
   initialIsMobile: boolean;
   destination: string | null;
@@ -28,6 +29,7 @@ export default function TripsPageClient({
   initialTrips,
   initialPagination,
   initialFilterMeta,
+  initialDepartureCity,
   initialIsMobile,
   destination,
   qParam,
@@ -72,6 +74,7 @@ export default function TripsPageClient({
     initialTrips,
     initialPagination,
     initialFilterMeta,
+    initialDepartureCity,
     enabled: !isMobile,
   });
 
@@ -81,6 +84,7 @@ export default function TripsPageClient({
         initialTrips={initialTrips}
         initialPagination={initialPagination}
         initialFilterMeta={initialFilterMeta}
+        initialDepartureCity={initialDepartureCity}
         destination={destination}
         qParam={qParam}
         hostParam={hostParam}
@@ -117,7 +121,7 @@ export default function TripsPageClient({
               <p className="mt-1 text-sm font-semibold text-neutral-600">
                 {feed.isInitialLoading
                   ? 'Finding trips…'
-                  : `${feed.total} ${feed.total === 1 ? 'trip' : 'trips'} found`}
+                  : `${feed.total} ${feed.total === 1 ? 'trip' : 'trips'} found${feed.departureCity ? ` · departing from ${feed.departureCity.city}` : ''}`}
               </p>
             </div>
             <SortDropdown value={filters.sort} onChange={(sort) => setFilters({ ...filters, sort })} />
@@ -135,7 +139,9 @@ export default function TripsPageClient({
               <p className="mt-2 text-sm text-neutral-600">
                 {hasActiveFilters(filters)
                   ? 'No upcoming departures match these filters. Try widening them.'
-                  : 'There are no upcoming departures right now. Check back soon.'}
+                  : feed.departureCity
+                    ? `No upcoming departures from ${feed.departureCity.city} yet. Try another city from the location picker.`
+                    : 'There are no upcoming departures right now. Check back soon.'}
               </p>
               {hasActiveFilters(filters) && (
                 <button
