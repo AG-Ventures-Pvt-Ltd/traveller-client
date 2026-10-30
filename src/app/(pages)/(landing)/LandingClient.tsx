@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
-import { useLocation } from '@/common/hooks/useLocation';
+import { useLocation, useLocationStore } from '@/common/hooks/useLocation';
 import { trackEvent } from '@/common/utils/analytics';
 
 // Both variants are SSR'd so the correct one is in the initial HTML per device
@@ -33,6 +33,8 @@ const LandingClient = ({ initialIsMobile }: LandingClientProps) => {
   }, []);
 
   useEffect(() => {
+    // A city the user picked by hand outranks automatic GPS on later visits.
+    if (useLocationStore.getState().source === 'manual') return;
     navigator.permissions.query({ name: 'geolocation' }).then((result) => {
       if (result.state === 'granted') {
         requestLocationPermission().catch(() => {});

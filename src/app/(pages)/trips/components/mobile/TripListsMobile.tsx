@@ -10,13 +10,15 @@ import ActiveFilterChips from '../filters/ActiveFilterChips';
 import SortDropdown from '../filters/SortDropdown';
 import { EMPTY_FILTERS, countActiveFilters, hasActiveFilters } from '../../buildApiUrl';
 import { useTripFeed } from '../../useTripFeed';
-import { FilterMeta, FilterValues, Pagination, Trip } from '../../types';
+import DepartureCityPicker from '../../../(landing)/components/DesktopLanding/components/LocationSelector';
+import { DepartureCity, FilterMeta, FilterValues, Pagination, Trip } from '../../types';
 import { useTripsListTracking } from '../../useTripsListTracking';
 
 interface TripListsMobileProps {
   initialTrips: Trip[];
   initialPagination: Pagination | null;
   initialFilterMeta: FilterMeta | null;
+  initialDepartureCity: DepartureCity | null;
   destination: string | null;
   qParam: string | null;
   hostParam: string | null;
@@ -30,6 +32,7 @@ const TripListsMobile = ({
   initialTrips,
   initialPagination,
   initialFilterMeta,
+  initialDepartureCity,
   destination,
   qParam,
   hostParam,
@@ -48,6 +51,7 @@ const TripListsMobile = ({
     initialTrips,
     initialPagination,
     initialFilterMeta,
+    initialDepartureCity,
   });
 
   const activeCount = countActiveFilters(filters);
@@ -58,6 +62,7 @@ const TripListsMobile = ({
   return (
     <div className="flex-1 bg-[#FFF9F4] px-4 pb-8 pt-4">
       <BackButton label="Back to Home" />
+      {!hostParam && <div className="mt-2 -ml-3"><DepartureCityPicker /></div>}
 
       <div className="mb-3 mt-3 flex items-center justify-between gap-3">
         <div>
@@ -119,7 +124,9 @@ const TripListsMobile = ({
           <p className="mt-1 text-sm text-neutral-600">
             {hasActiveFilters(filters)
               ? 'No upcoming departures match these filters.'
-              : 'There are no upcoming departures right now.'}
+              : feed.departureCity
+                ? `No upcoming departures from ${feed.departureCity.city} yet. Try another city.`
+                : 'There are no upcoming departures right now.'}
           </p>
           {hasActiveFilters(filters) && (
             <button

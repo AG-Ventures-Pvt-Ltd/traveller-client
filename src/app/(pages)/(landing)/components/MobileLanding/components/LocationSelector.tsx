@@ -1,15 +1,18 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { MapPinAreaIcon, MoneyWavyIcon, CaretDownIcon } from '@phosphor-icons/react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import MyImage from '@/common/ui/Image';
 import { useLocation } from '@/common/hooks/useLocation';
+import { useDepartureCity } from '@/common/hooks/useTripLocation';
 
 
 export interface CitiesResponse {
     cities: City[];
+    /** Nearest active city the server resolved for this request (IP geo / Delhi fallback). */
+    departureCity?: City | null;
 }
 
 interface LocationSelectorProps {
@@ -26,16 +29,6 @@ interface City {
     longitude: number;
 }
 
-const DELHI_DEFAULT = {
-    latitude: 28.6139,
-    longitude: 77.2090,
-    city: 'Delhi',
-    state: 'Delhi',
-    country: 'India',
-    postalCode: '110001',
-    address: 'Delhi, India',
-};
-
 const SkeletonLoader = () => (
     <div className="h-8 bg-gray-300 rounded-md w-24 animate-pulse" />
 );
@@ -45,18 +38,11 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
 }) => {
     const router = useRouter();
     const { data: session, status } = useSession();
-    const { locationDetails, setLocationDetails, setCityLocation, isLoading } = useLocation();
+    const { locationDetails, setCityLocation, isLoading } = useLocation();
     const [dropdownOpen, setDropdownOpen] = useState(false);
 
-    useEffect(() => {
-        if (!locationDetails && !isLoading) {
-            setLocationDetails(DELHI_DEFAULT);
-        }
-    }, [locationDetails, setLocationDetails, isLoading]);
-
-    const displayCity = locationDetails?.city || DELHI_DEFAULT.city;
-    const displayState = locationDetails?.state || DELHI_DEFAULT.state;
-    const displayAddress = locationDetails?.address || DELHI_DEFAULT.address;
+    const { city: displayCity, state: displayState } = useDepartureCity(cities.cities, cities.departureCity);
+    const displayAddress = locationDetails?.address || `${displayCity}, ${displayState}`;
 
     const handleCitySelect = (city: City) => {
         setCityLocation(city.latitude, city.longitude, {
