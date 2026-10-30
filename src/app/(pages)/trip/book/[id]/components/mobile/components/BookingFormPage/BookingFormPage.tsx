@@ -23,6 +23,7 @@ import { useCreateBooking } from './hooks/useCreateBooking';
 import { useUpdateBooking } from './hooks/useUpdateBooking';
 import BookingBar from '@/app/(pages)/trip/common/ui/BookingBar';
 import { useDevice } from '@/common/hooks/useDevice';
+import SignupBonusStrip from '../../../SignupBonusStrip';
 
 
 export type { BookingFormData };
@@ -155,6 +156,7 @@ export default function BookingFormPage({ tripId, batchId, onViewCoupons }: Book
                 <div className="w-[360px] shrink-0 sticky top-24">
                     <div className="flex flex-col gap-4">
                         <TripOverviewCard displayPrice={displayPrice} isFree={isFree} isLoading={isBooking} handleBookNowClick={() => handleButtonClick()}/>
+                        <SignupBonusStrip isFree={isFree} />
                     </div>
                 </div>
             </div>
@@ -165,6 +167,7 @@ export default function BookingFormPage({ tripId, batchId, onViewCoupons }: Book
         <div className="px-4 pb-20 flex flex-col gap-4">
             <LoadExistingBookingDetails />
             <TripOverviewCard isFree={isFree} />
+            <SignupBonusStrip isFree={isFree} />
             <TravelerDetailsCard />
 
             {pricingTiers.length > 0 && (
