@@ -47,7 +47,7 @@ const Navbar = () => {
         <div className='flex-1 flex items-center gap-2.5'>
           <div className='flex-1 flex items-center justify-start gap-6'>
             <Logo />
-            {pathname === '/' && <DesktopLocationSelector />}
+            {(pathname === '/' || pathname === '/trips') && <DesktopLocationSelector />}
           </div>
           <div className='flex-1 flex justify-end items-center'>
             <div className='flex items-center gap-3 md:gap-12'>

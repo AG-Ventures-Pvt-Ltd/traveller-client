@@ -42,10 +42,20 @@ export interface FilterMeta {
   maxPrice: number;
 }
 
+export interface DepartureCity {
+  city: string;
+  state: string;
+  country?: string;
+  latitude: number;
+  longitude: number;
+}
+
 export interface TripsResponse {
   trips: Trip[];
   pagination: Pagination;
   filterMeta?: FilterMeta;
+  /** Nearest active departure city the list is filtered to; null for host/archived lists. */
+  departureCity?: DepartureCity | null;
   message: string;
 }
 

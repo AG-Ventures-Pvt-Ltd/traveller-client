@@ -1,15 +1,11 @@
 import { headers } from 'next/headers';
 import { dehydrate, HydrationBoundary, QueryClient } from '@tanstack/react-query';
-import type { Metadata } from 'next';
 import { getServerData } from '@/services/serverApi';
 import { API_ENDPOINTS } from '@/common/constants/apiEndpoints';
 import LandingClient from './(landing)/LandingClient';
-
-// Lives here, not in the shared layout — the layout's metadata applies to every
-// route under (pages), so a canonical there wrongly makes every page point at "/".
-export const metadata: Metadata = {
-  alternates: { canonical: '/' },
-};
+import { getServerLocation } from '@/common/utils/serverLocation';
+import { withLocation } from '@/common/utils/locationQuery';
+import { ServerLocationProvider } from '@/common/hooks/useTripLocation';
 
 // SSR fresh on every request so trip cards, destinations, copy and internal links
 // are present in the initial HTML (fixes the CSR empty-shell / slow-LCP problem).
@@ -33,12 +29,15 @@ export default async function Page() {
 
   const qc = new QueryClient();
   const L = API_ENDPOINTS.LANDING_PAGE;
+  // Visitor's location from their own request (cookie → Vercel IP geo → Delhi),
+  // so carousels are filtered by nearest departure city while staying fully SSR'd.
+  const loc = await getServerLocation();
 
   // Query keys MUST match the client hooks (useFeaturedTrips, useSignupBonus,
   // useGetData) so HydrationBoundary feeds the SSR'd components their data.
   await Promise.all([
-    prefetch(qc, ['featured-trips'], L.FEATURED_TRIPS),
-    prefetch(qc, [L.CITIES], L.CITIES),
+    prefetch(qc, ['featured-trips', loc.lat, loc.lng], withLocation(L.FEATURED_TRIPS, loc)),
+    prefetch(qc, [L.CITIES], withLocation(L.CITIES, loc)),
     prefetch(qc, [L.EXPLORE_STATES], L.EXPLORE_STATES),
     prefetch(qc, ['signup-bonus'], L.SIGNUP_BONUS),
     prefetch(qc, [L.TRAVELER_STATS], L.TRAVELER_STATS),
@@ -46,7 +45,14 @@ export default async function Page() {
 
   return (
     <HydrationBoundary state={dehydrate(qc)}>
-      <LandingClient initialIsMobile={initialIsMobile} />
+      {/* Hand-rendered (React hoists it to <head>): metadata.alternates always strips the
+          root's trailing slash, so audit tools see "https://wondrr.in" != the page URL
+          "https://wondrr.in/" and flag the canonical as not self-referencing. Kept in the
+          page, not the shared layout, so other routes don't inherit it. */}
+      <link rel="canonical" href="https://wondrr.in/" />
+      <ServerLocationProvider value={loc}>
+        <LandingClient initialIsMobile={initialIsMobile} />
+      </ServerLocationProvider>
     </HydrationBoundary>
   );
 }
