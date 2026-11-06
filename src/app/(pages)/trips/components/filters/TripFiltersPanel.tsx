@@ -1,10 +1,7 @@
 'use client';
 
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ChevronDown } from 'lucide-react';
-import StatesDropdown from '../StatesDropdown';
-import MonthDropdown from './MonthDropdown';
-import { monthOptions } from '../../buildApiUrl';
 import { FilterMeta, FilterValues } from '../../types';
 
 interface TripFiltersPanelProps {
@@ -176,31 +173,11 @@ const TripFiltersPanel: React.FC<TripFiltersPanelProps> = ({ value, onChange, me
   const minPrice = Math.min(meta?.minPrice ?? 0, value.minBudget ?? Infinity);
   const maxPrice = Math.max(meta?.maxPrice ?? 50000, value.maxBudget ?? 0);
 
-  // Derived from today's date, so it is recomputed per render tree rather than frozen
-  // into a module constant that would go stale across a month boundary.
-  const months = useMemo(() => monthOptions(), []);
-
   const set = <K extends keyof FilterValues>(key: K, next: FilterValues[K]) =>
     onChange({ ...value, [key]: next });
 
   return (
     <div className="flex flex-col gap-5">
-      <Section title="States" badge={value.states.length}>
-        <StatesDropdown selected={value.states} onChange={(next) => set('states', next)} />
-      </Section>
-
-      <div className="h-px bg-neutral-200" />
-
-      <Section title="Departure month" badge={value.month ? 1 : 0}>
-        <MonthDropdown
-          options={[{ key: null, label: 'Any month' }, ...months]}
-          selected={value.month}
-          onChange={(month) => set('month', month)}
-        />
-      </Section>
-
-      <div className="h-px bg-neutral-200" />
-
       <Section title="Price per person" badge={value.minBudget !== null || value.maxBudget !== null ? 1 : 0}>
         <PriceRange
           min={minPrice}
