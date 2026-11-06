@@ -13,6 +13,7 @@ import { walletTxToEntry } from '../profile/transactions/utils/transactionUtils'
 import Button from '@/common/ui/Buttons/Button';
 import { formatDate } from '@/common/utils/dateUtils';
 import { usePayment } from '../trip/book/[id]/[batchId]/hooks/usePayment';
+import { MAX_WONDRR_CASH_PER_BOOKING } from '@/common/constants/wondrrCash';
 import { AddBalanceModal } from './components/AddBalanceModal';
 import { useDevice } from '@/common/hooks/useDevice';
 
@@ -27,7 +28,7 @@ const WalletPage = () => {
   const router = useRouter();
   const { data: session } = useSession();
 
-  const { isMobile, isDesktop } = useDevice()
+  const { isMobile } = useDevice()
 
   const [isAddBalanceOpen, setIsAddBalanceOpen] = useState(false)
   const [isPaymentPending, setIsPaymentPending] = useState(false)
@@ -127,8 +128,15 @@ const WalletPage = () => {
 
           {walletData?.balance != 0 &&
             <p className="text-black text-center font-normal bg-[#E2F4A6] p-3 mb-6 rounded-xl">
-              Use ₹{walletData?.balance?.toLocaleString('en-IN')} for your next trip
+              Use ₹{Math.min(walletData?.balance ?? 0, MAX_WONDRR_CASH_PER_BOOKING).toLocaleString('en-IN')} for your next trip
             </p>}
+
+          <div className="flex gap-3 items-center bg-[#FFC107] rounded-2xl p-3 mb-6">
+            <InfoIcon size={16} className="w-4 h-4 text-black flex-shrink-0" weight="thin" />
+            <p className="text-xs text-black font-normal">
+              {`You can use up to ₹${MAX_WONDRR_CASH_PER_BOOKING.toLocaleString('en-IN')} Wondrr Cash per booking.`}
+            </p>
+          </div>
 
           {walletEntries.length != 0 && <div className="mb-6">
             <TransactionList
