@@ -3,7 +3,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useGetData } from '@/services/useGetData';
 import { buildTripsApiUrl, TripsSearchParams } from './buildApiUrl';
-import { FilterMeta, FilterValues, Pagination, Trip, TripsResponse } from './types';
+import { useTripLocation } from '@/common/hooks/useTripLocation';
+import { DepartureCity, FilterMeta, FilterValues, Pagination, Trip, TripsResponse } from './types';
 
 interface UseTripFeedArgs extends TripsSearchParams {
   filters: FilterValues;
@@ -12,6 +13,7 @@ interface UseTripFeedArgs extends TripsSearchParams {
   /** Seeded from the server fetch so the price slider renders its real domain on first
       paint instead of flashing the fallback range. */
   initialFilterMeta?: FilterMeta | null;
+  initialDepartureCity?: DepartureCity | null;
   /** Mobile and desktop render different trees; only the mounted one should fetch. */
   enabled?: boolean;
 }
@@ -20,6 +22,8 @@ interface TripFeed {
   trips: Trip[];
   total: number;
   filterMeta?: FilterMeta;
+  /** City the list is filtered to (nearest active departure city). */
+  departureCity: DepartureCity | null;
   isInitialLoading: boolean;
   isLoadingMore: boolean;
   hasMore: boolean;
@@ -44,6 +48,7 @@ export function useTripFeed({
   initialTrips,
   initialPagination,
   initialFilterMeta,
+  initialDepartureCity,
   enabled = true,
 }: UseTripFeedArgs): TripFeed {
   const [page, setPage] = useState(1);
@@ -62,15 +67,19 @@ export function useTripFeed({
   const hasMoreRef = useRef(initialPagination?.hasNextPage ?? false);
   const isLoadingRef = useRef(false);
 
-  // Identity of the current filter set — page 1's URL. Changing it means a different list.
+  const { lat, lng } = useTripLocation();
+  const [departureCity, setDepartureCity] = useState<DepartureCity | null>(initialDepartureCity ?? null);
+
+  // Identity of the current filter set — page 1's URL. Changing it (incl. the user's
+  // location) means a different list.
   const feedKey = useMemo(
-    () => buildTripsApiUrl(filters, { destination, qParam, hostParam, statusParam, page: 1 }),
-    [filters, destination, qParam, hostParam, statusParam]
+    () => buildTripsApiUrl(filters, { destination, qParam, hostParam, statusParam, page: 1, loc: { lat, lng } }),
+    [filters, destination, qParam, hostParam, statusParam, lat, lng]
   );
 
   const apiUrl = useMemo(
-    () => buildTripsApiUrl(filters, { destination, qParam, hostParam, statusParam, page }),
-    [filters, destination, qParam, hostParam, statusParam, page]
+    () => buildTripsApiUrl(filters, { destination, qParam, hostParam, statusParam, page, loc: { lat, lng } }),
+    [filters, destination, qParam, hostParam, statusParam, page, lat, lng]
   );
 
   // Comparing against the previous key skips the reset on mount, which would otherwise
@@ -102,6 +111,7 @@ export function useTripFeed({
       hasMore: data.pagination?.hasNextPage ?? false,
     });
     if (data.filterMeta) setFilterMeta(data.filterMeta);
+    if (data.departureCity !== undefined) setDepartureCity(data.departureCity);
     hasMoreRef.current = data.pagination?.hasNextPage ?? false;
     isFetchingMore.current = false;
   }, [data, page]);
@@ -143,6 +153,7 @@ export function useTripFeed({
     trips,
     total: meta.total,
     filterMeta,
+    departureCity,
     isInitialLoading: isLoading && page === 1 && trips.length === 0,
     isLoadingMore: isLoading && page > 1,
     hasMore: meta.hasMore,
