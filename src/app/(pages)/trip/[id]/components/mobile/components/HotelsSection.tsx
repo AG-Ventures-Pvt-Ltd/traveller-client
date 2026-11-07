@@ -11,7 +11,8 @@ const ImageLightbox = dynamic(() => import('../../desktop/components/ImageLightb
 
 const MAX_TILES = 4;
 // Static class names so Tailwind picks them up.
-const GRID_COLS = ['', 'grid-cols-1', 'grid-cols-2', 'grid-cols-3', 'grid-cols-2 sm:grid-cols-4'];
+// Tiles are 4:3 to match the admin crop. A lone image stays half-width on desktop so it isn't huge.
+const GRID_COLS = ['', 'grid-cols-1 sm:grid-cols-2', 'grid-cols-2', 'grid-cols-3', 'grid-cols-2 sm:grid-cols-4'];
 
 const placeLabel = (h: TripHotel) => [h.city?.trim(), h.state?.trim()].filter(Boolean).join(', ');
 
@@ -42,7 +43,7 @@ function HotelCard({ hotel }: { hotel: TripHotel }) {
                                 key={src}
                                 type="button"
                                 onClick={() => setLightboxIndex(i)}
-                                className={`relative overflow-hidden ${tiles.length === 1 ? 'h-44' : 'h-28'}`}
+                                className="relative overflow-hidden aspect-[4/3]"
                                 aria-label={showMore ? `View all ${images.length} photos of ${hotel.name}` : `View ${hotel.name} photo ${i + 1}`}
                             >
                                 <MyImage src={src} alt={`${hotel.name} photo ${i + 1}`} className="w-full h-full" objectFit="cover" />
