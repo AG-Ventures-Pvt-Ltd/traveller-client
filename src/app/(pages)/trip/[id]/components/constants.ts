@@ -24,6 +24,7 @@ export const NAV_SECTION_IDS = {
     HIGHLIGHTS: 'highlights',
     ITINERARY: 'itinerary',
     INCLUSIONS: 'inclusions',
+    STAYS: 'stays',
     REVIEWS: 'reviews',
     TRIP_SUPPORT: 'trip-support',
     FAQS: 'faqs',

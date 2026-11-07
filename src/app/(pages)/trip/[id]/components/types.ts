@@ -10,6 +10,7 @@ export interface SectionRefs {
     highlightsRef: React.RefObject<HTMLDivElement | null>;
     itineraryRef: React.RefObject<HTMLDivElement | null>;
     inclusionsRef: React.RefObject<HTMLDivElement | null>;
+    staysRef: React.RefObject<HTMLDivElement | null>;
     reviewsRef: React.RefObject<HTMLDivElement | null>;
     tripSupportRef: React.RefObject<HTMLDivElement | null>;
     faqsRef: React.RefObject<HTMLDivElement | null>;

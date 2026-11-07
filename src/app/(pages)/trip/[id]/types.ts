@@ -8,6 +8,15 @@ export interface TripHighlight {
   image: string;
 }
 
+export interface TripHotel {
+  name: string;
+  /** Where this hotel is; multi-city trips have one per city. May be empty. */
+  city?: string;
+  state?: string;
+  /** S3 paths; may be empty — not every hotel has photos */
+  images: string[];
+}
+
 export interface ItineraryDay {
   day: number;
   title: string;
@@ -95,6 +104,7 @@ export interface TripData {
   refundProcessingTime?: string;
   additionalInfo?: string;
   faqs?: FAQ[];
+  hotels?: TripHotel[];
   tripBatches?: AvailableDate[];
   tags?: string[];
   slug : string;

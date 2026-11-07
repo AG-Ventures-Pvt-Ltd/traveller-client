@@ -27,7 +27,7 @@ export default function ImageLightbox({ images, title, initialIndex, onClose }: 
 
     return (
         <div className="fixed inset-0 z-[100] bg-[#1a1410] flex flex-col select-none">
-            <div className="flex items-center justify-between px-8 py-4 border-b border-white/10 shrink-0">
+            <div className="flex items-center justify-between px-4 md:px-8 py-4 border-b border-white/10 shrink-0">
                 <p className="text-white font-bold truncate max-w-lg">{title}</p>
                 <div className="flex items-center gap-5 shrink-0">
                     <span className="text-white/50 text-sm font-medium">{current + 1} / {total}</span>
@@ -37,7 +37,7 @@ export default function ImageLightbox({ images, title, initialIndex, onClose }: 
                 </div>
             </div>
 
-            <div className="flex-1 relative flex items-center justify-center px-20">
+            <div className="flex-1 relative flex items-center justify-center px-4 md:px-20">
                 <div className="relative w-full h-full flex items-center justify-center">
                     <MyImage
                         src={images[current] || '/placeholder.jpg'}
@@ -52,10 +52,10 @@ export default function ImageLightbox({ images, title, initialIndex, onClose }: 
                 </div>
                 {total > 1 && (
                     <>
-                        <button onClick={() => setCurrent(p => p === 0 ? total - 1 : p - 1)} className="absolute left-5 w-12 h-12 rounded-full bg-white/10 hover:bg-[#EEA0FF] hover:text-black border border-white/15 flex items-center justify-center transition-colors text-white">
+                        <button onClick={() => setCurrent(p => p === 0 ? total - 1 : p - 1)} className="absolute left-2 md:left-5 z-10 w-10 h-10 md:w-12 md:h-12 rounded-full bg-white/10 hover:bg-[#EEA0FF] hover:text-black border border-white/15 flex items-center justify-center transition-colors text-white">
                             <ChevronLeft className="w-6 h-6" />
                         </button>
-                        <button onClick={() => setCurrent(p => p === total - 1 ? 0 : p + 1)} className="absolute right-5 w-12 h-12 rounded-full bg-white/10 hover:bg-[#EEA0FF] hover:text-black border border-white/15 flex items-center justify-center transition-colors text-white">
+                        <button onClick={() => setCurrent(p => p === total - 1 ? 0 : p + 1)} className="absolute right-2 md:right-5 z-10 w-10 h-10 md:w-12 md:h-12 rounded-full bg-white/10 hover:bg-[#EEA0FF] hover:text-black border border-white/15 flex items-center justify-center transition-colors text-white">
                             <ChevronRight className="w-6 h-6" />
                         </button>
                     </>
@@ -63,7 +63,7 @@ export default function ImageLightbox({ images, title, initialIndex, onClose }: 
             </div>
 
             {total > 1 && (
-                <div className="flex gap-2 px-8 py-4 overflow-x-auto scrollbar-hide justify-center shrink-0">
+                <div className="flex gap-2 px-4 md:px-8 py-4 overflow-x-auto scrollbar-hide md:justify-center shrink-0">
                     {images.map((img, i) => (
                         <button key={i} onClick={() => setCurrent(i)} className={`shrink-0 w-16 h-12 rounded-lg overflow-hidden border-2 transition-all ${i === current ? 'border-[#EEA0FF] opacity-100' : 'border-transparent opacity-45 hover:opacity-75'}`}>
                             <MyImage src={img || '/placeholder.jpg'} alt="" className="w-full h-full" objectFit="cover" />

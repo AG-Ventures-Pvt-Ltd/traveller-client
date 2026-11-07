@@ -33,6 +33,7 @@ import { useTimedModal } from '@/common/hooks/useTimedModal';
 const TripHighlights = dynamic(() => import('./components/TripHighlights'));
 const ItinerarySection = dynamic(() => import('./components/ItinerarySection'));
 const InclusionsSection = dynamic(() => import('./components/InclusionsSection'));
+const HotelsSection = dynamic(() => import('./components/HotelsSection'));
 const FAQsSection = dynamic(() => import('./components/FAQsSection'));
 const CancellationPolicySection = dynamic(
     () => import('./components/PoliciesSection').then(m => ({ default: m.CancellationPolicySection }))
@@ -68,6 +69,7 @@ export default function TripDetailMobile() {
     const highlightsRef = useRef<HTMLDivElement>(null);
     const itineraryRef = useRef<HTMLDivElement>(null);
     const inclusionsRef = useRef<HTMLDivElement>(null);
+    const staysRef = useRef<HTMLDivElement>(null);
     const reviewsRef = useRef<HTMLDivElement>(null);
     const tripSupportRef = useRef<HTMLDivElement>(null);
     const faqsRef = useRef<HTMLDivElement>(null);
@@ -153,6 +155,10 @@ export default function TripDetailMobile() {
             sections.push({ id: NAV_SECTION_IDS.INCLUSIONS, label: 'Inclusions' });
         }
 
+        if (tripData?.hotels && tripData.hotels.length > 0) {
+            sections.push({ id: NAV_SECTION_IDS.STAYS, label: 'Stays' });
+        }
+
         if (tripData?.reviews && tripData.reviews.length > 0) {
             sections.push({ id: NAV_SECTION_IDS.REVIEWS, label: 'Reviews' });
         }
@@ -214,7 +220,7 @@ export default function TripDetailMobile() {
     };
 
     const sectionRefs: SectionRefs = {
-        overviewRef, highlightsRef, itineraryRef, inclusionsRef, reviewsRef, tripSupportRef, faqsRef, cancellationPolicyRef, refundPolicyRef,
+        overviewRef, highlightsRef, itineraryRef, inclusionsRef, staysRef, reviewsRef, tripSupportRef, faqsRef, cancellationPolicyRef, refundPolicyRef,
     };
 
     const scrollToSection = (sectionId: string) => {
@@ -224,6 +230,7 @@ export default function TripDetailMobile() {
             [NAV_SECTION_IDS.HIGHLIGHTS]: sectionRefs.highlightsRef,
             [NAV_SECTION_IDS.ITINERARY]: sectionRefs.itineraryRef,
             [NAV_SECTION_IDS.INCLUSIONS]: sectionRefs.inclusionsRef,
+            [NAV_SECTION_IDS.STAYS]: sectionRefs.staysRef,
             [NAV_SECTION_IDS.REVIEWS]: sectionRefs.reviewsRef,
             [NAV_SECTION_IDS.TRIP_SUPPORT]: sectionRefs.tripSupportRef,
             [NAV_SECTION_IDS.FAQS]: sectionRefs.faqsRef,
@@ -346,6 +353,11 @@ export default function TripDetailMobile() {
                                 inclusions={tripData.inclusions}
                                 exclusions={tripData.exclusions}
                             />
+                        </div>
+                    )}
+                    {tripData.hotels && tripData.hotels.length > 0 && (
+                        <div ref={staysRef} className="scroll-mt-20">
+                            <HotelsSection hotels={tripData.hotels} />
                         </div>
                     )}
                     <div ref={reviewsRef} className='scroll-mt-20 mt-6'>
