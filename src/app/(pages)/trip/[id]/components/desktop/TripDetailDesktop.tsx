@@ -32,6 +32,7 @@ import { useTimedModal } from '@/common/hooks/useTimedModal';
 const TripHighlights = dynamic(() => import('../mobile/components/TripHighlights'));
 const ItinerarySection = dynamic(() => import('../mobile/components/ItinerarySection'));
 const InclusionsSection = dynamic(() => import('../mobile/components/InclusionsSection'));
+const HotelsSection = dynamic(() => import('../mobile/components/HotelsSection'));
 const FAQsSection = dynamic(() => import('../mobile/components/FAQsSection'));
 const CancellationPolicySection = dynamic(
     () => import('../mobile/components/PoliciesSection').then(m => ({ default: m.CancellationPolicySection }))
@@ -65,6 +66,7 @@ export default function TripDetailDesktop() {
     const highlightsRef = useRef<HTMLDivElement>(null);
     const itineraryRef = useRef<HTMLDivElement>(null);
     const inclusionsRef = useRef<HTMLDivElement>(null);
+    const staysRef = useRef<HTMLDivElement>(null);
     const reviewsRef = useRef<HTMLDivElement>(null);
     const tripSupportRef = useRef<HTMLDivElement>(null);
     const faqsRef = useRef<HTMLDivElement>(null);
@@ -125,6 +127,7 @@ export default function TripDetailDesktop() {
         if (tripData?.highlights?.length) s.push({ id: NAV_SECTION_IDS.HIGHLIGHTS, label: 'Highlights' });
         if (tripData?.itinerary?.length) s.push({ id: NAV_SECTION_IDS.ITINERARY, label: isEvent ? 'Schedule' : 'Itinerary' });
         if (tripData?.inclusions?.length || tripData?.exclusions?.length) s.push({ id: NAV_SECTION_IDS.INCLUSIONS, label: 'Inclusions' });
+        if (tripData?.hotels?.length) s.push({ id: NAV_SECTION_IDS.STAYS, label: 'Stays' });
         if (tripData?.reviews?.length) s.push({ id: NAV_SECTION_IDS.REVIEWS, label: 'Reviews' });
         s.push({ id: NAV_SECTION_IDS.TRIP_SUPPORT, label: isEvent ? 'Event Support' : 'Trip Support' });
         if (tripData?.faqs?.length) s.push({ id: NAV_SECTION_IDS.FAQS, label: 'FAQs' });
@@ -142,6 +145,7 @@ export default function TripDetailDesktop() {
             [NAV_SECTION_IDS.HIGHLIGHTS]: highlightsRef,
             [NAV_SECTION_IDS.ITINERARY]: itineraryRef,
             [NAV_SECTION_IDS.INCLUSIONS]: inclusionsRef,
+            [NAV_SECTION_IDS.STAYS]: staysRef,
             [NAV_SECTION_IDS.REVIEWS]: reviewsRef,
             [NAV_SECTION_IDS.TRIP_SUPPORT]: tripSupportRef,
             [NAV_SECTION_IDS.FAQS]: faqsRef,
@@ -323,6 +327,13 @@ export default function TripDetailDesktop() {
                         {((tripData.inclusions?.length ?? 0) > 0 || (tripData.exclusions?.length ?? 0) > 0) && (
                             <div ref={inclusionsRef} className="scroll-mt-[140px]">
                                 <InclusionsSection inclusions={tripData.inclusions} exclusions={tripData.exclusions} />
+                            </div>
+                        )}
+
+                        {/* Stays */}
+                        {(tripData.hotels?.length ?? 0) > 0 && (
+                            <div ref={staysRef} className="scroll-mt-[140px]">
+                                <HotelsSection hotels={tripData.hotels!} />
                             </div>
                         )}
 
