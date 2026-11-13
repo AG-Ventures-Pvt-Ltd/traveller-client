@@ -13,6 +13,7 @@ export default function BatchSelection({ batches, selectedBatch, onSelect, bestT
     const items = batches.map((batch: AvailableDate) => ({
         id: batch.batchId,
         date: batch.startDate || batch.startDateTime,
+        badge: batch.addOnPrice ? `+ ₹${batch.addOnPrice.toLocaleString('en-IN')}` : undefined,
     }));
 
     const selectedId = selectedBatch !== null && selectedBatch !== undefined

@@ -5,6 +5,8 @@ export interface DepartureDateItem {
     date: Date | string;
     /** Optional label shown below the date, e.g. "4 seats" */
     seatsLabel?: string;
+    /** Optional badge sitting on the box's bottom border, e.g. a batch add-on "+₹500". Doesn't change box size. */
+    badge?: string;
 }
 
 interface DepartureDatesListProps {
@@ -32,7 +34,7 @@ export default function DepartureDatesList({
     }
 
     return (
-        <div className={`flex gap-3 overflow-x-auto scrollbar-hide ${className}`}>
+        <div className={`flex gap-3 overflow-x-auto scrollbar-hide pb-3 ${className}`}>
             {items.map((item) => {
                 const d = new Date(item.date);
                 const istDay = Number(d.toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' }).split('-')[2]);
@@ -42,7 +44,7 @@ export default function DepartureDatesList({
                     <button
                         key={item.id}
                         onClick={() => onSelect(item.id)}
-                        className={`flex-shrink-0 border rounded-[14px] py-3 px-4 text-center transition-colors cursor-pointer flex flex-col items-center justify-center gap-1
+                        className={`relative flex-shrink-0 border rounded-[14px] py-3 px-4 text-center transition-colors cursor-pointer flex flex-col items-center justify-center gap-1
                             ${isSelected ? 'bg-[#EEA0FF] border-transparent' : 'border-black bg-white'}`}
                     >
                         <span className="text-sm text-black text-center leading-tight">
@@ -52,6 +54,11 @@ export default function DepartureDatesList({
                         </span>
                         {item.seatsLabel && (
                             <span className="text-xs text-zinc-500">{item.seatsLabel}</span>
+                        )}
+                        {item.badge && (
+                            <span className="absolute left-1/2 bottom-0 -translate-x-1/2 translate-y-1/2 whitespace-nowrap rounded-full px-[7px] py-0.5 text-xs font-semibold leading-4 text-black bg-[#FFD976]">
+                                {item.badge}
+                            </span>
                         )}
                     </button>
                 );

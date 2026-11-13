@@ -48,6 +48,8 @@ export interface AvailableDate {
   startDateTime: Date | string;
   endDateTime: Date | string;
   price: number;
+  /** Per-person surcharge for this batch, added on top of the chosen tier. */
+  addOnPrice?: number;
   seatsAvailable: number;
   totalSeats: number;
   batchId: string;

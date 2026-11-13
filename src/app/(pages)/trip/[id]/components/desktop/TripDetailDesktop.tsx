@@ -135,7 +135,11 @@ export default function TripDetailDesktop() {
         return s;
     }, [tripData, isEvent]);
 
-    const pricingList = useMemo(() => tripData?.pricing?.pricings || [], [tripData?.pricing]);
+    // The selected date's batch add-on is mandatory, so it is part of every tier's price
+    const batchAddOnPrice = (selectedBatch !== null && sortedBatches[selectedBatch]?.addOnPrice) || 0;
+    const pricingList = useMemo(() =>
+        (tripData?.pricing?.pricings || []).map(p => ({ ...p, pricePerPerson: p.pricePerPerson + batchAddOnPrice })),
+    [tripData?.pricing, batchAddOnPrice]);
     const closeLightbox = useCallback(() => setLightboxIndex(null), []);
 
     const scrollToSection = (sectionId: string) => {
