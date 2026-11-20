@@ -8,6 +8,7 @@
     "start": "next start",
     "doctor": "react-doctor",
     "lint": "eslint",
+    "test": "node --test 'src/**/*.test.ts'",
     "prepare": "husky"
   },
   "dependencies": {

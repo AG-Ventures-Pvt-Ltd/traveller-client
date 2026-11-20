@@ -12,6 +12,9 @@ export const API_ENDPOINTS = {
     TRAVELER_STATS: (slug: string) => `/api/client/v1/trips/${slug}/traveler-stats`,
     RECORD_VIEW: (slug: string) => `api/client/v1/trips/${slug}/view`,
   },
+  SPONSOR: {
+    HACKATHON_VERIFY: "/api/client/v1/sponsor/hackathon/verify",
+  },
   LINKS: {
     RESOLVE: (shortCode: string) => `/api/client/v1/resolve/${shortCode}`,
   },
