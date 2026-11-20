@@ -11,6 +11,10 @@ interface CustomInputProps {
   error?: boolean;
   className?: string;
   readOnly?: boolean;
+  id?: string;
+  name?: string;
+  autoComplete?: string;
+  maxLength?: number;
 }
 
 const CustomInput: React.FC<CustomInputProps> = ({
@@ -23,6 +27,10 @@ const CustomInput: React.FC<CustomInputProps> = ({
   error = false,
   className = '',
   readOnly = false,
+  id,
+  name,
+  autoComplete,
+  maxLength,
 }) => {
   const rowClass = `flex items-center gap-3 px-3 py-4 rounded-xl border ${
     error ? 'border-red-400' : 'border-zinc-300'
@@ -42,6 +50,11 @@ const CustomInput: React.FC<CustomInputProps> = ({
         onChange={onChange}
         onBlur={onBlur}
         readOnly={readOnly}
+        id={id}
+        name={name}
+        autoComplete={autoComplete}
+        maxLength={maxLength}
+        aria-invalid={error || undefined}
         className={inputClass}
       />
     </div>
