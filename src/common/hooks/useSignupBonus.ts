@@ -1,22 +1,9 @@
-import { useGetData } from '@/services/useGetData';
-import { API_ENDPOINTS } from '@/common/constants/apiEndpoints';
+import { useLoadOffers, useOffersStore } from './useOffersStore';
 
-interface SignupBonusData {
-  signupBonus: {
-    amount: number;
-    isEnabled: boolean;
-  };
-}
-
-const CACHE_TIME = 10 * 60 * 1000; // 10 minutes
-
+// Same { data, isLoading } shape callers used with react-query; backed by the shared offers store.
 export const useSignupBonus = () => {
-  return useGetData<SignupBonusData>(
-    API_ENDPOINTS.LANDING_PAGE.SIGNUP_BONUS,
-    {
-      queryKey: ['signup-bonus'],
-      staleTime: CACHE_TIME,
-      gcTime: CACHE_TIME,
-    }
-  );
+  useLoadOffers();
+  const signupBonus = useOffersStore((s) => s.signupBonus);
+  const settled = useOffersStore((s) => s.settled);
+  return { data: signupBonus ? { signupBonus } : undefined, isLoading: !signupBonus && !settled };
 };

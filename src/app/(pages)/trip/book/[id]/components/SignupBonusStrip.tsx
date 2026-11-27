@@ -5,8 +5,10 @@ import { usePathname, useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { useQuery } from '@tanstack/react-query';
 import { getData } from '@/services/baseApi';
-import { GiftIcon, WalletIcon } from '@phosphor-icons/react';
+import { useState } from 'react';
+import { CheckIcon, CopyIcon, GiftIcon, TicketIcon, WalletIcon } from '@phosphor-icons/react';
 import { useSignupBonus } from '@/common/hooks/useSignupBonus';
+import { formatDiscount, usePromoCoupon } from '@/common/hooks/usePromoCoupon';
 
 // Logged-in: note that Wondrr Cash auto-applies on the next page, with the per-booking cap.
 // Guests: signup-bonus pitch, only while the offer is live; sends them to signup and
@@ -16,6 +18,58 @@ const CARD = 'border border-[#D9D9D9] rounded-2xl px-4 py-3 flex items-center ga
 const ICON_CHIP = 'w-9 h-9 rounded-full bg-[#E2F4A6] text-[#3F6212] flex items-center justify-center shrink-0';
 
 export default function SignupBonusStrip({ isFree = false }: { isFree?: boolean }) {
+  return (
+    <>
+      {!isFree && <PromoCouponCard />}
+      <WondrrCashCard isFree={isFree} />
+    </>
+  );
+}
+
+// Admin's promo coupon (the same one the landing banner shows): code + copy, since the
+// user types it into the coupon box on the review step.
+function PromoCouponCard() {
+  const { data } = usePromoCoupon();
+  const [copied, setCopied] = useState(false);
+  const promo = data?.promoCoupon;
+  if (!promo?.isEnabled) return null;
+
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(promo.code);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // Clipboard blocked (insecure origin / in-app browser); the code is on screen anyway.
+    }
+  };
+
+  return (
+    <div className={CARD}>
+      <div className={ICON_CHIP}><TicketIcon size={18} weight="bold" /></div>
+      <div className="flex flex-col gap-0.5 flex-1 min-w-0">
+        <p className="text-sm font-medium text-black">
+          {formatDiscount(promo.discountType, promo.discountValue, promo.maxDiscountAmount)}
+        </p>
+        <p className="text-xs text-neutral-600">
+          Use code <span className="font-semibold text-black">{promo.code}</span> at checkout
+          {promo.minOrderAmount > 0 && ` · min order ₹${promo.minOrderAmount.toLocaleString('en-IN')}`}
+        </p>
+      </div>
+      <button
+        type="button"
+        onClick={copy}
+        aria-label={`Copy coupon code ${promo.code}`}
+        className="shrink-0 flex items-center gap-1 bg-[#FFD976] text-black text-xs font-semibold rounded-full px-3.5 py-2 whitespace-nowrap"
+      >
+        {copied ? <CheckIcon size={14} weight="bold" /> : <CopyIcon size={14} weight="bold" />}
+        {copied ? 'Copied' : 'Copy'}
+      </button>
+    </div>
+  );
+}
+
+function WondrrCashCard({ isFree }: { isFree: boolean }) {
   const { status } = useSession();
   const { data } = useSignupBonus();
   const pathname = usePathname();

@@ -4,6 +4,10 @@ import { WhatsappLogoIcon } from '@phosphor-icons/react';
 
 const WHATSAPP_PHONE_NUMBER = '919667427187';
 
+/** Shared by trip detail + booking pages so the 2-show cap spans both. */
+export const WHATSAPP_HELP_STORAGE_KEY = 'wondrr_whatsapp_help_shows';
+export const WHATSAPP_HELP_MAX_SHOWS = 2;
+
 interface WhatsAppHelpModalProps {
   open: boolean;
   onClose: () => void;

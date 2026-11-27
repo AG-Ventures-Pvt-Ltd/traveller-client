@@ -96,9 +96,9 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
                   backgroundColor: '#f3f4f6',
                 },
                 '&.Mui-selected': {
-                  backgroundColor: '#e0f2fe',
+                  backgroundColor: '#F3FADB',
                   '&:hover': {
-                    backgroundColor: '#bae6fd',
+                    backgroundColor: '#E2F4A6',
                   },
                 },
               },

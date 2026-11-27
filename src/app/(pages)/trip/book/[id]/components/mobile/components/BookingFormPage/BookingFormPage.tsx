@@ -155,8 +155,8 @@ export default function BookingFormPage({ tripId, batchId, onViewCoupons }: Book
                 {/* Right: floating sticky trip overview + pricing */}
                 <div className="w-[360px] shrink-0 sticky top-24">
                     <div className="flex flex-col gap-4">
-                        <TripOverviewCard displayPrice={displayPrice} isFree={isFree} isLoading={isBooking} handleBookNowClick={() => handleButtonClick()}/>
                         <SignupBonusStrip isFree={isFree} />
+                        <TripOverviewCard displayPrice={displayPrice} isFree={isFree} isLoading={isBooking} handleBookNowClick={() => handleButtonClick()}/>
                     </div>
                 </div>
             </div>
@@ -166,8 +166,8 @@ export default function BookingFormPage({ tripId, batchId, onViewCoupons }: Book
     return (
         <div className="px-4 pb-20 flex flex-col gap-4">
             <LoadExistingBookingDetails />
-            <TripOverviewCard isFree={isFree} />
             <SignupBonusStrip isFree={isFree} />
+            <TripOverviewCard isFree={isFree} />
             <TravelerDetailsCard />
 
             {pricingTiers.length > 0 && (

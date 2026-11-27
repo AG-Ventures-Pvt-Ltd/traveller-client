@@ -26,8 +26,8 @@ import FactCards from './components/FactCards';
 import BookingPanel from './components/BookingPanel';
 import SectionTabNav from './components/SectionTabNav';
 import TripBreadcrumb from '../TripBreadcrumb';
-import WhatsAppHelpModal from '@/common/components/composites/WhatsAppHelpModal';
-import { useTimedModal } from '@/common/hooks/useTimedModal';
+import WhatsAppHelpModal, { WHATSAPP_HELP_MAX_SHOWS, WHATSAPP_HELP_STORAGE_KEY } from '@/common/components/composites/WhatsAppHelpModal';
+import { useOnceEverModal } from '@/common/hooks/useOnceEverModal';
 
 const TripHighlights = dynamic(() => import('../mobile/components/TripHighlights'));
 const ItinerarySection = dynamic(() => import('../mobile/components/ItinerarySection'));
@@ -111,7 +111,7 @@ export default function TripDetailDesktop() {
 
     const { isBookmarked, toggle: toggleBookmark } = useBookMarking(id || '', tripData?.isBookmarked ?? false);
 
-    const { show: showHelpModal, dismiss: dismissHelpModal } = useTimedModal(60_000, !!tripData);
+    const { show: showHelpModal, dismiss: dismissHelpModal } = useOnceEverModal(60_000, WHATSAPP_HELP_STORAGE_KEY, !!tripData, WHATSAPP_HELP_MAX_SHOWS);
 
     useEffect(() => {
         if (sortedBatches.length > 0) setSelectedBatch(0);

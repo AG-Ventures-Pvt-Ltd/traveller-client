@@ -8,18 +8,21 @@ import DesktopBookingPage from './components/desktop/BookingPage';
 import { ReservationSkeleton } from './components/mobile/BookingStepSkeletons';
 import { trackEventOnce, toGaItem } from '@/common/utils/analytics';
 import { useTripBasicDetails } from '../../api';
-import { useTimedModal } from '@/common/hooks/useTimedModal';
-import WhatsAppHelpModal from '@/common/components/composites/WhatsAppHelpModal';
+import { useOnceEverModal } from '@/common/hooks/useOnceEverModal';
+import WhatsAppHelpModal, { WHATSAPP_HELP_MAX_SHOWS, WHATSAPP_HELP_STORAGE_KEY } from '@/common/components/composites/WhatsAppHelpModal';
 
 const Page = () => {
     const { isMobile, isHydrated } = useDevice();
     const params = useParams();
     const tripId = Array.isArray(params.id) ? params.id[0] : (params.id || '');
     const slugId = tripId.split('-').pop() || tripId;
-    const batchId = useSearchParams().get('batchId');
+    const searchParams = useSearchParams();
+    const batchId = searchParams.get('batchId');
+    // Not on the review/pay step: a help nudge there pulls people out of payment.
+    const onPaymentStep = searchParams.get('step') === 'review';
 
     const { data: tripData } = useTripBasicDetails(slugId);
-    const { show: showHelpModal, dismiss: dismissHelpModal } = useTimedModal(60_000, !!tripData?.title);
+    const { show: showHelpModal, dismiss: dismissHelpModal } = useOnceEverModal(60_000, WHATSAPP_HELP_STORAGE_KEY, !!tripData?.title && !onPaymentStep, WHATSAPP_HELP_MAX_SHOWS);
 
     // Once per trip per tab. The booking page re-mounts on the auth redirect and
     // again when the user comes back from the payment page — those are the same
@@ -51,7 +54,7 @@ const Page = () => {
             {isMobile ? <BookingPage /> : <DesktopBookingPage />}
             {tripData?.title && (
                 <WhatsAppHelpModal
-                    open={showHelpModal}
+                    open={showHelpModal && !onPaymentStep}
                     onClose={dismissHelpModal}
                     tripTitle={tripData.title}
                     tripSlug={slugId}
