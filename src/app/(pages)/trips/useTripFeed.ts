@@ -45,6 +45,7 @@ export function useTripFeed({
   qParam,
   hostParam,
   statusParam,
+  kind,
   initialTrips,
   initialPagination,
   initialFilterMeta,
@@ -73,13 +74,13 @@ export function useTripFeed({
   // Identity of the current filter set — page 1's URL. Changing it (incl. the user's
   // location) means a different list.
   const feedKey = useMemo(
-    () => buildTripsApiUrl(filters, { destination, qParam, hostParam, statusParam, page: 1, loc: { lat, lng } }),
-    [filters, destination, qParam, hostParam, statusParam, lat, lng]
+    () => buildTripsApiUrl(filters, { destination, qParam, hostParam, statusParam, kind, page: 1, loc: { lat, lng } }),
+    [filters, destination, qParam, hostParam, statusParam, kind, lat, lng]
   );
 
   const apiUrl = useMemo(
-    () => buildTripsApiUrl(filters, { destination, qParam, hostParam, statusParam, page, loc: { lat, lng } }),
-    [filters, destination, qParam, hostParam, statusParam, page, lat, lng]
+    () => buildTripsApiUrl(filters, { destination, qParam, hostParam, statusParam, kind, page, loc: { lat, lng } }),
+    [filters, destination, qParam, hostParam, statusParam, kind, page, lat, lng]
   );
 
   // Comparing against the previous key skips the reset on mount, which would otherwise

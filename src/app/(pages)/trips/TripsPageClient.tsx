@@ -8,7 +8,7 @@ import TripListSkeleton from './components/TripListSkeleton';
 import TripListsMobile from './components/mobile/TripListsMobile';
 import ActiveFilterChips from './components/filters/ActiveFilterChips';
 import SortDropdown from './components/filters/SortDropdown';
-import { EMPTY_FILTERS, filtersToQuery, hasActiveFilters, parseFilters } from './buildApiUrl';
+import { EMPTY_FILTERS, filtersToQuery, hasActiveFilters, parseFilters, TripKind } from './buildApiUrl';
 import { useTripFeed } from './useTripFeed';
 import { DepartureCity, FilterMeta, FilterValues, Pagination, Trip } from './types';
 
@@ -23,6 +23,7 @@ interface TripsPageClientProps {
   qParam: string | null;
   hostParam: string | null;
   statusParam: string | null;
+  kind: TripKind;
 }
 
 export default function TripsPageClient({
@@ -35,6 +36,7 @@ export default function TripsPageClient({
   qParam,
   hostParam,
   statusParam,
+  kind,
 }: TripsPageClientProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -60,9 +62,10 @@ export default function TripsPageClient({
       if (hostParam) sp.set('host', hostParam);
       if (statusParam) sp.set('status', statusParam);
       const query = sp.toString();
-      router.replace(query ? `/trips?${query}` : '/trips', { scroll: false });
+      const base = `/${kind}s`;
+      router.replace(query ? `${base}?${query}` : base, { scroll: false });
     },
-    [router, destination, qParam, hostParam, statusParam]
+    [router, destination, qParam, hostParam, statusParam, kind]
   );
 
   const feed = useTripFeed({
@@ -71,6 +74,7 @@ export default function TripsPageClient({
     qParam,
     hostParam,
     statusParam,
+    kind,
     initialTrips,
     initialPagination,
     initialFilterMeta,
@@ -89,19 +93,21 @@ export default function TripsPageClient({
         qParam={qParam}
         hostParam={hostParam}
         statusParam={statusParam}
+        kind={kind}
         filters={filters}
         onFiltersChange={setFilters}
       />
     );
   }
 
+  const noun = kind === 'trek' ? 'trek' : 'trip';
   const heading = hostParam
     ? `Trips by ${hostParam}`
     : qParam
       ? `Results for "${qParam}"`
       : destination
-        ? `Trips in ${destination}`
-        : 'All trips';
+        ? `${kind === 'trek' ? 'Treks' : 'Trips'} in ${destination}`
+        : `All ${noun}s`;
 
   const showEmpty = !feed.isInitialLoading && feed.trips.length === 0;
 
@@ -120,8 +126,8 @@ export default function TripsPageClient({
               <h1 className="text-4xl font-bold text-neutral-900">{heading}</h1>
               <p className="mt-1 text-sm font-semibold text-neutral-600">
                 {feed.isInitialLoading
-                  ? 'Finding trips…'
-                  : `${feed.total} ${feed.total === 1 ? 'trip' : 'trips'} found${feed.departureCity ? ` · departing from ${feed.departureCity.city}` : ''}`}
+                  ? `Finding ${noun}s…`
+                  : `${feed.total} ${feed.total === 1 ? noun : `${noun}s`} found${feed.departureCity ? ` · departing from ${feed.departureCity.city}` : ''}`}
               </p>
             </div>
             <SortDropdown value={filters.sort} onChange={(sort) => setFilters({ ...filters, sort })} />
@@ -135,7 +141,7 @@ export default function TripsPageClient({
 
           {showEmpty && (
             <div className="rounded-3xl border-2 border-neutral-200 bg-white px-6 py-12 text-center">
-              <p className="text-lg font-bold text-neutral-900">No trips found</p>
+              <p className="text-lg font-bold text-neutral-900">No {noun}s found</p>
               <p className="mt-2 text-sm text-neutral-600">
                 {hasActiveFilters(filters)
                   ? 'No upcoming departures match these filters. Try widening them.'

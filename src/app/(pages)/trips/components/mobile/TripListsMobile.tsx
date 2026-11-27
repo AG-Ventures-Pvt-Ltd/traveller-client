@@ -8,7 +8,7 @@ import SkeletonCard from './SkeletonCard';
 import { TripCard } from './TripCard';
 import ActiveFilterChips from '../filters/ActiveFilterChips';
 import SortDropdown from '../filters/SortDropdown';
-import { EMPTY_FILTERS, countActiveFilters, hasActiveFilters } from '../../buildApiUrl';
+import { EMPTY_FILTERS, countActiveFilters, hasActiveFilters, TripKind } from '../../buildApiUrl';
 import { useTripFeed } from '../../useTripFeed';
 import DepartureCityPicker from '../../../(landing)/components/DesktopLanding/components/LocationSelector';
 import { DepartureCity, FilterMeta, FilterValues, Pagination, Trip } from '../../types';
@@ -23,6 +23,7 @@ interface TripListsMobileProps {
   qParam: string | null;
   hostParam: string | null;
   statusParam: string | null;
+  kind: TripKind;
   /** Owned by TripsPageClient and backed by the URL, so it survives the mobile/desktop fork. */
   filters: FilterValues;
   onFiltersChange: (next: FilterValues) => void;
@@ -37,6 +38,7 @@ const TripListsMobile = ({
   qParam,
   hostParam,
   statusParam,
+  kind,
   filters,
   onFiltersChange,
 }: TripListsMobileProps) => {
@@ -48,6 +50,7 @@ const TripListsMobile = ({
     qParam,
     hostParam,
     statusParam,
+    kind,
     initialTrips,
     initialPagination,
     initialFilterMeta,
@@ -58,6 +61,7 @@ const TripListsMobile = ({
   useTripsListTracking(feed.trips);
 
   const showEmpty = !feed.isInitialLoading && feed.trips.length === 0;
+  const noun = kind === 'trek' ? 'trek' : 'trip';
 
   return (
     <div className="flex-1 bg-[#FFF9F4] px-4 pb-8 pt-4">
@@ -67,12 +71,12 @@ const TripListsMobile = ({
       <div className="mb-3 mt-3 flex items-center justify-between gap-3">
         <div>
           <h1 className="text-3xl font-bold text-black">
-            {qParam ? `Results for ${qParam}` : destination ? destination : 'Explore'}
+            {qParam ? `Results for ${qParam}` : destination ? destination : kind === 'trek' ? 'Treks' : 'Trips'}
           </h1>
           <p className="mt-0.5 text-xs font-semibold text-neutral-600">
             {feed.isInitialLoading
-              ? 'Finding trips…'
-              : `${feed.total} ${feed.total === 1 ? 'trip' : 'trips'}`}
+              ? `Finding ${noun}s…`
+              : `${feed.total} ${feed.total === 1 ? noun : `${noun}s`}`}
           </p>
         </div>
 
@@ -120,7 +124,7 @@ const TripListsMobile = ({
 
       {showEmpty && (
         <div className="mt-4 rounded-2xl border-2 border-neutral-200 bg-white px-6 py-10 text-center">
-          <p className="text-lg font-bold text-neutral-900">No trips found</p>
+          <p className="text-lg font-bold text-neutral-900">No {noun}s found</p>
           <p className="mt-1 text-sm text-neutral-600">
             {hasActiveFilters(filters)
               ? 'No upcoming departures match these filters.'
