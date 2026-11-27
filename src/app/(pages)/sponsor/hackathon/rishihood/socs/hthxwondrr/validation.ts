@@ -22,27 +22,11 @@ export function validateEmail(raw: string): string | undefined {
 
 export function validateTeamName(raw: string): string | undefined {
   const v = normalizeTeamName(raw);
-  if (!v) return 'Team name or ID is required';
-  if (v.length < 2) return 'Team name/ID must be at least 2 characters';
-  if (v.length > TEAM_NAME_MAX) return `Team name/ID must be at most ${TEAM_NAME_MAX} characters`;
-  // Real team names include & * etc.; only block control chars and angle brackets.
-  if (/[\p{Cc}<>]/u.test(v)) return 'Team name/ID contains invalid characters';
+  if (!v) return 'Team name is required';
+  if (v.length < 2) return 'Team name must be at least 2 characters';
+  if (v.length > TEAM_NAME_MAX) return `Team name must be at most ${TEAM_NAME_MAX} characters`;
+  if (!/^[\p{L}\p{N}][\p{L}\p{N} ._-]*$/u.test(v)) return 'Use letters, numbers, spaces, . _ -';
   return undefined;
-}
-
-export type Team = { name: string; id: string; leadEmail: string };
-
-const teamKey = (v: string) => normalizeTeamName(v).toLowerCase();
-
-/** Teams whose name or ID (case-insensitive) equals `query` AND whose leader email matches.
- *  Can return >1 when the same team registered twice under one name. */
-export function findTeams<T extends Team>(teams: T[], query: string, leaderEmail: string): T[] {
-  const q = teamKey(query);
-  const email = normalizeEmail(leaderEmail);
-  if (!q || !email) return [];
-  return teams.filter(
-    (t) => (teamKey(t.name) === q || teamKey(t.id) === q) && normalizeEmail(t.leadEmail) === email
-  );
 }
 
 export function validateMemberCount(n: number): string | undefined {
@@ -70,27 +54,4 @@ export function buildPayload(teamName: string, emails: string[]) {
   if (validateMemberCount(emails.length)) throw new Error('Invalid member count');
   if (validateEmails(emails).some(Boolean)) throw new Error('Invalid emails');
   return { teamName: normalizeTeamName(teamName), emails: emails.map(normalizeEmail) };
-}
-
-export type TeamSuggestion = { name: string; id: string };
-
-/** Typeahead: teams whose name or ID contains `query` (case-insensitive), prefix matches first.
- *  `value` is what to fill in: the ID if the user is typing an ID, else the name. */
-export function suggestTeams(teams: TeamSuggestion[], query: string, limit = 6) {
-  const q = teamKey(query);
-  if (!q) return [];
-  return teams
-    .map((t) => {
-      const name = teamKey(t.name);
-      const id = teamKey(t.id);
-      const idHit = id.indexOf(q);
-      const nameHit = name.indexOf(q);
-      if (idHit < 0 && nameHit < 0) return null;
-      const byId = idHit >= 0 && (nameHit < 0 || idHit < nameHit);
-      return { ...t, value: byId ? t.id : t.name, rank: Math.min(...[idHit, nameHit].filter((i) => i >= 0)) };
-    })
-    .filter((t): t is NonNullable<typeof t> => t !== null)
-    .sort((a, b) => a.rank - b.rank || a.name.localeCompare(b.name))
-    .slice(0, limit)
-    .map(({ name, id, value }) => ({ name, id, value }));
 }
