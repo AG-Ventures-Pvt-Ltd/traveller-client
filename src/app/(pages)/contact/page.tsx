@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
-import { ArrowRight, Compass, Instagram, Linkedin, Mail, MapPin, MessageCircle, Phone, Plane, Youtube } from 'lucide-react';
-import BackButton from '@/common/ui/BackButton';
+import type { LucideIcon } from 'lucide-react';
+import { ArrowUpRight, Instagram, Linkedin, Mail, MessageCircle, Phone, Youtube } from 'lucide-react';
 import Footer from '../(landing)/components/Footer/Footer';
-import ClosingCta from '../(landing)/components/common/ClosingCta/ClosingCta';
+import MobileTopBar from '../(landing)/components/MobileLanding/components/MobileTopBar';
 
 export const metadata: Metadata = {
   title: 'Contact Us | Wondrr',
@@ -24,105 +24,108 @@ const SOCIALS = [
   { icon: Youtube, label: 'YouTube', href: 'https://www.youtube.com/@wondrrtrips' },
 ];
 
-const card = 'relative rounded-3xl border border-[#D9D9D9] bg-white p-6 md:p-7 flex flex-col gap-4';
-const iconBubble = 'flex h-12 w-12 items-center justify-center rounded-full';
+interface Channel {
+  icon: LucideIcon;
+  title: string;
+  note: string;
+  /** Brand tint for the card and its icon chip. */
+  bg: string;
+  chip: string;
+  links: { label: string; href: string; external?: boolean }[];
+}
+
+const CHANNELS: Channel[] = [
+  {
+    icon: MessageCircle,
+    title: 'WhatsApp',
+    note: 'Fastest reply',
+    bg: 'bg-white',
+    chip: 'bg-[#D0EF65] text-neutral-900',
+    links: [{ label: 'Start a chat', href: WHATSAPP_URL, external: true }],
+  },
+  {
+    icon: Phone,
+    title: 'Call us',
+    note: 'Speak to our team directly',
+    bg: 'bg-white',
+    chip: 'bg-[#EEA0FF] text-neutral-900',
+    links: SUPPORT_NUMBERS,
+  },
+  {
+    icon: Mail,
+    title: 'Email',
+    note: 'For detailed queries',
+    bg: 'bg-white',
+    chip: 'bg-[#FFD976] text-neutral-900',
+    links: [{ label: SUPPORT_EMAIL, href: `mailto:${SUPPORT_EMAIL}` }],
+  },
+];
 
 export default function ContactPage() {
   return (
     <main className="min-h-screen bg-[#FFF9F4]">
-      <div className="relative mx-auto max-w-5xl px-4 pt-8 pb-10 md:px-8 md:pt-20">
-        {/* Faint travel doodles, same treatment as the landing hero/trust sections */}
-        <Plane className="absolute right-6 top-10 h-24 w-24 rotate-12 text-neutral-800 opacity-[0.08] pointer-events-none md:h-32 md:w-32" strokeWidth={1} />
-        <Compass className="absolute left-2 top-40 h-16 w-16 -rotate-6 text-neutral-800 opacity-[0.07] pointer-events-none" strokeWidth={1} />
-        <MapPin className="absolute right-[30%] top-4 h-10 w-10 text-neutral-800 opacity-[0.06] pointer-events-none" strokeWidth={1} />
+      {/* Mobile only — desktop has the navbar. */}
+      <div className="pt-6 md:hidden">
+        <MobileTopBar />
+      </div>
 
-        <section className="relative flex flex-col gap-4 md:items-center md:text-center">
-          {/* Mobile only — desktop has the navbar. */}
-          <div className="mb-2 md:hidden">
-            <BackButton label="" />
-          </div>
-          <h1 className="text-[34px] md:text-[56px] font-bold leading-[1.1] tracking-tight text-neutral-900 font-['Satoshi']">
-            Real people,{' '}
+      <div className="mx-auto max-w-4xl px-4 pt-8 pb-16 md:px-8 md:pt-16 md:pb-24">
+        <header className="flex flex-col gap-2 md:items-center md:text-center">
+          <h1 className="text-3xl md:text-5xl font-bold tracking-tight text-neutral-900">
+            Contact{' '}
             <span className="relative inline-block">
-              <span className="absolute inset-x-0 bottom-1 h-[10px] md:h-[12px] bg-[#D0EF65] rounded-sm z-0" />
-              <span className="relative z-10">one message away.</span>
+              <span className="absolute inset-x-0 bottom-1 h-2.5 bg-[#D0EF65] rounded-sm" />
+              <span className="relative">us</span>
             </span>
           </h1>
-          <p className="max-w-lg text-neutral-500 md:text-lg">
-            Questions about a trip or a booking? Pick whatever&apos;s easiest — our team replies fast.
-          </p>
+          <p className="text-sm md:text-base text-neutral-600">Trips, bookings or payments — we&apos;re one message away.</p>
+        </header>
+
+        <section className="mt-8 md:mt-12 grid gap-3 md:grid-cols-3 md:gap-4">
+          {CHANNELS.map(({ icon: Icon, title, note, bg, chip, links }) => (
+            <div
+              key={title}
+              className={`${bg} rounded-2xl border border-[#E5E5E5] p-4 md:p-6 flex items-start gap-4 md:flex-col md:gap-5`}
+            >
+              <span className={`${chip} flex h-11 w-11 md:h-12 md:w-12 shrink-0 items-center justify-center rounded-full`}>
+                <Icon className="h-5 w-5" />
+              </span>
+              <div className="flex flex-col gap-1 min-w-0">
+                <p className="text-base md:text-lg font-semibold text-neutral-900">{title}</p>
+                <p className="text-xs text-neutral-500">{note}</p>
+                <div className="mt-2 flex flex-col gap-1.5">
+                  {links.map((l) => (
+                    <a
+                      key={l.href}
+                      href={l.href}
+                      {...(l.external && { target: '_blank', rel: 'noopener noreferrer' })}
+                      className="group inline-flex w-fit items-center gap-1 text-sm md:text-base font-semibold text-neutral-900 underline-offset-4 hover:underline break-all"
+                    >
+                      {l.label}
+                      {l.external && <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />}
+                    </a>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ))}
         </section>
 
-        <section className="relative mt-12 grid gap-4 md:grid-cols-3">
-          {/* WhatsApp leads: fastest channel */}
-          <a
-            href={WHATSAPP_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group relative rounded-3xl bg-neutral-900 p-6 md:p-7 flex flex-col gap-4 text-white transition-transform hover:-translate-y-0.5"
-          >
-            <span className="absolute right-5 top-5 rounded-full bg-[#D0EF65] px-2.5 py-1 text-xs font-semibold text-neutral-900">Fastest</span>
-            <span className={`${iconBubble} bg-[#25D366]`}>
-              <MessageCircle className="h-6 w-6 text-white" />
-            </span>
-            <div>
-              <p className="text-xl font-semibold font-['Satoshi']">Chat on WhatsApp</p>
-              <p className="mt-1 text-sm text-white/60">Drop a message, we&apos;ll take it from there.</p>
-            </div>
-            <span className="mt-auto inline-flex w-fit items-center gap-2 rounded-xl bg-[#EEA0FF] px-5 py-2.5 text-sm font-semibold text-neutral-900">
-              Start chat <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-            </span>
-          </a>
-
-          <div className={card}>
-            <span className={`${iconBubble} bg-[#EEA0FF]`}>
-              <Phone className="h-5 w-5 text-neutral-900" />
-            </span>
-            <p className="text-xl font-semibold text-neutral-900 font-['Satoshi']">Call us</p>
-            <div className="mt-auto flex flex-col gap-2">
-              {SUPPORT_NUMBERS.map((n) => (
-                <a key={n.href} href={n.href} className="w-fit text-lg font-semibold text-neutral-900 underline-offset-4 hover:underline">
-                  {n.label}
-                </a>
-              ))}
-            </div>
-          </div>
-
-          <div className={card}>
-            <span className={`${iconBubble} bg-[#D0EF65]`}>
-              <Mail className="h-5 w-5 text-neutral-900" />
-            </span>
-            <p className="text-xl font-semibold text-neutral-900 font-['Satoshi']">Email us</p>
-            <a href={`mailto:${SUPPORT_EMAIL}`} className="mt-auto w-fit text-lg font-semibold text-neutral-900 underline-offset-4 hover:underline">
-              {SUPPORT_EMAIL}
+        <section className="mt-8 md:mt-12 flex items-center gap-3 md:justify-center">
+          <p className="text-sm text-neutral-600">Follow us</p>
+          {SOCIALS.map((s) => (
+            <a
+              key={s.label}
+              href={s.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={s.label}
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-[#E5E5E5] bg-white text-neutral-800 transition-colors hover:bg-[#EEA0FF]/30"
+            >
+              <s.icon className="h-[18px] w-[18px]" />
             </a>
-          </div>
+          ))}
         </section>
-
-        <section className="relative mt-10 flex flex-col items-center gap-4">
-          <p className="text-sm font-semibold uppercase tracking-wide text-neutral-600">Follow the trips</p>
-          <div className="flex gap-3">
-            {SOCIALS.map((s) => (
-              <a
-                key={s.label}
-                href={s.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={s.label}
-                className="flex h-12 w-12 items-center justify-center rounded-full border border-[#D9D9D9] bg-white text-neutral-800 transition-colors hover:border-[#EEA0FF] hover:bg-[#EEA0FF]/20"
-              >
-                <s.icon className="h-5 w-5" />
-              </a>
-            ))}
-          </div>
-        </section>
-
-        <div className="relative mt-16 md:hidden">
-          <ClosingCta variant="mobile" />
-        </div>
-        <div className="relative mt-16 hidden md:block">
-          <ClosingCta variant="desktop" />
-        </div>
       </div>
 
       <Footer />
