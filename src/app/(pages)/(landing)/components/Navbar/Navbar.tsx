@@ -1,12 +1,12 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, Suspense } from 'react'
 import Logo from '@/common/components/atoms/Logo/Logo'
 import DesktopLocationSelector from '../DesktopLanding/components/LocationSelector'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { User } from 'lucide-react'
-import { usePathname } from "next/navigation"
+import { usePathname, useSearchParams } from "next/navigation"
 import './Navbar.module.css'
 import { navItems, authenticatedNavItems, hiddenPaths } from './constants'
 
@@ -42,7 +42,7 @@ const Navbar = () => {
         <div className='flex-1 flex items-center gap-2.5'>
           <div className='flex-1 flex items-center justify-start gap-6'>
             <Logo />
-            {(pathname === '/' || pathname === '/trips' || pathname === '/treks') && <DesktopLocationSelector />}
+            <Suspense fallback={null}><NavCityPicker pathname={pathname} /></Suspense>
           </div>
           <div className='flex-1 flex justify-end items-center'>
             <div className='flex items-center gap-3 md:gap-12'>
@@ -102,6 +102,14 @@ const Navbar = () => {
       </div>
     </>
   )
+}
+
+// City picker only where listings are filtered by departure city — not on search
+// results, which are global. Own component so useSearchParams sits under Suspense.
+const NavCityPicker = ({ pathname }: { pathname: string }) => {
+  const q = useSearchParams().get('q')
+  const listing = pathname === '/' || pathname === '/trips' || pathname === '/treks'
+  return listing && !q ? <DesktopLocationSelector /> : null
 }
 
 export default Navbar

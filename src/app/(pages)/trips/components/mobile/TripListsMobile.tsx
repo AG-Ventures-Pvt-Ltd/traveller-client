@@ -66,7 +66,8 @@ const TripListsMobile = ({
   return (
     <div className="flex-1 bg-[#FFF9F4] px-4 pb-8 pt-4">
       <BackButton label="Back to Home" />
-      {!hostParam && <div className="mt-2 -ml-3"><DepartureCityPicker /></div>}
+      {/* Search is global (not per departure city), so no city picker on results. */}
+      {!hostParam && !qParam && <div className="mt-2 -ml-3"><DepartureCityPicker /></div>}
 
       <div className="mb-3 mt-3 flex items-center justify-between gap-3">
         <div>

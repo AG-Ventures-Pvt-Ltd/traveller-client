@@ -138,14 +138,16 @@ export function useTripFeed({
     return () => observer.disconnect();
   }, [enabled]);
 
-  const trips = useMemo(
-    () =>
-      Object.keys(pages)
-        .map(Number)
-        .sort((a, b) => a - b)
-        .flatMap((n) => pages[n]),
-    [pages]
-  );
+  // Deduped by slug: if the API's page order ever shifts between requests (it did — ties
+  // on rating had no tiebreak), a trip already shown must not render twice further down.
+  const trips = useMemo(() => {
+    const seen = new Set<string>();
+    return Object.keys(pages)
+      .map(Number)
+      .sort((a, b) => a - b)
+      .flatMap((n) => pages[n])
+      .filter((t) => !seen.has(t.slug) && !!seen.add(t.slug));
+  }, [pages]);
 
   // After every hook, so an error render doesn't change the hook call order.
   if (error) throw new Error(error.message || 'Error Loading Trips');

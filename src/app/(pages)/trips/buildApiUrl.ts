@@ -167,8 +167,9 @@ export function buildTripsApiUrl(filters: FilterValues, params: TripsSearchParam
     search.append('sortOrder', sort.sortOrder);
   }
 
-  // Host and archived listings show a host's whole catalogue, treks included.
-  if (kind && !hostParam && !statusParam) search.append('tripType', kind);
+  // Host and archived listings show a host's whole catalogue, treks included. A search
+  // from /trips (incl. the landing search box) covers treks too; /treks?q= stays treks-only.
+  if (kind && !hostParam && !statusParam && !(qParam && kind === 'trip')) search.append('tripType', kind);
   if (hostParam) search.append('host', hostParam);
   if (statusParam) search.append('status', statusParam);
 
