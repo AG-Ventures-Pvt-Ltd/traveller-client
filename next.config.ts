@@ -21,6 +21,9 @@ const nextConfig: NextConfig = {
   reactStrictMode: false,
   experimental: {
     optimizePackageImports: ['@mui/material', 'lucide-react', '@tanstack/react-query'],
+    // Every page is force-dynamic, so by default each Home↔Trips hop re-renders on the
+    // server and the old page sits frozen meanwhile. Reuse a visited page's payload for 30s.
+    staleTimes: { dynamic: 30 },
   },
   // Sibling repos under the same parent dir make Turbopack probe that
   // parent as a candidate workspace root, breaking module resolution

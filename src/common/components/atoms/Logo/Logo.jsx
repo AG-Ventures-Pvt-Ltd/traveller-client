@@ -1,13 +1,8 @@
 import React from 'react'
-import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 
-const Logo = ({ className = '' }) => {
-  const router = useRouter()
-
-  return (
-    <span role="link" tabIndex={0} aria-label="Wondrr home" className={`text-3xl font-bold cursor-pointer ${className}`} onClick={() => router.push('/')}>Wondrr</span>
-  )
-}
-
+const Logo = ({ className = '' }) => (
+  <Link href="/" aria-label="Wondrr home" className={`text-3xl font-bold cursor-pointer ${className}`}>Wondrr</Link>
+)
 
 export default Logo
