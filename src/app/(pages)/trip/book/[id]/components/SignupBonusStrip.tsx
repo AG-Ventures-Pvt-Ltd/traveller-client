@@ -6,9 +6,10 @@ import { useSession } from 'next-auth/react';
 import { useQuery } from '@tanstack/react-query';
 import { getData } from '@/services/baseApi';
 import { useState } from 'react';
-import { CheckIcon, CopyIcon, GiftIcon, TicketIcon, WalletIcon } from '@phosphor-icons/react';
+import { CheckIcon, CopyIcon, GiftIcon, InfoIcon, TicketIcon, WalletIcon } from '@phosphor-icons/react';
 import { useSignupBonus } from '@/common/hooks/useSignupBonus';
 import { formatDiscount, usePromoCoupon } from '@/common/hooks/usePromoCoupon';
+import { MAX_WONDRR_CASH_PER_BOOKING } from '@/common/constants/wondrrCash';
 
 // Logged-in: note that Wondrr Cash auto-applies on the next page, with the per-booking cap.
 // Guests: signup-bonus pitch, only while the offer is live; sends them to signup and
@@ -91,7 +92,16 @@ function WondrrCashCard({ isFree }: { isFree: boolean }) {
       <div className={CARD}>
         <div className={ICON_CHIP}><WalletIcon size={18} weight="bold" /></div>
         <p className="text-sm font-normal text-neutral-800">
-          <span className="font-bold text-black">₹{wallet.balance.toLocaleString('en-IN')} Wondrr Cash</span> available in your wallet, will be applied automatically on checkout page
+          {wallet.balance > MAX_WONDRR_CASH_PER_BOOKING ? (
+            <>
+              <span className="font-bold text-black">₹{MAX_WONDRR_CASH_PER_BOOKING.toLocaleString('en-IN')} Wondrr Cash</span> will be applied automatically on checkout{' '}
+              <CapNote balance={wallet.balance} />
+            </>
+          ) : (
+            <>
+              <span className="font-bold text-black">₹{wallet.balance.toLocaleString('en-IN')} Wondrr Cash</span> available in your wallet, will be applied automatically on checkout page
+            </>
+          )}
         </p>
       </div>
     );
@@ -115,5 +125,36 @@ function WondrrCashCard({ isFree }: { isFree: boolean }) {
         Sign up
       </Link>
     </div>
+  );
+}
+
+// The cap is a footnote, not the headline: hover (desktop) or tap (mobile) the ⓘ to read it.
+function CapNote({ balance }: { balance: number }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <span
+      className="relative inline-flex align-middle"
+      onMouseEnter={() => setOpen(true)}
+      onMouseLeave={() => setOpen(false)}
+    >
+      <button
+        type="button"
+        aria-label="Wondrr Cash limit per booking"
+        aria-expanded={open}
+        onClick={() => setOpen((o) => !o)}
+        onBlur={() => setOpen(false)}
+        className="text-neutral-500 hover:text-black"
+      >
+        <InfoIcon size={16} weight="bold" />
+      </button>
+      {open && (
+        <span
+          role="tooltip"
+          className="absolute bottom-full right-0 mb-2 w-56 rounded-xl bg-neutral-900 px-3 py-2 text-xs text-white shadow-lg z-20"
+        >
+          You have ₹{balance.toLocaleString('en-IN')}, max ₹{MAX_WONDRR_CASH_PER_BOOKING.toLocaleString('en-IN')} can be used at once.
+        </span>
+      )}
+    </span>
   );
 }
