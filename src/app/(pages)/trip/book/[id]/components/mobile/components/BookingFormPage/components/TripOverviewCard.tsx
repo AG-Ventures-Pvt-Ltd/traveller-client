@@ -27,6 +27,10 @@ interface TripOverviewCardProps {
     handleBookNowClick?:() => void
 }
 
+// "Majnu ka Tilla Metro, New Delhi"; falls back to "New Delhi, Delhi" until the API sends the spot name.
+const pointTitle = (p: { name?: string; city?: string; state?: string; locationId?: string }) =>
+    (p.name ? [p.name, p.city] : [p.city, p.state]).filter(Boolean).join(', ') || p.locationId || '';
+
 function formatDate(date: Date) {
     return date.toLocaleDateString('en-GB', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'Asia/Kolkata' });
 }
@@ -153,34 +157,29 @@ export default function TripOverviewCard(props: TripOverviewCardProps) {
             )}
             {!isEvent && (meetingPoints.length > 0) && (path.split('/')[1] !== 'profile') && (
                 <div className="flex flex-col gap-2">
-                    <div className="flex items-center gap-2 flex-wrap">
-                        <p className="text-xs text-black tracking-[-0.36px] whitespace-nowrap">Depart from :</p>
-                        <p>{props.selectedMeetingPoint}</p>
-                        <div className="flex items-center gap-2">
-                            <div className="relative">
+                    <p className="text-xs text-black tracking-[-0.36px]">Depart from</p>
+                    <div className="flex items-center gap-2">
+                        {meetingPoints.length > 1 ? (
+                            <div className="flex-1 min-w-0">
                                 <CustomSelect
                                     value={selectedMeetingPointIdx.toString()}
-                                    onChange={(value) => {
-                                        const idx = Number(value);
-                                        setSelectedMeetingPointIdx(idx);
-                                    }}
+                                    onChange={(value) => setSelectedMeetingPointIdx(Number(value))}
                                     options={meetingPoints.map((point, idx) => ({
                                         value: idx.toString(),
-                                        label: point.city || point.locationId,
+                                        label: pointTitle(point),
                                     }))}
-                                    className="w-32"
                                     id="meeting-point-select"
                                     size="compact"
-                                    dropdownMaxHeight={100}
-                                    dropdownWidth={100}
                                 />
                             </div>
-                            {hasExtraPrice && (
-                                <p className="text-xs font-medium text-[#F44336] tracking-[-0.36px] whitespace-nowrap">
-                                    +₹{selectedPoint.pickupPrice.toLocaleString('en-IN')}
-                                </p>
-                            )}
-                        </div>
+                        ) : (
+                            selectedPoint && <p className="text-sm font-medium text-black flex-1 min-w-0">{pointTitle(selectedPoint)}</p>
+                        )}
+                        {hasExtraPrice && (
+                            <p className="text-xs font-medium text-[#F44336] tracking-[-0.36px] whitespace-nowrap">
+                                +₹{selectedPoint.pickupPrice.toLocaleString('en-IN')}
+                            </p>
+                        )}
                     </div>
                     {hasExtraPrice && (
                         <div className="flex items-center gap-3">

@@ -15,8 +15,6 @@ interface CustomInputProps {
   name?: string;
   autoComplete?: string;
   maxLength?: number;
-  /** Extra native input attributes (aria-*, onFocus, onKeyDown, ...). */
-  inputProps?: React.InputHTMLAttributes<HTMLInputElement>;
 }
 
 const CustomInput: React.FC<CustomInputProps> = ({
@@ -33,7 +31,6 @@ const CustomInput: React.FC<CustomInputProps> = ({
   name,
   autoComplete,
   maxLength,
-  inputProps,
 }) => {
   const rowClass = `flex items-center gap-3 px-3 py-4 rounded-xl border ${
     error ? 'border-red-400' : 'border-zinc-300'
@@ -47,7 +44,6 @@ const CustomInput: React.FC<CustomInputProps> = ({
     <div className={rowClass}>
       {Icon && <Icon className="w-5 h-5 text-black flex-shrink-0" weight='thin'/>}
       <input
-        {...inputProps}
         type={type}
         placeholder={placeholder}
         value={value}

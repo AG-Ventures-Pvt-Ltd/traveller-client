@@ -1,29 +1,14 @@
 'use client';
+import { startNavProgress } from '@/common/components/composites/NavProgress';
 
 import React from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { Check, Copy, TicketPercent, X } from 'lucide-react';
-import { usePromoCoupon } from '@/common/hooks/usePromoCoupon';
+import { formatDiscount, usePromoCoupon } from '@/common/hooks/usePromoCoupon';
 
 // Per-session so a dismissal sticks while browsing but the offer gets another
 // shot on the next visit.
 const DISMISS_KEY = 'wondrr_promo_dismissed_code';
-
-const formatDiscount = (
-    discountType: 'percentage' | 'fixed' | 'people_count',
-    discountValue: number,
-    maxDiscountAmount: number | null
-) => {
-    if (discountType === 'percentage') {
-        return maxDiscountAmount
-            ? `${discountValue}% OFF up to ₹${maxDiscountAmount.toLocaleString('en-IN')}`
-            : `${discountValue}% OFF`;
-    }
-    if (discountType === 'people_count') {
-        return `₹${discountValue.toLocaleString('en-IN')} OFF per traveller`;
-    }
-    return `₹${discountValue.toLocaleString('en-IN')} OFF`;
-};
 
 const PromoCouponBanner: React.FC = () => {
     const pathname = usePathname();
@@ -31,6 +16,8 @@ const PromoCouponBanner: React.FC = () => {
     // block) but only promoted on the landing page.
     const { data } = usePromoCoupon(pathname === '/');
     const router = useRouter();
+    // Start the top bar now; router.push alone gives no feedback until the server render lands.
+    const navigate = (href: string) => { startNavProgress(); router.push(href); };
     const [copied, setCopied] = React.useState(false);
     const [dismissed, setDismissed] = React.useState(true); // stays hidden until the stored code is checked
 
@@ -69,10 +56,10 @@ const PromoCouponBanner: React.FC = () => {
 
     return (
         <div
-            onClick={() => router.push('/trips')}
+            onClick={() => navigate('/trips')}
             role="button"
             tabIndex={0}
-            onKeyDown={(e) => e.key === 'Enter' && router.push('/trips')}
+            onKeyDown={(e) => e.key === 'Enter' && navigate('/trips')}
             className="w-full cursor-pointer bg-neutral-900 text-white px-4 py-2.5 md:px-9 md:py-3 flex items-center gap-3 md:gap-6"
         >
             <TicketPercent className="w-5 h-5 md:w-6 md:h-6 text-[#D0EF65] shrink-0" strokeWidth={2} />

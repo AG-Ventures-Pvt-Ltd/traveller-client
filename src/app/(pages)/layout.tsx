@@ -1,6 +1,6 @@
 
 import "./globals.css";
-import React from 'react';
+import React, { Suspense } from 'react';
 import { Rubik } from 'next/font/google';
 import { Providers } from "./providers";
 
@@ -16,6 +16,7 @@ const rubik = Rubik({
 import Script from "next/script";
 import Navbar from './(landing)/components/Navbar/Navbar'
 import StickyNavigation from '@/common/components/composites/StickyNavigation';
+import NavProgress from '@/common/components/composites/NavProgress';
 import ServiceWorkerRegister from '@/common/components/composites/ServiceWorkerRegister';
 import PromoCouponBanner from './(landing)/components/common/PromoCouponBanner/PromoCouponBanner';
 import type { Metadata, Viewport } from 'next';
@@ -151,6 +152,8 @@ export default function RootLayout({ children }: RootLayoutProps) {
       </head>
       <body>
         <Providers>
+          {/* useSearchParams needs a Suspense boundary or every static route bails out of SSG. */}
+          <Suspense fallback={null}><NavProgress /></Suspense>
           {/* Column so a page can fill the space *below* the navbar. The navbar is sticky,
               not fixed, so it still takes flow height — a `min-h-screen` page under it adds
               up to 100vh + navbar and scrolls even with no content to scroll. Pages that

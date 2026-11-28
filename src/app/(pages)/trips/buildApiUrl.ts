@@ -60,7 +60,11 @@ export interface TripsSearchParams {
   page?: number;
   /** Visitor location — the API filters to trips departing from the nearest active city. */
   loc?: LatLng | null;
+  /** /trips lists everything but treks, /treks only treks. */
+  kind?: TripKind;
 }
+
+export type TripKind = 'trip' | 'trek';
 
 /** Splits a sort value like 'price_asc' into the API's sortBy/sortOrder pair. */
 function splitSort(sort: string): { sortBy: string; sortOrder: string } | null {
@@ -139,7 +143,7 @@ export function filtersToQuery(f: FilterValues): URLSearchParams {
 // pagination, mobile infinite scroll) so the query key always matches — a
 // mismatched key would bypass the HydrationBoundary cache and refetch.
 export function buildTripsApiUrl(filters: FilterValues, params: TripsSearchParams): string {
-  const { destination, qParam, hostParam, statusParam, page = 1, loc } = params;
+  const { destination, qParam, hostParam, statusParam, page = 1, loc, kind } = params;
   const search = new URLSearchParams();
 
   if (filters.minBudget !== null) search.append('minBudget', String(filters.minBudget));
@@ -163,6 +167,9 @@ export function buildTripsApiUrl(filters: FilterValues, params: TripsSearchParam
     search.append('sortOrder', sort.sortOrder);
   }
 
+  // Host and archived listings show a host's whole catalogue, treks included. A search
+  // from /trips (incl. the landing search box) covers treks too; /treks?q= stays treks-only.
+  if (kind && !hostParam && !statusParam && !(qParam && kind === 'trip')) search.append('tripType', kind);
   if (hostParam) search.append('host', hostParam);
   if (statusParam) search.append('status', statusParam);
 

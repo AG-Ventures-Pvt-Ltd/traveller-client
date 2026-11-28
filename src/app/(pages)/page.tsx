@@ -33,13 +33,12 @@ export default async function Page() {
   // so carousels are filtered by nearest departure city while staying fully SSR'd.
   const loc = await getServerLocation();
 
-  // Query keys MUST match the client hooks (useFeaturedTrips, useSignupBonus,
+  // Query keys MUST match the client hooks (useFeaturedTrips,
   // useGetData) so HydrationBoundary feeds the SSR'd components their data.
   await Promise.all([
     prefetch(qc, ['featured-trips', loc.lat, loc.lng], withLocation(L.FEATURED_TRIPS, loc)),
     prefetch(qc, [L.CITIES], withLocation(L.CITIES, loc)),
     prefetch(qc, [L.EXPLORE_STATES], L.EXPLORE_STATES),
-    prefetch(qc, ['signup-bonus'], L.SIGNUP_BONUS),
     prefetch(qc, [L.TRAVELER_STATS], L.TRAVELER_STATS),
   ]);
 

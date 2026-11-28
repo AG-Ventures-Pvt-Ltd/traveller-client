@@ -1,19 +1,18 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, Suspense } from 'react'
 import Logo from '@/common/components/atoms/Logo/Logo'
 import DesktopLocationSelector from '../DesktopLanding/components/LocationSelector'
 import { useSession } from 'next-auth/react'
-import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { User } from 'lucide-react'
-import { usePathname } from "next/navigation"
+import { usePathname, useSearchParams } from "next/navigation"
 import './Navbar.module.css'
 import { navItems, authenticatedNavItems, hiddenPaths } from './constants'
 
 const Navbar = () => {
 
   const { status } = useSession();
-  const router = useRouter();
   const pathname = usePathname();
   const [isMobile, setIsMobile] = useState(true);
   const [isHydrated, setIsHydrated] = useState(false);
@@ -37,26 +36,22 @@ const Navbar = () => {
     return <></>
   }
 
-  const handleNavigation = (route: string) => {
-    router.push(route);
-  };
-
   return (
     <>
       <div className='px-2 md:px-9 py-5 bg-[#FFF9F4] flex items-center sticky top-0 z-50'>
         <div className='flex-1 flex items-center gap-2.5'>
           <div className='flex-1 flex items-center justify-start gap-6'>
             <Logo />
-            {(pathname === '/' || pathname === '/trips') && <DesktopLocationSelector />}
+            <Suspense fallback={null}><NavCityPicker pathname={pathname} /></Suspense>
           </div>
           <div className='flex-1 flex justify-end items-center'>
             <div className='flex items-center gap-3 md:gap-12'>
               <div className='hidden md:flex items-center gap-12'>
                 {navItems.map((item) => (
-                  <div
+                  <Link
                     key={item.title}
-                    onClick={() => handleNavigation(item.route)}
-                    className='flex items-center gap-1.5 text-[#121212] cursor-pointer hover:text-gray-600 transition-colors whitespace-nowrap text-xl'
+                    href={item.route}
+                    className={`flex items-center gap-1.5 text-[#121212] cursor-pointer hover:text-gray-600 transition-colors whitespace-nowrap text-xl ${(item.route === '/' ? pathname === '/' : pathname.startsWith(item.route)) ? 'font-semibold' : ''}`}
                   >
                     {item.title}
                     {item.isNew && (
@@ -64,16 +59,16 @@ const Navbar = () => {
                         New
                       </span>
                     )}
-                  </div>
+                  </Link>
                 ))}
                 {status === 'authenticated' && authenticatedNavItems.map((item) => (
-                  <div
+                  <Link
                     key={item.title}
-                    onClick={() => handleNavigation(item.route)}
+                    href={item.route}
                     className='flex items-center text-[#121212] cursor-pointer hover:text-gray-600 transition-colors whitespace-nowrap text-xl'
                   >
                     {item.title}
-                  </div>
+                  </Link>
                 ))}
               </div>
               <div className='flex flex-col items-start'>
@@ -84,20 +79,21 @@ const Navbar = () => {
                   </div>
                 )}
                 {status === 'authenticated' && (
-                  <div
+                  <Link
+                    href='/profile'
+                    aria-label='Profile'
                     className='p-2 bg-black rounded-full flex items-center gap-2.5 cursor-pointer'
-                    onClick={() => router.push('/profile')}
                   >
                     <User className='text-white w-5 h-5' />
-                  </div>
+                  </Link>
                 )}
                 {status === 'unauthenticated' && (
-                  <button
+                  <Link
+                    href='/auth'
                     className='!px-4 py-1.5 bg-[#EEA0FF] rounded-xl flex items-center gap-2.5 whitespace-nowrap text-lg'
-                    onClick={() => router.push('/auth')}
                   >
                       Sign Up
-                  </button>
+                  </Link>
                 )}
               </div>
             </div>
@@ -106,6 +102,14 @@ const Navbar = () => {
       </div>
     </>
   )
+}
+
+// City picker only where listings are filtered by departure city — not on search
+// results, which are global. Own component so useSearchParams sits under Suspense.
+const NavCityPicker = ({ pathname }: { pathname: string }) => {
+  const q = useSearchParams().get('q')
+  const listing = pathname === '/' || pathname === '/trips' || pathname === '/treks'
+  return listing && !q ? <DesktopLocationSelector /> : null
 }
 
 export default Navbar

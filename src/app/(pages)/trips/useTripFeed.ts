@@ -45,6 +45,7 @@ export function useTripFeed({
   qParam,
   hostParam,
   statusParam,
+  kind,
   initialTrips,
   initialPagination,
   initialFilterMeta,
@@ -73,13 +74,13 @@ export function useTripFeed({
   // Identity of the current filter set — page 1's URL. Changing it (incl. the user's
   // location) means a different list.
   const feedKey = useMemo(
-    () => buildTripsApiUrl(filters, { destination, qParam, hostParam, statusParam, page: 1, loc: { lat, lng } }),
-    [filters, destination, qParam, hostParam, statusParam, lat, lng]
+    () => buildTripsApiUrl(filters, { destination, qParam, hostParam, statusParam, kind, page: 1, loc: { lat, lng } }),
+    [filters, destination, qParam, hostParam, statusParam, kind, lat, lng]
   );
 
   const apiUrl = useMemo(
-    () => buildTripsApiUrl(filters, { destination, qParam, hostParam, statusParam, page, loc: { lat, lng } }),
-    [filters, destination, qParam, hostParam, statusParam, page, lat, lng]
+    () => buildTripsApiUrl(filters, { destination, qParam, hostParam, statusParam, kind, page, loc: { lat, lng } }),
+    [filters, destination, qParam, hostParam, statusParam, kind, page, lat, lng]
   );
 
   // Comparing against the previous key skips the reset on mount, which would otherwise
@@ -137,14 +138,16 @@ export function useTripFeed({
     return () => observer.disconnect();
   }, [enabled]);
 
-  const trips = useMemo(
-    () =>
-      Object.keys(pages)
-        .map(Number)
-        .sort((a, b) => a - b)
-        .flatMap((n) => pages[n]),
-    [pages]
-  );
+  // Deduped by slug: if the API's page order ever shifts between requests (it did — ties
+  // on rating had no tiebreak), a trip already shown must not render twice further down.
+  const trips = useMemo(() => {
+    const seen = new Set<string>();
+    return Object.keys(pages)
+      .map(Number)
+      .sort((a, b) => a - b)
+      .flatMap((n) => pages[n])
+      .filter((t) => !seen.has(t.slug) && !!seen.add(t.slug));
+  }, [pages]);
 
   // After every hook, so an error render doesn't change the hook call order.
   if (error) throw new Error(error.message || 'Error Loading Trips');

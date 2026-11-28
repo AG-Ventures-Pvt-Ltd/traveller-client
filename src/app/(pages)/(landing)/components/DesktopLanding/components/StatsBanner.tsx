@@ -1,4 +1,5 @@
 'use client';
+import { startNavProgress } from '@/common/components/composites/NavProgress';
 
 import React from 'react';
 import { ConfettiIcon, RocketLaunchIcon, UsersThreeIcon } from '@phosphor-icons/react';
@@ -12,6 +13,8 @@ interface StatsBannerProps {
 
 const StatsBanner: React.FC<StatsBannerProps> = ({ variant, amount, count }) => {
   const router = useRouter();
+  // Start the top bar now; router.push alone gives no feedback until the server render lands.
+  const navigate = (href: string) => { startNavProgress(); router.push(href); };
 
   if (variant === 'signup' && amount) {
     return (
@@ -28,7 +31,7 @@ const StatsBanner: React.FC<StatsBannerProps> = ({ variant, amount, count }) => 
           </div>
         </div>
         <button
-          onClick={() => router.push('/auth')}
+          onClick={() => navigate('/auth')}
           className="flex-shrink-0 bg-[#FFC107] text-black text-sm font-bold px-5 py-2.5 rounded-xl hover:bg-[#e6ad06] transition-colors whitespace-nowrap"
         >
           Sign Up Free →

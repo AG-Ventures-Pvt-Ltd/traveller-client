@@ -1,4 +1,4 @@
-import { CalendarCheckIcon, UsersIcon, XIcon } from '@phosphor-icons/react';
+import { CalendarCheckIcon, MapPinIcon, UsersIcon, XIcon } from '@phosphor-icons/react';
 import MyImage from '@/common/ui/Image';
 import type { ElementType } from 'react';
 import { useIsBookingEvent } from '@/app/(pages)/trip/api';
@@ -17,11 +17,14 @@ interface TripSummaryCardProps {
         hostName?: string;
         tripImage?: string;
         startDateTime: string;
+        endDateTime?: string;
         isEvent?: boolean;
     };
     booking: {
         numberOfPeople: number;
         mealPreference?: string;
+        /** "Pickup spot, City" from the booking snapshot. */
+        meetingPoint?: string | null;
         pricingTierSnapshot: {
             label: string;
             pricePerPerson: number;
@@ -48,13 +51,15 @@ const TripSummaryCard: React.FC<TripSummaryCardProps> = ({ trip, booking }) => {
     const hookIsEvent = useIsBookingEvent();
     const isEvent = trip.isEvent ?? hookIsEvent;
     const isFree = booking.pricingSnapshot.grandTotal === 0;
-    const formattedDate = trip.startDateTime
-        ? new Date(trip.startDateTime).toLocaleDateString('en-GB', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric',
-        })
-        : '';
+    // "12 Dec – 18 Dec 2026"; single-day events (or same-day batches) show one date.
+    const fmt = (d: string, withYear: boolean) => new Date(d).toLocaleDateString('en-GB', {
+        day: 'numeric', month: 'short', ...(withYear && { year: 'numeric' }), timeZone: 'Asia/Kolkata',
+    });
+    const start = trip.startDateTime ? fmt(trip.startDateTime, true) : '';
+    const end = trip.endDateTime ? fmt(trip.endDateTime, true) : '';
+    const formattedDate = !start ? '' : isEvent || !end || end === start
+        ? start
+        : `${fmt(trip.startDateTime, false)} – ${end}`;
 
     const bookingDetailsMap: BookingDetailsItem[] = [
         {
@@ -76,6 +81,13 @@ const TripSummaryCard: React.FC<TripSummaryCardProps> = ({ trip, booking }) => {
             icon: CalendarCheckIcon,
             getValue: (booking, formattedDate) => formattedDate || '—',
             condition: () => true,
+            className: '',
+        },
+        {
+            key: 'pickup',
+            icon: MapPinIcon,
+            getValue: (booking) => `Pickup: ${booking.meetingPoint}`,
+            condition: (booking) => !isEvent && !!booking.meetingPoint,
             className: '',
         },
     ];
@@ -165,10 +177,11 @@ const TripSummaryCard: React.FC<TripSummaryCardProps> = ({ trip, booking }) => {
                 {(booking.discounts ?? []).map((discount) => (
                     <div key={discount._id} className="flex justify-between items-center">
                         <span className="text-zinc-600 text-xs">
-                            {discount.type === 'coupon' ? 'Coupon' : discount.type === 'referral' ? "Referral" : "Wondrr Cash"}
-                            <span className="text-[#43A047] ml-1">
-                                {discount.label}
-                            </span>
+                            {/* Server labels are display-ready ("Wondrr Cash", "Referral Code");
+                                only a coupon's label is the bare code, so it gets a prefix. */}
+                            {discount.type === 'coupon' ? (
+                                <>Coupon <span className="text-[#43A047] ml-1">{discount.label}</span></>
+                            ) : discount.label}
                         </span>
                         <span className="text-[#43A047] text-xs">-₹{discount.amount.toLocaleString('en-IN')}</span>
                     </div>

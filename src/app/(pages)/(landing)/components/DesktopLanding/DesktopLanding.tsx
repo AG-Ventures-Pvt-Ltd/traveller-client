@@ -1,4 +1,5 @@
 'use client'
+import { startNavProgress } from '@/common/components/composites/NavProgress';
 import React, { useMemo } from 'react'
 import Footer from '../Footer/Footer'
 import { useSession } from 'next-auth/react'
@@ -21,6 +22,8 @@ const DesktopLanding = () => {
 
   const { status, data: userData } = useSession()
   const router = useRouter();
+  // Start the top bar now; router.push alone gives no feedback until the server render lands.
+  const navigate = (href: string) => { startNavProgress(); router.push(href); };
   const [searchValue, setSearchValue] = React.useState('');
 
   const { data: featuredTripsData, isLoading: isTripsLoading } = useFeaturedTrips();
@@ -39,15 +42,15 @@ const DesktopLanding = () => {
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && searchValue.trim()) {
-      router.push(`/trips?q=${encodeURIComponent(searchValue.trim())}`);
+      navigate(`/trips?q=${encodeURIComponent(searchValue.trim())}`);
     }
   };
 
   const handleExplore = () => {
     if (searchValue.trim()) {
-      router.push(`/trips?q=${encodeURIComponent(searchValue.trim())}`);
+      navigate(`/trips?q=${encodeURIComponent(searchValue.trim())}`);
     } else {
-      router.push('/trips');
+      navigate('/trips');
     }
   };
 

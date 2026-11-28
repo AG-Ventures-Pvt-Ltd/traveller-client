@@ -1,4 +1,5 @@
 'use client';
+import { startNavProgress } from '@/common/components/composites/NavProgress';
 
 import React from 'react';
 import { Search } from 'lucide-react';
@@ -17,6 +18,8 @@ const SuggestionBanner: React.FC<SuggestionBannerProps> = ({
     onSearch
 }) => {
     const router = useRouter();
+    // Start the top bar now; router.push alone gives no feedback until the server render lands.
+    const navigate = (href: string) => { startNavProgress(); router.push(href); };
     const [searchValue, setSearchValue] = React.useState('');
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -26,7 +29,7 @@ const SuggestionBanner: React.FC<SuggestionBannerProps> = ({
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter' && searchValue.trim()) {
-            router.push(`/trips?q=${encodeURIComponent(searchValue.trim())}`);
+            navigate(`/trips?q=${encodeURIComponent(searchValue.trim())}`);
         }
     };
 

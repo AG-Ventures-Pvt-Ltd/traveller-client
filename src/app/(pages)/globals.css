@@ -137,3 +137,16 @@
 .blog-content td { border: 1px solid #e5e5e5; padding: 0.6rem 0.85rem; text-align: left; }
 .blog-content th { background: #FFF9F4; font-weight: 600; color: #121212; }
 
+
+/* NavProgress: fast to ~30%, then crawls toward 90% until the route commits. */
+@keyframes nav-progress {
+  0% { width: 0; }
+  10% { width: 30%; }
+  50% { width: 70%; }
+  100% { width: 90%; }
+}
+.nav-progress-loading { animation: nav-progress 12s cubic-bezier(0.1, 0.6, 0.3, 1) forwards; }
+.nav-progress-done { width: 100%; opacity: 0; transition: width 0.2s ease, opacity 0.3s ease 0.2s; }
+@media (prefers-reduced-motion: reduce) {
+  .nav-progress-loading { animation: none; width: 60%; }
+}

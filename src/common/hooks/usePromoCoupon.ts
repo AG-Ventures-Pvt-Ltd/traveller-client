@@ -1,34 +1,24 @@
-import { useGetData } from '@/services/useGetData';
-import { API_ENDPOINTS } from '@/common/constants/apiEndpoints';
+import { useLoadOffers, useOffersStore } from './useOffersStore';
 
-// The server only returns a coupon while it is actually redeemable — an expired,
-// deactivated or used-up coupon comes back as { isEnabled: false }.
-export interface PromoCouponData {
-  promoCoupon:
-    | { isEnabled: false }
-    | {
-        isEnabled: true;
-        code: string;
-        headline: string;
-        discountType: 'percentage' | 'fixed' | 'people_count';
-        discountValue: number;
-        maxDiscountAmount: number | null;
-        minOrderAmount: number;
-        endDate: string;
-      };
-}
-
-const CACHE_TIME = 10 * 60 * 1000; // 10 minutes
-
-// useGetData derives `enabled` from the url, so an empty url skips the call
-// entirely on pages that don't show the banner.
+// Backed by the shared offers store; `enabled` false skips the fetch on pages that don't show it.
 export const usePromoCoupon = (enabled = true) => {
-  return useGetData<PromoCouponData>(
-    enabled ? API_ENDPOINTS.LANDING_PAGE.PROMO_COUPON : '',
-    {
-      queryKey: ['promo-coupon'],
-      staleTime: CACHE_TIME,
-      gcTime: CACHE_TIME,
+  useLoadOffers(enabled);
+  const promoCoupon = useOffersStore((s) => s.promoCoupon);
+  return { data: promoCoupon ? { promoCoupon } : undefined };
+};
+
+export const formatDiscount = (
+    discountType: 'percentage' | 'fixed' | 'people_count',
+    discountValue: number,
+    maxDiscountAmount: number | null
+) => {
+    if (discountType === 'percentage') {
+        return maxDiscountAmount
+            ? `${discountValue}% OFF up to ₹${maxDiscountAmount.toLocaleString('en-IN')}`
+            : `${discountValue}% OFF`;
     }
-  );
+    if (discountType === 'people_count') {
+        return `₹${discountValue.toLocaleString('en-IN')} OFF per traveller`;
+    }
+    return `₹${discountValue.toLocaleString('en-IN')} OFF`;
 };

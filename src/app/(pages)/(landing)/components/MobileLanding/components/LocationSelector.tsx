@@ -1,4 +1,5 @@
 'use client';
+import { startNavProgress } from '@/common/components/composites/NavProgress';
 
 import React, { useState } from 'react';
 import { MapPinAreaIcon, MoneyWavyIcon, CaretDownIcon } from '@phosphor-icons/react';
@@ -37,6 +38,8 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
     avatar, cities, cityLoading
 }) => {
     const router = useRouter();
+    // Start the top bar now; router.push alone gives no feedback until the server render lands.
+    const navigate = (href: string) => { startNavProgress(); router.push(href); };
     const { data: session, status } = useSession();
     const { locationDetails, setCityLocation, isLoading } = useLocation();
     const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -57,9 +60,9 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
 
     const handleAvatarClick = () => {
         if (session) {
-            router.push('/profile');
+            navigate('/profile');
         } else {
-            router.push('/auth?mode=login&method=otp');
+            navigate('/auth?mode=login&method=otp');
         }
     };
 
@@ -153,7 +156,7 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
             <div className="flex items-center gap-3">
                 {status == 'authenticated' && (
                     <button
-                        onClick={() => router.push('/wallet')}
+                        onClick={() => navigate('/wallet')}
                         className="p-1 hover:bg-gray-100 rounded-full transition-colors relative"
                         aria-label="View wallet"
                     >
