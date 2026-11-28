@@ -1,7 +1,7 @@
 export interface BatchMeetingPoint {
     _id?: string;
     locationId: string;
-    name?: string;
+    address?: string;
     city: string;
     state: string;
     pickupPrice: number;

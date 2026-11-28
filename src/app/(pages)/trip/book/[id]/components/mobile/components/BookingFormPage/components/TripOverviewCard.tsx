@@ -27,9 +27,12 @@ interface TripOverviewCardProps {
     handleBookNowClick?:() => void
 }
 
-// "Majnu ka Tilla Metro, New Delhi"; falls back to "New Delhi, Delhi" until the API sends the spot name.
-const pointTitle = (p: { name?: string; city?: string; state?: string; locationId?: string }) =>
-    (p.name ? [p.name, p.city] : [p.city, p.state]).filter(Boolean).join(', ') || p.locationId || '';
+// "Address, City" (city skipped if the address already names it); "City, State" when there's no address.
+const pointTitle = (p: { address?: string; city?: string; state?: string; locationId?: string }) => {
+    const address = p.address?.trim();
+    if (!address) return [p.city, p.state].filter(Boolean).join(', ') || p.locationId || '';
+    return p.city && !address.toLowerCase().includes(p.city.toLowerCase()) ? `${address}, ${p.city}` : address;
+};
 
 function formatDate(date: Date) {
     return date.toLocaleDateString('en-GB', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'Asia/Kolkata' });
